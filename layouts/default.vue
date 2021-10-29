@@ -96,10 +96,16 @@ export default {
       drawer: false,
       fixed: false,
       items: [
+        {
+          icon: 'mdi-apps',
+          title: 'vuenewfeature',
+          to: '/vuenewfeature'
+
+        }
 /*         {
           icon: 'mdi-apps',
           title: 'Vuelayers',
-          to: '/vuelayer'
+          to: '/vuelayer'vuenewfeature
         } */
       ],
       miniVariant: false,

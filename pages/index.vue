@@ -3,7 +3,7 @@
     <v-col class="text-center">
       <h1>get my location</h1>
       <v-btn color='primary' @click="findMe">find me</v-btn>
-      <p>my actual position {{myLocation}}</p>
+      <p>my actual positions {{myLocation}}</p>
 
     </v-col>
   </v-row>
