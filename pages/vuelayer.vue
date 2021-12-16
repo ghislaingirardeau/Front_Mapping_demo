@@ -59,7 +59,7 @@
     data () {
       return { 
         zoom: 7,
-        center: [2.3522219, 48.856614],
+        center: [104.9282099, 11.5563738],
         rotation: 0,
         geolocPosition: undefined,
         overlayCoordinate: [2.3522219, 48.856614]

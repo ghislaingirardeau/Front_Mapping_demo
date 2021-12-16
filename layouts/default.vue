@@ -98,15 +98,24 @@ export default {
       items: [
         {
           icon: 'mdi-apps',
+          title: 'home',
+          to: '/'
+        },
+        {
+          icon: 'mdi-apps',
+          title: 'leaflet',
+          to: '/leaflet'
+        },
+        {
+          icon: 'mdi-apps',
           title: 'vuenewfeature',
           to: '/vuenewfeature'
-
-        }
-/*         {
+        },
+        {
           icon: 'mdi-apps',
           title: 'Vuelayers',
-          to: '/vuelayer'vuenewfeature
-        } */
+          to: '/vuelayer'
+        }
       ],
       miniVariant: false,
       right: true,
