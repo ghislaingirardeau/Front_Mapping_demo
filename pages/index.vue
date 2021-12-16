@@ -41,6 +41,7 @@ export default {
         }
         this.toMap = `https://www.openstreetmap.org/#map=18/${position.coords.latitude}/${position.coords.longitude}`
         this.message = ''
+        localStorage.setItem('location', this.myLocation)
       }
 
       let error = () => {

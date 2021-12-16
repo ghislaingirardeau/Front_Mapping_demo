@@ -58,7 +58,6 @@ export default {
         }
         map.on('click', onMapClick) */
 
-
     }
 }
 </script>
