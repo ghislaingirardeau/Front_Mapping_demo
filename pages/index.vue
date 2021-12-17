@@ -6,12 +6,17 @@
 
       <p>{{message}}</p>
       <p>Ma position actuelle: {{myLocation}}</p>
-      <p>Mes coordonnées de déplacement: {{watchPosition}}</p>
       <a :href="toMap" v-if="toMap">look the map to see the position</a>
+
+
+      <v-btn color='primary' @click="followMe">follow me</v-btn>
+      <v-btn color='primary' @click="stopFollowMe">Stop follow me</v-btn>
+      <p>Mes coordonnées de déplacement: {{watchPosition}}</p>
 
 
       <v-btn color='primary' @click="showStorage">showStorage</v-btn>
       <h2>{{localData}}</h2>
+      <h2>{{localDataWatched}}</h2>
 
 
     </v-col>
@@ -26,20 +31,18 @@ export default {
       message: undefined,
       toMap: undefined,
       localData: undefined,
+      localDataWatched: undefined,
+      watchId: 0,
       watchPosition: []
     }
   },
   methods: {
     showStorage() {
       this.localData = localStorage.getItem('location')
+      this.localDataWatched = localStorage.getItem('locationWatched')
     },
     findMe() {
       let success = (position) => {
-        console.log(position.coords)
-        this.watchPosition.push({
-          latitude: position.coords.latitude,
-          longitude: position.coords.longitude
-        })
         this.myLocation = {
           latitude: position.coords.latitude,
           longitude: position.coords.longitude
@@ -55,18 +58,41 @@ export default {
 
       if (navigator.geolocation) {
         this.message = 'Locating...'
-        const watchId = navigator.geolocation.watchPosition(success, error, {
+        navigator.geolocation.getCurrentPosition(success, error, {
           enableHighAccuracy: true,
           maximumAge: 0
         })
-        /* navigator.geolocation.getCurrentPosition(success, error, {
-          enableHighAccuracy: true,
-          maximumAge: 0
-        }) */
 
       } else {
         this.message = 'Geolocation is not supported by your browser'
       }
+    },
+    followMe() {
+      let success = (position) => {
+        console.log(position.coords)
+        this.watchPosition.push({
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude
+        })
+      }
+
+      let error = () => {
+        this.message = 'Unable to retrieve your location';
+      }
+
+      if (navigator.geolocation) {
+        this.message = 'Locating...'
+        this.watchId = navigator.geolocation.watchPosition(success, error, {
+          enableHighAccuracy: true,
+          maximumAge: 0
+        })
+      } else {
+        this.message = 'Geolocation is not supported by your browser'
+      }
+    },
+    stopFollowMe() {
+        localStorage.setItem('locationWatched', JSON.stringify(this.watchPosition))
+        navigator.geolocation.clearWatch(this.watchId);
     }
   },
 }
