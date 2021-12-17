@@ -1,5 +1,9 @@
 <template>
-    <div id="map">
+    <div>
+        <h2>save coordinate on click</h2>
+        <p>{{coordinates}}</p>
+        <div id="map">
+        </div>
     </div>
 </template>
 
@@ -7,6 +11,7 @@
 export default {
     data() {
         return {
+            coordinates: [],
         }
     },
     mounted() {
@@ -32,12 +37,14 @@ export default {
         }).addTo(map);
         // create a marker on click
         let putMarker = L.marker()
-        function addMarker(e) {
+        let addMarker = (e => {
             putMarker
                 .setLatLng(e.latlng)
                 .addTo(map)
                 .bindPopup(e.latlng.toString())
-        }
+            console.log(e.latlng.toString())
+            this.coordinates.push(e.latlng.toString())
+        })
         map.on('click', addMarker)
 
         //POPUP
