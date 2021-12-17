@@ -5,8 +5,9 @@
       <v-btn color='primary' @click="findMe">find me</v-btn>
 
       <p>{{message}}</p>
-      <p>{{myLocation}}</p>
-      <a :href="toMap" v-if="toMap">my position</a>
+      <p>Ma position actuelle: {{myLocation}}</p>
+      <p>Mes coordonnées de déplacement: {{watchPosition}}</p>
+      <a :href="toMap" v-if="toMap">look the map to see the position</a>
 
 
       <v-btn color='primary' @click="showStorage">showStorage</v-btn>
@@ -24,18 +25,9 @@ export default {
       myLocation: undefined,
       message: undefined,
       toMap: undefined,
-      localData: undefined
+      localData: undefined,
+      watchPosition: []
     }
-  },
-  computed: {
-    /* myposition() {
-      navigator.geolocation.watchPosition((position) => {
-          this.myLocation.push(position.coords.latitude)
-          this.myLocation.push(position.coords.longitude)      
-      })
-      return this.myLocation
-      `https://www.openstreetmap.org/#map=18/${latitude}/${longitude}`
-    } */
   },
   methods: {
     showStorage() {
@@ -43,13 +35,18 @@ export default {
     },
     findMe() {
       let success = (position) => {
+        console.log(position.coords)
+        this.watchPosition.push({
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude
+        })
         this.myLocation = {
           latitude: position.coords.latitude,
           longitude: position.coords.longitude
         }
         this.toMap = `https://www.openstreetmap.org/#map=18/${position.coords.latitude}/${position.coords.longitude}`
         this.message = ''
-        localStorage.setItem('location', `lat: ${this.myLocation.latitude}, lng: ${this.myLocation.longitude}`)
+        localStorage.setItem('location', `accuracy: ${position.coords.accuracy}, lat: ${this.myLocation.latitude}, lng: ${this.myLocation.longitude}`)
       }
 
       let error = () => {
@@ -58,7 +55,14 @@ export default {
 
       if (navigator.geolocation) {
         this.message = 'Locating...'
-        navigator.geolocation.getCurrentPosition(success, error)
+        const watchId = navigator.geolocation.watchPosition(success, error, {
+          enableHighAccuracy: true,
+          maximumAge: 0
+        })
+        /* navigator.geolocation.getCurrentPosition(success, error, {
+          enableHighAccuracy: true,
+          maximumAge: 0
+        }) */
 
       } else {
         this.message = 'Geolocation is not supported by your browser'
