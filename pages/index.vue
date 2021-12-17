@@ -6,8 +6,12 @@
 
       <p>{{message}}</p>
       <p>{{myLocation}}</p>
-
       <a :href="toMap" v-if="toMap">my position</a>
+
+
+      <v-btn color='primary' @click="showStorage">showStorage</v-btn>
+      <h2>{{localData}}</h2>
+
 
     </v-col>
   </v-row>
@@ -19,7 +23,8 @@ export default {
     return{
       myLocation: undefined,
       message: undefined,
-      toMap: undefined
+      toMap: undefined,
+      localData: undefined
     }
   },
   computed: {
@@ -33,6 +38,9 @@ export default {
     } */
   },
   methods: {
+    showStorage() {
+      this.localData = localStorage.getItem('location')
+    },
     findMe() {
       let success = (position) => {
         this.myLocation = {
@@ -41,7 +49,7 @@ export default {
         }
         this.toMap = `https://www.openstreetmap.org/#map=18/${position.coords.latitude}/${position.coords.longitude}`
         this.message = ''
-        localStorage.setItem('location', this.myLocation)
+        localStorage.setItem('location', `lat: ${this.myLocation.latitude}, lng: ${this.myLocation.longitude}`)
       }
 
       let error = () => {
