@@ -21,16 +21,12 @@ export default {
             accessToken: tokenMapbox
         }).addTo(map)
         map.locate({setView: true, maxZoom: 16}) //set my location automaticaly on load
-
+        var  myIcon = L.divIcon({className: 'myicon'})
         var greenIcon = L.icon({
-            iconUrl: 'leaf-green.png',
-            shadowUrl: 'leaf-shadow.png',
-
-            iconSize:     [38, 95], // size of the icon
-            shadowSize:   [50, 64], // size of the shadow
-            iconAnchor:   [22, 94], // point of the icon which will correspond to marker's location
-            shadowAnchor: [4, 62],  // the same for the shadow
-            popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
+            iconUrl: 'pagelines.svg',
+            iconSize:     [15, 15], // size of the icon
+            iconAnchor:   [0, 0], // point of the icon which will correspond to marker's location
+            popupAnchor:  [0, -10] // point from which the popup should open relative to the iconAnchor
         })
         function onLocationFound(e) { // function call back on event
             var radius = e.accuracy;
@@ -162,4 +158,10 @@ export default {
 
 <style>
 #map { height: 480px; }
+
+.myicon{
+    background-color: red;
+    border: 2px solid grey;
+    padding: 2px;
+}
 </style>
