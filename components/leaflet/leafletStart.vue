@@ -44,19 +44,8 @@ import tableGeoJson from '@/components/leaflet/tableGeoJson.vue'
 
 export default {
     data: () => ({
-        natureIcon: {
-            iconUrl: 'pagelines.svg',
-            iconSize:     [15, 15], // size of the icon
-            iconAnchor:   [8, 8], // point of the icon which will correspond to marker's location
-            popupAnchor:  [0, -10] // point from which the popup should open relative to the iconAnchor
-        },
-        monumentIcon: {
-            iconUrl: 'monument-solid.svg',
-            iconSize:     [15, 15], // size of the icon
-            iconAnchor:   [8, 8], // point of the icon which will correspond to marker's location
-            popupAnchor:  [0, -10] // point from which the popup should open relative to the iconAnchor
-        },
         map: '',
+        coordinates: [],
         showInputGeoDetail: false,
         disable: false,
         expand: true,
@@ -122,8 +111,18 @@ export default {
                 opacity: 1,
                 fillOpacity: 0.8
             };
-            var typeNature = L.icon(this.natureIcon)
-            var typeMonument = L.icon(this.monumentIcon)
+            var typeNature = L.icon({
+                iconUrl: 'pagelines.svg',
+                iconSize:     [15, 15], // size of the icon
+                iconAnchor:   [8, 8], // point of the icon which will correspond to marker's location
+                popupAnchor:  [0, -10] // point from which the popup should open relative to the iconAnchor
+            })
+            var typeMonument = L.icon({
+                iconUrl: 'monument-solid.svg',
+                iconSize:     [15, 15], // size of the icon
+                iconAnchor:   [8, 8], // point of the icon which will correspond to marker's location
+                popupAnchor:  [0, -10] // point from which the popup should open relative to the iconAnchor
+            })
 
             L.geoJSON(this.geoJsonFeature, { // on peut enchainer les options ici
                 onEachFeature: onEachFeature,
@@ -173,11 +172,7 @@ export default {
         L.control.scale().addTo(this.map);
 
         // create a marker on click
-        let putMarker = L.marker()
         let addMarker = (e => {
-            putMarker
-                .setLatLng(e.latlng)
-                .addTo(this.map)
             this.geoJsonFeature.push({
                 "type": "Feature",
                 "properties": {
