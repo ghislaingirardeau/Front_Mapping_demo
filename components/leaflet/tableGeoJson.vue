@@ -1,5 +1,5 @@
 <template>
-  <v-card>{{dataItems}}
+  <v-card>
     <v-card-title>
       <v-text-field
         v-model="search"
@@ -11,6 +11,7 @@
     </v-card-title>
     <v-data-table
       :headers="headers"
+      :items="geoItems"
       :search="search"
     ></v-data-table>
   </v-card>
@@ -30,7 +31,7 @@
           },
           { text: 'Amenity', value: 'amenity' },
           { text: 'Details', value: 'popupContent' },
-          { text: 'Type', value: 'type' },
+          { text: 'Type', value: 'category' },
           { text: 'Coordonates', value: 'coordinates' },
         ],
       }
@@ -40,11 +41,16 @@
     },
     computed: {
         // RECUPERER LES DONNEES SOUS FORME ARRAY OBJET POUR LES ENVOYE DANS LE TABLEAU DE DATA
-        dataItems() {
-            console.log(typeof(this.geojsonFeature))
-            return this.geojsonFeature
+        geoItems() {
+          let dataArray = []
+          this.geojsonFeature.forEach(element => {
+            dataArray.push({
+              ...element.properties,
+              ...element.geometry
+            })
+          });
+            return dataArray
         }
-    }
-
+    },
   }
 </script>

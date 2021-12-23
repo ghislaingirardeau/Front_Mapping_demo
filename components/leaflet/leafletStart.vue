@@ -70,7 +70,7 @@ export default {
                     "name": "Coors Field",
                     "amenity": "Baseball Stadium",
                     "popupContent": "This is where the Rockies play!",
-                    "type": "monument"
+                    "category": "monument"
                 },
                 "geometry": {
                     "type": "Point",
@@ -84,7 +84,7 @@ export default {
                     "name": "random",
                     "amenity": "random point",
                     "popupContent": "voici un point au hasard",
-                    "type": "nature"
+                    "category": "nature"
                 },
                 "geometry": {
                     "type": "Point",
@@ -133,7 +133,7 @@ export default {
                 onEachFeature: onEachFeature,
                 pointToLayer: function (feature, latlng) {
                     let iconePick
-                    switch (feature.properties.type) {
+                    switch (feature.properties.category) {
                         case 'monument':
                             iconePick = typeMonument
                             break;
@@ -193,7 +193,7 @@ export default {
                     "name": "",
                     "amenity": "",
                     "popupContent": "",
-                    "type": ""
+                    "category": ""
                 },
                 "geometry": {
                     "type": "Point",

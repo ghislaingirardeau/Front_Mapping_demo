@@ -6,7 +6,7 @@
   >
 
     <v-select
-      v-model="geojsonFeature[geojsonFeature.length - 1].properties.type"
+      v-model="geojsonFeature[geojsonFeature.length - 1].properties.category"
       :items="items"
       :rules="[v => !!v || 'Item is required']"
       label="Item"
