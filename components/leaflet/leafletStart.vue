@@ -5,7 +5,7 @@
             <dataGeoJson 
                 v-if="showInputGeoDetail" 
                 @send-data="getData" 
-                :geojsonFeature="geojsonFeature" 
+                :geoJsonFeature="geoJsonFeature" 
             />
         </v-expand-transition>
 
@@ -34,7 +34,7 @@
         </v-expand-transition>
 
         <tableGeoJson 
-            :geojsonFeature="geojsonFeature"
+            :geoJsonFeature="geoJsonFeature"
         />
 
     </div>
@@ -63,7 +63,7 @@ export default {
         showInputGeoDetail: false,
         disable: false,
         expand: true,
-        geojsonFeature: [
+        geoJsonFeature: [
             {
                 "type": "Feature",
                 "properties": {
@@ -129,7 +129,7 @@ export default {
             var typeNature = L.icon(this.natureIcon)
             var typeMonument = L.icon(this.monumentIcon)
 
-            L.geoJSON(this.geojsonFeature, { // on peut enchainer les options ici
+            L.geoJSON(this.geoJsonFeature, { // on peut enchainer les options ici
                 onEachFeature: onEachFeature,
                 pointToLayer: function (feature, latlng) {
                     let iconePick
@@ -147,7 +147,7 @@ export default {
             this.disable = true  
         },
         saveGeoJson() {
-            localStorage.setItem('APIGeoMap', JSON.stringify(this.geojsonFeature))
+            localStorage.setItem('APIGeoMap', JSON.stringify(this.geoJsonFeature))
         }
     },
     mounted() {
@@ -187,7 +187,7 @@ export default {
             putMarker
                 .setLatLng(e.latlng)
                 .addTo(this.map)
-            this.geojsonFeature.push({
+            this.geoJsonFeature.push({
                 "type": "Feature",
                 "properties": {
                     "name": "",

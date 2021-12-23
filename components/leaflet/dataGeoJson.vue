@@ -6,7 +6,7 @@
   >
 
     <v-select
-      v-model="geojsonFeature[geojsonFeature.length - 1].properties.category"
+      v-model="geoJsonFeature[geoJsonFeature.length - 1].properties.category"
       :items="items"
       :rules="[v => !!v || 'Item is required']"
       label="Item"
@@ -14,7 +14,7 @@
     ></v-select>
 
     <v-text-field
-      v-model="geojsonFeature[geojsonFeature.length - 1].properties.name"
+      v-model="geoJsonFeature[geoJsonFeature.length - 1].properties.name"
       :counter="10"
       :rules="nameRules"
       label="Name"
@@ -22,7 +22,7 @@
     ></v-text-field>
 
     <v-text-field
-      v-model="geojsonFeature[geojsonFeature.length - 1].properties.amenity"
+      v-model="geoJsonFeature[geoJsonFeature.length - 1].properties.amenity"
       :counter="10"
       :rules="amenityRules"
       label="Amenity"
@@ -30,7 +30,7 @@
     ></v-text-field>
 
     <v-text-field
-      v-model="geojsonFeature[geojsonFeature.length - 1].properties.popupContent"
+      v-model="geoJsonFeature[geoJsonFeature.length - 1].properties.popupContent"
       :counter="20"
       :rules="popupContentRules"
       label="Content"
@@ -89,7 +89,7 @@
     }),
 
     props: {
-        geojsonFeature: Array
+        geoJsonFeature: Array
     },
 
     methods: {
@@ -106,7 +106,7 @@
         this.$refs.form.reset()
       },
       cancel() {
-        this.geojsonFeature.pop()
+        this.geoJsonFeature.pop()
         this.$emit('send-data', {
             show: false,
             message: 'suppression de la coordonnée'

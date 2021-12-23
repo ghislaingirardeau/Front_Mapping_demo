@@ -37,13 +37,13 @@
       }
     },
     props: {
-        geojsonFeature: Array
+        geoJsonFeature: Array
     },
     computed: {
         // RECUPERER LES DONNEES SOUS FORME ARRAY OBJET POUR LES ENVOYE DANS LE TABLEAU DE DATA
         geoItems() {
           let dataArray = []
-          this.geojsonFeature.forEach(element => {
+          this.geoJsonFeature.forEach(element => {
             dataArray.push({
               ...element.properties,
               ...element.geometry

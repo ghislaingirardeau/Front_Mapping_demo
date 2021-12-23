@@ -78,7 +78,7 @@ export default {
                 mouseout: resetHighlight, // animation sur un mousehover
             });        
         }        
-        var geojsonFeature = [{ // peut passer plusieurs data grace a array
+        var geoJsonFeature = [{ // peut passer plusieurs data grace a array
             "type": "Feature",
             "properties": {
                 "name": "Coors Field",
@@ -112,7 +112,7 @@ export default {
             opacity: 1,
             fillOpacity: 0.8
         };
-        L.geoJSON(geojsonFeature, { // on peut enchainer les options ici
+        L.geoJSON(geoJsonFeature, { // on peut enchainer les options ici
             onEachFeature: onEachFeature,
             pointToLayer: function (feature, latlng) {
                 return L.circleMarker(latlng, geojsonMarkerOptions);
@@ -147,7 +147,7 @@ export default {
             fillOpacity: 0.8
         };
 
-        L.geoJSON(geojsonFeature, {
+        L.geoJSON(geoJsonFeature, {
             pointToLayer: function (feature, latlng) {
                 return L.circleMarker(latlng, geojsonMarkerOptions);
             }
