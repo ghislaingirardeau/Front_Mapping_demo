@@ -9,8 +9,6 @@
             />
         </v-expand-transition>
 
-        <p v-if="message">{{message}}</p>
-
         <v-btn 
             class="my-5" 
             color="primary" 
@@ -59,7 +57,6 @@ export default {
             popupAnchor:  [0, -10] // point from which the popup should open relative to the iconAnchor
         },
         map: '',
-        message: undefined,
         showInputGeoDetail: false,
         disable: false,
         expand: true,
@@ -100,7 +97,6 @@ export default {
     methods: {
         getData(payload) { 
             this.showInputGeoDetail = payload.show
-            this.message = payload.message
             this.disable = payload.disable
             this.expand = !payload.show
             this.showGeoJson()
@@ -151,14 +147,18 @@ export default {
         }
     },
     mounted() {
+
+        // config mapbox
         const tokenMapbox='pk.eyJ1IjoiZ2d3ZWJkZXYiLCJhIjoiY2t4OGVhemd5MXpyMzJvbzE4ZXpxajJzZCJ9.P2KXn7NQDyQ11BkYVkPEcQ'
         const mapBoxUrl = `https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=${tokenMapbox}`
         const mapboxStreets = 'mapbox/streets-v11'
         const mapboxOutdoors = 'mapbox/outdoors-v11'
         const mapboxAttribution = 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>'
+        
         // pour switcher sur different layers
         var outdoors = L.tileLayer(mapBoxUrl, {id: mapboxOutdoors, tileSize: 512, zoomOffset: -1, attribution: mapboxAttribution, accessToken: tokenMapbox}),
             streets   = L.tileLayer(mapBoxUrl, {id: mapboxStreets, tileSize: 512, zoomOffset: -1, attribution: mapboxAttribution, accessToken: tokenMapbox});        
+        
         // bouton pour le switch
         var baseMaps = {
             "Outdoors": outdoors,
@@ -167,15 +167,6 @@ export default {
 
         // build the container with switch layer
         this.map = L.map('map', {layers: [streets, outdoors]}).setView([13.7412488, 106.9778479], 13)
-        // build the container with one layer
-        /* L.tileLayer(`https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=${tokenMapbox}`, {
-            attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
-            maxZoom: 18,
-            id: 'mapbox/outdoors-v11', //streets-v11, satellite-v9 pour avoir une vue satellite
-            tileSize: 512,
-            zoomOffset: -1,
-            accessToken: tokenMapbox
-        }).addTo(this.map) */
 
         // control layer choice
         L.control.layers(baseMaps).addTo(this.map)

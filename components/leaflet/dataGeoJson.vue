@@ -97,7 +97,6 @@
         if(this.$refs.form.validate()) {
             this.$emit('send-data', {
                 show: false,
-                message: 'données enregistrer dans le geojson',
                 disabled: false
             })
         }
@@ -107,9 +106,9 @@
       },
       cancel() {
         this.geoJsonFeature.pop()
-        this.$emit('send-data', {
+        this.$emit('send-data', { 
+
             show: false,
-            message: 'suppression de la coordonnée'
         })
       }
     },
