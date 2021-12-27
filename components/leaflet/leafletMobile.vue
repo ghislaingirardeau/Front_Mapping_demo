@@ -86,21 +86,14 @@ export default {
                 "popupContent": "This is where the Rockies play!"
             },
             "geometry": {
-                "type": "Point",
-                "coordinates": [-104.99404, 39.75621]
-            }
-        },
-        {
-            "type": "Feature",
-            "properties": {
-                "name": "random",
-                "amenity": "random point",
-                "popupContent": "voici un point au hasard"
-            },
-
-            "geometry": {
-                "type": "Point",
-                "coordinates": [-120, 39.75621]
+                "type": "Polygon",
+                "coordinates": [[
+            [-104.05, 48.99],
+            [-97.22,  48.98],
+            [-96.58,  45.94],
+            [-104.03, 45.94],
+            [-104.05, 48.99]
+        ]]
             }
         },
         ]; 
@@ -115,7 +108,7 @@ export default {
         L.geoJSON(geoJsonFeature, { // on peut enchainer les options ici
             onEachFeature: onEachFeature,
             pointToLayer: function (feature, latlng) {
-                return L.circleMarker(latlng, geojsonMarkerOptions);
+                return L.polygon(latlng)
             }
         }).addTo(map);        
 

@@ -4,17 +4,16 @@
     v-model="valid"
     lazy-validation
   >
-
     <v-select
-      v-model="geoJsonFeature[geoJsonFeature.length - 1].properties.category"
-      :items="items"
+      v-model="addGeoJson.properties.category"
+      :items="GeoType"
       :rules="[v => !!v || 'Item is required']"
       label="Item"
       required
     ></v-select>
 
     <v-text-field
-      v-model="geoJsonFeature[geoJsonFeature.length - 1].properties.name"
+      v-model="addGeoJson.properties.name"
       :counter="10"
       :rules="nameRules"
       label="Name"
@@ -22,7 +21,7 @@
     ></v-text-field>
 
     <v-text-field
-      v-model="geoJsonFeature[geoJsonFeature.length - 1].properties.amenity"
+      v-model="addGeoJson.properties.amenity"
       :counter="10"
       :rules="amenityRules"
       label="Amenity"
@@ -30,7 +29,7 @@
     ></v-text-field>
 
     <v-text-field
-      v-model="geoJsonFeature[geoJsonFeature.length - 1].properties.popupContent"
+      v-model="addGeoJson.properties.popupContent"
       :counter="20"
       :rules="popupContentRules"
       label="Content"
@@ -69,6 +68,19 @@
   export default {
     data: () => ({
       valid: true,
+      addGeoJson: {
+          "type": "Feature",
+          "properties": {
+              "name": "arbre",
+              "amenity": "test",
+              "popupContent": "test",
+              "category": ""
+          },
+          "geometry": {
+              "type": "",
+              "coordinates": []
+          }
+      },
       name: '',
       nameRules: [
         v => !!v || 'Name is required',
@@ -82,22 +94,49 @@
         v => !!v || 'Popup content is required',
         v => (v && v.length <= 20) || 'Name must be less than 20 characters',
       ],
-      items: [
-        'nature',
-        'monument',
-      ],    
     }),
 
     props: {
-        geoJsonFeature: Array
+        geoJsonFeature: Array,
+        coordinates: Array
+    },
+    computed: {
+      GeoType() {
+        if(this.coordinates.length > 1) {
+          return [
+                    'forme'
+                  ]
+        } else {
+          return [
+                    'nature',
+                    'monument',
+                  ]
+        }
+      }
     },
 
     methods: {
       validate () {
         if(this.$refs.form.validate()) {
+
+            let getCoordinates = []
+            let geoType 
+            if(this.coordinates.length === 1) { 
+              // si je n'ai qu'une coordonnée alors je ne veux enregistrer qu'un seul point
+              getCoordinates = this.coordinates[0]
+              geoType = 'Point'
+            } else {
+              // sinon j'enregistre un polygon
+              getCoordinates.push(this.coordinates)
+              geoType = 'Polygon'
+            }
+            this.addGeoJson.geometry.coordinates = getCoordinates
+            this.addGeoJson.geometry.type = geoType
+            this.geoJsonFeature.push(this.addGeoJson)
             this.$emit('send-data', {
                 show: false,
-                disabled: false
+                disabled: false,
+                resetCoordinates: true
             })
         }
       },
@@ -105,10 +144,9 @@
         this.$refs.form.reset()
       },
       cancel() {
-        this.geoJsonFeature.pop()
         this.$emit('send-data', { 
-
             show: false,
+            resetCoordinates: true
         })
       }
     },

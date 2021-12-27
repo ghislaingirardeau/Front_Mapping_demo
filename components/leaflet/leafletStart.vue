@@ -1,11 +1,13 @@
 <template>
     <div>
-        <h2>save coordinate on click</h2>
+        <h2>save coordinate on click</h2> 
+
         <v-expand-transition>
             <dataGeoJson 
                 v-if="showInputGeoDetail" 
                 @send-data="getData" 
-                :geoJsonFeature="geoJsonFeature" 
+                :geoJsonFeature="geoJsonFeature"
+                :coordinates="coordinates"
             />
         </v-expand-transition>
 
@@ -26,6 +28,9 @@
         >
             Save geoJson
         </v-btn>
+        
+        <h3>Les coordonnées cliqué : {{coordinates}}</h3>
+
         <v-expand-transition>
             <div id="map" v-show="expand">
             </div>
@@ -89,6 +94,9 @@ export default {
             this.disable = payload.disable
             this.expand = !payload.show
             this.showGeoJson()
+            if(payload.resetCoordinates) {
+                this.coordinates = []
+            }
         },
         showGeoJson() {
 
@@ -135,8 +143,15 @@ export default {
                         case 'nature':
                             iconePick = typeNature
                             break;
+                        case 'polygon':
+                            iconePick = undefined
+                            break;
                     }
-                    return L.marker(latlng, {icon: iconePick});
+                    if(iconePick != undefined) {
+                        return L.marker(latlng, {icon: iconePick});
+                    } else {
+                        return  L.polygon(latlngs, {color: 'red'})
+                    }
                 }
             }).addTo(this.map); 
             this.disable = true  
@@ -173,23 +188,18 @@ export default {
 
         // create a marker on click
         let addMarker = (e => {
-            this.geoJsonFeature.push({
-                "type": "Feature",
-                "properties": {
-                    "name": "",
-                    "amenity": "",
-                    "popupContent": "",
-                    "category": ""
-                },
-                "geometry": {
-                    "type": "Point",
-                    "coordinates": [e.latlng.lng, e.latlng.lat]
-                }
-            })
+            L.marker(e.latlng)    
+            this.coordinates.push([e.latlng.lng, e.latlng.lat])
             this.showInputGeoDetail = true
-            this.expand = false
         })
         this.map.on('click', addMarker)
+
+        let geoFromLocal = localStorage.getItem('APIGeoMap')
+
+        if(geoFromLocal) {
+            this.geoJsonFeature = JSON.parse(geoFromLocal)
+            this.showGeoJson()
+        }
 
         // AJOUTER DIFFERENT MARKER A DES ENDROITS PRECIS
         /* var marker = L.marker([13.7412488, 106.9778479], {opacity: 0.5}).addTo(this.map)
