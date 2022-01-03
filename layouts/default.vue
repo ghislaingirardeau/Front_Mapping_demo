@@ -86,7 +86,7 @@ export default {
           to: '/vuenewfeature'
         },
         {
-          icon: 'mdi-apps',
+          icon: 'mdi-home',
           title: 'Vuelayers',
           to: '/vuelayer'
         }

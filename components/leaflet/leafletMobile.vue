@@ -14,13 +14,12 @@ export default {
         var map = L.map('map').fitWorld()
         L.tileLayer(`https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=${tokenMapbox}`, {
             attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
-            maxZoom: 12,
             id: 'mapbox/light-v9', //light-v9 outdoors-v11 street-v11, satellite-v9 pour avoir une vue satellite
             tileSize: 512,
             zoomOffset: -1,
             accessToken: tokenMapbox
         }).addTo(map)
-        map.locate({setView: true, maxZoom: 16}) //set my location automaticaly on load
+        map.locate({setView: true, maxZoom: 6}) //set my location automaticaly on load
         var  myIcon = L.divIcon({className: 'myicon'})
         var greenIcon = L.icon({
             iconUrl: 'pagelines.svg',

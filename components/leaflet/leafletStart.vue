@@ -1,6 +1,12 @@
 <template>
     <div>
         <h2>save coordinate on click</h2> 
+            <v-icon
+            large
+            color="red"
+            >
+            mdi-home
+            </v-icon>
 
         <v-expand-transition>
             <dataGeoJson 
@@ -20,16 +26,18 @@
         >
         Show geoJson
         </v-btn>
+
         <v-btn 
             class="my-5" 
             color="primary" 
             outlined 
-            @click="saveGeoJson"
+            @click="updateLocation"
         >
-            Save geoJson
+            Update my location
         </v-btn>
         
-        <h3>Les coordonnées cliqué : {{coordinates}}</h3>
+        <manageStorage :geoJsonFeature="geoJsonFeature" />
+        <h3>Les coordonnées cliquées : {{coordinates}}</h3>
 
         <v-expand-transition>
             <div id="map" v-show="expand">
@@ -46,11 +54,14 @@
 <script>
 import dataGeoJson from '@/components/leaflet/dataGeoJson.vue' 
 import tableGeoJson from '@/components/leaflet/tableGeoJson.vue'
+import manageStorage from '@/components/leaflet/manageStorage.vue'
 
 export default {
     data: () => ({
         map: '',
         coordinates: [],
+        myLocationMark: undefined,
+        clickMapMark: undefined,
         showInputGeoDetail: false,
         disable: false,
         expand: true,
@@ -86,7 +97,8 @@ export default {
     }),
     components: {
         dataGeoJson,
-        tableGeoJson
+        tableGeoJson,
+        manageStorage
     },
     methods: {
         getData(payload) { 
@@ -97,6 +109,9 @@ export default {
             if(payload.resetCoordinates) {
                 this.coordinates = []
             }
+            this.myLocationMark
+            this.clickMapMark.remove(this.map) // retire le marker click
+            this.myLocationMark.remove(this.map) // retire le marker de ma location        
         },
         showGeoJson() {
 
@@ -156,12 +171,22 @@ export default {
             }).addTo(this.map); 
             this.disable = true  
         },
-        saveGeoJson() {
-            localStorage.setItem('APIGeoMap', JSON.stringify(this.geoJsonFeature))
+        updateLocation () { // update my location, recenter the map, show marker, push the coordinate for record
+            this.map.locate({setView: true, maxZoom: 16})
+
+            this.myLocationMark = L.marker()
+
+            let onLocationFound= (e => {
+                this.myLocationMark
+                    .setLatLng(e.latlng)
+                    .addTo(this.map)
+                this.coordinates.push([e.latlng.lng, e.latlng.lat])
+                this.showInputGeoDetail = true
+            })
+            this.map.on('locationfound', onLocationFound)         
         }
     },
     mounted() {
-
         // config mapbox
         const tokenMapbox='pk.eyJ1IjoiZ2d3ZWJkZXYiLCJhIjoiY2t4OGVhemd5MXpyMzJvbzE4ZXpxajJzZCJ9.P2KXn7NQDyQ11BkYVkPEcQ'
         const mapBoxUrl = `https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=${tokenMapbox}`
@@ -180,35 +205,43 @@ export default {
         }
 
         // build the container with switch layer
-        this.map = L.map('map', {layers: [streets, outdoors]}).setView([13.7412488, 106.9778479], 13)
+        this.map = L.map('map', {layers: [streets, outdoors]}).fitWorld()
+        this.map.locate({setView: true, maxZoom: 16})
 
         // control layer choice
         L.control.layers(baseMaps).addTo(this.map)
-        L.control.scale().addTo(this.map);
+        L.control.scale().addTo(this.map)
 
-        // create a marker on click
-        let addMarker = (e => {
-            L.marker(e.latlng)    
+        // show my location on load
+        this.myLocationMark = L.marker()
+        let onLocationFound= (e => {
+            this.myLocationMark
+                .setLatLng(e.latlng)
+                .addTo(this.map)
+        })
+        this.map.on('locationfound', onLocationFound)       
+
+        // remove the marker eah click
+        // add a new marker to new click
+        // get the coordinates
+        this.clickMapMark = L.marker()
+        let addMarker = (async e => {
+            await this.clickMapMark.remove(this.map)
+            await this.clickMapMark
+                .setLatLng(e.latlng)
+                .addTo(this.map)
             this.coordinates.push([e.latlng.lng, e.latlng.lat])
             this.showInputGeoDetail = true
         })
         this.map.on('click', addMarker)
 
+        /* RECUPERE LES DONNEES SI PRESENT DANS LE LOCALSTORAGE */
         let geoFromLocal = localStorage.getItem('APIGeoMap')
 
         if(geoFromLocal) {
             this.geoJsonFeature = JSON.parse(geoFromLocal)
             this.showGeoJson()
         }
-
-        // AJOUTER DIFFERENT MARKER A DES ENDROITS PRECIS
-        /* var marker = L.marker([13.7412488, 106.9778479], {opacity: 0.5}).addTo(this.map)
-        var circle = L.circle([13.7402488, 106.9798479], {
-            color: 'red',
-            fillColor: '#f03',
-            fillOpacity: 0.5,
-            radius: 20
-        }).addTo(this.map) */
 
         //ADD POPUP
         /* marker.bindPopup("<b>Hello world!</b><br>I am a popup.").openPopup() // to open automaticly on load
