@@ -1,12 +1,6 @@
 <template>
     <div>
         <h2>save coordinate on click</h2> 
-            <v-icon
-            large
-            color="red"
-            >
-            mdi-home
-            </v-icon>
 
         <v-expand-transition>
             <dataGeoJson 
@@ -134,7 +128,7 @@ export default {
                 opacity: 1,
                 fillOpacity: 0.8
             };
-            var typeNature = L.icon({
+            /* var typeNature = L.icon({
                 iconUrl: 'pagelines.svg',
                 iconSize:     [15, 15], // size of the icon
                 iconAnchor:   [8, 8], // point of the icon which will correspond to marker's location
@@ -145,7 +139,16 @@ export default {
                 iconSize:     [15, 15], // size of the icon
                 iconAnchor:   [8, 8], // point of the icon which will correspond to marker's location
                 popupAnchor:  [0, -10] // point from which the popup should open relative to the iconAnchor
-            })
+            }) */
+
+            function houseIcons(colors) {
+                return L.divIcon({
+                className: 'house-icon',
+                html: `<svg style="width:24px;height:24px" viewBox="0 0 24 24">
+                        <path fill="${colors}" d="M10,20V14H14V20H19V12H22L12,3L2,12H5V20H10Z" />
+                        </svg>`
+                })
+            }
 
             L.geoJSON(this.geoJsonFeature, { // on peut enchainer les options ici
                 onEachFeature: onEachFeature,
@@ -153,10 +156,10 @@ export default {
                     let iconePick
                     switch (feature.properties.category) {
                         case 'monument':
-                            iconePick = typeMonument
+                            iconePick = houseIcons('green')
                             break;
                         case 'nature':
-                            iconePick = typeNature
+                            iconePick = houseIcons('red')
                             break;
                         case 'polygon':
                             iconePick = undefined
