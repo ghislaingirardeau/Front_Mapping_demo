@@ -42,6 +42,15 @@
             :geoJsonFeature="geoJsonFeature"
         />
 
+        <!-- <v-btn 
+            class="my-5" 
+            color="primary" 
+            outlined 
+            @click="showExport"
+        >
+        print
+        </v-btn> -->
+
     </div>
 </template>
 
@@ -66,7 +75,7 @@ export default {
                     "name": "Coors Field",
                     "amenity": "Baseball Stadium",
                     "popupContent": "This is where the Rockies play!",
-                    "category": "monument"
+                    "category": "credit"
                 },
                 "geometry": {
                     "type": "Point",
@@ -80,7 +89,7 @@ export default {
                     "name": "random",
                     "amenity": "random point",
                     "popupContent": "voici un point au hasard",
-                    "category": "nature"
+                    "category": "indebted"
                 },
                 "geometry": {
                     "type": "Point",
@@ -128,19 +137,7 @@ export default {
                 opacity: 1,
                 fillOpacity: 0.8
             };
-            /* var typeNature = L.icon({
-                iconUrl: 'pagelines.svg',
-                iconSize:     [15, 15], // size of the icon
-                iconAnchor:   [8, 8], // point of the icon which will correspond to marker's location
-                popupAnchor:  [0, -10] // point from which the popup should open relative to the iconAnchor
-            })
-            var typeMonument = L.icon({
-                iconUrl: 'monument-solid.svg',
-                iconSize:     [15, 15], // size of the icon
-                iconAnchor:   [8, 8], // point of the icon which will correspond to marker's location
-                popupAnchor:  [0, -10] // point from which the popup should open relative to the iconAnchor
-            }) */
-
+            // FUNCTION RETURN ICON HOUSE SVG DEPENDING ON COLOR PARAMS
             function houseIcons(colors) {
                 return L.divIcon({
                 className: 'house-icon',
@@ -155,10 +152,10 @@ export default {
                 pointToLayer: function (feature, latlng) {
                     let iconePick
                     switch (feature.properties.category) {
-                        case 'monument':
+                        case 'credit':
                             iconePick = houseIcons('green')
                             break;
-                        case 'nature':
+                        case 'indebted':
                             iconePick = houseIcons('red')
                             break;
                         case 'polygon':
@@ -187,7 +184,13 @@ export default {
                 this.showInputGeoDetail = true
             })
             this.map.on('locationfound', onLocationFound)         
-        }
+        },
+        showExport() {
+            /* L.control.bigImage({
+                position: 'topleft',
+                maxScale: 3
+            }).addTo(this.map); */
+        },
     },
     mounted() {
         // config mapbox
@@ -229,8 +232,8 @@ export default {
         // get the coordinates
         this.clickMapMark = L.marker()
         let addMarker = (async e => {
-            await this.clickMapMark.remove(this.map)
-            await this.clickMapMark
+/*             await this.clickMapMark.remove(this.map)
+ */            await this.clickMapMark
                 .setLatLng(e.latlng)
                 .addTo(this.map)
             this.coordinates.push([e.latlng.lng, e.latlng.lat])
@@ -246,7 +249,12 @@ export default {
             this.showGeoJson()
         }
 
-        //ADD POPUP
+        L.control.bigImage({
+            position: 'topleft',
+            maxScale: 3
+        }).addTo(this.map);
+
+        //ADD POPUP 
         /* marker.bindPopup("<b>Hello world!</b><br>I am a popup.").openPopup() // to open automaticly on load
         circle.bindPopup("<h1>I am a circle.</h1>") */
         

@@ -108,8 +108,8 @@
                   ]
         } else {
           return [
-                    'nature',
-                    'monument',
+                    'indebted',
+                    'credit',
                   ]
         }
       }
