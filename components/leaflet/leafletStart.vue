@@ -38,18 +38,17 @@
             </div>
         </v-expand-transition>
 
+        <h3 class="title" leaflet-browser-print-content>Legend</h3>
+
         <tableGeoJson 
             :geoJsonFeature="geoJsonFeature"
-        />
-
-        <!-- <v-btn 
-            class="my-5" 
-            color="primary" 
-            outlined 
-            @click="showExport"
-        >
-        print
-        </v-btn> -->
+            class="sub-content" 
+            leaflet-browser-print-content 
+        /> 
+        <!-- ADD leaflet-browser-print-content and class="sub-content" or class="title" 
+            Printing additional content section = print the legend or here the table data
+            CUSTOMIZE with css style
+        -->
 
     </div>
 </template>
@@ -185,12 +184,6 @@ export default {
             })
             this.map.on('locationfound', onLocationFound)         
         },
-        showExport() {
-            /* L.control.bigImage({
-                position: 'topleft',
-                maxScale: 3
-            }).addTo(this.map); */
-        },
     },
     mounted() {
         // config mapbox
@@ -227,7 +220,7 @@ export default {
         })
         this.map.on('locationfound', onLocationFound)       
 
-        // remove the marker eah click
+        // remove the marker each click
         // add a new marker to new click
         // get the coordinates
         this.clickMapMark = L.marker()
@@ -248,11 +241,12 @@ export default {
             this.geoJsonFeature = JSON.parse(geoFromLocal)
             this.showGeoJson()
         }
-
-        L.control.bigImage({
-            position: 'topleft',
-            maxScale: 3
-        }).addTo(this.map);
+        
+        // ADD A PRINT CONTROL ON MAP
+        // https://github.com/Igor-Vladyka/leaflet.browser.print
+        L.control.browserPrint({
+            printModes: ["Portrait"]
+        }).addTo(this.map)
 
         //ADD POPUP 
         /* marker.bindPopup("<b>Hello world!</b><br>I am a popup.").openPopup() // to open automaticly on load
@@ -276,9 +270,28 @@ export default {
 }
 </script>
 
-<style>
+
+<style lang="scss">
 #map { 
     height: 380px; 
     width: 800px;
+}
+leaflet-browser-print-content{
+    .grid-print-container { // grid holder that holds all content (map and any other content)
+		grid-template: auto 1fr auto / 1fr;
+		background-color: orange;
+	}
+	.grid-map-print { // map container itself
+		grid-row: 2;
+	}
+	.title { // Dynamic title styling
+		grid-row: 1;
+		justify-self: center;
+		color: white;
+	}
+	.sub-content { // Dynamic sub content styling
+		grid-row: 5;
+		padding-left: 10px;
+	}
 }
 </style>
