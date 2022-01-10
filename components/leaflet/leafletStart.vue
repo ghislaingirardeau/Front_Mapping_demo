@@ -1,6 +1,6 @@
 <template>
     <div>
-        <h2>save coordinate on click</h2> 
+        <h2>save coordinate on click</h2>
 
         <v-expand-transition>
             <dataGeoJson 
@@ -29,7 +29,14 @@
         >
             Update my location
         </v-btn>
-        
+        <v-btn 
+            class="my-5" 
+            color="primary" 
+            outlined 
+            @click="showMeasure"
+        >
+            show area Measure
+        </v-btn>        
         <manageStorage :geoJsonFeature="geoJsonFeature" />
         <h3>Les coordonnées cliquées : {{coordinates}}</h3>
 
@@ -138,7 +145,7 @@ export default {
                     }
                     return {color: colorPolygon}
                 }
-            }).addTo(this.map); 
+            }).addTo(this.map)
             this.disable = true  
         },
         updateLocation () { // update my location, recenter the map, show marker, push the coordinate for record
@@ -155,6 +162,13 @@ export default {
             })
             this.map.on('locationfound', onLocationFound)         
         },
+        showMeasure() {
+            this.map.eachLayer(function(layer){
+                if(layer instanceof L.Polygon && !(layer instanceof L.Rectangle) ){
+                    layer.showMeasurements()
+                }
+            });
+        }
     },
     mounted() {
         // config mapbox
@@ -181,7 +195,7 @@ export default {
         // control layer choice
         L.control.layers(baseMaps).addTo(this.map)
         // ADD scale control
-        const scale = L.control.scale().addTo(this.map); 
+        const scale = L.control.scale().addTo(this.map)
 
         // show my location on load
         this.myLocationMark = L.marker()
@@ -214,14 +228,9 @@ export default {
         }
         
         // ADD A PRINT CONTROL ON MAP
-        // https://github.com/Igor-Vladyka/leaflet.browser.print
         L.control.browserPrint({
             printModes: ["Portrait"]
         }).addTo(this.map)
-
-        //ADD POPUP 
-        /* marker.bindPopup("<b>Hello world!</b><br>I am a popup.").openPopup() // to open automaticly on load
-        circle.bindPopup("<h1>I am a circle.</h1>") */
         
         // STYLE POPUP ON CLICK
         var popup = L.popup( //create a popup
@@ -244,7 +253,7 @@ export default {
 
 <style lang="scss">
 #map { 
-    height: 380px; 
+    height: 480px; 
     width: 800px;
 }
 leaflet-browser-print-content{
