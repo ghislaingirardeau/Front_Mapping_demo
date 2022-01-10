@@ -104,7 +104,8 @@
       GeoType() {
         if(this.coordinates.length > 1) {
           return [
-                    'forme'
+                    'rice',
+                    'cashew'
                   ]
         } else {
           return [

@@ -63,35 +63,7 @@ export default {
         showInputGeoDetail: false,
         disable: false,
         expand: true,
-        geoJsonFeature: [
-            {
-                "type": "Feature",
-                "properties": {
-                    "name": "Coors Field",
-                    "amenity": "Baseball Stadium",
-                    "popupContent": "This is where the Rockies play!",
-                    "category": "credit"
-                },
-                "geometry": {
-                    "type": "Point",
-                    "coordinates": [106.9907, 13.758064]
-                }
-            },
-
-            {
-                "type": "Feature",
-                "properties": {
-                    "name": "random",
-                    "amenity": "random point",
-                    "popupContent": "voici un point au hasard",
-                    "category": "indebted"
-                },
-                "geometry": {
-                    "type": "Point",
-                    "coordinates": [106.9907, 13.768064]
-                }
-            },
-        ]
+        geoJsonFeature: []
     }),
     components: {
         dataGeoJson,
@@ -108,7 +80,6 @@ export default {
             }
             this.myLocationMark
             this.clickMapMark.remove(this.map) // retire le marker click
-            this.myLocationMark.remove(this.map) // retire le marker de ma location        
         },
         showGeoJson() {
 
@@ -143,7 +114,7 @@ export default {
 
             L.geoJSON(this.geoJsonFeature, { // on peut enchainer les options ici
                 onEachFeature: onEachFeature,
-                pointToLayer: function (feature, latlng) {
+                pointToLayer: (feature, latlng) => { // CREATE THE MARKERS
                     let iconePick
                     switch (feature.properties.category) {
                         case 'credit':
@@ -152,22 +123,27 @@ export default {
                         case 'indebted':
                             iconePick = houseIcons('red')
                             break;
-                        case 'polygon':
-                            iconePick = undefined
+                    }
+                    return L.marker(latlng, {icon: iconePick});
+                },
+                style: (feature) => { // DEFINE SYTLE OF POLYGONS AND LINE
+                    let colorPolygon
+                    switch (feature.properties.category) {
+                        case "rice":
+                            colorPolygon = '#15e60e'
+                            break;
+                        case "cashew":
+                            colorPolygon = '#fcba03'
                             break;
                     }
-                    if(iconePick != undefined) {
-                        return L.marker(latlng, {icon: iconePick});
-                    } else {
-                        return  L.polygon(latlngs, {color: 'red'})
-                    }
+                    return {color: colorPolygon}
                 }
             }).addTo(this.map); 
             this.disable = true  
         },
         updateLocation () { // update my location, recenter the map, show marker, push the coordinate for record
             this.map.locate({setView: true, maxZoom: 16})
-
+            this.myLocationMark.remove(this.map)
             this.myLocationMark = L.marker()
 
             let onLocationFound= (e => {
@@ -204,7 +180,8 @@ export default {
 
         // control layer choice
         L.control.layers(baseMaps).addTo(this.map)
-        L.control.scale().addTo(this.map)
+        // ADD scale control
+        const scale = L.control.scale().addTo(this.map); 
 
         // show my location on load
         this.myLocationMark = L.marker()
@@ -220,8 +197,7 @@ export default {
         // get the coordinates
         this.clickMapMark = L.marker()
         let addMarker = (async e => {
-/*             await this.clickMapMark.remove(this.map)
- */            await this.clickMapMark
+            await this.clickMapMark
                 .setLatLng(e.latlng)
                 .addTo(this.map)
             this.coordinates.push([e.latlng.lng, e.latlng.lat])
