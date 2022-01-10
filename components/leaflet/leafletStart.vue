@@ -40,11 +40,8 @@
 
         <h3 class="title" leaflet-browser-print-content>Legend</h3>
 
-        <tableGeoJson 
-            :geoJsonFeature="geoJsonFeature"
-            class="sub-content" 
-            leaflet-browser-print-content 
-        /> 
+        <p class="sub-content" leaflet-browser-print-content >Ici je mets ma legende</p>
+
         <!-- ADD leaflet-browser-print-content and class="sub-content" or class="title" 
             Printing additional content section = print the legend or here the table data
             CUSTOMIZE with css style
@@ -55,7 +52,6 @@
 
 <script>
 import dataGeoJson from '@/components/leaflet/dataGeoJson.vue' 
-import tableGeoJson from '@/components/leaflet/tableGeoJson.vue'
 import manageStorage from '@/components/leaflet/manageStorage.vue'
 
 export default {
@@ -99,7 +95,6 @@ export default {
     }),
     components: {
         dataGeoJson,
-        tableGeoJson,
         manageStorage
     },
     methods: {

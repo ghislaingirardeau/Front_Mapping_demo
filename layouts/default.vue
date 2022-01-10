@@ -82,8 +82,8 @@ export default {
         },
         {
           icon: 'mdi-apps',
-          title: 'vuenewfeature',
-          to: '/vuenewfeature'
+          title: 'Datas',
+          to: '/myData'
         },
         {
           icon: 'mdi-home',

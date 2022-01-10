@@ -32,7 +32,7 @@ export default {
   ],
 
   plugins: [
-    /* { src: "~plugins/crisp.js", mode: "client" } */
+    /* { src: "~plugins/crisp.js", mode: "client" }*/
     /* {
         src: '@/plugins/vuelayers.js',
         ssr: false
