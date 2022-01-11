@@ -29,10 +29,8 @@
             :buttonIcon="buttonIcon"
         />
 
-        <v-expand-transition>
-            <div id="map" v-show="expand">
-            </div>
-        </v-expand-transition>
+        <div id="map" >
+        </div>
 
         <legendMap />
 
@@ -62,7 +60,6 @@ export default {
         myLocationMark: undefined,
         clickMapMark: undefined,
         showInputGeoDetail: false,
-        expand: true,
         geoJsonFeature: [],
         layerGroup: undefined,
         layerGeoJson: undefined
@@ -86,7 +83,6 @@ export default {
     methods: {
         getData(payload) { 
             this.showInputGeoDetail = payload.show
-            this.expand = !payload.show
             this.showGeoJson()
             if(payload.resetCoordinates) {
                 this.coordinates = []
