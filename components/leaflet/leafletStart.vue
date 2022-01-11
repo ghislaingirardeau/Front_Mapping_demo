@@ -29,6 +29,7 @@
         >
             Update my location
         </v-btn>
+
         <v-btn 
             class="my-5" 
             color="primary" 
@@ -36,8 +37,10 @@
             @click="showMeasure"
         >
             show area Measure
-        </v-btn>        
+        </v-btn>      
+
         <manageStorage :geoJsonFeature="geoJsonFeature" />
+
         <h3>Les coordonnées cliquées : {{coordinates}}</h3>
 
         <v-expand-transition>
@@ -45,9 +48,7 @@
             </div>
         </v-expand-transition>
 
-        <h3 class="title" leaflet-browser-print-content>Legend</h3>
-
-        <p class="sub-content" leaflet-browser-print-content >Ici je mets ma legende</p>
+        <legendMap />
 
         <!-- ADD leaflet-browser-print-content and class="sub-content" or class="title" 
             Printing additional content section = print the legend or here the table data
@@ -60,6 +61,7 @@
 <script>
 import dataGeoJson from '@/components/leaflet/dataGeoJson.vue' 
 import manageStorage from '@/components/leaflet/manageStorage.vue'
+import legendMap from '~/components/leaflet/legendMap.vue'
 
 export default {
     data: () => ({
@@ -74,7 +76,8 @@ export default {
     }),
     components: {
         dataGeoJson,
-        manageStorage
+        manageStorage,
+        legendMap
     },
     methods: {
         getData(payload) { 
@@ -148,7 +151,8 @@ export default {
             }).addTo(this.map)
             this.disable = true  
         },
-        updateLocation () { // update my location, recenter the map, show marker, push the coordinate for record
+        updateLocation () { 
+            // update my location, recenter the map, show marker, push the coordinate for record
             this.map.locate({setView: true, maxZoom: 16})
             this.myLocationMark.remove(this.map)
             this.myLocationMark = L.marker()
@@ -163,6 +167,9 @@ export default {
             this.map.on('locationfound', onLocationFound)         
         },
         showMeasure() {
+            // show measure on click
+            // HIDE MEASURE ON SECOND CLICK + BUTTON DYNAMIC
+            // DEBUG ON PRINT = NOT SHOWING MEASURE
             this.map.eachLayer(function(layer){
                 if(layer instanceof L.Polygon && !(layer instanceof L.Rectangle) ){
                     layer.showMeasurements()
@@ -255,23 +262,5 @@ export default {
 #map { 
     height: 480px; 
     width: 800px;
-}
-leaflet-browser-print-content{
-    .grid-print-container { // grid holder that holds all content (map and any other content)
-		grid-template: auto 1fr auto / 1fr;
-		background-color: orange;
-	}
-	.grid-map-print { // map container itself
-		grid-row: 2;
-	}
-	.title { // Dynamic title styling
-		grid-row: 1;
-		justify-self: center;
-		color: white;
-	}
-	.sub-content { // Dynamic sub content styling
-		grid-row: 5;
-		padding-left: 10px;
-	}
 }
 </style>
