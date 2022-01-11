@@ -1,5 +1,6 @@
 <template>
     <v-row justify="center">
+
         <v-col cols="1">
             <v-btn 
                 :icon="buttonIcon"
@@ -29,7 +30,7 @@
             :buttonIcon="buttonIcon"
         />
 
-        <div id="map" >
+        <div id="map" v-show="expand">
         </div>
 
         <legendMap />
@@ -61,6 +62,7 @@ export default {
         clickMapMark: undefined,
         showInputGeoDetail: false,
         geoJsonFeature: [],
+        expand: true,
         layerGroup: undefined,
         layerGeoJson: undefined
     }),
@@ -83,6 +85,7 @@ export default {
     methods: {
         getData(payload) { 
             this.showInputGeoDetail = payload.show
+            this.expand = !payload.show
             this.showGeoJson()
             if(payload.resetCoordinates) {
                 this.coordinates = []
@@ -112,10 +115,10 @@ export default {
                 fillOpacity: 0.8
             };
             // FUNCTION RETURN ICON HOUSE SVG DEPENDING ON COLOR PARAMS
-            function houseIcons(colors) {
+            function houseIcons(colors, size) {
                 return L.divIcon({
                 className: 'house-icon',
-                html: `<svg style="width:24px;height:24px" viewBox="0 0 24 24">
+                html: `<svg style="width:${size}px;height:${size}px" viewBox="0 0 24 24">
                         <path fill="${colors}" d="M10,20V14H14V20H19V12H22L12,3L2,12H5V20H10Z" />
                         </svg>`
                 })
@@ -127,10 +130,10 @@ export default {
                     let iconePick
                     switch (feature.properties.category) {
                         case 'credit':
-                            iconePick = houseIcons('green')
+                            iconePick = houseIcons('green', '24')
                             break;
                         case 'indebted':
-                            iconePick = houseIcons('red')
+                            iconePick = houseIcons('red', '44')
                             break;
                     }
                     return L.marker(latlng, {icon: iconePick});
