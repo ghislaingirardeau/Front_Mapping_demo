@@ -30,14 +30,7 @@
             Update my location
         </v-btn>
 
-        <v-btn 
-            class="my-5" 
-            color="primary" 
-            outlined 
-            @click="showMeasure"
-        >
-            show area Measure
-        </v-btn>      
+        <polygonMeasure :map="map" />      
 
         <manageStorage :geoJsonFeature="geoJsonFeature" />
 
@@ -62,10 +55,11 @@
 import dataGeoJson from '@/components/leaflet/dataGeoJson.vue' 
 import manageStorage from '@/components/leaflet/manageStorage.vue'
 import legendMap from '~/components/leaflet/legendMap.vue'
+import polygonMeasure from '~/components/leaflet/polygonMeasure.vue'
 
 export default {
     data: () => ({
-        map: '',
+        map: Object,
         coordinates: [],
         myLocationMark: undefined,
         clickMapMark: undefined,
@@ -77,7 +71,8 @@ export default {
     components: {
         dataGeoJson,
         manageStorage,
-        legendMap
+        legendMap,
+        polygonMeasure
     },
     methods: {
         getData(payload) { 
@@ -166,16 +161,6 @@ export default {
             })
             this.map.on('locationfound', onLocationFound)         
         },
-        showMeasure() {
-            // show measure on click
-            // HIDE MEASURE ON SECOND CLICK + BUTTON DYNAMIC
-            // DEBUG ON PRINT = NOT SHOWING MEASURE
-            this.map.eachLayer(function(layer){
-                if(layer instanceof L.Polygon && !(layer instanceof L.Rectangle) ){
-                    layer.showMeasurements()
-                }
-            });
-        }
     },
     mounted() {
         // config mapbox
