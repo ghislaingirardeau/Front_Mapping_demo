@@ -1,14 +1,30 @@
 <template>
     <v-col cols="1" offset="1">
-        <v-btn 
-            :icon="buttonIcon"
-            color="primary" 
-            outlined 
-            @click="deleteItem"
-        >
-            <v-icon v-if="buttonIcon">mdi-backspace</v-icon>
-            <span v-else>Delete last Item</span>        
-        </v-btn>      
+      <v-dialog
+        transition="dialog-top-transition"
+        max-width="600"
+      >
+        <template v-slot:activator="{ on, attrs }">
+            <v-btn 
+                :icon="buttonIcon"
+                color="primary" 
+                outlined 
+                v-bind="attrs"
+                v-on="on"
+                @click="deleteItem"
+            >
+                <v-icon v-if="buttonIcon">mdi-backspace</v-icon>
+                <span v-else>Delete last Item</span>        
+            </v-btn>    
+        </template>
+        <template >
+            <v-card>
+                <v-card-text class="pt-4">
+                    <span>The last item has been removed</span>
+                </v-card-text>
+            </v-card>
+        </template>
+      </v-dialog>
     </v-col>
 </template>
 
