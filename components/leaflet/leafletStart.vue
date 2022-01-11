@@ -1,6 +1,6 @@
 <template>
     <div>
-        <h2>save coordinate on click</h2>
+        <h2>save coordinate on click</h2> {{geoJsonFeature}}
 
         <v-expand-transition>
             <dataGeoJson 
@@ -15,22 +15,14 @@
             class="my-5" 
             color="primary" 
             outlined 
-            @click="showGeoJson"
-            :disabled="disable"
-        >
-        Show geoJson
-        </v-btn>
-
-        <v-btn 
-            class="my-5" 
-            color="primary" 
-            outlined 
             @click="updateLocation"
         >
             Update my location
         </v-btn>
 
         <polygonMeasure :map="map" />      
+
+        <deleteLastGeojson :geoJsonFeature="geoJsonFeature" :showGeoJson="showGeoJson" :map="map" />
 
         <manageStorage :geoJsonFeature="geoJsonFeature" />
 
@@ -43,11 +35,6 @@
 
         <legendMap />
 
-        <!-- ADD leaflet-browser-print-content and class="sub-content" or class="title" 
-            Printing additional content section = print the legend or here the table data
-            CUSTOMIZE with css style
-        -->
-
     </div>
 </template>
 
@@ -56,6 +43,7 @@ import dataGeoJson from '@/components/leaflet/dataGeoJson.vue'
 import manageStorage from '@/components/leaflet/manageStorage.vue'
 import legendMap from '~/components/leaflet/legendMap.vue'
 import polygonMeasure from '~/components/leaflet/polygonMeasure.vue'
+import deleteLastGeojson from '~/components/leaflet/deleteLastGeojson.vue'
 
 export default {
     data: () => ({
@@ -64,7 +52,6 @@ export default {
         myLocationMark: undefined,
         clickMapMark: undefined,
         showInputGeoDetail: false,
-        disable: false,
         expand: true,
         geoJsonFeature: []
     }),
@@ -72,12 +59,12 @@ export default {
         dataGeoJson,
         manageStorage,
         legendMap,
-        polygonMeasure
+        polygonMeasure,
+        deleteLastGeojson
     },
     methods: {
         getData(payload) { 
             this.showInputGeoDetail = payload.show
-            this.disable = payload.disable
             this.expand = !payload.show
             this.showGeoJson()
             if(payload.resetCoordinates) {
@@ -144,7 +131,6 @@ export default {
                     return {color: colorPolygon}
                 }
             }).addTo(this.map)
-            this.disable = true  
         },
         updateLocation () { 
             // update my location, recenter the map, show marker, push the coordinate for record

@@ -136,7 +136,6 @@
             this.geoJsonFeature.push(this.addGeoJson)
             this.$emit('send-data', {
                 show: false,
-                disabled: false,
                 resetCoordinates: true
             })
         }

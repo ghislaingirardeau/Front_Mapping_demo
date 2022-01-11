@@ -27,19 +27,16 @@ export default {
                     if(layer instanceof L.Polygon && !(layer instanceof L.Rectangle) ){
                         layer.showMeasurements()
                     }
-                });
+                })
             } else {
                 this.map.eachLayer(function(layer){
                     if(layer instanceof L.Polygon && !(layer instanceof L.Rectangle) ){
                         layer.hideMeasurements()
                     }
-                });
+                })
             }
             this.btnMeasure = !this.btnMeasure
         }
     },
-    mounted() {
-        console.log(typeof(this.map))
-    }
 }
 </script>
