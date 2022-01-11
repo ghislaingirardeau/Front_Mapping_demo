@@ -22,7 +22,12 @@
 
         <polygonMeasure :map="map" />      
 
-        <deleteLastGeojson :geoJsonFeature="geoJsonFeature" :showGeoJson="showGeoJson" :map="map" />
+        <deleteLastGeojson 
+            :geoJsonFeature="geoJsonFeature" 
+            :showGeoJson="showGeoJson" 
+            :layerGroup="layerGroup" 
+            :layerGeoJson="layerGeoJson" 
+        />
 
         <manageStorage :geoJsonFeature="geoJsonFeature" />
 
@@ -53,7 +58,9 @@ export default {
         clickMapMark: undefined,
         showInputGeoDetail: false,
         expand: true,
-        geoJsonFeature: []
+        geoJsonFeature: [],
+        layerGroup: undefined,
+        layerGeoJson: undefined
     }),
     components: {
         dataGeoJson,
@@ -104,7 +111,7 @@ export default {
                 })
             }
 
-            L.geoJSON(this.geoJsonFeature, { // on peut enchainer les options ici
+            this.layerGeoJson = L.geoJSON(this.geoJsonFeature, { // on peut enchainer les options ici
                 onEachFeature: onEachFeature,
                 pointToLayer: (feature, latlng) => { // CREATE THE MARKERS
                     let iconePick
@@ -131,6 +138,10 @@ export default {
                     return {color: colorPolygon}
                 }
             }).addTo(this.map)
+            // contruction inside a layergroup to be able to remove the layer selected
+            this.layerGroup = new L.LayerGroup();
+            this.layerGroup.addTo(this.map);
+            this.layerGroup.addLayer(this.layerGeoJson);
         },
         updateLocation () { 
             // update my location, recenter the map, show marker, push the coordinate for record
