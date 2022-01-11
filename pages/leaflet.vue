@@ -255,5 +255,6 @@ export default {
     height: 100vw; 
     width: 100%;
     margin: 0px 2px 0px 2px;
+    z-index: 1;
 }
 </style>
