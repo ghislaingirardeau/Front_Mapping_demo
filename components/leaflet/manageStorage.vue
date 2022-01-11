@@ -1,26 +1,59 @@
 <template>
     <v-col cols="4" offset="3">
-        <v-btn 
-            :icon="buttonIcon"
-            class="mr-2" 
-            color="primary" 
-            outlined 
-            @click="saveGeoJson"
-        >
-            <v-icon v-if="buttonIcon">mdi-content-save</v-icon>
-            <span v-else>Save</span>        
-        </v-btn>
 
-        <v-btn
-            :icon="buttonIcon"
-            color="error"
-            outlined 
-            @click="removeGeoJson"
-        >
-            <v-icon v-if="buttonIcon">mdi-eraser</v-icon>
-            <span v-else>Erase storage</span>        
-        </v-btn>
-        <p>{{message}}</p>
+      <v-dialog
+        transition="dialog-top-transition"
+        max-width="600"
+      >
+        <template v-slot:activator="{ on, attrs }">
+            <v-btn 
+                :icon="buttonIcon"
+                class="mr-2" 
+                color="primary" 
+                outlined 
+                v-bind="attrs"
+                v-on="on"
+                @click="saveGeoJson"
+            >
+                <v-icon v-if="buttonIcon">mdi-content-save</v-icon>
+                <span v-else>Save</span>        
+            </v-btn>
+        </template>
+        <template >
+            <v-card>
+                <v-card-text class="pt-4">
+                    <span>{{message}}</span>
+                </v-card-text>
+            </v-card>
+        </template>
+      </v-dialog>
+
+      <v-dialog
+        transition="dialog-top-transition"
+        max-width="600"
+      >
+        <template v-slot:activator="{ on, attrs }">
+            <v-btn
+                :icon="buttonIcon"
+                color="error"
+                outlined 
+                v-bind="attrs"
+                v-on="on"
+                @click="removeGeoJson"
+            >
+                <v-icon v-if="buttonIcon">mdi-eraser</v-icon>
+                <span v-else>Erase storage</span>        
+            </v-btn>
+        </template>
+        <template >
+            <v-card>
+                <v-card-text class="pt-4">
+                    <span>{{message}}</span>
+                </v-card-text>
+            </v-card>
+        </template>
+      </v-dialog>
+
     </v-col>
 </template>
 

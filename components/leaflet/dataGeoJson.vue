@@ -51,7 +51,7 @@
         class="mr-4"
         @click="reset"
       >
-        Reset Form
+        Reset
       </v-btn>
 
       <v-btn
