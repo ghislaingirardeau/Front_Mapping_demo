@@ -1,27 +1,16 @@
 <template>
-    <div>
-        <h2>save coordinate on click</h2> {{geoJsonFeature}}
-
-        <v-expand-transition>
-            <dataGeoJson 
-                v-if="showInputGeoDetail" 
-                @send-data="getData" 
-                :geoJsonFeature="geoJsonFeature"
-                :coordinates="coordinates"
-            />
-        </v-expand-transition>
-
-        <v-btn 
-            class="my-5" 
-            color="primary" 
-            outlined 
-            @click="updateLocation"
-        >
-            Update my location
-        </v-btn>
-
+    <v-row justify="center">
+        <v-col>
+            <v-btn 
+                class="my-5" 
+                color="primary" 
+                outlined 
+                @click="updateLocation"
+            >
+                My location
+            </v-btn>
+        </v-col>
         <polygonMeasure :map="map" />      
-
         <deleteLastGeojson 
             :geoJsonFeature="geoJsonFeature" 
             :showGeoJson="showGeoJson" 
@@ -30,6 +19,7 @@
         />
 
         <manageStorage :geoJsonFeature="geoJsonFeature" />
+
 
         <h3>Les coordonnées cliquées : {{coordinates}}</h3>
 
@@ -40,7 +30,16 @@
 
         <legendMap />
 
-    </div>
+        <v-expand-transition>
+            <dataGeoJson 
+                v-if="showInputGeoDetail" 
+                @send-data="getData" 
+                :geoJsonFeature="geoJsonFeature"
+                :coordinates="coordinates"
+            />
+        </v-expand-transition>
+
+    </v-row>
 </template>
 
 <script>
@@ -242,7 +241,8 @@ export default {
 
 <style lang="scss">
 #map { 
-    height: 480px; 
-    width: 800px;
+    height: 100vw; 
+    width: 100%;
+    margin: 0px 5px 0px 5px;
 }
 </style>

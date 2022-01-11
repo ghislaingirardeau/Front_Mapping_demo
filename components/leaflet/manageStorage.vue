@@ -1,24 +1,27 @@
 <template>
-    <div>
+    <v-col cols="4" offset="3">
         <v-btn 
-            class="my-5" 
+            :icon="buttonIcon"
+            class="mr-2" 
             color="primary" 
             outlined 
             @click="saveGeoJson"
         >
-            Save geoJson
+            <v-icon v-if="buttonIcon">mdi-content-save</v-icon>
+            <span v-else>Save</span>        
         </v-btn>
 
         <v-btn
-        color="error"
-        outlined 
-        class="mr-4"
-        @click="removeGeoJson"
+            :icon="buttonIcon"
+            color="error"
+            outlined 
+            @click="removeGeoJson"
         >
-        Clean localStorage
+            <v-icon v-if="buttonIcon">mdi-eraser</v-icon>
+            <span v-else>Erase storage</span>        
         </v-btn>
         <p>{{message}}</p>
-    </div>
+    </v-col>
 </template>
 
 <script>
@@ -29,7 +32,8 @@ export default {
         }
     },
     props: {
-        geoJsonFeature: Array
+        geoJsonFeature: Array,
+        buttonIcon: Boolean
     },
     methods: {
         removeGeoJson() {

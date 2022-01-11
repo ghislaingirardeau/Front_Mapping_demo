@@ -1,12 +1,12 @@
 <template>
-    <div>
+    <v-col cols="12">
         <h3 class="title" leaflet-browser-print-content>Legend</h3>
         <p class="sub-content" leaflet-browser-print-content >Ici la legende</p>
         <!-- ADD leaflet-browser-print-content and class="sub-content" or class="title" 
             Printing additional content section = print the legend or here the table data
             CUSTOMIZE with css style
         -->
-    </div>
+    </v-col>
 </template>
 
 <style lang="scss">

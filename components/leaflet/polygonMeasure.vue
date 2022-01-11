@@ -1,22 +1,28 @@
 <template>
-    <div>
+    <v-col cols="1" offset="1">
         <v-btn 
-            class="my-5" 
-            color="primary" 
+            :icon="buttonIcon"
+            :color="colorTest"
             outlined 
             @click="showMeasure"
         >
-            {{btnMeasure ? 'show measure' : 'hide measure'}}
-        </v-btn>      
-    </div>
+            <v-icon v-if="buttonIcon">mdi-ruler</v-icon>
+            <span v-else>My location</span>        
+        </v-btn>     
+    </v-col>
 </template>
 
 <script>
 export default {
     data: () => ({
-        btnMeasure: true
+        btnMeasure: true,
     }),
-    props: ['map'],
+    props: ['map', 'buttonIcon'],
+    computed: {
+        colorTest() {
+            return this.btnMeasure ? 'secondary' : 'info'
+        }
+    },
     methods: {
         showMeasure() {
             // show measure on click

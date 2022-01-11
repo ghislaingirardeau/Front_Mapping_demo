@@ -1,14 +1,15 @@
 <template>
-    <div>
+    <v-col cols="1" offset="1">
         <v-btn 
-            class="my-5" 
+            :icon="buttonIcon"
             color="primary" 
             outlined 
             @click="deleteItem"
         >
-            Delete last data
+            <v-icon v-if="buttonIcon">mdi-backspace</v-icon>
+            <span v-else>Delete last Item</span>        
         </v-btn>      
-    </div>
+    </v-col>
 </template>
 
 <script>
@@ -17,7 +18,8 @@ export default {
         'geoJsonFeature',
         'showGeoJson',
         'layerGroup',
-        'layerGeoJson'
+        'layerGeoJson',
+        'buttonIcon'
     ],
     methods: {
         async deleteItem() {

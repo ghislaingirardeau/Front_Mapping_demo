@@ -1,67 +1,69 @@
 <template>
-  <v-form
-    ref="form"
-    v-model="valid"
-    lazy-validation
-  >
-    <v-select
-      v-model="addGeoJson.properties.category"
-      :items="GeoType"
-      :rules="[v => !!v || 'Item is required']"
-      label="Item"
-      required
-    ></v-select>
-
-    <v-text-field
-      v-model="addGeoJson.properties.name"
-      :counter="10"
-      :rules="nameRules"
-      label="Name"
-      required
-    ></v-text-field>
-
-    <v-text-field
-      v-model="addGeoJson.properties.amenity"
-      :counter="10"
-      :rules="amenityRules"
-      label="Amenity"
-      required
-    ></v-text-field>
-
-    <v-text-field
-      v-model="addGeoJson.properties.popupContent"
-      :counter="20"
-      :rules="popupContentRules"
-      label="Content"
-      required
-    ></v-text-field>
-
-    <v-btn
-      :disabled="!valid"
-      color="success"
-      class="mr-4"
-      @click="validate"
+  <v-col cols="12" >
+    <v-form
+      ref="form"
+      v-model="valid"
+      lazy-validation
     >
-      Validate
-    </v-btn>
+      <v-select
+        v-model="addGeoJson.properties.category"
+        :items="GeoType"
+        :rules="[v => !!v || 'Item is required']"
+        label="Item"
+        required
+      ></v-select>
 
-    <v-btn
-      color="error"
-      class="mr-4"
-      @click="reset"
-    >
-      Reset Form
-    </v-btn>
+      <v-text-field
+        v-model="addGeoJson.properties.name"
+        :counter="10"
+        :rules="nameRules"
+        label="Name"
+        required
+      ></v-text-field>
 
-    <v-btn
-      color="error"
-      class="mr-4"
-      @click="cancel"
-    >
-      Cancel
-    </v-btn>
+      <v-text-field
+        v-model="addGeoJson.properties.amenity"
+        :counter="10"
+        :rules="amenityRules"
+        label="Amenity"
+        required
+      ></v-text-field>
 
-  </v-form>
+      <v-text-field
+        v-model="addGeoJson.properties.popupContent"
+        :counter="20"
+        :rules="popupContentRules"
+        label="Content"
+        required
+      ></v-text-field>
+
+      <v-btn
+        :disabled="!valid"
+        color="success"
+        class="mr-4"
+        @click="validate"
+      >
+        Validate
+      </v-btn>
+
+      <v-btn
+        color="error"
+        class="mr-4"
+        @click="reset"
+      >
+        Reset Form
+      </v-btn>
+
+      <v-btn
+        color="error"
+        class="mr-4"
+        @click="cancel"
+      >
+        Cancel
+      </v-btn>
+
+    </v-form>
+  </v-col>
 </template>
 
 <script>
