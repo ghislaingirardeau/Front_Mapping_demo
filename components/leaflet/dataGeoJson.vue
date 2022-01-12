@@ -1,5 +1,5 @@
 <template>
-  <v-col cols="12" >
+  <v-col cols="12">
     <v-form
       ref="form"
       v-model="valid"
@@ -37,6 +37,22 @@
         required
       ></v-text-field>
 
+      <v-text-field 
+          v-if="coordinates.length === 0"
+          v-model="latitude"
+          label="latitude"
+          required
+      ></v-text-field>
+
+      <v-text-field 
+          v-if="coordinates.length === 0"
+          v-model="longitude"
+          label="longitude"
+          required
+      ></v-text-field>
+
+      <!-- <slot name="manualCoordinates"></slot> -->
+
       <v-btn
         :disabled="!valid"
         color="success"
@@ -61,7 +77,7 @@
       >
         Cancel
       </v-btn>
-
+{{addGeoJson}}
     </v-form>
   </v-col>
 </template>
@@ -70,6 +86,8 @@
   export default {
     data: () => ({
       valid: true,
+      latitude: undefined,
+      longitude: undefined,
       addGeoJson: {
           "type": "Feature",
           "properties": {
@@ -106,14 +124,16 @@
       GeoType() {
         if(this.coordinates.length > 1) {
           return [
-                    'rice',
-                    'cashew'
-                  ]
+            'rice',
+            'cashew'
+          ]
         } else {
           return [
-                    'indebted',
-                    'credit',
-                  ]
+            'not interview',
+            'interview',
+            'indebted',
+            'land lost'
+          ]
         }
       }
     },
@@ -124,15 +144,21 @@
 
             let getCoordinates = []
             let geoType 
+
             if(this.coordinates.length === 1) { 
               // si je n'ai qu'une coordonnée alors je ne veux enregistrer qu'un seul point
               getCoordinates = this.coordinates[0]
+              geoType = 'Point'
+            } else if(this.coordinates.length === 0) {
+              getCoordinates.push(parseFloat(this.longitude))
+              getCoordinates.push(parseFloat(this.latitude))
               geoType = 'Point'
             } else {
               // sinon j'enregistre un polygon
               getCoordinates.push(this.coordinates)
               geoType = 'Polygon'
             }
+            
             this.addGeoJson.geometry.coordinates = getCoordinates
             this.addGeoJson.geometry.type = geoType
             this.geoJsonFeature.push(this.addGeoJson)

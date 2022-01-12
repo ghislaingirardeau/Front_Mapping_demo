@@ -7,7 +7,7 @@
             @click="showMeasure"
         >
             <v-icon v-if="buttonIcon">mdi-ruler</v-icon>
-            <span v-else>My location</span>        
+            <span v-else>Measure</span>        
         </v-btn>     
     </v-col>
 </template>

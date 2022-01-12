@@ -34,6 +34,7 @@
         </div>
 
         <legendMap />
+        <v-btn color="primary" @click="showInputGeoDetail = !showInputGeoDetail">saisir coordonnée</v-btn>
 
         <v-expand-transition>
             <dataGeoJson 
@@ -41,7 +42,16 @@
                 @send-data="getData" 
                 :geoJsonFeature="geoJsonFeature"
                 :coordinates="coordinates"
-            />
+            > 
+                <!-- <template v-slot:manualCoordinates v-if="coordinates.length === 0" >
+                    <v-text-field
+                        v-model="coordinates"
+                        :counter="10"
+                        label="coordinates"
+                        required
+                    ></v-text-field>
+                </template> -->
+            </dataGeoJson>
         </v-expand-transition>
 
     </v-row>
@@ -95,15 +105,26 @@ export default {
         },
         showGeoJson() {
 
+            function showPopupMarker(e) {
+                var layer = e.target;
+                layer.openPopup()
+            }
+
+            function hidePopupMarker(e) {
+                var layer = e.target;
+                layer.closePopup()
+            }
+
+
             function onEachFeature(feature, layer) { 
                 // pour faire apparaitre le popup du marker si popupContent est defini
                 if (feature.properties && feature.properties.popupContent) {
-                    layer.bindPopup(feature.properties.popupContent);
+                    layer.bindPopup(feature.properties.popupContent)
                 }
-                /* layer.on({
-                    mouseover: highlightFeature,
-                    mouseout: resetHighlight,
-                });  */       
+                layer.on({
+                    mouseover: showPopupMarker,
+                    mouseout: hidePopupMarker,
+                });        
             }
                     
             let geojsonMarkerOptions = { // style marker if not icon
@@ -129,11 +150,17 @@ export default {
                 pointToLayer: (feature, latlng) => { // CREATE THE MARKERS
                     let iconePick
                     switch (feature.properties.category) {
-                        case 'credit':
-                            iconePick = houseIcons('green', '24')
+                        case 'not interview':
+                            iconePick = houseIcons('black', '24')
                             break;
                         case 'indebted':
-                            iconePick = houseIcons('red', '44')
+                            iconePick = houseIcons('orange', '24')
+                            break;
+                        case 'interview':
+                            iconePick = houseIcons('green', '24')
+                            break;
+                        case 'land lost':
+                            iconePick = houseIcons('red', '24')
                             break;
                     }
                     return L.marker(latlng, {icon: iconePick});
