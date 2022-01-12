@@ -29,7 +29,7 @@
         <deleteLastGeojson 
             :geoJsonFeature="geoJsonFeature" 
             :showGeoJson="showGeoJson" 
-            :layerGroup="layerGroup" 
+            :layerGroupHouse="layerGroupHouse" 
             :layerGeoJson="layerGeoJson" 
             :buttonIcon="buttonIcon"
         />
@@ -74,8 +74,9 @@ export default {
         showInputGeoDetail: false,
         geoJsonFeature: [],
         expand: true,
-        layerGroup: undefined,
-        layerGeoJson: undefined
+        layerGroupHouse: undefined,
+        layerGeoJson: undefined,
+        showLayer: true
     }),
     components: {
         dataGeoJson,
@@ -172,7 +173,7 @@ export default {
             }).addTo(this.map)
 
             // contruction inside a layergroup to be able to remove the layer selected
-            this.layerGroup.addLayer(this.layerGeoJson)
+            this.layerGroupHouse.addLayer(this.layerGeoJson)
         },
         updateLocation () { 
             // update my location, recenter the map, show marker, push the coordinate for record
@@ -189,8 +190,13 @@ export default {
             })
             this.map.on('locationfound', onLocationFound)         
         },
-        changeLayer() {
-            console.log(this.layerGroup)
+        changeLayer() { // controle different layer we want to show on the map
+            this.showLayer = !this.showLayer
+            if(this.showLayer) {
+                this.layerGroupHouse.addLayer(this.layerGeoJson)
+            } else {
+                this.layerGroupHouse.removeLayer(this.layerGeoJson)
+            }
         }
     },
     mounted() {
@@ -220,8 +226,8 @@ export default {
         // ADD scale control
         L.control.scale().addTo(this.map)
 
-        this.layerGroup = new L.LayerGroup()
-        this.layerGroup.addTo(this.map)
+        this.layerGroupHouse = new L.LayerGroup()
+        this.layerGroupHouse.addTo(this.map)
 
         // show my location on load
         this.myLocationMark = L.marker()

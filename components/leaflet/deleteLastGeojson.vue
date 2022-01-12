@@ -33,13 +33,13 @@ export default {
     props: [
         'geoJsonFeature',
         'showGeoJson',
-        'layerGroup',
+        'layerGroupHouse',
         'layerGeoJson',
         'buttonIcon'
     ],
     methods: {
         async deleteItem() {
-            await this.layerGroup.removeLayer(this.layerGeoJson);
+            await this.layerGroupHouse.removeLayer(this.layerGeoJson);
             await this.geoJsonFeature.pop()
             await this.showGeoJson()
         }

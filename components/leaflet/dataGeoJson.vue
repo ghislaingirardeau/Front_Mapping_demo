@@ -89,7 +89,7 @@
       addGeoJson: {
           "type": "Feature",
           "properties": {
-              "name": "arbre",
+              "name": "house",
               "amount": 9000,
               "popupContent": "test",
               "category": ""

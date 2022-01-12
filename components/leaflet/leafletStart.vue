@@ -14,7 +14,7 @@
         <deleteLastGeojson 
             :geoJsonFeature="geoJsonFeature" 
             :showGeoJson="showGeoJson" 
-            :layerGroup="layerGroup" 
+            :layerGroupHouse="layerGroupHouse" 
             :layerGeoJson="layerGeoJson" 
         />
 
@@ -58,7 +58,7 @@ export default {
         showInputGeoDetail: false,
         expand: true,
         geoJsonFeature: [],
-        layerGroup: undefined,
+        layerGroupHouse: undefined,
         layerGeoJson: undefined
     }),
     components: {
@@ -138,9 +138,9 @@ export default {
                 }
             }).addTo(this.map)
             // contruction inside a layergroup to be able to remove the layer selected
-            this.layerGroup = new L.LayerGroup();
-            this.layerGroup.addTo(this.map);
-            this.layerGroup.addLayer(this.layerGeoJson);
+            this.layerGroupHouse = new L.LayerGroup();
+            this.layerGroupHouse.addTo(this.map);
+            this.layerGroupHouse.addLayer(this.layerGeoJson);
         },
         updateLocation () { 
             // update my location, recenter the map, show marker, push the coordinate for record
