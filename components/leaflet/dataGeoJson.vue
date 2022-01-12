@@ -21,13 +21,13 @@
         required
       ></v-text-field>
 
-      <v-text-field
-        v-model="addGeoJson.properties.amenity"
+      <!-- <v-text-field
+        v-model="addGeoJson.properties.amount"
         :counter="10"
-        :rules="amenityRules"
-        label="Amenity"
+        :rules="amountRules"
+        label="amount"
         required
-      ></v-text-field>
+      ></v-text-field> -->
 
       <v-text-field
         v-model="addGeoJson.properties.popupContent"
@@ -50,8 +50,6 @@
           label="longitude"
           required
       ></v-text-field>
-
-      <!-- <slot name="manualCoordinates"></slot> -->
 
       <v-btn
         :disabled="!valid"
@@ -77,7 +75,7 @@
       >
         Cancel
       </v-btn>
-{{addGeoJson}}
+
     </v-form>
   </v-col>
 </template>
@@ -92,7 +90,7 @@
           "type": "Feature",
           "properties": {
               "name": "arbre",
-              "amenity": "test",
+              "amount": 9000,
               "popupContent": "test",
               "category": ""
           },
@@ -106,10 +104,10 @@
         v => !!v || 'Name is required',
         v => (v && v.length <= 10) || 'Name must be less than 10 characters',
       ],
-      amenityRules: [
-        v => !!v || 'Anemity is required',
-        v => (v && v.length <= 10) || 'Name must be less than 10 characters',
-      ],
+      /* amountRules: [
+        v => !!v || 'Amount is required',
+        v => /^\d+$/.test(v) || 'Number only',
+      ], */
       popupContentRules: [
         v => !!v || 'Popup content is required',
         v => (v && v.length <= 20) || 'Name must be less than 20 characters',

@@ -29,7 +29,7 @@
             filterable: false,
             value: 'name',
           },
-          { text: 'Amenity', value: 'amenity' },
+          /* { text: 'amount', value: 'amount' }, */
           { text: 'Details', value: 'popupContent' },
           { text: 'Type', value: 'category' },
           { text: 'Coordonates', value: 'coordinates' },

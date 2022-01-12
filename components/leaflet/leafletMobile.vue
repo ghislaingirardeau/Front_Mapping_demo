@@ -81,7 +81,7 @@ export default {
             "type": "Feature",
             "properties": {
                 "name": "Coors Field",
-                "amenity": "Baseball Stadium",
+                "amount": "Baseball Stadium",
                 "popupContent": "This is where the Rockies play!"
             },
             "geometry": {

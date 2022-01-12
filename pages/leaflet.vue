@@ -42,16 +42,7 @@
                 @send-data="getData" 
                 :geoJsonFeature="geoJsonFeature"
                 :coordinates="coordinates"
-            > 
-                <!-- <template v-slot:manualCoordinates v-if="coordinates.length === 0" >
-                    <v-text-field
-                        v-model="coordinates"
-                        :counter="10"
-                        label="coordinates"
-                        required
-                    ></v-text-field>
-                </template> -->
-            </dataGeoJson>
+            /> 
         </v-expand-transition>
 
     </v-row>
