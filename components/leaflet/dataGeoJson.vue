@@ -84,8 +84,8 @@
   export default {
     data: () => ({
       valid: true,
-      latitude: undefined,
-      longitude: undefined,
+      latitude: "13'44.4745",
+      longitude: "106'58.6615",
       addGeoJson: {
           "type": "Feature",
           "properties": {
@@ -148,8 +148,15 @@
               getCoordinates = this.coordinates[0]
               geoType = 'Point'
             } else if(this.coordinates.length === 0) {
-              getCoordinates.push(parseFloat(this.longitude))
-              getCoordinates.push(parseFloat(this.latitude))
+              // convertir les coordonnées en degres/minute en lng/lat
+              function convertCoordinate(data) { 
+                let indexLng = data.indexOf("'")
+                let degres = data.slice(0, indexLng)
+                let minute = (data.slice((indexLng + 1))) / 60
+                return parseFloat(degres) + parseFloat(minute)
+              }
+              getCoordinates.push(convertCoordinate(this.longitude))
+              getCoordinates.push(convertCoordinate(this.latitude))
               geoType = 'Point'
             } else {
               // sinon j'enregistre un polygon
