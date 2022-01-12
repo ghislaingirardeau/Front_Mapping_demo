@@ -11,6 +11,15 @@
                 <v-icon v-if="buttonIcon">mdi-map-marker</v-icon>
                 <span v-else>My location</span>
             </v-btn>
+
+            <v-btn 
+                color="primary" 
+                outlined 
+                @click="changeLayer"
+            >
+                change layer
+            </v-btn>
+
         </v-col>
         <polygonMeasure 
             :map="map" 
@@ -34,6 +43,7 @@
         </div>
 
         <legendMap />
+
         <v-btn color="primary" @click="showInputGeoDetail = !showInputGeoDetail">saisir coordonnée</v-btn>
 
         <v-expand-transition>
@@ -106,7 +116,6 @@ export default {
                 layer.closePopup()
             }
 
-
             function onEachFeature(feature, layer) { 
                 // pour faire apparaitre le popup du marker si popupContent est defini
                 if (feature.properties && feature.properties.popupContent) {
@@ -118,14 +127,6 @@ export default {
                 });        
             }
                     
-            let geojsonMarkerOptions = { // style marker if not icon
-                radius: 4,
-                fillColor: "#ff7800",
-                color: "#000",
-                weight: 1,
-                opacity: 1,
-                fillOpacity: 0.8
-            };
             // FUNCTION RETURN ICON HOUSE SVG DEPENDING ON COLOR PARAMS
             function houseIcons(colors, size) {
                 return L.divIcon({
@@ -169,10 +170,9 @@ export default {
                     return {color: colorPolygon}
                 }
             }).addTo(this.map)
+
             // contruction inside a layergroup to be able to remove the layer selected
-            this.layerGroup = new L.LayerGroup();
-            this.layerGroup.addTo(this.map);
-            this.layerGroup.addLayer(this.layerGeoJson);
+            this.layerGroup.addLayer(this.layerGeoJson)
         },
         updateLocation () { 
             // update my location, recenter the map, show marker, push the coordinate for record
@@ -189,6 +189,9 @@ export default {
             })
             this.map.on('locationfound', onLocationFound)         
         },
+        changeLayer() {
+            console.log(this.layerGroup)
+        }
     },
     mounted() {
         // config mapbox
@@ -215,7 +218,10 @@ export default {
         // control layer choice
         L.control.layers(baseMaps).addTo(this.map)
         // ADD scale control
-        const scale = L.control.scale().addTo(this.map)
+        L.control.scale().addTo(this.map)
+
+        this.layerGroup = new L.LayerGroup()
+        this.layerGroup.addTo(this.map)
 
         // show my location on load
         this.myLocationMark = L.marker()
