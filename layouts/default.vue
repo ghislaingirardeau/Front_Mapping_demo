@@ -89,8 +89,8 @@ export default {
         },
         {
           icon: 'mdi-home',
-          title: 'Map',
-          to: '/map'
+          title: 'MapWithComponent',
+          to: '/mapWithComponent'
         }
       ],
       miniVariant: false,
