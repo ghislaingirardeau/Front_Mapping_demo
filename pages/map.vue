@@ -1,38 +1,16 @@
 <template>
     <v-row justify="center">
-        <v-col cols="1">
-            <v-btn 
-                :icon="buttonIcon"
-                color="primary" 
-                outlined 
-                @click="updateLocation"
-            >
-                <v-icon v-if="buttonIcon">mdi-map-marker</v-icon>
-                <span v-else>My location</span>
-            </v-btn>
 
-        </v-col>
-        <polygonMeasure 
-            :map="map" 
-            :buttonIcon="buttonIcon" 
-        />      
-
-        <deleteLastGeojson 
-            :geoJsonFeature="geoJsonFeature" 
-            :showGeoJson="showGeoJson" 
-            :layerGroupHouse="layerGroupHouse" 
-            :layerGeoJson="layerGeoJson" 
-            :buttonIcon="buttonIcon"
-        />
-
-        <manageStorage 
-            :geoJsonFeature="geoJsonFeature" 
-            :buttonIcon="buttonIcon"
-        />
+        <div id="myModal" class="modal">
+            <!-- Modal content -->
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <p>{{messageModal}}</p>
+            </div>
+        </div>
 
         <div id="map" v-show="expand">
         </div>
-
 
         <v-btn color="primary" @click="showInputGeoDetail = !showInputGeoDetail">saisir coordonnée</v-btn>
 
@@ -50,10 +28,27 @@
 
 <script>
 import dataGeoJson from '@/components/leaflet/dataGeoJson.vue' 
-import manageStorage from '@/components/leaflet/manageStorage.vue'
 import legendMap from '~/components/leaflet/legendMap.vue'
-import polygonMeasure from '~/components/leaflet/polygonMeasure.vue'
-import deleteLastGeojson from '~/components/leaflet/deleteLastGeojson.vue'
+
+function showModal () {
+    // Get the modal
+    var modal = document.getElementById("myModal")
+    // Get the <span> element that closes the modal
+    var span = document.getElementsByClassName("close")[0]
+    // When the user clicks on the button, open the modal
+    modal.style.display = "block"
+    // When the user clicks on <span> (x), close the modal
+    span.onclick = function() {
+    modal.style.display = "none"
+    }
+    // When the user clicks anywhere outside of the modal, close it
+    window.onclick = function(event) {
+        console.log(event.target)
+        if (event.target == modal) {
+            modal.style.display = "none"
+        }
+    }
+}
 
 export default {
     data: () => ({
@@ -78,13 +73,12 @@ export default {
         expand: true,
         layerGroupHouse: undefined,
         layerGeoJson: undefined,
+        btnMeasure: true,
+        messageModal: ''
     }),
     components: {
         dataGeoJson,
-        manageStorage,
         legendMap,
-        polygonMeasure,
-        deleteLastGeojson
     },
     computed: {
         buttonIcon() {
@@ -193,6 +187,42 @@ export default {
             })
             this.map.on('locationfound', onLocationFound)         
         },
+        showMeasure() {
+            // show measure on click
+            // HIDE MEASURE ON SECOND CLICK + BUTTON DYNAMIC
+            // DEBUG ON PRINT = NOT SHOWING MEASURE
+            if(this.btnMeasure === true){
+                this.map.eachLayer(function(layer){
+                    if(layer instanceof L.Polygon && !(layer instanceof L.Rectangle) ){
+                        layer.showMeasurements()
+                    }
+                })
+            } else {
+                this.map.eachLayer(function(layer){
+                    if(layer instanceof L.Polygon && !(layer instanceof L.Rectangle) ){
+                        layer.hideMeasurements()
+                    }
+                })
+            }
+            this.btnMeasure = !this.btnMeasure            
+        },
+        async deleteItem() {
+            await this.layerGroupHouse.removeLayer(this.layerGeoJson);
+            await this.geoJsonFeature.pop()
+            await this.showGeoJson()
+            this.messageModal = "Last data removed"
+            showModal()
+        },
+        removeGeoJson() {
+            localStorage.removeItem('APIGeoMap')
+            this.messageModal = "data remove from local storage"
+            showModal()
+        },
+        saveGeoJson() {
+            localStorage.setItem('APIGeoMap', JSON.stringify(this.geoJsonFeature))
+            this.messageModal = "data save in local storage"
+            showModal()
+        },
     },
     mounted() {
         // config mapbox
@@ -267,6 +297,8 @@ export default {
         )
 
         // CUSTOMIZE AN ICON MENU ACTIONS ON THE MAP
+
+
         let createBtn = (callBack, svg) => {
           L.control.custom({
               position: 'topright',
@@ -282,15 +314,18 @@ export default {
               {
                   click: (e) =>
                   {
-                      console.log(e);
                       callBack()
                   },
               }
           })
           .addTo(this.map)
         }
-        createBtn(this.updateLocation, '<svg id="btn1" style="width:24px;height:24px" viewBox="0 0 24 24"><path fill="black" d="M12,8A4,4 0 0,1 16,12A4,4 0 0,1 12,16A4,4 0 0,1 8,12A4,4 0 0,1 12,8M3.05,13H1V11H3.05C3.5,6.83 6.83,3.5 11,3.05V1H13V3.05C17.17,3.5 20.5,6.83 20.95,11H23V13H20.95C20.5,17.17 17.17,20.5 13,20.95V23H11V20.95C6.83,20.5 3.5,17.17 3.05,13M12,5A7,7 0 0,0 5,12A7,7 0 0,0 12,19A7,7 0 0,0 19,12A7,7 0 0,0 12,5Z" /></svg>')
-        createBtn('ruler', '<svg style="width:24px;height:24px" viewBox="0 0 24 24"><path fill="red" d="M1.39,18.36L3.16,16.6L4.58,18L5.64,16.95L4.22,15.54L5.64,14.12L8.11,16.6L9.17,15.54L6.7,13.06L8.11,11.65L9.53,13.06L10.59,12L9.17,10.59L10.59,9.17L13.06,11.65L14.12,10.59L11.65,8.11L13.06,6.7L14.47,8.11L15.54,7.05L14.12,5.64L15.54,4.22L18,6.7L19.07,5.64L16.6,3.16L18.36,1.39L22.61,5.64L5.64,22.61L1.39,18.36Z" /></svg>')
+        createBtn(this.updateLocation, '<svg style="width:24px;height:24px" viewBox="0 0 24 24"><path fill="black" d="M12,8A4,4 0 0,1 16,12A4,4 0 0,1 12,16A4,4 0 0,1 8,12A4,4 0 0,1 12,8M3.05,13H1V11H3.05C3.5,6.83 6.83,3.5 11,3.05V1H13V3.05C17.17,3.5 20.5,6.83 20.95,11H23V13H20.95C20.5,17.17 17.17,20.5 13,20.95V23H11V20.95C6.83,20.5 3.5,17.17 3.05,13M12,5A7,7 0 0,0 5,12A7,7 0 0,0 12,19A7,7 0 0,0 19,12A7,7 0 0,0 12,5Z" /></svg>')
+        createBtn(this.showMeasure, '<svg style="width:24px;height:24px" viewBox="0 0 24 24"><path fill="red" d="M1.39,18.36L3.16,16.6L4.58,18L5.64,16.95L4.22,15.54L5.64,14.12L8.11,16.6L9.17,15.54L6.7,13.06L8.11,11.65L9.53,13.06L10.59,12L9.17,10.59L10.59,9.17L13.06,11.65L14.12,10.59L11.65,8.11L13.06,6.7L14.47,8.11L15.54,7.05L14.12,5.64L15.54,4.22L18,6.7L19.07,5.64L16.6,3.16L18.36,1.39L22.61,5.64L5.64,22.61L1.39,18.36Z" /></svg>')
+        createBtn(this.deleteItem, '<svg style="width:24px;height:24px" viewBox="0 0 24 24"><path fill="blue" d="M22,3H7C6.31,3 5.77,3.35 5.41,3.88L0,12L5.41,20.11C5.77,20.64 6.31,21 7,21H22A2,2 0 0,0 24,19V5A2,2 0 0,0 22,3M19,15.59L17.59,17L14,13.41L10.41,17L9,15.59L12.59,12L9,8.41L10.41,7L14,10.59L17.59,7L19,8.41L15.41,12" /></svg>')
+
+        createBtn(this.saveGeoJson, '<svg class="btn1" style="width:24px;height:24px" viewBox="0 0 24 24"><path class="btn1" fill="green" d="M15,9H5V5H15M12,19A3,3 0 0,1 9,16A3,3 0 0,1 12,13A3,3 0 0,1 15,16A3,3 0 0,1 12,19M17,3H5C3.89,3 3,3.9 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V7L17,3Z" /></svg>')
+        createBtn(this.removeGeoJson, '<svg style="width:24px;height:24px" viewBox="0 0 24 24"><path fill="green" d="M16.24,3.56L21.19,8.5C21.97,9.29 21.97,10.55 21.19,11.34L12,20.53C10.44,22.09 7.91,22.09 6.34,20.53L2.81,17C2.03,16.21 2.03,14.95 2.81,14.16L13.41,3.56C14.2,2.78 15.46,2.78 16.24,3.56M4.22,15.58L7.76,19.11C8.54,19.9 9.8,19.9 10.59,19.11L14.12,15.58L9.17,10.63L4.22,15.58Z" /></svg>')
 
         // ecoute si online ou non automatiquement 
         // fonctionnalité permettant d'enregistrer le geojson en mode offline
@@ -312,8 +347,49 @@ export default {
     z-index: 1;
 }
 
+// STYLE BTN GROUP OM MAP
 .btn-group-vertical{
   background-color: white;
   border: 1px solid black
+}
+
+// STYLE THE MODAL
+/* The Modal (background) */
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 2; /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+/* Modal Content/Box */
+.modal-content {
+  background-color: #fefefe;
+  margin: 15% auto; /* 15% from the top and centered */
+  padding: 20px;
+  border: 1px solid #888;
+  color: black;
+  width: 80%; /* Could be more or less, depending on screen size */
+}
+
+/* The Close Button */
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
 }
 </style>
