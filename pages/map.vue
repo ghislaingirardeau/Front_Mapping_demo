@@ -45,8 +45,6 @@
             /> 
         </v-expand-transition>
 
-        <legendMap />
-
     </v-row>
 </template>
 
@@ -268,6 +266,32 @@ export default {
             }
         )
 
+        // CUSTOMIZE AN ICON MENU ACTIONS ON THE MAP
+        let createBtn = (callBack, svg) => {
+          L.control.custom({
+              position: 'topright',
+              content : svg,
+              classes : 'btn-group-vertical',
+              style   :
+              {
+                  margin: '10px',
+                  padding: '0px 0 0 0',
+                  cursor: 'pointer',
+              },
+              events:
+              {
+                  click: (e) =>
+                  {
+                      console.log(e);
+                      callBack()
+                  },
+              }
+          })
+          .addTo(this.map)
+        }
+        createBtn(this.updateLocation, '<svg id="btn1" style="width:24px;height:24px" viewBox="0 0 24 24"><path fill="black" d="M12,8A4,4 0 0,1 16,12A4,4 0 0,1 12,16A4,4 0 0,1 8,12A4,4 0 0,1 12,8M3.05,13H1V11H3.05C3.5,6.83 6.83,3.5 11,3.05V1H13V3.05C17.17,3.5 20.5,6.83 20.95,11H23V13H20.95C20.5,17.17 17.17,20.5 13,20.95V23H11V20.95C6.83,20.5 3.5,17.17 3.05,13M12,5A7,7 0 0,0 5,12A7,7 0 0,0 12,19A7,7 0 0,0 19,12A7,7 0 0,0 12,5Z" /></svg>')
+        createBtn('ruler', '<svg style="width:24px;height:24px" viewBox="0 0 24 24"><path fill="red" d="M1.39,18.36L3.16,16.6L4.58,18L5.64,16.95L4.22,15.54L5.64,14.12L8.11,16.6L9.17,15.54L6.7,13.06L8.11,11.65L9.53,13.06L10.59,12L9.17,10.59L10.59,9.17L13.06,11.65L14.12,10.59L11.65,8.11L13.06,6.7L14.47,8.11L15.54,7.05L14.12,5.64L15.54,4.22L18,6.7L19.07,5.64L16.6,3.16L18.36,1.39L22.61,5.64L5.64,22.61L1.39,18.36Z" /></svg>')
+
         // ecoute si online ou non automatiquement 
         // fonctionnalité permettant d'enregistrer le geojson en mode offline
         // mettre un bouton precisant que l'on souhaite travailler en offline
@@ -286,5 +310,10 @@ export default {
     width: 100%;
     margin: 0px 2px 0px 2px;
     z-index: 1;
+}
+
+.btn-group-vertical{
+  background-color: white;
+  border: 1px solid black
 }
 </style>

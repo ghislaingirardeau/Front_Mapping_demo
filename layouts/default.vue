@@ -89,8 +89,8 @@ export default {
         },
         {
           icon: 'mdi-home',
-          title: 'Vuelayers',
-          to: '/vuelayer'
+          title: 'Map',
+          to: '/map'
         }
       ],
       miniVariant: false,
