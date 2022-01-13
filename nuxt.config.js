@@ -27,7 +27,7 @@ export default {
       {src: "https://unpkg.com/leaflet@1.7.1/dist/leaflet.js", integrity: "sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA==", crossorigin: ""},
       {src: "print/leaflet.browser.print.min.js"}, // https://github.com/Igor-Vladyka/leaflet.browser.print
       {src: "measure/leaflet-measure-path.js"}, //https://github.com/ProminentEdge/leaflet-measure-path
-      {src: "Leaflet.Control.Custom.js"}
+      {src: "iconMap/Leaflet.Control.Custom.js"} //https://github.com/yigityuce/Leaflet.Control.Custom
     ]
   },
 

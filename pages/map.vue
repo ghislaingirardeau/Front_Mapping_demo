@@ -40,7 +40,6 @@ function showModal () {
     }
     // When the user clicks anywhere outside of the modal, close it
     window.onclick = function(event) {
-        console.log(event.target)
         if (event.target == modal) {
             modal.style.display = "none"
         }
@@ -274,14 +273,14 @@ export default {
             }
         )
 
-        // CUSTOMIZE AN ICON MENU ACTIONS ON THE MAP
-
-
-        let createBtn = (callBack, svg) => {
+        // CUSTOMIZE AN ICON MENU ACTIONS ON THE MAP: 2 option of adding custome icons
+        /* OPTION 1 */
+        // function qui créer le bouton
+        let createBtn = (position, callBack, svg) => {
           L.control.custom({
-              position: 'topright',
+              position: position,
               content : svg,
-              classes : 'btn-group-vertical',
+              classes : 'btn-group-icon-map-option1',
               style   :
               {
                   margin: '10px',
@@ -298,13 +297,78 @@ export default {
           })
           .addTo(this.map)
         }
-        createBtn(this.addCoordinates, '<svg style="width:24px;height:24px" viewBox="0 0 24 24"><path fill="blue" d="M17,13H13V17H11V13H7V11H11V7H13V11H17M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z" /></svg>')
-        createBtn(this.updateLocation, '<svg style="width:24px;height:24px" viewBox="0 0 24 24"><path fill="black" d="M12,8A4,4 0 0,1 16,12A4,4 0 0,1 12,16A4,4 0 0,1 8,12A4,4 0 0,1 12,8M3.05,13H1V11H3.05C3.5,6.83 6.83,3.5 11,3.05V1H13V3.05C17.17,3.5 20.5,6.83 20.95,11H23V13H20.95C20.5,17.17 17.17,20.5 13,20.95V23H11V20.95C6.83,20.5 3.5,17.17 3.05,13M12,5A7,7 0 0,0 5,12A7,7 0 0,0 12,19A7,7 0 0,0 19,12A7,7 0 0,0 12,5Z" /></svg>')
-        createBtn(this.showMeasure, '<svg style="width:24px;height:24px" viewBox="0 0 24 24"><path fill="orange" d="M1.39,18.36L3.16,16.6L4.58,18L5.64,16.95L4.22,15.54L5.64,14.12L8.11,16.6L9.17,15.54L6.7,13.06L8.11,11.65L9.53,13.06L10.59,12L9.17,10.59L10.59,9.17L13.06,11.65L14.12,10.59L11.65,8.11L13.06,6.7L14.47,8.11L15.54,7.05L14.12,5.64L15.54,4.22L18,6.7L19.07,5.64L16.6,3.16L18.36,1.39L22.61,5.64L5.64,22.61L1.39,18.36Z" /></svg>')
-        createBtn(this.deleteItem, '<svg style="width:24px;height:24px" viewBox="0 0 24 24"><path fill="red" d="M22,3H7C6.31,3 5.77,3.35 5.41,3.88L0,12L5.41,20.11C5.77,20.64 6.31,21 7,21H22A2,2 0 0,0 24,19V5A2,2 0 0,0 22,3M19,15.59L17.59,17L14,13.41L10.41,17L9,15.59L12.59,12L9,8.41L10.41,7L14,10.59L17.59,7L19,8.41L15.41,12" /></svg>')
+        // les icones d'actions
+        const itemsAction = [
+            {
+                position: 'topright',
+                callback: this.addCoordinates,
+                svg: '<svg style="width:27px;height:27px" viewBox="0 0 24 24"><path fill="blue" d="M17,13H13V17H11V13H7V11H11V7H13V11H17M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z" /></svg>'
+            },
+            {
+                position: 'topright',
+                callback: this.updateLocation,
+                svg: '<svg style="width:27px;height:27px" viewBox="0 0 24 24"><path fill="black" d="M12,8A4,4 0 0,1 16,12A4,4 0 0,1 12,16A4,4 0 0,1 8,12A4,4 0 0,1 12,8M3.05,13H1V11H3.05C3.5,6.83 6.83,3.5 11,3.05V1H13V3.05C17.17,3.5 20.5,6.83 20.95,11H23V13H20.95C20.5,17.17 17.17,20.5 13,20.95V23H11V20.95C6.83,20.5 3.5,17.17 3.05,13M12,5A7,7 0 0,0 5,12A7,7 0 0,0 12,19A7,7 0 0,0 19,12A7,7 0 0,0 12,5Z" /></svg>'
+            },
+            {
+                position: 'topright',
+                callback: this.showMeasure,
+                svg: '<svg style="width:27px;height:27px" viewBox="0 0 24 24"><path fill="black" d="M1.39,18.36L3.16,16.6L4.58,18L5.64,16.95L4.22,15.54L5.64,14.12L8.11,16.6L9.17,15.54L6.7,13.06L8.11,11.65L9.53,13.06L10.59,12L9.17,10.59L10.59,9.17L13.06,11.65L14.12,10.59L11.65,8.11L13.06,6.7L14.47,8.11L15.54,7.05L14.12,5.64L15.54,4.22L18,6.7L19.07,5.64L16.6,3.16L18.36,1.39L22.61,5.64L5.64,22.61L1.39,18.36Z" /></svg>'
+            },
+            {
+                position: 'topright',
+                callback: this.deleteItem,
+                svg: '<svg style="width:27px;height:27px" viewBox="0 0 24 24"><path fill="orange" d="M22,3H7C6.31,3 5.77,3.35 5.41,3.88L0,12L5.41,20.11C5.77,20.64 6.31,21 7,21H22A2,2 0 0,0 24,19V5A2,2 0 0,0 22,3M19,15.59L17.59,17L14,13.41L10.41,17L9,15.59L12.59,12L9,8.41L10.41,7L14,10.59L17.59,7L19,8.41L15.41,12" /></svg>'
+            },
+            {
+                position: 'topleft',
+                callback: this.saveGeoJson,
+                svg: '<svg style="width:27px;height:27px" viewBox="0 0 24 24"><path fill="green" d="M15,9H5V5H15M12,19A3,3 0 0,1 9,16A3,3 0 0,1 12,13A3,3 0 0,1 15,16A3,3 0 0,1 12,19M17,3H5C3.89,3 3,3.9 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V7L17,3Z" /></svg>'
+            },
+            {
+                position: 'topleft',
+                callback: this.removeGeoJson,
+                svg: '<svg style="width:27px;height:27px" viewBox="0 0 24 24"><path fill="red" d="M16.24,3.56L21.19,8.5C21.97,9.29 21.97,10.55 21.19,11.34L12,20.53C10.44,22.09 7.91,22.09 6.34,20.53L2.81,17C2.03,16.21 2.03,14.95 2.81,14.16L13.41,3.56C14.2,2.78 15.46,2.78 16.24,3.56M4.22,15.58L7.76,19.11C8.54,19.9 9.8,19.9 10.59,19.11L14.12,15.58L9.17,10.63L4.22,15.58Z" /></svg>'
+            }
+        ]
+        // applique la fonction pour chaque icone
+        for (let item of itemsAction) {
+            createBtn(item.position, item.callback, item.svg)
+        }
 
-        createBtn(this.saveGeoJson, '<svg class="btn1" style="width:24px;height:24px" viewBox="0 0 24 24"><path class="btn1" fill="green" d="M15,9H5V5H15M12,19A3,3 0 0,1 9,16A3,3 0 0,1 12,13A3,3 0 0,1 15,16A3,3 0 0,1 12,19M17,3H5C3.89,3 3,3.9 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V7L17,3Z" /></svg>')
-        createBtn(this.removeGeoJson, '<svg style="width:24px;height:24px" viewBox="0 0 24 24"><path fill="red" d="M16.24,3.56L21.19,8.5C21.97,9.29 21.97,10.55 21.19,11.34L12,20.53C10.44,22.09 7.91,22.09 6.34,20.53L2.81,17C2.03,16.21 2.03,14.95 2.81,14.16L13.41,3.56C14.2,2.78 15.46,2.78 16.24,3.56M4.22,15.58L7.76,19.11C8.54,19.9 9.8,19.9 10.59,19.11L14.12,15.58L9.17,10.63L4.22,15.58Z" /></svg>')
+        /* ----------------- */
+        /* option 2 */
+        /* L.control.custom({
+            position: 'bottomright',
+            content : '<button type="button" id="btn-save" class="btn-map save">'+
+                    '    <svg id="btn-save" style="width:34px;height:34px" viewBox="0 0 24 24"><path id="btn-save" fill="white" d="M15,9H5V5H15M12,19A3,3 0 0,1 9,16A3,3 0 0,1 12,13A3,3 0 0,1 15,16A3,3 0 0,1 12,19M17,3H5C3.89,3 3,3.9 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V7L17,3Z"  /></svg>' +
+                    '</button>' +
+                    '<button type="button" id="btn-erase" class="btn-map erase">'+
+                    '    <svg id="btn-erase" style="width:34px;height:34px" viewBox="0 0 24 24"><path id="btn-erase" fill="white" d="M16.24,3.56L21.19,8.5C21.97,9.29 21.97,10.55 21.19,11.34L12,20.53C10.44,22.09 7.91,22.09 6.34,20.53L2.81,17C2.03,16.21 2.03,14.95 2.81,14.16L13.41,3.56C14.2,2.78 15.46,2.78 16.24,3.56M4.22,15.58L7.76,19.11C8.54,19.9 9.8,19.9 10.59,19.11L14.12,15.58L9.17,10.63L4.22,15.58Z"/></svg>' +
+                    '</button>',
+            classes : 'btn-group-icon-map-option2',
+            style   :
+            {
+                margin: '10px',
+                padding: '0px',
+                cursor: 'pointer',
+            },
+            events:
+            {
+                click: (data) =>
+                {
+                    switch (data.target.id) {
+                        case 'btn-save':
+                            this.saveGeoJson()
+                            break;
+                        case 'btn-erase':
+                            this.removeGeoJson()
+                            break;
+                    }
+                },
+            }
+        })
+        .addTo(this.map); */
+        /* ------------------------- */
 
         // ecoute si online ou non automatiquement 
         // fonctionnalité permettant d'enregistrer le geojson en mode offline
@@ -327,11 +391,24 @@ export default {
 }
 
 // STYLE BTN GROUP OM MAP
-.btn-group-vertical{
-  background-color: white;
-  border: 1px solid grey;
-  border-radius: 5px 5px;
+.btn-group-icon-map-option1{
+    background-color: white;
+    border: 2px solid grey;
+    border-radius: 5px 5px;
 }
+// OPTION 2 ICON ACTION MAP
+/* .btn-map{
+    border: 2px solid grey;
+    border-radius: 5px 5px;
+    padding: 4px 2px 0px 2px;
+    margin: 0px 8px 0px 8px;
+}
+.save{
+    background-color: green;
+}
+.erase{
+    background-color: red;
+} */
 
 // STYLE THE MODAL
 /* The Modal (background) */
