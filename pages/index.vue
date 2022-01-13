@@ -1,99 +1,317 @@
 <template>
-  <v-row>
-    <v-col class="text-center">
-      <h1>get my location</h1>
-      <v-btn color='primary' @click="findMe">find me</v-btn>
+    <v-row justify="center">
 
-      <p>{{message}}</p>
-      <p>Ma position actuelle: {{myLocation}}</p>
-      <a :href="toMap" v-if="toMap">look the map to see the position</a>
+        <legendMap />
 
 
-      <v-btn color='primary' @click="followMe">follow me</v-btn>
-      <v-btn color='primary' @click="stopFollowMe">Stop follow me</v-btn>
-      <p>Mes coordonnées de déplacement: {{watchPosition}}</p>
+        <v-col cols="1">
+            <v-btn 
+                :icon="buttonIcon"
+                color="primary" 
+                outlined 
+                @click="updateLocation"
+            >
+                <v-icon v-if="buttonIcon">mdi-map-marker</v-icon>
+                <span v-else>My location</span>
+            </v-btn>
+
+            <v-btn 
+                color="primary" 
+                outlined 
+                @click="changeLayer"
+            >
+                change layer
+            </v-btn>
+
+        </v-col>
+        <polygonMeasure 
+            :map="map" 
+            :buttonIcon="buttonIcon" 
+        />      
+
+        <deleteLastGeojson 
+            :geoJsonFeature="geoJsonFeature" 
+            :showGeoJson="showGeoJson" 
+            :layerGroupHouse="layerGroupHouse" 
+            :layerGeoJson="layerGeoJson" 
+            :buttonIcon="buttonIcon"
+        />
+
+        <manageStorage 
+            :geoJsonFeature="geoJsonFeature" 
+            :buttonIcon="buttonIcon"
+        />
+
+        <div id="map" v-show="expand">
+        </div>
 
 
-      <v-btn color='primary' @click="showStorage">showStorage</v-btn>
-      <h2>{{localData}}</h2>
-      <h2>{{localDataWatched}}</h2>
+        <v-btn color="primary" @click="showInputGeoDetail = !showInputGeoDetail">saisir coordonnée</v-btn>
 
+        <v-expand-transition>
+            <dataGeoJson 
+                v-if="showInputGeoDetail" 
+                @send-data="getData" 
+                :geoJsonFeature="geoJsonFeature"
+                :coordinates="coordinates"
+            /> 
+        </v-expand-transition>
 
-    </v-col>
-  </v-row>
+    </v-row>
 </template>
 
 <script>
+import dataGeoJson from '@/components/leaflet/dataGeoJson.vue' 
+import manageStorage from '@/components/leaflet/manageStorage.vue'
+import legendMap from '~/components/leaflet/legendMap.vue'
+import polygonMeasure from '~/components/leaflet/polygonMeasure.vue'
+import deleteLastGeojson from '~/components/leaflet/deleteLastGeojson.vue'
+
 export default {
-  data() {
-    return{
-      myLocation: undefined,
-      message: undefined,
-      toMap: undefined,
-      localData: undefined,
-      localDataWatched: undefined,
-      watchId: 0,
-      watchPosition: []
-    }
-  },
-  methods: {
-    showStorage() {
-      this.localData = localStorage.getItem('location')
-      this.localDataWatched = localStorage.getItem('locationWatched')
+    data: () => ({
+        map: Object,
+        coordinates: [],
+        myLocationMark: undefined,
+        clickMapMark: undefined,
+        showInputGeoDetail: false,
+        village: {
+            "type": "Feature",
+            "properties": {
+                "name": "Coors Field",
+                "amenity": "Baseball Stadium",
+                "popupContent": "This is where the Rockies play!"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [103.8409637451172,13.281937687623081]
+            }
+        },
+        geoJsonFeature: [],
+        expand: true,
+        layerGroupHouse: undefined,
+        layerGeoJson: undefined,
+        layerVillage: undefined,
+        showLayer: true
+    }),
+    components: {
+        dataGeoJson,
+        manageStorage,
+        legendMap,
+        polygonMeasure,
+        deleteLastGeojson
     },
-    findMe() {
-      let success = (position) => {
-        this.myLocation = {
-          latitude: position.coords.latitude,
-          longitude: position.coords.longitude
+    computed: {
+        buttonIcon() {
+            if(this.$vuetify.breakpoint.width < 600) {
+                return true
+            } else {
+                return false
+            }
         }
-        this.toMap = `https://www.openstreetmap.org/#map=18/${position.coords.latitude}/${position.coords.longitude}`
-        this.message = ''
-        localStorage.setItem('location', `accuracy: ${position.coords.accuracy}, lat: ${this.myLocation.latitude}, lng: ${this.myLocation.longitude}`)
-      }
-
-      let error = () => {
-        this.message = 'Unable to retrieve your location';
-      }
-
-      if (navigator.geolocation) {
-        this.message = 'Locating...'
-        navigator.geolocation.getCurrentPosition(success, error, {
-          enableHighAccuracy: true,
-          maximumAge: 0
-        })
-
-      } else {
-        this.message = 'Geolocation is not supported by your browser'
-      }
     },
-    followMe() {
-      let success = (position) => {
-        console.log(position.coords)
-        this.watchPosition.push({
-          latitude: position.coords.latitude,
-          longitude: position.coords.longitude
-        })
-      }
+    methods: {
+        getData(payload) { 
+            this.showInputGeoDetail = payload.show
+            this.expand = !payload.show
+            this.showGeoJson('village')
+            if(payload.resetCoordinates) {
+                this.coordinates = []
+            }
+            this.myLocationMark
+            this.clickMapMark.remove(this.map) // retire le marker click
+        },
+        showGeoJson(type) {
 
-      let error = () => {
-        this.message = 'Unable to retrieve your location';
-      }
+            function showPopupMarker(e) {
+                var layer = e.target;
+                layer.openPopup()
+            }
 
-      if (navigator.geolocation) {
-        this.message = 'Locating...'
-        this.watchId = navigator.geolocation.watchPosition(success, error, {
-          enableHighAccuracy: true,
-          maximumAge: 0
-        })
-      } else {
-        this.message = 'Geolocation is not supported by your browser'
-      }
+            function hidePopupMarker(e) {
+                var layer = e.target;
+                layer.closePopup()
+            }
+
+            function onEachFeature(feature, layer) { 
+                // pour faire apparaitre le popup du marker si popupContent est defini
+                if (feature.properties && feature.properties.popupContent) {
+                    layer.bindPopup(feature.properties.popupContent)
+                }
+                layer.on({
+                    mouseover: showPopupMarker,
+                    mouseout: hidePopupMarker,
+                });        
+            }
+                    
+            // FUNCTION RETURN ICON HOUSE SVG DEPENDING ON COLOR PARAMS
+            function houseIcons(colors, size) {
+                return L.divIcon({
+                className: 'house-icon',
+                html: `<svg style="width:${size}px;height:${size}px" viewBox="0 0 24 24">
+                        <path fill="${colors}" d="M10,20V14H14V20H19V12H22L12,3L2,12H5V20H10Z" />
+                        </svg>`
+                })
+            }
+            if(type === 'village') {
+            this.layerVillage = L.geoJSON(this.village).addTo(this.map)
+
+            // contruction inside a layergroup to be able to remove the layer selected
+            this.layerGroupHouse.addLayer(this.layerVillage)
+
+            } else {
+            this.layerGeoJson = L.geoJSON(this.geoJsonFeature, { // on peut enchainer les options ici
+                onEachFeature: onEachFeature,
+                pointToLayer: (feature, latlng) => { // CREATE THE MARKERS
+                    let iconePick
+                    switch (feature.properties.category) {
+                        case 'not interview':
+                            iconePick = houseIcons('black', '24')
+                            break;
+                        case 'indebted':
+                            iconePick = houseIcons('orange', '24')
+                            break;
+                        case 'interview':
+                            iconePick = houseIcons('green', '24')
+                            break;
+                        case 'land lost':
+                            iconePick = houseIcons('red', '24')
+                            break;
+                    }
+                    return L.marker(latlng, {icon: iconePick});
+                },
+                style: (feature) => { // DEFINE SYTLE OF POLYGONS AND LINE
+                    let colorPolygon
+                    switch (feature.properties.category) {
+                        case "rice":
+                            colorPolygon = '#15e60e'
+                            break;
+                        case "cashew":
+                            colorPolygon = '#fcba03'
+                            break;
+                    }
+                    return {color: colorPolygon}
+                }
+            }).addTo(this.map)
+
+            // contruction inside a layergroup to be able to remove the layer selected
+            this.layerGroupHouse.addLayer(this.layerGeoJson)
+            }           
+        },
+        updateLocation () { 
+            // update my location, recenter the map, show marker, push the coordinate for record
+            this.map.locate({setView: true, maxZoom: 16})
+            this.myLocationMark.remove(this.map)
+            this.myLocationMark = L.marker()
+
+            let onLocationFound= (e => {
+                this.myLocationMark
+                    .setLatLng(e.latlng)
+                    .addTo(this.map)
+                this.coordinates.push([e.latlng.lng, e.latlng.lat])
+                this.showInputGeoDetail = true
+            })
+            this.map.on('locationfound', onLocationFound)         
+        },
+        changeLayer() { // controle different layer we want to show on the map
+            this.showLayer = !this.showLayer
+            if(this.showLayer) {
+                this.layerGroupHouse.addLayer(this.layerGeoJson)
+                this.layerGroupHouse.removeLayer(this.layerVillage)
+            } else {
+                this.layerGroupHouse.removeLayer(this.layerGeoJson)
+                this.layerGroupHouse.addLayer(this.layerVillage)
+            }
+        }
     },
-    stopFollowMe() {
-        localStorage.setItem('locationWatched', JSON.stringify(this.watchPosition))
-        navigator.geolocation.clearWatch(this.watchId);
+    mounted() {
+        // config mapbox
+        const tokenMapbox='pk.eyJ1IjoiZ2d3ZWJkZXYiLCJhIjoiY2t4OGVhemd5MXpyMzJvbzE4ZXpxajJzZCJ9.P2KXn7NQDyQ11BkYVkPEcQ'
+        const mapBoxUrl = `https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=${tokenMapbox}`
+        const mapboxStreets = 'mapbox/streets-v11'
+        const mapboxOutdoors = 'mapbox/outdoors-v11'
+        const mapboxAttribution = 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>'
+        
+        // pour switcher sur different layers
+        var outdoors = L.tileLayer(mapBoxUrl, {id: mapboxOutdoors, tileSize: 512, zoomOffset: -1, attribution: mapboxAttribution, accessToken: tokenMapbox}),
+            streets   = L.tileLayer(mapBoxUrl, {id: mapboxStreets, tileSize: 512, zoomOffset: -1, attribution: mapboxAttribution, accessToken: tokenMapbox});        
+        
+        // bouton pour le switch
+        var baseMaps = {
+            "Outdoors": outdoors,
+            "Streets": streets
+        }
+
+        // build the container with switch layer
+        this.map = L.map('map', {layers: [streets, outdoors]}).fitWorld()
+        this.map.locate({setView: true, maxZoom: 16})
+
+        // control layer choice
+        L.control.layers(baseMaps).addTo(this.map)
+        // ADD scale control
+        L.control.scale().addTo(this.map)
+
+        this.layerGroupHouse = new L.LayerGroup()
+        this.layerGroupHouse.addTo(this.map)
+
+        // show my location on load
+        this.myLocationMark = L.marker()
+        let onLocationFound= (e => {
+            this.myLocationMark
+                .setLatLng(e.latlng)
+                .addTo(this.map)
+        })
+        this.map.on('locationfound', onLocationFound)       
+
+        // remove the marker each click
+        // add a new marker to new click
+        // get the coordinates
+        this.clickMapMark = L.marker()
+        let addMarker = (async e => {
+            await this.clickMapMark
+                .setLatLng(e.latlng)
+                .addTo(this.map)
+            this.coordinates.push([e.latlng.lng, e.latlng.lat])
+            this.showInputGeoDetail = true
+        })
+        this.map.on('click', addMarker)
+
+        /* RECUPERE LES DONNEES SI PRESENT DANS LE LOCALSTORAGE */
+        let geoFromLocal = localStorage.getItem('APIGeoMap')
+
+        if(geoFromLocal) {
+            this.geoJsonFeature = JSON.parse(geoFromLocal)
+            this.showGeoJson()
+        }
+        
+        // ADD A PRINT CONTROL ON MAP
+        L.control.browserPrint({
+            printModes: ["Portrait"]
+        }).addTo(this.map)
+        
+        // STYLE POPUP ON CLICK
+        var popup = L.popup( //create a popup
+            { // pass options here
+                minWidth: 450
+            }
+        )
+
+        // ecoute si online ou non automatiquement 
+        // fonctionnalité permettant d'enregistrer le geojson en mode offline
+        // mettre un bouton precisant que l'on souhaite travailler en offline
+        // enregistre le geojson dans le localstorage
+        // ou retour de la connection, faire apparaitre le bouton pour sauvegarder le json dans le DB
+        window.addEventListener('offline', function(e) { console.log('offline'); })
+        window.addEventListener('online', function(e) { console.log('online'); });
     }
-  },
 }
 </script>
+
+
+<style lang="scss">
+#map { 
+    height: 100vw; 
+    width: 100%;
+    margin: 0px 2px 0px 2px;
+    z-index: 1;
+}
+</style>
