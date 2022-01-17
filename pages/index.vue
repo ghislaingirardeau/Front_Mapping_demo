@@ -1,6 +1,12 @@
 <template>
     <v-row justify="center">
 
+              <v-btn color='primary' @click="followMe">follow me</v-btn>
+      <v-btn color='primary' @click="stopFollowMe">Stop follow me</v-btn>
+      <p v-if="accuracyLocation">accuracy {{accuracyLocation}} coordonneé {{coordinates}} </p>
+      
+
+
         <div id="myModal" class="modal">
             <!-- Modal content -->
             <div class="modal-content">
@@ -58,7 +64,9 @@ export default {
         layerGroupHouse: undefined,
         layerGeoJson: undefined,
         btnMeasure: true,
-        messageModal: ''
+        messageModal: '',
+        watchMe: undefined,
+        accuracyLocation: undefined
     }),
     components: {
         dataGeoJson,
@@ -199,6 +207,36 @@ export default {
         },
         addCoordinates() {
             this.showInputGeoDetail = !this.showInputGeoDetail
+        },
+        followMe() {
+            let success = (position) => {
+                this.accuracyLocation = position.coords.accuracy
+                this.coordinates = [position.coords.longitude, position.coords.latitude]
+                let updatePositionMarker = {
+                    lat: position.coords.latitude,
+                    lng: position.coords.longitude,
+                }
+                this.myLocationMark
+                    .setLatLng(updatePositionMarker)
+            }
+
+            let error = () => {
+                /* this.message = 'Unable to retrieve your location'; */
+            }
+
+            if (navigator.geolocation) {
+                /* this.message = 'Locating...' */
+                this.watchMe = navigator.geolocation.watchPosition(success, error, {
+                enableHighAccuracy: true,
+                maximumAge: 0
+                })
+                
+            } else {
+                /* this.message = 'Geolocation is not supported by your browser' */
+            }
+        },
+        stopFollowMe() {
+            navigator.geolocation.clearWatch(this.watchMe);
         }
     },
     mounted() {
@@ -207,20 +245,22 @@ export default {
         const mapBoxUrl = `https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=${tokenMapbox}`
         const mapboxStreets = 'mapbox/streets-v11'
         const mapboxOutdoors = 'mapbox/outdoors-v11'
+        const mapboxSatellite = 'mapbox/satellite-v9'
         const mapboxAttribution = 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>'
         
         // pour switcher sur different layers
         var outdoors = L.tileLayer(mapBoxUrl, {id: mapboxOutdoors, tileSize: 512, zoomOffset: -1, attribution: mapboxAttribution, accessToken: tokenMapbox}),
-            streets   = L.tileLayer(mapBoxUrl, {id: mapboxStreets, tileSize: 512, zoomOffset: -1, attribution: mapboxAttribution, accessToken: tokenMapbox});        
-        
+            streets   = L.tileLayer(mapBoxUrl, {id: mapboxStreets, tileSize: 512, zoomOffset: -1, attribution: mapboxAttribution, accessToken: tokenMapbox}),        
+            satellite   = L.tileLayer(mapBoxUrl, {id: mapboxSatellite, tileSize: 512, zoomOffset: -1, attribution: mapboxAttribution, accessToken: tokenMapbox})        
         // bouton pour le switch
         var baseMaps = {
+            "Streets": streets,
+            "Satellite": satellite,
             "Outdoors": outdoors,
-            "Streets": streets
         }
 
         // build the container with switch layer
-        this.map = L.map('map', {layers: [streets, outdoors]}).fitWorld()
+        this.map = L.map('map', {layers: [streets, satellite, outdoors]}).fitWorld()
         this.map.locate({setView: true, maxZoom: 16})
 
         // control layer choice
@@ -238,8 +278,8 @@ export default {
                 .setLatLng(e.latlng)
                 .addTo(this.map)
         })
-        this.map.on('locationfound', onLocationFound)       
-
+        this.map.on('locationfound', onLocationFound) 
+        
         // remove the marker each click
         // add a new marker to new click
         // get the coordinates
