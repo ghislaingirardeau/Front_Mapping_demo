@@ -1,8 +1,8 @@
 <template>
     <v-row justify="center">
 
-              <v-btn color='primary' @click="followMe">follow me</v-btn>
-      <v-btn color='primary' @click="stopFollowMe">Stop follow me</v-btn>
+              <!-- <v-btn color='primary' @click="followMe">follow me</v-btn>
+      <v-btn color='primary' @click="stopFollowMe">Stop follow me</v-btn> -->
       <p v-if="accuracyLocation">accuracy {{accuracyLocation}} coordonneé {{coordinates}} </p>
       
 
@@ -154,8 +154,7 @@ export default {
             // ICI ON PEUT CHOISIR D'AJOUTER UN NOUVEAU TYPE DE LAYER
             // this.layerGroupHouse.addLayer(this.layerVillage)
         },
-        updateLocation () { 
-            // update my location, recenter the map, show marker, push the coordinate for record
+        /* updateLocation () { 
             this.map.locate({setView: true, maxZoom: 16})
             this.myLocationMark.remove(this.map)
             this.myLocationMark = L.marker()
@@ -168,7 +167,7 @@ export default {
                 this.showInputGeoDetail = true
             })
             this.map.on('locationfound', onLocationFound)         
-        },
+        }, */
         showMeasure() {
             // show measure on click
             // HIDE MEASURE ON SECOND CLICK + BUTTON DYNAMIC
@@ -209,9 +208,10 @@ export default {
             this.showInputGeoDetail = !this.showInputGeoDetail
         },
         followMe() {
+            // track my location, update the coordinates
             let success = (position) => {
                 this.accuracyLocation = position.coords.accuracy
-                this.coordinates = [position.coords.longitude, position.coords.latitude]
+                this.coordinates = [[position.coords.longitude, position.coords.latitude]]
                 let updatePositionMarker = {
                     lat: position.coords.latitude,
                     lng: position.coords.longitude,
@@ -236,7 +236,8 @@ export default {
             }
         },
         stopFollowMe() {
-            navigator.geolocation.clearWatch(this.watchMe);
+            navigator.geolocation.clearWatch(this.watchMe)
+            this.coordinates = []
         }
     },
     mounted() {
@@ -255,12 +256,12 @@ export default {
         // bouton pour le switch
         var baseMaps = {
             "Streets": streets,
-            "Satellite": satellite,
+            /* "Satellite": satellite, */
             "Outdoors": outdoors,
         }
 
         // build the container with switch layer
-        this.map = L.map('map', {layers: [streets, satellite, outdoors]}).fitWorld()
+        this.map = L.map('map', {layers: [streets, outdoors]}).fitWorld()
         this.map.locate({setView: true, maxZoom: 16})
 
         // control layer choice
@@ -329,10 +330,10 @@ export default {
               },
               events:
               {
-                  click: (e) =>
-                  {
-                      callBack()
-                  },
+                    click: (e) =>
+                        {
+                            callBack()
+                        },
               }
           })
           .addTo(this.map)
@@ -346,7 +347,7 @@ export default {
             },
             {
                 position: 'topright',
-                callback: this.updateLocation,
+                callback: this.followMe,
                 svg: '<svg style="width:27px;height:27px" viewBox="0 0 24 24"><path fill="black" d="M12,8A4,4 0 0,1 16,12A4,4 0 0,1 12,16A4,4 0 0,1 8,12A4,4 0 0,1 12,8M3.05,13H1V11H3.05C3.5,6.83 6.83,3.5 11,3.05V1H13V3.05C17.17,3.5 20.5,6.83 20.95,11H23V13H20.95C20.5,17.17 17.17,20.5 13,20.95V23H11V20.95C6.83,20.5 3.5,17.17 3.05,13M12,5A7,7 0 0,0 5,12A7,7 0 0,0 12,19A7,7 0 0,0 19,12A7,7 0 0,0 12,5Z" /></svg>'
             },
             {
