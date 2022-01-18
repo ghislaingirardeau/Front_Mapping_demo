@@ -85,7 +85,6 @@
       >
         Cancel
       </v-btn>
-{{iconDesign}}
     </v-form>
   </v-col>
 </template>
