@@ -177,7 +177,7 @@
         }
         switch (this.addGeoJson.properties.category) {
           case 'house':
-            return `<svg style="width:20px;height:20px" viewBox="0 0 24 24">
+            return `<svg style="width:10px;height:10px" viewBox="0 0 24 24">
                         <path fill="${colors}" d="M10,20V14H14V20H19V12H22L12,3L2,12H5V20H10Z" />
                     </svg>`
             break;
