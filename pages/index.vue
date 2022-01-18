@@ -159,6 +159,9 @@ export default {
                         case "cashew":
                             colorPolygon = '#fcba03'
                             break;
+                        case "route":
+                            colorPolygon = 'red'
+                            break;
                     }
                     return {color: colorPolygon}
                 }
@@ -175,13 +178,13 @@ export default {
             // DEBUG ON PRINT = NOT SHOWING MEASURE
             if(this.btnMeasure === true){
                 this.map.eachLayer(function(layer){
-                    if(layer instanceof L.Polygon && !(layer instanceof L.Rectangle) ){
+                    if(layer instanceof L.Polygon || layer instanceof L.Path){
                         layer.showMeasurements()
                     }
                 })
             } else {
                 this.map.eachLayer(function(layer){
-                    if(layer instanceof L.Polygon && !(layer instanceof L.Rectangle) ){
+                    if(layer instanceof L.Polygon || layer instanceof L.Path){
                         layer.hideMeasurements()
                     }
                 })

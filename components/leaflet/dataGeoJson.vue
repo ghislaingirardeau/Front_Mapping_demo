@@ -132,7 +132,8 @@
         if(this.coordinates.length > 1) {
           return [
             'rice',
-            'cashew'
+            'cashew',
+            'route'
           ]
         } else {
           return [
@@ -243,12 +244,18 @@
             } else {
               // sinon j'enregistre un polygon
               getCoordinates.push(this.coordinates)
-              geoType = 'Polygon'
+              if(this.addGeoJson.properties.category === 'route'){
+                geoType = 'MultiLineString'
+              } else {
+                geoType = 'Polygon'
+              }
             }
             
             this.addGeoJson.geometry.coordinates = getCoordinates
             this.addGeoJson.geometry.type = geoType
+
             this.geoJsonFeature.push(this.addGeoJson)
+            
             this.$emit('send-data', {
                 show: false,
                 resetCoordinates: true
