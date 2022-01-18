@@ -177,7 +177,7 @@
         }
         switch (this.addGeoJson.properties.category) {
           case 'house':
-            return `<svg style="width:24px;height:24px" viewBox="0 0 24 24">
+            return `<svg style="width:20px;height:20px" viewBox="0 0 24 24">
                         <path fill="${colors}" d="M10,20V14H14V20H19V12H22L12,3L2,12H5V20H10Z" />
                     </svg>`
             break;
@@ -188,9 +188,7 @@
             return '<svg style="width:24px;height:24px" viewBox="0 0 24 24"><path fill="black" d="M10,2H14C17.31,2 19,4.69 19,8V18.66C16.88,17.63 15.07,17 12,17C8.93,17 7.12,17.63 5,18.66V8C5,4.69 6.69,2 10,2M8,8V9.5H16V8H8M9,12V13.5H15V12H9M3,22V21.31C5.66,19.62 13.23,15.84 21,21.25V22H3Z" /></svg>'
             break;
           case 'chief House':
-            return `<svg style="width:24px;height:24px" viewBox="0 0 24 24">
-                        <path fill="black" d="M10,2V4.26L12,5.59V4H22V19H17V21H24V2H10M7.5,5L0,10V21H15V10L7.5,5M14,6V6.93L15.61,8H16V6H14M18,6V8H20V6H18M7.5,7.5L13,11V19H10V13H5V19H2V11L7.5,7.5M18,10V12H20V10H18M18,14V16H20V14H18Z" />
-                    </svg>`
+            return `<svg style="width:24px;height:24px" viewBox="0 0 24 24"><path fill="black" d="M10,2V4.26L12,5.59V4H22V19H17V21H24V2H10M7.5,5L0,10V21H15V10L7.5,5M14,6V6.93L15.61,8H16V6H14M18,6V8H20V6H18M7.5,7.5L13,11V19H10V13H5V19H2V11L7.5,7.5M18,10V12H20V10H18M18,14V16H20V14H18Z" /></svg>`
             break;
           case 'homestay':
             return `<svg style="width:24px;height:24px" viewBox="0 0 24 24">

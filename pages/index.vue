@@ -1,5 +1,5 @@
 <template>
-    <v-row justify="center">
+    <v-row justify="center"> 
 
       <v-btn color='primary' @click="stopFollowMe">Stop follow me</v-btn>
       <p v-if="accuracyLocation">accuracy {{accuracyLocation}} coordonneé {{coordinates}} </p>
@@ -50,6 +50,41 @@ function showModal () {
 }
 
 export default {
+    async asyncData({$content}){
+        function convertCoordinate(data) { 
+            let indexLng = data.indexOf("'")
+            let degres = data.slice(0, indexLng)
+            let minute = (data.slice((indexLng + 1))) / 60
+            return parseFloat(degres) + parseFloat(minute)
+        }
+
+        
+        let geoJsonFromCSV = []
+        const doc = await $content('coordonates_village').fetch()
+        doc.body.forEach(element => {
+            let latitude = convertCoordinate(element.lat)
+            let longitude = convertCoordinate(element.lng)
+            
+            let newGeoJson = {
+                "type": "Feature",
+                "properties": {
+                    "name": element.name,
+                    "popupContent": element.comment,
+                    "category": element.category,
+                    "subCategory" : element.subcategory,
+                    "svg": element.svg
+                },
+                "geometry": {
+                    "type": element.type,
+                    "coordinates": [longitude, latitude]
+                }
+            }
+            geoJsonFromCSV.push(newGeoJson)
+        });
+        //console.log(geoJsonFromCSV)
+        return {geoJsonFromCSV}
+       
+    },
     data: () => ({
         map: Object,
         coordinates: [],
@@ -134,20 +169,6 @@ export default {
             // ICI ON PEUT CHOISIR D'AJOUTER UN NOUVEAU TYPE DE LAYER
             // this.layerGroupHouse.addLayer(this.layerVillage)
         },
-        /* updateLocation () { 
-            this.map.locate({setView: true, maxZoom: 16})
-            this.myLocationMark.remove(this.map)
-            this.myLocationMark = L.marker()
-
-            let onLocationFound= (e => {
-                this.myLocationMark
-                    .setLatLng(e.latlng)
-                    .addTo(this.map)
-                this.coordinates.push([e.latlng.lng, e.latlng.lat])
-                this.showInputGeoDetail = true
-            })
-            this.map.on('locationfound', onLocationFound)         
-        }, */
         showMeasure() {
             // show measure on click
             // HIDE MEASURE ON SECOND CLICK + BUTTON DYNAMIC
@@ -276,11 +297,24 @@ export default {
 
         /* RECUPERE LES DONNEES SI PRESENT DANS LE LOCALSTORAGE */
         let geoFromLocal = localStorage.getItem('APIGeoMap')
+        
 
-        if(geoFromLocal) {
-            this.geoJsonFeature = JSON.parse(geoFromLocal)
-            this.showGeoJson()
+        if(this.geoJsonFromCSV) { // if there is data from a file, loaded
+            try {
+                this.geoJsonFeature = this.geoJsonFromCSV
+                this.showGeoJson()
+            } catch (error) {
+                console.log(error)
+            }
+        } else if(geoFromLocal) { // else load data from localstorage
+            try {
+                this.geoJsonFeature = JSON.parse(geoFromLocal)
+                this.showGeoJson()
+            } catch (error) {
+                console.log(error)
+            }
         }
+
         
         // ADD A PRINT CONTROL ON MAP
         L.control.browserPrint({
