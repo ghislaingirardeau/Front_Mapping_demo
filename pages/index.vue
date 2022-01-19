@@ -72,6 +72,8 @@ export default {
         expand: true,
         layerGroupHouse: undefined,
         layerGeoJson: undefined,
+        layerStorageControl: undefined,
+        layerActionControl: undefined,
         btnMeasure: true,
         messageModal: '',
         watchMe: undefined,
@@ -82,17 +84,12 @@ export default {
     },
     methods: {
         showModal () {
-            // Get the modal
             var modal = document.getElementById("myModal")
-            // Get the <span> element that closes the modal
             var span = document.getElementsByClassName("close")[0]
-            // When the user clicks on the button, open the modal
             modal.style.display = "block"
-            // When the user clicks on <span> (x), close the modal
             span.onclick = function() {
             modal.style.display = "none"
             }
-            // When the user clicks anywhere outside of the modal, close it
             window.onclick = function(event) {
                 if (event.target == modal) {
                     modal.style.display = "none"
@@ -261,6 +258,10 @@ export default {
             "Outdoors": outdoors,
         }
 
+        var overlayMaps = {
+            "Cities": this.layerGroupHouse
+        };
+
         // build the container with switch layer
         this.map = L.map('map', {layers: [streets, outdoors]}).fitWorld()
         this.map.locate({setView: true, maxZoom: 16})
@@ -319,22 +320,15 @@ export default {
             printModes: ["Portrait"]
         }).addTo(this.map)
         
-        // STYLE POPUP ON CLICK
-        var popup = L.popup( //create a popup
-            { // pass options here
-                minWidth: 450
-            }
-        )
-
         // CUSTOMIZE AN ICON MENU ACTIONS ON THE MAP: 2 option of adding custome icons
 
-        let saveControl = L.control.custom({
+        this.layerStorageControl = L.control.custom({
             position: 'topleft',
             content : '<button type="button" class="btn-map">'+
-                    '    <svg  id="btn-save" style="width:34px;height:34px" viewBox="0 0 24 24"><path fill="green" d="M15,9H5V5H15M12,19A3,3 0 0,1 9,16A3,3 0 0,1 12,13A3,3 0 0,1 15,16A3,3 0 0,1 12,19M17,3H5C3.89,3 3,3.9 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V7L17,3Z"  /></svg>' +
+                    '    <svg  id="btn-save" style="width:27px;height:27px" viewBox="0 0 24 24"><path fill="green" d="M15,9H5V5H15M12,19A3,3 0 0,1 9,16A3,3 0 0,1 12,13A3,3 0 0,1 15,16A3,3 0 0,1 12,19M17,3H5C3.89,3 3,3.9 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V7L17,3Z"  /></svg>' +
                     '</button>' +
                     '<button type="button" class="btn-map ">'+
-                    '    <svg id="btn-erase" style="width:34px;height:34px" viewBox="0 0 24 24"><path fill="red" d="M16.24,3.56L21.19,8.5C21.97,9.29 21.97,10.55 21.19,11.34L12,20.53C10.44,22.09 7.91,22.09 6.34,20.53L2.81,17C2.03,16.21 2.03,14.95 2.81,14.16L13.41,3.56C14.2,2.78 15.46,2.78 16.24,3.56M4.22,15.58L7.76,19.11C8.54,19.9 9.8,19.9 10.59,19.11L14.12,15.58L9.17,10.63L4.22,15.58Z"/></svg>' +
+                    '    <svg id="btn-erase" style="width:27px;height:27px" viewBox="0 0 24 24"><path fill="red" d="M16.24,3.56L21.19,8.5C21.97,9.29 21.97,10.55 21.19,11.34L12,20.53C10.44,22.09 7.91,22.09 6.34,20.53L2.81,17C2.03,16.21 2.03,14.95 2.81,14.16L13.41,3.56C14.2,2.78 15.46,2.78 16.24,3.56M4.22,15.58L7.76,19.11C8.54,19.9 9.8,19.9 10.59,19.11L14.12,15.58L9.17,10.63L4.22,15.58Z"/></svg>' +
                     '</button>',
             classes : 'btn-group-icon-map-option1',
             style   :
@@ -355,9 +349,9 @@ export default {
                 },
             }
         })
-        .addTo(this.map);
 
-        let actionControl = L.control.custom({
+
+        this.layerActionControl = L.control.custom({
             position: 'topright',
             content : '<button type="button" class="btn-map">'+
                         '<svg id="btn-add" style="width:27px;height:27px" viewBox="0 0 24 24"><path fill="blue" d="M17,13H13V17H11V13H7V11H11V7H13V11H17M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z" /></svg>' +
@@ -407,7 +401,9 @@ export default {
                 },
             }
         })
-        .addTo(this.map)
+
+        this.map.addControl(this.layerStorageControl)
+        this.map.addControl(this.layerActionControl)
 
         // ecoute si online ou non automatiquement 
         // fonctionnalité permettant d'enregistrer le geojson en mode offline
@@ -449,7 +445,7 @@ export default {
     border-radius: 5px 5px;
     background-color: white;
     position: relative;
-    margin-bottom: 5px;
+    margin-bottom: 10px;
     padding: 4px 2px 0px 2px;
     &::after{
         content: "";
