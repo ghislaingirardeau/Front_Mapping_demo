@@ -1,8 +1,5 @@
 <template>
-    <v-row justify="center"> 
-
-      <v-btn color='primary' @click="stopFollowMe">Stop follow me</v-btn>
-      <p v-if="accuracyLocation">accuracy {{accuracyLocation}} coordonneé {{coordinates}} </p>
+    <v-row justify="center">       
 
         <div id="myModal" class="modal">
             <!-- Modal content -->
@@ -57,7 +54,6 @@ export default {
             let minute = (data.slice((indexLng + 1))) / 60
             return parseFloat(degres) + parseFloat(minute)
         }
-
         
         let geoJsonFromCSV = []
         const doc = await $content('coordonates_village').fetch()
@@ -212,37 +208,39 @@ export default {
             this.showInputGeoDetail = !this.showInputGeoDetail
         },
         followMe() {
-            // track my location, update the coordinates
-            let success = (position) => {
-                this.accuracyLocation = position.coords.accuracy
-                this.coordinates = [[position.coords.longitude, position.coords.latitude]]
-                let updatePositionMarker = {
-                    lat: position.coords.latitude,
-                    lng: position.coords.longitude,
-                }
-                this.myLocationMark
-                    .setLatLng(updatePositionMarker)
-            }
-
-            let error = () => {
-                /* this.message = 'Unable to retrieve your location'; */
-            }
-
-            if (navigator.geolocation) {
-                /* this.message = 'Locating...' */
-                this.watchMe = navigator.geolocation.watchPosition(success, error, {
-                enableHighAccuracy: true,
-                maximumAge: 0
-                })
-                
+            if(this.watchMe) {
+                navigator.geolocation.clearWatch(this.watchMe)
+                this.coordinates = []
+                this.watchMe = undefined
             } else {
-                /* this.message = 'Geolocation is not supported by your browser' */
+                // track my location, update the coordinates
+                let success = (position) => {
+                    this.accuracyLocation = position.coords.accuracy
+                    this.coordinates = [[position.coords.longitude, position.coords.latitude]]
+                    let updatePositionMarker = {
+                        lat: position.coords.latitude,
+                        lng: position.coords.longitude,
+                    }
+                    this.myLocationMark
+                        .setLatLng(updatePositionMarker)
+                }
+
+                let error = () => {
+                    /* this.message = 'Unable to retrieve your location'; */
+                }
+
+                if (navigator.geolocation) {
+                    /* this.message = 'Locating...' */
+                    this.watchMe = navigator.geolocation.watchPosition(success, error, {
+                    enableHighAccuracy: true,
+                    maximumAge: 0
+                    })
+                    
+                } else {
+                    /* this.message = 'Geolocation is not supported by your browser' */
+                }
             }
         },
-        stopFollowMe() {
-            navigator.geolocation.clearWatch(this.watchMe)
-            this.coordinates = []
-        }
     },
     mounted() {
         // config mapbox
@@ -300,24 +298,22 @@ export default {
 
         /* RECUPERE LES DONNEES SI PRESENT DANS LE LOCALSTORAGE */
         let geoFromLocal = localStorage.getItem('APIGeoMap')
-        
 
-        if(this.geoJsonFromCSV) { // if there is data from a file, loaded
-            try {
-                this.geoJsonFeature = this.geoJsonFromCSV
-                this.showGeoJson()
-            } catch (error) {
-                console.log(error)
-            }
-        } else if(geoFromLocal) { // else load data from localstorage
+        if(geoFromLocal) { // if there is data from a file, loaded
             try {
                 this.geoJsonFeature = JSON.parse(geoFromLocal)
                 this.showGeoJson()
             } catch (error) {
                 console.log(error)
             }
+        } else if(this.geoJsonFromCSV) { // else load data from localstorage
+            try {
+                this.geoJsonFeature = this.geoJsonFromCSV
+                this.showGeoJson()
+            } catch (error) {
+                console.log(error)
+            }
         }
-
         
         // ADD A PRINT CONTROL ON MAP
         L.control.browserPrint({
@@ -332,78 +328,16 @@ export default {
         )
 
         // CUSTOMIZE AN ICON MENU ACTIONS ON THE MAP: 2 option of adding custome icons
-        /* OPTION 1 */
-        // function qui créer le bouton
-        let createBtn = (position, callBack, svg) => {
-          L.control.custom({
-              position: position,
-              content : svg,
-              classes : 'btn-group-icon-map-option1',
-              style   :
-              {
-                  margin: '10px',
-                  padding: '4px 2px 0px 2px',
-                  cursor: 'pointer',
-              },
-              events:
-              {
-                    click: (e) =>
-                        {
-                            callBack()
-                        },
-              }
-          })
-          .addTo(this.map)
-        }
-        // les icones d'actions
-        const itemsAction = [
-            {
-                position: 'topright',
-                callback: this.addCoordinates,
-                svg: '<svg style="width:27px;height:27px" viewBox="0 0 24 24"><path fill="blue" d="M17,13H13V17H11V13H7V11H11V7H13V11H17M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z" /></svg>'
-            },
-            {
-                position: 'topright',
-                callback: this.followMe,
-                svg: '<svg style="width:27px;height:27px" viewBox="0 0 24 24"><path fill="black" d="M12,8A4,4 0 0,1 16,12A4,4 0 0,1 12,16A4,4 0 0,1 8,12A4,4 0 0,1 12,8M3.05,13H1V11H3.05C3.5,6.83 6.83,3.5 11,3.05V1H13V3.05C17.17,3.5 20.5,6.83 20.95,11H23V13H20.95C20.5,17.17 17.17,20.5 13,20.95V23H11V20.95C6.83,20.5 3.5,17.17 3.05,13M12,5A7,7 0 0,0 5,12A7,7 0 0,0 12,19A7,7 0 0,0 19,12A7,7 0 0,0 12,5Z" /></svg>'
-            },
-            {
-                position: 'topright',
-                callback: this.showMeasure,
-                svg: '<svg style="width:27px;height:27px" viewBox="0 0 24 24"><path fill="black" d="M1.39,18.36L3.16,16.6L4.58,18L5.64,16.95L4.22,15.54L5.64,14.12L8.11,16.6L9.17,15.54L6.7,13.06L8.11,11.65L9.53,13.06L10.59,12L9.17,10.59L10.59,9.17L13.06,11.65L14.12,10.59L11.65,8.11L13.06,6.7L14.47,8.11L15.54,7.05L14.12,5.64L15.54,4.22L18,6.7L19.07,5.64L16.6,3.16L18.36,1.39L22.61,5.64L5.64,22.61L1.39,18.36Z" /></svg>'
-            },
-            {
-                position: 'topright',
-                callback: this.deleteItem,
-                svg: '<svg style="width:27px;height:27px" viewBox="0 0 24 24"><path fill="orange" d="M22,3H7C6.31,3 5.77,3.35 5.41,3.88L0,12L5.41,20.11C5.77,20.64 6.31,21 7,21H22A2,2 0 0,0 24,19V5A2,2 0 0,0 22,3M19,15.59L17.59,17L14,13.41L10.41,17L9,15.59L12.59,12L9,8.41L10.41,7L14,10.59L17.59,7L19,8.41L15.41,12" /></svg>'
-            },
-            {
-                position: 'topleft',
-                callback: this.saveGeoJson,
-                svg: '<svg style="width:27px;height:27px" viewBox="0 0 24 24"><path fill="green" d="M15,9H5V5H15M12,19A3,3 0 0,1 9,16A3,3 0 0,1 12,13A3,3 0 0,1 15,16A3,3 0 0,1 12,19M17,3H5C3.89,3 3,3.9 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V7L17,3Z" /></svg>'
-            },
-            {
-                position: 'topleft',
-                callback: this.removeGeoJson,
-                svg: '<svg style="width:27px;height:27px" viewBox="0 0 24 24"><path fill="red" d="M16.24,3.56L21.19,8.5C21.97,9.29 21.97,10.55 21.19,11.34L12,20.53C10.44,22.09 7.91,22.09 6.34,20.53L2.81,17C2.03,16.21 2.03,14.95 2.81,14.16L13.41,3.56C14.2,2.78 15.46,2.78 16.24,3.56M4.22,15.58L7.76,19.11C8.54,19.9 9.8,19.9 10.59,19.11L14.12,15.58L9.17,10.63L4.22,15.58Z" /></svg>'
-            }
-        ]
-        // applique la fonction pour chaque icone
-        for (let item of itemsAction) {
-            createBtn(item.position, item.callback, item.svg)
-        }
 
-        /* ----------------- */
-        /* option 2 */
-        /* L.control.custom({
-            position: 'bottomright',
-            content : '<button type="button" id="btn-save" class="btn-map save">'+
-                    '    <svg id="btn-save" style="width:34px;height:34px" viewBox="0 0 24 24"><path id="btn-save" fill="white" d="M15,9H5V5H15M12,19A3,3 0 0,1 9,16A3,3 0 0,1 12,13A3,3 0 0,1 15,16A3,3 0 0,1 12,19M17,3H5C3.89,3 3,3.9 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V7L17,3Z"  /></svg>' +
+        let saveControl = L.control.custom({
+            position: 'topleft',
+            content : '<button type="button" class="btn-map">'+
+                    '    <svg  id="btn-add" style="width:34px;height:34px" viewBox="0 0 24 24"><path fill="green" d="M15,9H5V5H15M12,19A3,3 0 0,1 9,16A3,3 0 0,1 12,13A3,3 0 0,1 15,16A3,3 0 0,1 12,19M17,3H5C3.89,3 3,3.9 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V7L17,3Z"  /></svg>' +
                     '</button>' +
-                    '<button type="button" id="btn-erase" class="btn-map erase">'+
-                    '    <svg id="btn-erase" style="width:34px;height:34px" viewBox="0 0 24 24"><path id="btn-erase" fill="white" d="M16.24,3.56L21.19,8.5C21.97,9.29 21.97,10.55 21.19,11.34L12,20.53C10.44,22.09 7.91,22.09 6.34,20.53L2.81,17C2.03,16.21 2.03,14.95 2.81,14.16L13.41,3.56C14.2,2.78 15.46,2.78 16.24,3.56M4.22,15.58L7.76,19.11C8.54,19.9 9.8,19.9 10.59,19.11L14.12,15.58L9.17,10.63L4.22,15.58Z"/></svg>' +
+                    '<button type="button" class="btn-map ">'+
+                    '    <svg id="btn-erase" style="width:34px;height:34px" viewBox="0 0 24 24"><path fill="red" d="M16.24,3.56L21.19,8.5C21.97,9.29 21.97,10.55 21.19,11.34L12,20.53C10.44,22.09 7.91,22.09 6.34,20.53L2.81,17C2.03,16.21 2.03,14.95 2.81,14.16L13.41,3.56C14.2,2.78 15.46,2.78 16.24,3.56M4.22,15.58L7.76,19.11C8.54,19.9 9.8,19.9 10.59,19.11L14.12,15.58L9.17,10.63L4.22,15.58Z"/></svg>' +
                     '</button>',
-            classes : 'btn-group-icon-map-option2',
+            classes : 'btn-group-icon-map-option1',
             style   :
             {
                 margin: '10px',
@@ -414,19 +348,67 @@ export default {
             {
                 click: (data) =>
                 {
-                    switch (data.target.id) {
-                        case 'btn-save':
-                            this.saveGeoJson()
-                            break;
-                        case 'btn-erase':
-                            this.removeGeoJson()
-                            break;
+                    if(data.target.querySelector('#btn-save')){
+                        console.log('save')
+                    } else if(data.target.querySelector('#btn-erase')){
+                        console.log('erase')
                     }
                 },
             }
         })
-        .addTo(this.map); */
-        /* ------------------------- */
+        .addTo(this.map);
+
+        let actionControl = L.control.custom({
+            position: 'topright',
+            content : '<button type="button" class="btn-map">'+
+                        '<svg id="btn-add" style="width:27px;height:27px" viewBox="0 0 24 24"><path fill="blue" d="M17,13H13V17H11V13H7V11H11V7H13V11H17M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z" /></svg>' +
+                    '</button>' +
+                    '<button type="button" class="btn-map">'+
+                        '<svg id="btn-location" style="width:27px;height:27px" viewBox="0 0 24 24"><path fill="black" d="M12,8A4,4 0 0,1 16,12A4,4 0 0,1 12,16A4,4 0 0,1 8,12A4,4 0 0,1 12,8M3.05,13H1V11H3.05C3.5,6.83 6.83,3.5 11,3.05V1H13V3.05C17.17,3.5 20.5,6.83 20.95,11H23V13H20.95C20.5,17.17 17.17,20.5 13,20.95V23H11V20.95C6.83,20.5 3.5,17.17 3.05,13M12,5A7,7 0 0,0 5,12A7,7 0 0,0 12,19A7,7 0 0,0 19,12A7,7 0 0,0 12,5Z" /></svg>' +
+                    '</button>' +
+                     '<button type="button" class="btn-map">'+
+                        '<svg id="btn-ruler" style="width:27px;height:27px" viewBox="0 0 24 24"><path fill="black" d="M1.39,18.36L3.16,16.6L4.58,18L5.64,16.95L4.22,15.54L5.64,14.12L8.11,16.6L9.17,15.54L6.7,13.06L8.11,11.65L9.53,13.06L10.59,12L9.17,10.59L10.59,9.17L13.06,11.65L14.12,10.59L11.65,8.11L13.06,6.7L14.47,8.11L15.54,7.05L14.12,5.64L15.54,4.22L18,6.7L19.07,5.64L16.6,3.16L18.36,1.39L22.61,5.64L5.64,22.61L1.39,18.36Z" /></svg>' +
+                    '</button>' +
+                    '<button type="button" class="btn-map">'+
+                        '<svg id="btn-delete" style="width:27px;height:27px" viewBox="0 0 24 24"><path fill="orange" d="M22,3H7C6.31,3 5.77,3.35 5.41,3.88L0,12L5.41,20.11C5.77,20.64 6.31,21 7,21H22A2,2 0 0,0 24,19V5A2,2 0 0,0 22,3M19,15.59L17.59,17L14,13.41L10.41,17L9,15.59L12.59,12L9,8.41L10.41,7L14,10.59L17.59,7L19,8.41L15.41,12" /></svg>' +
+                    '</button>',
+            classes : 'btn-group-icon-map-option1',
+            style   :
+            {
+                margin: '10px',
+                padding: '0px',
+                cursor: 'pointer',
+            },
+            events:
+            {
+                click: (data) =>
+                {
+                    // style css button
+                    let styleOnClick = () => {
+                        let element = data.target.classList.contains('click')
+                        if(element) {
+                            data.target.classList.remove("click")
+                        } else {
+                            data.target.classList.add("click")
+                        }
+                    }
+                    // function on click
+                    if(data.target.querySelector('#btn-add')){
+                        this.addCoordinates()
+                    } else if(data.target.querySelector('#btn-location')){
+                        styleOnClick()
+                        this.followMe()
+                    } else if(data.target.querySelector('#btn-ruler')){
+                        styleOnClick()
+                        this.showMeasure()
+                    } else if(data.target.querySelector('#btn-delete')){
+                        this.deleteItem()
+                    }
+
+                },
+            }
+        })
+        .addTo(this.map)
 
         // ecoute si online ou non automatiquement 
         // fonctionnalité permettant d'enregistrer le geojson en mode offline
@@ -450,23 +432,38 @@ export default {
 
 // STYLE BTN GROUP OM MAP
 .btn-group-icon-map-option1{
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    /* &::after{
+        content: "";
+        position: absolute;
+        top: 0px;
+        left: 0px;
+        height: 100%;
+        width: 100%;
+        background-color: pink;
+    } */
+}
+.btn-map{
+    border: 2px solid grey;
+    border-radius: 5px 5px;
     background-color: white;
-    border: 2px solid grey;
-    border-radius: 5px 5px;
-}
-// OPTION 2 ICON ACTION MAP
-/* .btn-map{
-    border: 2px solid grey;
-    border-radius: 5px 5px;
+    position: relative;
+    margin-bottom: 5px;
     padding: 4px 2px 0px 2px;
-    margin: 0px 8px 0px 8px;
+    &::after{
+        content: "";
+        position: absolute;
+        top: 0px;
+        left: 0px;
+        height: 100%;
+        width: 100%;
+    }
 }
-.save{
-    background-color: green;
+.click{
+    border: 2px solid red;
 }
-.erase{
-    background-color: red;
-} */
 
 // STYLE THE MODAL
 /* The Modal (background) */
