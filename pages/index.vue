@@ -137,6 +137,13 @@ export default {
                 })
             }
 
+            function createIcon(category, subCategory) {
+                return L.divIcon({
+                className: 'house-icon',
+                html: svg
+                })
+            }
+
             this.layerGeoJson = L.geoJSON(this.geoJsonFeature, { // on peut enchainer les options ici
                 onEachFeature: onEachFeature,
                 pointToLayer: (feature, latlng) => { // CREATE THE MARKERS
@@ -412,7 +419,7 @@ export default {
 
 <style lang="scss">
 #map { 
-    height: 100vw; 
+    height: 500px; 
     width: 100%;
     margin: 0px 2px 0px 2px;
     z-index: 1;
