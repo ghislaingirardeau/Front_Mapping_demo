@@ -27,25 +27,6 @@
 <script>
 import dataGeoJson from '@/components/leaflet/dataGeoJson.vue' 
 
-function showModal () {
-    // Get the modal
-    var modal = document.getElementById("myModal")
-    // Get the <span> element that closes the modal
-    var span = document.getElementsByClassName("close")[0]
-    // When the user clicks on the button, open the modal
-    modal.style.display = "block"
-    // When the user clicks on <span> (x), close the modal
-    span.onclick = function() {
-    modal.style.display = "none"
-    }
-    // When the user clicks anywhere outside of the modal, close it
-    window.onclick = function(event) {
-        if (event.target == modal) {
-            modal.style.display = "none"
-        }
-    }
-}
-
 export default {
     async asyncData({$content}){
         function convertCoordinate(data) { 
@@ -100,6 +81,24 @@ export default {
         dataGeoJson,
     },
     methods: {
+        showModal () {
+            // Get the modal
+            var modal = document.getElementById("myModal")
+            // Get the <span> element that closes the modal
+            var span = document.getElementsByClassName("close")[0]
+            // When the user clicks on the button, open the modal
+            modal.style.display = "block"
+            // When the user clicks on <span> (x), close the modal
+            span.onclick = function() {
+            modal.style.display = "none"
+            }
+            // When the user clicks anywhere outside of the modal, close it
+            window.onclick = function(event) {
+                if (event.target == modal) {
+                    modal.style.display = "none"
+                }
+            }
+        },
         getData(payload) { 
             this.showInputGeoDetail = payload.show
             this.expand = !payload.show
@@ -192,17 +191,17 @@ export default {
             await this.geoJsonFeature.pop()
             await this.showGeoJson()
             this.messageModal = "Last data removed"
-            showModal()
+            this.showModal()
         },
         removeGeoJson() {
             localStorage.removeItem('APIGeoMap')
             this.messageModal = "data remove from local storage"
-            showModal()
+            this.showModal()
         },
         saveGeoJson() {
             localStorage.setItem('APIGeoMap', JSON.stringify(this.geoJsonFeature))
             this.messageModal = "data save in local storage"
-            showModal()
+            this.showModal()
         },
         addCoordinates() {
             this.showInputGeoDetail = !this.showInputGeoDetail
@@ -332,7 +331,7 @@ export default {
         let saveControl = L.control.custom({
             position: 'topleft',
             content : '<button type="button" class="btn-map">'+
-                    '    <svg  id="btn-add" style="width:34px;height:34px" viewBox="0 0 24 24"><path fill="green" d="M15,9H5V5H15M12,19A3,3 0 0,1 9,16A3,3 0 0,1 12,13A3,3 0 0,1 15,16A3,3 0 0,1 12,19M17,3H5C3.89,3 3,3.9 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V7L17,3Z"  /></svg>' +
+                    '    <svg  id="btn-save" style="width:34px;height:34px" viewBox="0 0 24 24"><path fill="green" d="M15,9H5V5H15M12,19A3,3 0 0,1 9,16A3,3 0 0,1 12,13A3,3 0 0,1 15,16A3,3 0 0,1 12,19M17,3H5C3.89,3 3,3.9 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V7L17,3Z"  /></svg>' +
                     '</button>' +
                     '<button type="button" class="btn-map ">'+
                     '    <svg id="btn-erase" style="width:34px;height:34px" viewBox="0 0 24 24"><path fill="red" d="M16.24,3.56L21.19,8.5C21.97,9.29 21.97,10.55 21.19,11.34L12,20.53C10.44,22.09 7.91,22.09 6.34,20.53L2.81,17C2.03,16.21 2.03,14.95 2.81,14.16L13.41,3.56C14.2,2.78 15.46,2.78 16.24,3.56M4.22,15.58L7.76,19.11C8.54,19.9 9.8,19.9 10.59,19.11L14.12,15.58L9.17,10.63L4.22,15.58Z"/></svg>' +
@@ -349,9 +348,9 @@ export default {
                 click: (data) =>
                 {
                     if(data.target.querySelector('#btn-save')){
-                        console.log('save')
+                        this.saveGeoJson()
                     } else if(data.target.querySelector('#btn-erase')){
-                        console.log('erase')
+                        this.removeGeoJson()
                     }
                 },
             }
