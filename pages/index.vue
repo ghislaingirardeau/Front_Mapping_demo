@@ -258,21 +258,19 @@ export default {
             "Outdoors": outdoors,
         }
 
+        this.layerGroupHouse = L.layerGroup();
         var overlayMaps = {
-            "Cities": this.layerGroupHouse
+            "village": this.layerGroupHouse
         };
 
         // build the container with switch layer
-        this.map = L.map('map', {layers: [streets, outdoors]}).fitWorld()
+        this.map = L.map('map', {layers: [streets, outdoors, this.layerGroupHouse]}).fitWorld()
         this.map.locate({setView: true, maxZoom: 16})
 
         // control layer choice
-        L.control.layers(baseMaps).addTo(this.map)
+        L.control.layers(baseMaps, overlayMaps).addTo(this.map)
         // ADD scale control
         L.control.scale().addTo(this.map)
-
-        this.layerGroupHouse = new L.LayerGroup()
-        this.layerGroupHouse.addTo(this.map)
 
         // show my location on load
         this.myLocationMark = L.marker()
@@ -322,6 +320,12 @@ export default {
         
         // CUSTOMIZE AN ICON MENU ACTIONS ON THE MAP: 2 option of adding custome icons
 
+        let styleControl = {
+            margin: '10px',
+            padding: '0px',
+            cursor: 'pointer',
+        }
+
         this.layerStorageControl = L.control.custom({
             position: 'topleft',
             content : '<button type="button" class="btn-map">'+
@@ -331,12 +335,7 @@ export default {
                     '    <svg id="btn-erase" style="width:27px;height:27px" viewBox="0 0 24 24"><path fill="red" d="M16.24,3.56L21.19,8.5C21.97,9.29 21.97,10.55 21.19,11.34L12,20.53C10.44,22.09 7.91,22.09 6.34,20.53L2.81,17C2.03,16.21 2.03,14.95 2.81,14.16L13.41,3.56C14.2,2.78 15.46,2.78 16.24,3.56M4.22,15.58L7.76,19.11C8.54,19.9 9.8,19.9 10.59,19.11L14.12,15.58L9.17,10.63L4.22,15.58Z"/></svg>' +
                     '</button>',
             classes : 'btn-group-icon-map-option1',
-            style   :
-            {
-                margin: '10px',
-                padding: '0px',
-                cursor: 'pointer',
-            },
+            style   : styleControl,
             events:
             {
                 click: (data) =>
@@ -349,7 +348,6 @@ export default {
                 },
             }
         })
-
 
         this.layerActionControl = L.control.custom({
             position: 'topright',
@@ -366,12 +364,7 @@ export default {
                         '<svg id="btn-delete" style="width:27px;height:27px" viewBox="0 0 24 24"><path fill="orange" d="M22,3H7C6.31,3 5.77,3.35 5.41,3.88L0,12L5.41,20.11C5.77,20.64 6.31,21 7,21H22A2,2 0 0,0 24,19V5A2,2 0 0,0 22,3M19,15.59L17.59,17L14,13.41L10.41,17L9,15.59L12.59,12L9,8.41L10.41,7L14,10.59L17.59,7L19,8.41L15.41,12" /></svg>' +
                     '</button>',
             classes : 'btn-group-icon-map-option1',
-            style   :
-            {
-                margin: '10px',
-                padding: '0px',
-                cursor: 'pointer',
-            },
+            style   : styleControl,
             events:
             {
                 click: (data) =>
