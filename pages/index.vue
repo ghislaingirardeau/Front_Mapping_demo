@@ -114,6 +114,7 @@ export default {
             this.showInputGeoDetail = payload.show
             this.expand = !payload.show
             this.lastItem = payload.layerGroup
+
             switch (this.lastItem) {
                 case 'house':
                     this.createGeoJsonLayer(this.geoJsonHouse, this.houseLayer)
@@ -122,7 +123,7 @@ export default {
                     this.createGeoJsonLayer(this.geoJsonVillage, this.villageLayer)
                     break;
             }
-            //createGeoJsonLayer
+            
             if(payload.resetCoordinates) {
                 this.coordinates = []
             }
@@ -216,16 +217,9 @@ export default {
                 })
             }
 
-            this.layerGeoJson = L.geoJSON(layerType, { // on peut enchainer les options ici
-                onEachFeature: onEachFeature,
-                pointToLayer: (feature, latlng) => { // CREATE THE MARKERS
-                    return L.marker(latlng, {
-                        icon: createIcon(feature.properties.category, feature.properties.subCategory, '14')
-                    });
-                },
-                style: (feature) => { // DEFINE SYTLE OF POLYGONS AND LINE
+            function stylePolygon(element) {
                     let colorPolygon
-                    switch (feature.properties.category) {
+                    switch (element) {
                         case "rice":
                             colorPolygon = '#15e60e'
                             break;
@@ -237,6 +231,17 @@ export default {
                             break;
                     }
                     return {color: colorPolygon}
+            }
+
+            this.layerGeoJson = L.geoJSON(layerType, { // on peut enchainer les options ici
+                onEachFeature: onEachFeature,
+                pointToLayer: (feature, latlng) => { // CREATE THE MARKERS
+                    return L.marker(latlng, {
+                        icon: createIcon(feature.properties.category, feature.properties.subCategory, '14')
+                    });
+                },
+                style: (feature) => { // DEFINE SYTLE OF POLYGONS AND LINE
+                    return stylePolygon(feature.properties.category)
                 }
             })
 
@@ -248,6 +253,7 @@ export default {
             // show measure on click
             // HIDE MEASURE ON SECOND CLICK + BUTTON DYNAMIC
             // DEBUG ON PRINT = NOT SHOWING MEASURE
+
             if(this.btnMeasure === true){
                 this.map.eachLayer(function(layer){
                     if(layer instanceof L.Polygon || layer instanceof L.Path){
