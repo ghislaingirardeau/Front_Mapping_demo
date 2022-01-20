@@ -44,7 +44,7 @@
             <v-btn
                 color="blue darken-1"
                 text
-                @click="dialog = false"
+                @click="close"
             >
                 Close
             </v-btn>
@@ -78,6 +78,10 @@ export default {
         ],
     }),
     methods: {
+        close() {
+            this.dialog = false
+            this.errorMessage = undefined
+        },
         convertMyJson() {
             function convertToCSV(objArray) {
                 var array = typeof objArray != 'object' ? JSON.parse(objArray) : objArray;
@@ -134,9 +138,7 @@ export default {
                     type: "type",
                     name: 'name',
                     comment: "popupContent",
-                    lat: "Lat",
-                    lng: "Lng",
-                    test: "test"
+                    coordinates: "coordinates"
                 }
 
                 var itemsNotFormatted = jsonToConvert
@@ -144,16 +146,23 @@ export default {
                 var itemsFormatted = []
 
                 // format the data
+                
                 itemsNotFormatted.forEach((item) => {
+                    let coordinates
+                    if(item.geometry.coordinates.length === 2) {
+                        coordinates = item.geometry.coordinates.join(' ')
+                    } else {
+                        let arrayPolygon = item.geometry.coordinates
+                        let coordinatesToString = arrayPolygon[0].join('/')
+                        coordinates = coordinatesToString.replace(/,/g, ' ')
+                    }
                     itemsFormatted.push({
                         category: item.properties.category,
                         subCategory: item.properties.subCategory,
                         type: item.geometry.type,
                         name: item.properties.name, 
                         comment: item.properties.popupContent,
-                        lng: item.geometry.coordinates[0],
-                        lat: item.geometry.coordinates[1],
-                        test: item.geometry.coordinates
+                        coordinates: coordinates
                     })
                 })
 

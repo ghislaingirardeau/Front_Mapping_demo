@@ -102,7 +102,7 @@
               "amount": 9000,
               "popupContent": "test",
               "category": "",
-              "subCategory" : undefined,
+              "subCategory" : '',
           },
           "geometry": {
               "type": "",
