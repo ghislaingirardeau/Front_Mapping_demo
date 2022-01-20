@@ -9,6 +9,8 @@
             </div>
         </div>
 
+        <p>My position {{coordinates}}</p>
+
         <div id="map" v-show="expand">
         </div>
 
@@ -308,8 +310,8 @@ export default {
         followMe() {
             if(this.watchMe) {
                 navigator.geolocation.clearWatch(this.watchMe)
-                this.coordinates = []
                 this.watchMe = undefined
+                this.showInputGeoDetail = true
             } else {
                 // track my location, update the coordinates
                 let success = (position) => {
@@ -321,10 +323,12 @@ export default {
                     }
                     this.myLocationMark
                         .setLatLng(updatePositionMarker)
+                        .setRadius(position.coords.accuracy)
                 }
 
                 let error = () => {
-                    /* this.message = 'Unable to retrieve your location'; */
+                    this.messageModal = 'Unable to retrieve your location'
+                    this.showModal()
                 }
 
                 if (navigator.geolocation) {
@@ -335,7 +339,8 @@ export default {
                     })
                     
                 } else {
-                    /* this.message = 'Geolocation is not supported by your browser' */
+                    this.messageModal = 'Geolocation is not supported by your browser'
+                    this.showModal()
                 }
             }
         },
@@ -379,10 +384,12 @@ export default {
         L.control.scale().addTo(this.map)
 
         // show my location on load
-        this.myLocationMark = L.marker()
+        this.myLocationMark = L.circleMarker()
         let onLocationFound= (e => {
+            var radius = e.accuracy
             this.myLocationMark
                 .setLatLng(e.latlng)
+                .setRadius(radius)
                 .addTo(this.map)
         })
         this.map.on('locationfound', onLocationFound) 
