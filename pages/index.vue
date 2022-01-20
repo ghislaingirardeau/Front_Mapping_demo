@@ -304,10 +304,7 @@ export default {
             this.messageModal = "data save in local storage"
             this.showModal()
         },
-        addCoordinates() {
-            this.showInputGeoDetail = !this.showInputGeoDetail
-        },
-        followMe() {
+        coordinatesOnLocation(element) {
             if(this.watchMe) {
                 navigator.geolocation.clearWatch(this.watchMe)
                 this.watchMe = undefined
@@ -316,7 +313,11 @@ export default {
                 // track my location, update the coordinates
                 let success = (position) => {
                     this.accuracyLocation = position.coords.accuracy
-                    this.coordinates = [[position.coords.longitude, position.coords.latitude]]
+                    if(element) {
+                        this.coordinates = [[position.coords.longitude, position.coords.latitude]]
+                    } else {
+                        this.coordinates.push([position.coords.longitude, position.coords.latitude])
+                    }
                     let updatePositionMarker = {
                         lat: position.coords.latitude,
                         lng: position.coords.longitude,
@@ -488,10 +489,11 @@ export default {
                     }
                     // function on click
                     if(data.target.querySelector('#btn-add')){
-                        this.addCoordinates()
+                        styleOnClick()
+                        this.coordinatesOnLocation(true)
                     } else if(data.target.querySelector('#btn-location')){
                         styleOnClick()
-                        this.followMe()
+                        this.coordinatesOnLocation(false)
                     } else if(data.target.querySelector('#btn-ruler')){
                         styleOnClick()
                         this.showMeasure()
