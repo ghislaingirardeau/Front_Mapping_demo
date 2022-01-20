@@ -30,56 +30,19 @@
 import dataGeoJson from '@/components/leaflet/dataGeoJson.vue' 
 
 export default {
-    async asyncData({$content}){
+    async asyncData({$content}) { 
+        // convert the coordinates
         function convertCoordinate(data) { 
             let indexLng = data.indexOf("'")
             let degres = data.slice(0, indexLng)
             let minute = (data.slice((indexLng + 1))) / 60
             return parseFloat(degres) + parseFloat(minute)
         }
-        
-        let geoJsonFromCSV = []
-        let newGeoJson
-        let geoJsonVillage = []
-        let geoJsonHouse = []
-        const doc = await $content('coordonates_village').fetch()
-        doc.body.forEach(element => {
+        // function to create the layer for each category of json
+        const createGeoJsons = (element, layer) => {
             let latitude = convertCoordinate(element.lat)
             let longitude = convertCoordinate(element.lng)
-
-            if(element.category === 'house') {
-                newGeoJson = {
-                    "type": "Feature",
-                    "properties": {
-                        "name": element.name,
-                        "popupContent": element.comment,
-                        "category": element.category,
-                        "subCategory" : element.subcategory,
-                    },
-                    "geometry": {
-                        "type": element.type,
-                        "coordinates": [longitude, latitude]
-                    }
-                }
-                geoJsonHouse.push(newGeoJson)
-            } else {
-                newGeoJson = {
-                    "type": "Feature",
-                    "properties": {
-                        "name": element.name,
-                        "popupContent": element.comment,
-                        "category": element.category,
-                        "subCategory" : element.subcategory,
-                    },
-                    "geometry": {
-                        "type": element.type,
-                        "coordinates": [longitude, latitude]
-                    }
-                }
-                geoJsonVillage.push(newGeoJson)
-            }
-            
-            /* let newGeoJson = {
+            let newGeoJson = {
                 "type": "Feature",
                 "properties": {
                     "name": element.name,
@@ -92,9 +55,23 @@ export default {
                     "coordinates": [longitude, latitude]
                 }
             }
-            geoJsonFromCSV.push(newGeoJson) */
-        });
-        //console.log(geoJsonFromCSV, geoJsonHouse, geoJsonVillage)
+            layer.push(newGeoJson)
+
+        }
+        
+        let geoJsonVillage = []
+        let geoJsonHouse = []
+
+        const doc = await $content('coordonates_village').fetch() // convert CSV files in content folder to json
+
+        doc.body.forEach(element => {
+            if(element.category === 'house') {
+                createGeoJsons(element, geoJsonHouse)
+            } else {
+                createGeoJsons(element, geoJsonVillage)
+            }            
+        })
+
         return {geoJsonHouse, geoJsonVillage}
        
     },
