@@ -9,8 +9,6 @@
             </div>
         </div>
 
-        <p>My position {{coordinates}}</p>
-
         <div id="map" v-show="expand">
         </div>
 
@@ -25,11 +23,14 @@
             /> 
         </v-expand-transition>
 
+        <exportCSV />
+
     </v-row>
 </template>
 
 <script>
 import dataGeoJson from '@/components/leaflet/dataGeoJson.vue' 
+import exportCSV from '@/components/leaflet/exportCSV.vue' 
 
 export default {
     async asyncData({$content}) { 
@@ -75,7 +76,6 @@ export default {
         })
 
         return {geoJsonHouse, geoJsonVillage}
-       
     },
     data: () => ({
         map: Object,
@@ -97,6 +97,7 @@ export default {
     }),
     components: {
         dataGeoJson,
+        exportCSV
     },
     methods: {
         showModal () { // affiche un message lors du click
