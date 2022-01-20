@@ -16,7 +16,9 @@
             <dataGeoJson 
                 v-if="showInputGeoDetail" 
                 @send-data="getData" 
-                :geoJsonFeature="geoJsonFeature"
+                
+                :geoJsonHouse="geoJsonHouse"
+                :geoJsonVillage="geoJsonVillage"
                 :coordinates="coordinates"
             /> 
         </v-expand-transition>
@@ -37,12 +39,47 @@ export default {
         }
         
         let geoJsonFromCSV = []
+        let newGeoJson
+        let geoJsonVillage = []
+        let geoJsonHouse = []
         const doc = await $content('coordonates_village').fetch()
         doc.body.forEach(element => {
             let latitude = convertCoordinate(element.lat)
             let longitude = convertCoordinate(element.lng)
+
+            if(element.category === 'house') {
+                newGeoJson = {
+                    "type": "Feature",
+                    "properties": {
+                        "name": element.name,
+                        "popupContent": element.comment,
+                        "category": element.category,
+                        "subCategory" : element.subcategory,
+                    },
+                    "geometry": {
+                        "type": element.type,
+                        "coordinates": [longitude, latitude]
+                    }
+                }
+                geoJsonHouse.push(newGeoJson)
+            } else {
+                newGeoJson = {
+                    "type": "Feature",
+                    "properties": {
+                        "name": element.name,
+                        "popupContent": element.comment,
+                        "category": element.category,
+                        "subCategory" : element.subcategory,
+                    },
+                    "geometry": {
+                        "type": element.type,
+                        "coordinates": [longitude, latitude]
+                    }
+                }
+                geoJsonVillage.push(newGeoJson)
+            }
             
-            let newGeoJson = {
+            /* let newGeoJson = {
                 "type": "Feature",
                 "properties": {
                     "name": element.name,
@@ -55,10 +92,10 @@ export default {
                     "coordinates": [longitude, latitude]
                 }
             }
-            geoJsonFromCSV.push(newGeoJson)
+            geoJsonFromCSV.push(newGeoJson) */
         });
-        //console.log(geoJsonFromCSV)
-        return {geoJsonFromCSV}
+        //console.log(geoJsonFromCSV, geoJsonHouse, geoJsonVillage)
+        return {geoJsonHouse, geoJsonVillage}
        
     },
     data: () => ({
@@ -67,9 +104,10 @@ export default {
         myLocationMark: undefined,
         clickMapMark: undefined,
         showInputGeoDetail: false,
-        geoJsonFeature: [],
+        housesLayer: [],
+        villageLayer: [],
+        lastItem: undefined,
         expand: true,
-        layerGroupHouse: undefined,
         layerGeoJson: undefined,
         layerStorageControl: undefined,
         layerActionControl: undefined,
@@ -82,7 +120,7 @@ export default {
         dataGeoJson,
     },
     methods: {
-        showModal () {
+        showModal () { // affiche un message lors du click
             var modal = document.getElementById("myModal")
             var span = document.getElementsByClassName("close")[0]
             modal.style.display = "block"
@@ -98,14 +136,25 @@ export default {
         getData(payload) { 
             this.showInputGeoDetail = payload.show
             this.expand = !payload.show
-            this.showGeoJson()
+            this.lastItem = payload.layerGroup
+            switch (this.lastItem) {
+                case 'house':
+                    this.createGeoJsonLayer(this.geoJsonHouse, this.houseLayer)
+                    break;
+                case 'village':
+                    this.createGeoJsonLayer(this.geoJsonVillage, this.villageLayer)
+                    break;
+            }
+            //createGeoJsonLayer
             if(payload.resetCoordinates) {
                 this.coordinates = []
             }
             this.myLocationMark
             this.clickMapMark.remove(this.map) // retire le marker click
         },
-        showGeoJson() {
+        createGeoJsonLayer(layerType, groupType) { 
+            // layerType = le geojson que je souhaite envoyer dans le layer
+            // groupType = dans quel groupe de layer je charge celui-ci : village ou house
 
             function showPopupMarker(e) {
                 var layer = e.target;
@@ -158,7 +207,7 @@ export default {
                             break;
                     }
                 }
-                switch (category) {
+                switch (category) { // ICON DEPENDING ON THE CATEGORY
                 case 'house':
                     path = `<path fill="${colors}" d="M10,20V14H14V20H19V12H22L12,3L2,12H5V20H10Z" />`
                     break;
@@ -190,7 +239,7 @@ export default {
                 })
             }
 
-            this.layerGeoJson = L.geoJSON(this.geoJsonFeature, { // on peut enchainer les options ici
+            this.layerGeoJson = L.geoJSON(layerType, { // on peut enchainer les options ici
                 onEachFeature: onEachFeature,
                 pointToLayer: (feature, latlng) => { // CREATE THE MARKERS
                     return L.marker(latlng, {
@@ -212,12 +261,11 @@ export default {
                     }
                     return {color: colorPolygon}
                 }
-            }).addTo(this.map)
+            })
 
-            // contruction inside a layergroup to be able to remove the layer selected
-            this.layerGroupHouse.addLayer(this.layerGeoJson)
-            // ICI ON PEUT CHOISIR D'AJOUTER UN NOUVEAU TYPE DE LAYER
-            // this.layerGroupHouse.addLayer(this.layerVillage)
+            // GROUPE DE LAYER DANS LEQUEL J'ENREGISTRE LE JSON
+            groupType.addLayer(this.layerGeoJson)
+            
         },
         showMeasure() {
             // show measure on click
@@ -238,12 +286,27 @@ export default {
             }
             this.btnMeasure = !this.btnMeasure            
         },
-        async deleteItem() {
-            await this.layerGroupHouse.removeLayer(this.layerGeoJson);
-            await this.geoJsonFeature.pop()
-            await this.showGeoJson()
-            this.messageModal = "Last data removed"
-            this.showModal()
+        async deleteItem() { 
+            const removeLastData = async (group, layer, message) => {
+                await group.removeLayer(this.layerGeoJson);
+                await layer.pop()
+                this.createGeoJsonLayer(layer, group)
+                this.messageModal = message
+                this.showModal()
+                this.lastItem = undefined
+            }
+            switch (this.lastItem) {
+                case 'house':
+                    removeLastData(this.houseLayer, this.geoJsonHouse, "Last house data removed")
+                    break;
+                case 'village':
+                    removeLastData(this.villageLayer, this.geoJsonVillage, "Last village data removed")
+                    break;
+                default:
+                    this.messageModal = "Nothings to remove"
+                    this.showModal()                    
+                break;
+            }
         },
         removeGeoJson() {
             localStorage.removeItem('APIGeoMap')
@@ -251,7 +314,8 @@ export default {
             this.showModal()
         },
         saveGeoJson() {
-            localStorage.setItem('APIGeoMap', JSON.stringify(this.geoJsonFeature))
+            let data = [this.geoJsonHouse, this.geoJsonVillage]
+            localStorage.setItem('APIGeoMap', JSON.stringify(data))
             this.messageModal = "data save in local storage"
             this.showModal()
         },
@@ -312,14 +376,18 @@ export default {
             /* "Satellite": satellite, */
             "Outdoors": outdoors,
         }
-
-        this.layerGroupHouse = L.layerGroup();
+        this.villageLayer = L.layerGroup()
+        this.houseLayer = L.layerGroup()
         var overlayMaps = {
-            "village": this.layerGroupHouse
-        };
+            "village" : this.villageLayer,
+            "house" : this.houseLayer
+        }
+
+        this.createGeoJsonLayer(this.geoJsonVillage, this.villageLayer)
+        this.createGeoJsonLayer(this.geoJsonHouse, this.houseLayer)
 
         // build the container with switch layer
-        this.map = L.map('map', {layers: [streets, outdoors, this.layerGroupHouse]}).fitWorld()
+        this.map = L.map('map', {layers: [streets, outdoors, this.houseLayer, this.villageLayer]}).fitWorld()
         this.map.locate({setView: true, maxZoom: 16})
 
         // control layer choice
@@ -350,19 +418,14 @@ export default {
         this.map.on('click', addMarker)
 
         /* RECUPERE LES DONNEES SI PRESENT DANS LE LOCALSTORAGE */
-        let geoFromLocal = localStorage.getItem('APIGeoMap')
+        let geoFromLocal = JSON.parse(localStorage.getItem('APIGeoMap'))
 
         if(geoFromLocal) { // if there is data from a file, loaded
             try {
-                this.geoJsonFeature = JSON.parse(geoFromLocal)
-                this.showGeoJson()
-            } catch (error) {
-                console.log(error)
-            }
-        } else if(this.geoJsonFromCSV) { // else load data from localstorage
-            try {
-                this.geoJsonFeature = this.geoJsonFromCSV
-                this.showGeoJson()
+                this.geoJsonHouse = geoFromLocal[0]
+                this.geoJsonVillage = geoFromLocal[1]
+                this.createGeoJsonLayer(this.geoJsonVillage, this.villageLayer)
+                this.createGeoJsonLayer(this.geoJsonHouse, this.houseLayer)
             } catch (error) {
                 console.log(error)
             }

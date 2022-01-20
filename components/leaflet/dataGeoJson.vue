@@ -123,7 +123,8 @@
     }),
 
     props: {
-        geoJsonFeature: Array,
+        geoJsonHouse: Array,
+        geoJsonVillage: Array,
         coordinates: Array
     },
     computed: {
@@ -186,11 +187,23 @@
             this.addGeoJson.geometry.coordinates = getCoordinates
             this.addGeoJson.geometry.type = geoType
 
-            this.geoJsonFeature.push(this.addGeoJson)
+            let group
+            switch (this.addGeoJson.properties.category) {
+              case "house":
+                  this.geoJsonHouse.push(this.addGeoJson)
+                  group = 'house'
+                break;
+            
+              default:
+                this.geoJsonVillage.push(this.addGeoJson)
+                group = 'village'
+                break;
+            }
             
             this.$emit('send-data', {
                 show: false,
-                resetCoordinates: true
+                resetCoordinates: true,
+                layerGroup: group
             })
         }
       },
