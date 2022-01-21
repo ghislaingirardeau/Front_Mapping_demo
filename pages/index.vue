@@ -271,14 +271,14 @@ export default {
 
             if(this.btnMeasure === true){
                 this.map.eachLayer((layer) => {
-                    if(layer instanceof L.Polygon || layer instanceof L.Path){
+                    if(layer instanceof L.Polygon || layer instanceof L.Path && layer.feature){
+                        // layer feature not undefined ex: L.circleMarker is a layer = show an error. but layer L.circleMarker doesn't have a feature
                         layer.showMeasurements()
-                        console.log(layer)
                     }
                 })
             } else {
                 this.map.eachLayer((layer) => {
-                    if(layer instanceof L.Polygon || layer instanceof L.Path){
+                    if(layer instanceof L.Polygon || layer instanceof L.Path && layer.feature){
                         layer.hideMeasurements()
                     }
                 })
