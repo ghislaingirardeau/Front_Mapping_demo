@@ -25,8 +25,8 @@ export default {
     mounted () {
         try {
             /* RECUPERE LES DONNEES SI PRESENT DANS LE LOCALSTORAGE */
-            let geoFromLocal = localStorage.getItem('APIGeoMap')
-            this.geoJsonFeature = JSON.parse(geoFromLocal)
+            let geoFromLocal = JSON.parse(localStorage.getItem('APIGeoMap'))
+            this.geoJsonFeature = [...geoFromLocal[0],...geoFromLocal[1]]
         } catch (error) {
             
         }
