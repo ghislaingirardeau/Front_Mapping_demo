@@ -43,19 +43,31 @@ export default {
         }
         // function to create the layer for each category of json
         const createGeoJsons = (element, layer) => {
-            let latitude = convertCoordinate(element.lat)
-            let longitude = convertCoordinate(element.lng)
+            let coordinates = []
+            if(element.coordinates.indexOf('/') === -1) {
+                let test = element.coordinates.split(' ') 
+                test.forEach(element => {
+                    coordinates.push(parseFloat(element))
+                });
+            } else {
+                let test = element.coordinates.split('/')
+                let array = []
+                test.forEach(element => {
+                    array.push(element.split(' '))
+                })
+                coordinates.push(array)
+            }
             let newGeoJson = {
                 "type": "Feature",
                 "properties": {
                     "name": element.name,
-                    "popupContent": element.comment,
+                    "popupContent": element.popupContent,
                     "category": element.category,
                     "subCategory" : element.subcategory,
                 },
                 "geometry": {
                     "type": element.type,
-                    "coordinates": [longitude, latitude]
+                    "coordinates": coordinates
                 }
             }
             layer.push(newGeoJson)
@@ -65,7 +77,7 @@ export default {
         let geoJsonVillage = []
         let geoJsonHouse = []
 
-        const doc = await $content('coordonates_village').fetch() // convert CSV files in content folder to json
+        const doc = await $content('myNewData').fetch() // convert CSV files in content folder to json
 
         doc.body.forEach(element => {
             if(element.category === 'house') {
@@ -258,13 +270,14 @@ export default {
             // DEBUG ON PRINT = NOT SHOWING MEASURE
 
             if(this.btnMeasure === true){
-                this.map.eachLayer(function(layer){
+                this.map.eachLayer((layer) => {
                     if(layer instanceof L.Polygon || layer instanceof L.Path){
                         layer.showMeasurements()
+                        console.log(layer)
                     }
                 })
             } else {
-                this.map.eachLayer(function(layer){
+                this.map.eachLayer((layer) => {
                     if(layer instanceof L.Polygon || layer instanceof L.Path){
                         layer.hideMeasurements()
                     }
