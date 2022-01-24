@@ -23,14 +23,15 @@
             /> 
         </v-expand-transition>
 
-        <exportCSV />
+        <legendMap />
 
     </v-row>
 </template>
 
 <script>
 import dataGeoJson from '@/components/leaflet/dataGeoJson.vue' 
-import exportCSV from '@/components/leaflet/exportCSV.vue' 
+import legendMap from '~/components/leaflet/legendMap.vue'
+
 
 export default {
     async asyncData({$content}) { 
@@ -113,7 +114,7 @@ export default {
     }),
     components: {
         dataGeoJson,
-        exportCSV
+        legendMap
     },
     methods: {
         showModal () { // affiche un message lors du click

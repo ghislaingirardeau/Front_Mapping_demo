@@ -1,5 +1,5 @@
 <template>
-  <v-col cols="12">
+  <v-col cols="6">
     <v-dialog
       v-model="dialog"
       persistent
