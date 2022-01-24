@@ -1,6 +1,5 @@
 <template>
     <v-row justify="center">    
-
         <div id="myModal" class="modal">
             <!-- Modal content -->
             <div class="modal-content">
@@ -31,7 +30,6 @@
 <script>
 import dataGeoJson from '@/components/leaflet/dataGeoJson.vue' 
 import optionsMap from '~/components/leaflet/optionsMap.vue'
-
 
 export default {
     async asyncData({$content}) { 
@@ -344,6 +342,8 @@ export default {
                     this.myLocationMark
                         .setLatLng(updatePositionMarker)
                         .setRadius(position.coords.accuracy)
+                    
+                    this.map.flyTo(updatePositionMarker);
                 }
 
                 let error = () => {
@@ -395,7 +395,7 @@ export default {
         this.createGeoJsonLayer(this.geoJsonHouse, this.houseLayer)
 
         // build the container with switch layer
-        this.map = L.map('map', {layers: [streets, outdoors, this.houseLayer, this.villageLayer]}).fitWorld()
+        this.map = L.map('map', {layers: [streets, outdoors, this.houseLayer, this.villageLayer]})
         this.map.locate({setView: true, maxZoom: 16})
 
         // control layer choice
@@ -533,7 +533,7 @@ export default {
         // enregistre le geojson dans le localstorage
         // ou retour de la connection, faire apparaitre le bouton pour sauvegarder le json dans le DB
         window.addEventListener('offline', function(e) { console.log('offline'); })
-        window.addEventListener('online', function(e) { console.log('online'); });
+        window.addEventListener('online', function(e) { console.log('online'); })
     }
 }
 </script>
