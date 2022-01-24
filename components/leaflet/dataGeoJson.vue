@@ -33,7 +33,7 @@
 
       <v-text-field
         v-model="addGeoJson.properties.name"
-        :counter="10"
+        :counter="20"
         :rules="nameRules"
         label="Name"
         required
@@ -71,11 +71,11 @@
       </v-btn>
 
       <v-btn
-        color="error"
+        color="secondary"
         class="mr-4"
-        @click="reset"
+        @click="manualCoordinates"
       >
-        Reset
+        Manual
       </v-btn>
 
       <v-btn
@@ -98,9 +98,9 @@
       addGeoJson: {
           "type": "Feature",
           "properties": {
-              "name": "house id",
-              "amount": 9000,
-              "popupContent": "test",
+              "name": "Clean water",
+              "amount": '',
+              "popupContent": " ",
               "category": "",
               "subCategory" : '',
           },
@@ -114,7 +114,7 @@
       name: '',
       nameRules: [
         v => !!v || 'Name is required',
-        v => (v && v.length <= 10) || 'Name must be less than 10 characters',
+        v => (v && v.length <= 20) || 'Name must be less than 20 characters',
       ],
       popupContentRules: [
         v => !!v || 'Popup content is required',
@@ -163,7 +163,6 @@
               geoType = 'Point'
             } else if(this.coordinates.length === 0) {
               // je saisis manuellement les coordonnées
-
               // convertir les coordonnées en degres/minute en lng/lat
               function convertCoordinate(data) { 
                 let indexLng = data.indexOf("'")
@@ -207,8 +206,8 @@
             })
         }
       },
-      reset () {
-        this.$refs.form.reset()
+      manualCoordinates () {
+        this.coordinates = []
       },
       cancel() {
         this.$emit('send-data', { 

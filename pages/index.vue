@@ -35,24 +35,28 @@ import exportCSV from '@/components/leaflet/exportCSV.vue'
 export default {
     async asyncData({$content}) { 
         // convert the coordinates
-        /* function convertCoordinate(data) { 
+        const convertCoordinate = (coordinates, data) => { 
             let indexLng = data.indexOf("'")
-            let degres = data.slice(0, indexLng)
-            let minute = (data.slice((indexLng + 1))) / 60
-            return parseFloat(degres) + parseFloat(minute)
-        } */
+            if(indexLng === -1) {
+                coordinates.push(parseFloat(data))
+            } else {
+                let degres = data.slice(0, indexLng)
+                let minute = (data.slice((indexLng + 1))) / 60
+                coordinates.push(parseFloat(degres) + parseFloat(minute))
+            }
+        }
         // function to create the layer for each category of json
         const createGeoJsons = (element, layer) => {
             let coordinates = []
             if(element.coordinates.indexOf('/') === -1) {
-                let test = element.coordinates.split(' ') 
-                test.forEach(element => {
-                    coordinates.push(parseFloat(element))
+                let coordinateNumber = element.coordinates.split(' ') 
+                coordinateNumber.forEach(element => {
+                    convertCoordinate(coordinates, element)
                 });
             } else {
-                let test = element.coordinates.split('/')
+                let coordinateNumber = element.coordinates.split('/')
                 let array = []
-                test.forEach(element => {
+                coordinateNumber.forEach(element => {
                     array.push(element.split(' '))
                 })
                 coordinates.push(array)
