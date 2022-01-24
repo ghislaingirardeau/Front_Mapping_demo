@@ -45,7 +45,7 @@
             /> 
         </v-expand-transition>
 
-        <legendMap />
+        <optionsMap />
 
     </v-row>
 </template>
@@ -53,7 +53,7 @@
 <script>
 import dataGeoJson from '@/components/leaflet/dataGeoJson.vue' 
 import manageStorage from '@/components/leaflet/manageStorage.vue'
-import legendMap from '~/components/leaflet/legendMap.vue'
+import optionsMap from '~/components/leaflet/optionsMap.vue'
 import polygonMeasure from '~/components/leaflet/polygonMeasure.vue'
 import deleteLastGeojson from '~/components/leaflet/deleteLastGeojson.vue'
 
@@ -84,7 +84,7 @@ export default {
     components: {
         dataGeoJson,
         manageStorage,
-        legendMap,
+        optionsMap,
         polygonMeasure,
         deleteLastGeojson
     },

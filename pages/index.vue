@@ -23,14 +23,14 @@
             /> 
         </v-expand-transition>
 
-        <legendMap />
+        <optionsMap />
 
     </v-row>
 </template>
 
 <script>
 import dataGeoJson from '@/components/leaflet/dataGeoJson.vue' 
-import legendMap from '~/components/leaflet/legendMap.vue'
+import optionsMap from '~/components/leaflet/optionsMap.vue'
 
 
 export default {
@@ -114,7 +114,7 @@ export default {
     }),
     components: {
         dataGeoJson,
-        legendMap
+        optionsMap
     },
     methods: {
         showModal () { // affiche un message lors du click
