@@ -1,15 +1,5 @@
 <template>
-    <v-row justify="center">    
-        <div id="myModal" class="modal">
-            <!-- Modal content -->
-            <div class="modal-content">
-                <span class="close">&times;</span>
-                <p>{{messageModal}}</p>
-            </div>
-        </div>
-
-        <div id="map" v-show="expand">
-        </div>
+    <v-row justify="center">   
 
         <v-expand-transition>
             <dataGeoJson 
@@ -21,6 +11,17 @@
                 :coordinates="coordinates"
             /> 
         </v-expand-transition>
+
+        <div id="myModal" class="modal">
+            <!-- Modal content -->
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <p>{{messageModal}}</p>
+            </div>
+        </div>
+
+        <div id="map" v-show="expand">
+        </div>
 
         <optionsMap />
 

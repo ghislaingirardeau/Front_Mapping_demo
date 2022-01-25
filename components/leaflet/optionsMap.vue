@@ -10,7 +10,7 @@
 						dark
 						@click="legend"
 					>
-					Show legend
+					{{showContent ? 'Hide' : 'Legend'}}
 					</v-btn>
 				</v-col>
 			</v-row>
