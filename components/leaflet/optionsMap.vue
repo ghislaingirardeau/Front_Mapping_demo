@@ -1,5 +1,15 @@
 <template>
-		<v-col cols="12">
+		<v-col cols="12" class="option__bloc">
+
+			<v-row class="option__bloc legend__bloc" v-if="showContent">
+				<v-col v-for="item in items" :key="item.content" cols="4" sm="3" lg="2" class="block__items">
+					<svg style="width:24px;height:24px" viewBox="0 0 24 24">
+						<path :fill="item.iconColor" :d="item.path" />
+					</svg>
+					<span class="items--font">{{item.content}}</span>
+				</v-col>
+			</v-row>
+
 			<v-row class="text-center">
 
 				<exportCSV />
@@ -16,14 +26,6 @@
 			</v-row>
 
 
-			<v-row class="legend__bloc" leaflet-browser-print-content v-if="showContent">
-				<v-col v-for="item in items" :key="item.content" cols="4" sm="3" lg="2" class="block__items">
-					<svg style="width:24px;height:24px" viewBox="0 0 24 24">
-						<path :fill="item.iconColor" :d="item.path" />
-					</svg>
-					<span class="items--font">{{item.content}}</span>
-				</v-col>
-			</v-row>
 		</v-col>
 </template>
 
@@ -114,20 +116,6 @@ export default {
 </script>
 
 <style lang="scss">
-leaflet-browser-print-content{
-    .grid-print-container { // grid holder that holds all content (map and any other content)
-		grid-template: auto 1fr auto / 1fr;
-		background-color: orange;
-	}
-	.grid-map-print { // map container itself
-		grid-row: 2;
-	}
-	.title { // Dynamic title styling
-		grid-row: 1;
-		justify-self: center;
-		color: white;
-	}
-}
 .legend__bloc{
 	background-color: white;
 	border: 2px solid grey;
@@ -145,4 +133,9 @@ leaflet-browser-print-content{
 .block__items{
 	padding: 2px;
 }
-</style>
+/* @media print { 
+	.option__bloc{
+		display: none;
+	}
+}
+ */</style>

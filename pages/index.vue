@@ -287,7 +287,7 @@ export default {
                     }
                 })
             }
-            this.btnMeasure = !this.btnMeasure            
+            this.btnMeasure = !this.btnMeasure      
         },
         async deleteItem() { 
             const removeLastData = async (group, layer, message) => {
@@ -441,12 +441,7 @@ export default {
                 console.log(error)
             }
         }
-        
-        // ADD A PRINT CONTROL ON MAP
-        L.control.browserPrint({
-            printModes: ["Portrait"]
-        }).addTo(this.map)
-        
+                
         // CUSTOMIZE AN ICON MENU ACTIONS ON THE MAP: 2 option of adding custome icons
 
         let styleControl = {
@@ -455,13 +450,17 @@ export default {
             cursor: 'pointer',
         }
 
-        this.layerStorageControl = L.control.custom({
+        this.layerStorageControl = L.control.custom({                
+
             position: 'topleft',
             content : '<button type="button" class="btn-map">'+
                     '    <svg  id="btn-save" style="width:27px;height:27px" viewBox="0 0 24 24"><path fill="green" d="M15,9H5V5H15M12,19A3,3 0 0,1 9,16A3,3 0 0,1 12,13A3,3 0 0,1 15,16A3,3 0 0,1 12,19M17,3H5C3.89,3 3,3.9 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V7L17,3Z"  /></svg>' +
                     '</button>' +
                     '<button type="button" class="btn-map ">'+
                     '    <svg id="btn-erase" style="width:27px;height:27px" viewBox="0 0 24 24"><path fill="red" d="M16.24,3.56L21.19,8.5C21.97,9.29 21.97,10.55 21.19,11.34L12,20.53C10.44,22.09 7.91,22.09 6.34,20.53L2.81,17C2.03,16.21 2.03,14.95 2.81,14.16L13.41,3.56C14.2,2.78 15.46,2.78 16.24,3.56M4.22,15.58L7.76,19.11C8.54,19.9 9.8,19.9 10.59,19.11L14.12,15.58L9.17,10.63L4.22,15.58Z"/></svg>' +
+                    '</button>' +
+                    '<button type="button" class="btn-map ">'+
+                    '    <svg id="btn-print" style="width:27px;height:27px" viewBox="0 0 24 24"><path fill="blue" d="M18,3H6V7H18M19,12A1,1 0 0,1 18,11A1,1 0 0,1 19,10A1,1 0 0,1 20,11A1,1 0 0,1 19,12M16,19H8V14H16M19,8H5A3,3 0 0,0 2,11V17H6V21H18V17H22V11A3,3 0 0,0 19,8Z" /></svg>' +
                     '</button>',
             classes : 'btn-group-icon-map-option1',
             style   : styleControl,
@@ -473,6 +472,8 @@ export default {
                         this.saveGeoJson()
                     } else if(data.target.querySelector('#btn-erase')){
                         this.removeGeoJson()
+                    } else if(data.target.querySelector('#btn-print')){
+                        window.print() 
                     }
                 },
             }
