@@ -109,14 +109,6 @@ export default {
     dataGeoJson,
     optionsMap,
   },
-  watch: {
-    watchMe() {
-      console.log("watchme");
-    },
-    btnMeasure() {
-      console.log("watchme");
-    },
-  },
   methods: {
     showModal() {
       // affiche un message lors du click
@@ -343,7 +335,9 @@ export default {
         navigator.geolocation.clearWatch(this.watchMe);
         this.watchMe = undefined;
         this.showInputGeoDetail = true;
+        console.log("disable");
       } else {
+        console.log("enable");
         // track my location, update the coordinates
         let success = (position) => {
           this.accuracyLocation = position.coords.accuracy;
