@@ -116,10 +116,10 @@ export default {
     accuracyLocation: undefined,
     tutorials: [
       "Select layers to show -->",
-      "Find me and add a coordinate --->",
-      "Track me and add an area --->",
-      "Show/hide measure area --->",
-      "Delete last item --->",
+      "Find me and add a coordinate -->",
+      "Track me and add an area -->",
+      "Show/hide measure area -->",
+      "Delete last item -->",
     ],
   }),
   components: {
@@ -655,7 +655,7 @@ export default {
     position: absolute;
     text-align: right;
     top: 0px;
-    right: 70px;
+    right: 60px;
     color: rgb(255, 255, 255);
     width: 70%; /* Could be more or less, depending on screen size */
     & > p {
