@@ -10,27 +10,22 @@
       />
     </v-expand-transition>
 
-    <div id="myModal" class="modal">
+    <div id="helpModal" class="modal_help">
       <!-- Modal content -->
-      <div class="modal-content">
-        <span class="close">&times;</span>
+      <div class="modal_close">
+        <span class="modal_close-icone">&times;</span>
+      </div>
+      <div v-show="messageModal" class="modal_message">
         <p>{{ messageModal }}</p>
       </div>
-    </div>
 
-    <div id="helpModal" class="help-modal">
-      <!-- Modal content -->
-      <div class="help-modal-block">
-        <div class="help-modal-actions">
-          <span class="close">&times;</span>
-            <p>Select layers to show --></p>
-            <p>Find me and add a coordinate ---></p>
-            <p>Track me and add an area ---></p>
-            <p>Show/hide measure area ---></p>
-            <p>Delete last item ---></p>
+      <div v-show="!messageModal" class="modal_tuto">
+        <div class="modal_tuto-actions">
+          <p v-for="item in tutorials" :key="item">
+            {{ item }}
+          </p>
         </div>
       </div>
-
     </div>
 
     <div id="map" v-show="expand"></div>
@@ -116,35 +111,30 @@ export default {
     layerStorageControl: undefined,
     layerActionControl: undefined,
     btnMeasure: true,
-    messageModal: "",
+    messageModal: undefined,
     watchMe: undefined,
     accuracyLocation: undefined,
+    tutorials: [
+      "Select layers to show -->",
+      "Find me and add a coordinate --->",
+      "Track me and add an area --->",
+      "Show/hide measure area --->",
+      "Delete last item --->",
+    ],
   }),
   components: {
     dataGeoJson,
     optionsMap,
   },
   methods: {
-    showModal() {
-      // affiche un message lors du click
-      var modal = document.getElementById("myModal");
-      var span = document.getElementsByClassName("close")[0];
-      modal.style.display = "block";
-      span.onclick = function () {
-        modal.style.display = "none";
-      };
-      window.onclick = function (event) {
-        if (event.target == modal) {
-          modal.style.display = "none";
-        }
-      };
-    },
     helpModal() {
       // affiche un message lors du click
       var modal = document.getElementById("helpModal");
-      var span = document.getElementsByClassName("close")[1];
+      var span = document.getElementsByClassName("modal_close-icone")[0];
+      modal.style.display = "block";
       span.onclick = function () {
         modal.style.display = "none";
+        this.messageModal = undefined;
       };
       window.onclick = function (event) {
         if (event.target == modal) {
@@ -327,7 +317,7 @@ export default {
         await layer.pop();
         this.createGeoJsonLayer(layer, group);
         this.messageModal = message;
-        this.showModal();
+        this.helpModal();
         this.lastItem = undefined;
       };
       switch (this.lastItem) {
@@ -343,20 +333,20 @@ export default {
           break;
         default:
           this.messageModal = "Nothings to remove";
-          this.showModal();
+          this.helpModal();
           break;
       }
     },
     removeGeoJson() {
       localStorage.removeItem("APIGeoMap");
       this.messageModal = "data remove from local storage";
-      this.showModal();
+      this.helpModal();
     },
     saveGeoJson() {
       let data = [this.geoJsonHouse, this.geoJsonVillage];
       localStorage.setItem("APIGeoMap", JSON.stringify(data));
       this.messageModal = "data save in local storage";
-      this.showModal();
+      this.helpModal();
     },
     coordinatesOnLocation(element) {
       if (this.watchMe) {
@@ -385,7 +375,7 @@ export default {
 
         let error = () => {
           this.messageModal = "Unable to retrieve your location";
-          this.showModal();
+          this.helpModal();
         };
 
         if (navigator.geolocation) {
@@ -396,7 +386,7 @@ export default {
           });
         } else {
           this.messageModal = "Geolocation is not supported by your browser";
-          this.showModal();
+          this.helpModal();
         }
       }
     },
@@ -590,13 +580,13 @@ export default {
       console.log("online");
     });
 
-    this.helpModal()
+    this.helpModal();
   },
 };
 </script>
 
 <style lang="scss">
-@import url('https://fonts.googleapis.com/css2?family=Architects+Daughter&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Architects+Daughter&display=swap");
 
 #map {
   height: 500px;
@@ -610,15 +600,6 @@ export default {
   position: relative;
   display: flex;
   flex-direction: column;
-  /* &::after{
-        content: "";
-        position: absolute;
-        top: 0px;
-        left: 0px;
-        height: 100%;
-        width: 100%;
-        background-color: pink;
-    } */
 }
 .btn-map {
   border: 2px solid grey;
@@ -637,51 +618,12 @@ export default {
   }
 }
 .click {
-  border: 2px solid red;
+  border: 2px solid rgb(60, 255, 34);
 }
 
 // STYLE THE MODAL
 /* The Modal (background) */
-.modal {
-  display: none; /* Hidden by default */
-  position: fixed; /* Stay in place */
-  z-index: 2; /* Sit on top */
-  left: 0;
-  top: 0;
-  width: 100%; /* Full width */
-  height: 100%; /* Full height */
-  overflow: auto; /* Enable scroll if needed */
-  background-color: rgb(0, 0, 0); /* Fallback color */
-  background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
-}
-
-/* Modal Content/Box */
-.modal-content {
-  margin: 15% auto; /* 15% from the top and centered */
-  padding: 20px;
-  color: rgb(255, 255, 255);
-  text-align: center;
-  width: 80%; /* Could be more or less, depending on screen size */
-  & > p{
-    margin-top: 10px;
-  }
-}
-
-/* The Close Button */
-.close {
-  color: rgb(255, 255, 255);
-  font-size: 42px;
-  font-weight: bold;
-}
-
-.close:hover,
-.close:focus {
-  color: rgb(151, 151, 151);
-  text-decoration: none;
-  cursor: pointer;
-}
-
-.help-modal {
+.modal_help {
   display: block; /* Hidden by default */
   position: fixed; /* Stay in place */
   z-index: 6; /* Sit on top */
@@ -692,38 +634,50 @@ export default {
   overflow: auto; /* Enable scroll if needed */
   background-color: rgb(0, 0, 0); /* Fallback color */
   background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
-  font-family: 'Architects Daughter', cursive;
+  font-family: "Architects Daughter", cursive;
 }
 
 /* Modal Content/Box */
-.help-modal-block{
-    position: relative;
-}
-
-/* .close-help {
-  color: #aaa;
-  position: absolute;
-  top: 110px;
-  font-size: 28px;
-  font-weight: bold;
-}
-
-.close-help:hover,
-.close-help:focus {
-  color: black;
-  text-decoration: none;
-  cursor: pointer;
-} */
-.help-modal-actions {
-    position: absolute;
-    text-align: right;
-    top: 20px;
-    right: 70px;
-    color: rgb(255, 255, 255);
-    width: 70%; /* Could be more or less, depending on screen size */
+.modal_message {
+  margin: 5px auto; /* 15% from the top and centered */
+  padding: 20px;
+  color: rgb(255, 255, 255);
+  text-align: center;
+  width: 80%; /* Could be more or less, depending on screen size */
   & > p {
-      margin-bottom: 25px;
+    margin-top: 10px;
   }
 }
 
+.modal_tuto {
+  position: relative;
+  &-actions {
+    position: absolute;
+    text-align: right;
+    top: 0px;
+    right: 70px;
+    color: rgb(255, 255, 255);
+    width: 70%; /* Could be more or less, depending on screen size */
+    & > p {
+      margin-bottom: 25px;
+    }
+  }
+}
+
+/* The Close Button */
+.modal_close {
+  margin: 10px auto;
+  text-align: center;
+  &-icone {
+    color: rgb(255, 255, 255);
+    font-size: 42px;
+    font-weight: bold;
+    &:hover,
+    &:focus {
+      color: rgb(151, 151, 151);
+      text-decoration: none;
+      cursor: pointer;
+    }
+  }
+}
 </style>
