@@ -18,6 +18,21 @@
       </div>
     </div>
 
+    <div id="helpModal" class="help-modal">
+      <!-- Modal content -->
+      <div class="help-modal-block">
+        <div class="help-modal-actions">
+          <span class="close">&times;</span>
+            <p>Select layers to show --></p>
+            <p>Find me and add a coordinate ---></p>
+            <p>Track me and add an area ---></p>
+            <p>Show/hide measure area ---></p>
+            <p>Delete last item ---></p>
+        </div>
+      </div>
+
+    </div>
+
     <div id="map" v-show="expand"></div>
 
     <optionsMap />
@@ -115,6 +130,19 @@ export default {
       var modal = document.getElementById("myModal");
       var span = document.getElementsByClassName("close")[0];
       modal.style.display = "block";
+      span.onclick = function () {
+        modal.style.display = "none";
+      };
+      window.onclick = function (event) {
+        if (event.target == modal) {
+          modal.style.display = "none";
+        }
+      };
+    },
+    helpModal() {
+      // affiche un message lors du click
+      var modal = document.getElementById("helpModal");
+      var span = document.getElementsByClassName("close")[1];
       span.onclick = function () {
         modal.style.display = "none";
       };
@@ -335,9 +363,7 @@ export default {
         navigator.geolocation.clearWatch(this.watchMe);
         this.watchMe = undefined;
         this.showInputGeoDetail = true;
-        console.log("disable");
       } else {
-        console.log("enable");
         // track my location, update the coordinates
         let success = (position) => {
           this.accuracyLocation = position.coords.accuracy;
@@ -563,11 +589,15 @@ export default {
     window.addEventListener("online", function (e) {
       console.log("online");
     });
+
+    this.helpModal()
   },
 };
 </script>
 
 <style lang="scss">
+@import url('https://fonts.googleapis.com/css2?family=Architects+Daughter&display=swap');
+
 #map {
   height: 500px;
   width: 100%;
@@ -627,26 +657,73 @@ export default {
 
 /* Modal Content/Box */
 .modal-content {
-  background-color: #fefefe;
   margin: 15% auto; /* 15% from the top and centered */
   padding: 20px;
-  border: 1px solid #888;
-  color: black;
+  color: rgb(255, 255, 255);
+  text-align: center;
   width: 80%; /* Could be more or less, depending on screen size */
+  & > p{
+    margin-top: 10px;
+  }
 }
 
 /* The Close Button */
 .close {
-  color: #aaa;
-  float: right;
-  font-size: 28px;
+  color: rgb(255, 255, 255);
+  font-size: 42px;
   font-weight: bold;
 }
 
 .close:hover,
 .close:focus {
-  color: black;
+  color: rgb(151, 151, 151);
   text-decoration: none;
   cursor: pointer;
 }
+
+.help-modal {
+  display: block; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 6; /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0, 0, 0); /* Fallback color */
+  background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
+  font-family: 'Architects Daughter', cursive;
+}
+
+/* Modal Content/Box */
+.help-modal-block{
+    position: relative;
+}
+
+/* .close-help {
+  color: #aaa;
+  position: absolute;
+  top: 110px;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close-help:hover,
+.close-help:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+} */
+.help-modal-actions {
+    position: absolute;
+    text-align: right;
+    top: 20px;
+    right: 70px;
+    color: rgb(255, 255, 255);
+    width: 70%; /* Could be more or less, depending on screen size */
+  & > p {
+      margin-bottom: 25px;
+  }
+}
+
 </style>
