@@ -506,7 +506,7 @@ export default {
         '    <svg id="btn-erase" style="width:27px;height:27px" viewBox="0 0 24 24"><path fill="red" d="M16.24,3.56L21.19,8.5C21.97,9.29 21.97,10.55 21.19,11.34L12,20.53C10.44,22.09 7.91,22.09 6.34,20.53L2.81,17C2.03,16.21 2.03,14.95 2.81,14.16L13.41,3.56C14.2,2.78 15.46,2.78 16.24,3.56M4.22,15.58L7.76,19.11C8.54,19.9 9.8,19.9 10.59,19.11L14.12,15.58L9.17,10.63L4.22,15.58Z"/></svg>' +
         "</button>" +
         '<button type="button" class="btn-map ">' +
-        '    <svg id="btn-print" style="width:27px;height:27px" viewBox="0 0 24 24"><path fill="blue" d="M18,3H6V7H18M19,12A1,1 0 0,1 18,11A1,1 0 0,1 19,10A1,1 0 0,1 20,11A1,1 0 0,1 19,12M16,19H8V14H16M19,8H5A3,3 0 0,0 2,11V17H6V21H18V17H22V11A3,3 0 0,0 19,8Z" /></svg>' +
+        '    <svg id="btn-print" style="width:27px;height:27px" viewBox="0 0 24 24"><path fill="black" d="M18,3H6V7H18M19,12A1,1 0 0,1 18,11A1,1 0 0,1 19,10A1,1 0 0,1 20,11A1,1 0 0,1 19,12M16,19H8V14H16M19,8H5A3,3 0 0,0 2,11V17H6V21H18V17H22V11A3,3 0 0,0 19,8Z" /></svg>' +
         "</button>",
       classes: "btn-group-icon-map-option1",
       style: styleControl,
@@ -530,13 +530,16 @@ export default {
         '<svg id="btn-add" style="width:27px;height:27px" viewBox="0 0 24 24"><path fill="blue" d="M17,13H13V17H11V13H7V11H11V7H13V11H17M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z" /></svg>' +
         "</button>" +
         '<button type="button" class="btn-map">' +
-        '<svg id="btn-location" style="width:27px;height:27px" viewBox="0 0 24 24"><path fill="black" d="M12,8A4,4 0 0,1 16,12A4,4 0 0,1 12,16A4,4 0 0,1 8,12A4,4 0 0,1 12,8M3.05,13H1V11H3.05C3.5,6.83 6.83,3.5 11,3.05V1H13V3.05C17.17,3.5 20.5,6.83 20.95,11H23V13H20.95C20.5,17.17 17.17,20.5 13,20.95V23H11V20.95C6.83,20.5 3.5,17.17 3.05,13M12,5A7,7 0 0,0 5,12A7,7 0 0,0 12,19A7,7 0 0,0 19,12A7,7 0 0,0 12,5Z" /></svg>' +
+        '<svg id="btn-location" style="width:27px;height:27px" viewBox="0 0 24 24"><path fill="blue" d="M12,8A4,4 0 0,1 16,12A4,4 0 0,1 12,16A4,4 0 0,1 8,12A4,4 0 0,1 12,8M3.05,13H1V11H3.05C3.5,6.83 6.83,3.5 11,3.05V1H13V3.05C17.17,3.5 20.5,6.83 20.95,11H23V13H20.95C20.5,17.17 17.17,20.5 13,20.95V23H11V20.95C6.83,20.5 3.5,17.17 3.05,13M12,5A7,7 0 0,0 5,12A7,7 0 0,0 12,19A7,7 0 0,0 19,12A7,7 0 0,0 12,5Z" /></svg>' +
         "</button>" +
         '<button type="button" class="btn-map">' +
-        '<svg id="btn-ruler" style="width:27px;height:27px" viewBox="0 0 24 24"><path fill="black" d="M1.39,18.36L3.16,16.6L4.58,18L5.64,16.95L4.22,15.54L5.64,14.12L8.11,16.6L9.17,15.54L6.7,13.06L8.11,11.65L9.53,13.06L10.59,12L9.17,10.59L10.59,9.17L13.06,11.65L14.12,10.59L11.65,8.11L13.06,6.7L14.47,8.11L15.54,7.05L14.12,5.64L15.54,4.22L18,6.7L19.07,5.64L16.6,3.16L18.36,1.39L22.61,5.64L5.64,22.61L1.39,18.36Z" /></svg>' +
+        '<svg id="btn-ruler" style="width:27px;height:27px" viewBox="0 0 24 24"><path fill="purple" d="M1.39,18.36L3.16,16.6L4.58,18L5.64,16.95L4.22,15.54L5.64,14.12L8.11,16.6L9.17,15.54L6.7,13.06L8.11,11.65L9.53,13.06L10.59,12L9.17,10.59L10.59,9.17L13.06,11.65L14.12,10.59L11.65,8.11L13.06,6.7L14.47,8.11L15.54,7.05L14.12,5.64L15.54,4.22L18,6.7L19.07,5.64L16.6,3.16L18.36,1.39L22.61,5.64L5.64,22.61L1.39,18.36Z" /></svg>' +
         "</button>" +
         '<button type="button" class="btn-map">' +
         '<svg id="btn-delete" style="width:27px;height:27px" viewBox="0 0 24 24"><path fill="orange" d="M22,3H7C6.31,3 5.77,3.35 5.41,3.88L0,12L5.41,20.11C5.77,20.64 6.31,21 7,21H22A2,2 0 0,0 24,19V5A2,2 0 0,0 22,3M19,15.59L17.59,17L14,13.41L10.41,17L9,15.59L12.59,12L9,8.41L10.41,7L14,10.59L17.59,7L19,8.41L15.41,12" /></svg>' +
+        "</button>" +
+        '<button type="button" class="btn-map">' +
+        '<svg id="btn-tutorial" style="width:27px;height:27px" viewBox="0 0 24 24">  <path fill="green" d="M12 2C11.5 2 11 2.19 10.59 2.59L2.59 10.59C1.8 11.37 1.8 12.63 2.59 13.41L10.59 21.41C11.37 22.2 12.63 22.2 13.41 21.41L21.41 13.41C22.2 12.63 22.2 11.37 21.41 10.59L13.41 2.59C13 2.19 12.5 2 12 2M12 6.95C14.7 7.06 15.87 9.78 14.28 11.81C13.86 12.31 13.19 12.64 12.85 13.07C12.5 13.5 12.5 14 12.5 14.5H11C11 13.65 11 12.94 11.35 12.44C11.68 11.94 12.35 11.64 12.77 11.31C14 10.18 13.68 8.59 12 8.46C11.18 8.46 10.5 9.13 10.5 9.97H9C9 8.3 10.35 6.95 12 6.95M11 15.5H12.5V17H11V15.5Z" /></svg>' +
         "</button>",
       classes: "btn-group-icon-map-option1",
       style: styleControl,
@@ -551,18 +554,34 @@ export default {
               data.target.classList.add("click");
             }
           };
+          let disableButton = (num, originalColor) => {
+            let button = document.getElementsByClassName("btn-map")[num]
+            let attribut = button.getAttribute("disabled")
+            let path = button.getElementsByTagName('path')[0]
+            if(attribut != null) {
+              button.removeAttribute("disabled", "")
+              path.setAttribute("fill", originalColor)
+            } else {
+              button.setAttribute("disabled", "")
+              path.setAttribute("fill", "grey")
+            }
+          };
           // function on click
           if (data.target.querySelector("#btn-add")) {
             styleOnClick();
-            this.coordinatesOnLocation(true);
+            disableButton(4, 'blue');
+            this.coordinatesOnLocation(true); // display differente type of coordinates one array
           } else if (data.target.querySelector("#btn-location")) {
             styleOnClick();
-            this.coordinatesOnLocation(false);
+            this.coordinatesOnLocation(false); // display differente type of coordinates multiple array
+            disableButton(3, 'blue');
           } else if (data.target.querySelector("#btn-ruler")) {
             styleOnClick();
             this.showMeasure();
           } else if (data.target.querySelector("#btn-delete")) {
             this.deleteItem();
+          } else if (data.target.querySelector("#btn-tutorial")) {
+            this.helpModal()
           }
         },
       },
@@ -582,7 +601,6 @@ export default {
     window.addEventListener("online", function (e) {
       console.log("online");
     });
-    this.helpModal()
   },
 };
 </script>
@@ -619,6 +637,7 @@ export default {
     width: 100%;
   }
 }
+/* style button on map on click */
 .click {
   border: 2px solid rgb(60, 255, 34);
 }
@@ -626,7 +645,7 @@ export default {
 // STYLE THE MODAL
 /* The Modal (background) */
 .modal_help {
-  display: block; /* Hidden by default */
+  display: none; /* Hidden by default */
   position: fixed; /* Stay in place */
   z-index: 6; /* Sit on top */
   left: 0;
