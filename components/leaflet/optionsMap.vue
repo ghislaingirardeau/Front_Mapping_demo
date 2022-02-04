@@ -1,6 +1,6 @@
 <template>
   <v-col cols="12" class="option__bloc">
-    <v-row class="option__bloc legend__bloc" v-if="showContent">
+    <v-row class="option__bloc legend__bloc" v-if="showLegend">
       <v-col
         v-for="item in items"
         :key="item.content"
@@ -117,6 +117,9 @@ export default {
       },
     ],
   }),
+  props: {
+    showLegend: Boolean
+  },
   components: {
     exportCSV,
   },

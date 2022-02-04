@@ -30,7 +30,7 @@
 
     <div id="map" v-show="expand"></div>
 
-    <optionsMap />
+    <optionsMap :showLegend="showLegend"/>
   </v-row>
 </template>
 
@@ -122,6 +122,7 @@ export default {
       "Show/hide measure area -->",
       "Delete last item -->",
     ],
+    showLegend: false
   }),
   components: {
     dataGeoJson,
@@ -496,6 +497,15 @@ export default {
       cursor: "pointer",
     };
 
+    const styleOnClick = (e) => {
+      let element = e.classList.contains("click");
+      if (element) {
+        e.classList.remove("click");
+      } else {
+        e.classList.add("click");
+      }
+    };
+
     this.layerStorageControl = L.control.custom({
       position: "topleft",
       content:
@@ -507,6 +517,9 @@ export default {
         "</button>" +
         '<button type="button" class="btn-map ">' +
         '    <svg id="btn-print" style="width:27px;height:27px" viewBox="0 0 24 24"><path fill="black" d="M18,3H6V7H18M19,12A1,1 0 0,1 18,11A1,1 0 0,1 19,10A1,1 0 0,1 20,11A1,1 0 0,1 19,12M16,19H8V14H16M19,8H5A3,3 0 0,0 2,11V17H6V21H18V17H22V11A3,3 0 0,0 19,8Z" /></svg>' +
+        "</button>" +
+        '<button type="button" class="btn-map">' +
+        '    <svg  id="btn-legend" style="width:27px;height:27px" viewBox="0 0 24 24"><path fill="blue" d="M9,3L3.36,4.9C3.15,4.97 3,5.15 3,5.38V20.5A0.5,0.5 0 0,0 3.5,21L3.66,20.97L9,18.9L15,21L20.64,19.1C20.85,19.03 21,18.85 21,18.62V3.5A0.5,0.5 0 0,0 20.5,3L20.34,3.03L15,5.1L9,3M8,5.45V17.15L5,18.31V6.46L8,5.45M10,5.47L14,6.87V18.53L10,17.13V5.47M19,5.7V17.54L16,18.55V6.86L19,5.7M7.46,6.3L5.57,6.97V9.12L7.46,8.45V6.3M7.46,9.05L5.57,9.72V11.87L7.46,11.2V9.05M7.46,11.8L5.57,12.47V14.62L7.46,13.95V11.8M7.46,14.55L5.57,15.22V17.37L7.46,16.7V14.55Z" /></svg>' +
         "</button>",
       classes: "btn-group-icon-map-option1",
       style: styleControl,
@@ -518,6 +531,9 @@ export default {
             this.removeGeoJson();
           } else if (data.target.querySelector("#btn-print")) {
             window.print();
+          } else if (data.target.querySelector("#btn-legend")) {
+            styleOnClick(data.target)
+            this.showLegend = !this.showLegend
           }
         },
       },
@@ -546,14 +562,6 @@ export default {
       events: {
         click: (data) => {
           // style css button
-          let styleOnClick = () => {
-            let element = data.target.classList.contains("click");
-            if (element) {
-              data.target.classList.remove("click");
-            } else {
-              data.target.classList.add("click");
-            }
-          };
           let disableButton = (num, originalColor) => {
             let button = document.getElementsByClassName("btn-map")[num]
             let attribut = button.getAttribute("disabled")
@@ -568,15 +576,15 @@ export default {
           };
           // function on click
           if (data.target.querySelector("#btn-add")) {
-            styleOnClick();
-            disableButton(4, 'blue');
+            styleOnClick(data.target);
+            disableButton(5, 'blue');
             this.coordinatesOnLocation(true); // display differente type of coordinates one array
           } else if (data.target.querySelector("#btn-location")) {
-            styleOnClick();
+            styleOnClick(data.target);
             this.coordinatesOnLocation(false); // display differente type of coordinates multiple array
-            disableButton(3, 'blue');
+            disableButton(4, 'blue');
           } else if (data.target.querySelector("#btn-ruler")) {
-            styleOnClick();
+            styleOnClick(data.target);
             this.showMeasure();
           } else if (data.target.querySelector("#btn-delete")) {
             this.deleteItem();
