@@ -72,8 +72,8 @@ house,interview,Point,id 70,,107.05687166666667 13.750386666666667
 house,lost land,Point,id 71,house sold,107.05723833333333 13.74976
 chief House,,Point,chief House,chief House,107.05783 13.748913333333334
 communal,,Point,communal,all decision made,107.05743666666666 13.750596666666667
-homestay,,Point,homestay,research homestay,107.071625 13.751483333333333
-bath,,Point,bath,communal bath area,107.05912333333333 13.750173333333333
+homestay,,Point,homestay,homestay,107.071625 13.751483333333333
+bath,,Point,bath,bamboo bath area,107.05912333333333 13.750173333333333
 grave,,Point,grave,natural death burial,107.05650833333333 13.753063333333333
 grave,,Point,grave,accidental death burial,107.05655 13.751328333333333
 grave,,Point,grave,natural death burial,107'03.3630 13'45.1757
@@ -109,3 +109,5 @@ well,public,Point,well,clean water,107'03.4655 13'44.9819
 worship,,Point,worship,buffalo sacrificed,107'03.4326 13'44.9532
 worship,,Point,worship,buffalo sacrificed,107'03.4233 13'44.9906
 worship,,Point,worship,buffalo sacrificed,107'03.4102 13'44.9850
+homestay,,Point,Home stay , My home stay,107.0396213 13.8950018
+worship,,Point, Tycoon land, Tycoon land,107.107649 13.9246375
