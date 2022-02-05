@@ -29,11 +29,10 @@
     >
       <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
     </v-app-bar>
- -->    <v-main>
-      <v-container fluid>
+ -->    
+    <main>
         <Nuxt />
-      </v-container>
-    </v-main>
+    </main>
 
 <!--     <v-footer
       :absolute="!fixed"
@@ -82,3 +81,10 @@ export default {
   }
 }
 </script>
+
+<style lang="scss">
+main {
+    height: 100%;
+    width: 100vw;
+}
+</style>

@@ -1,5 +1,5 @@
 <template>
-  <v-row justify="center">
+  <div class="container">
     <v-expand-transition>
       <dataGeoJson
         v-if="showInputGeoDetail"
@@ -8,6 +8,8 @@
         :geoJsonVillage="geoJsonVillage"
         :coordinates="coordinates"
       />
+      <optionsMap v-if="showLegend" :showLegend="showLegend" />
+
     </v-expand-transition>
 
     <exportCSV :modalExport="modalExport" @send-modal="getModalExport" />
@@ -31,10 +33,8 @@
     </div>
 
     <div id="map" v-show="expand"></div>
-
-    <optionsMap :showLegend="showLegend" />
     
-  </v-row>
+  </div>
 </template>
 
 <script>
@@ -634,10 +634,13 @@ export default {
 <style lang="scss">
 @import url("https://fonts.googleapis.com/css2?family=Architects+Daughter&display=swap");
 
+.container{
+  height: 100%;
+  width: 100vw;
+}
 #map {
-  height: 500px;
+  height: 100%;
   width: 100%;
-  margin: 2px 2px 2px 2px;
   z-index: 1;
 }
 
@@ -652,7 +655,7 @@ export default {
   border-radius: 5px 5px;
   background-color: white;
   position: relative;
-  margin-bottom: 10px;
+  margin-bottom: 6px;
   padding: 4px 2px 0px 2px;
   &::after {
     content: "";
@@ -702,7 +705,7 @@ export default {
     position: absolute;
     text-align: right;
     top: 30px;
-    right: 60px;
+    right: 70px;
     color: rgb(255, 255, 255);
     width: 70%; /* Could be more or less, depending on screen size */
     & > p {
