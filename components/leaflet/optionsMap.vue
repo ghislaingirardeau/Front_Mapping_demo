@@ -16,15 +16,6 @@
       </v-col>
     </v-row>
 
-    <v-row class="text-center">
-      <exportCSV />
-
-      <v-col cols="6">
-        <v-btn color="primary" dark @click="legend">
-          {{ showContent ? "Hide" : "Legend" }}
-        </v-btn>
-      </v-col>
-    </v-row>
   </v-col>
 </template>
 

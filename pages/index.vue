@@ -10,6 +10,8 @@
       />
     </v-expand-transition>
 
+    <exportCSV :modalExport="modalExport" @send-modal="getModalExport" />
+
     <div id="helpModal" class="modal_help">
       <!-- Modal content -->
       <div class="modal_close">
@@ -30,13 +32,15 @@
 
     <div id="map" v-show="expand"></div>
 
-    <optionsMap :showLegend="showLegend"/>
+    <optionsMap :showLegend="showLegend" />
+    
   </v-row>
 </template>
 
 <script>
 import dataGeoJson from "@/components/leaflet/dataGeoJson.vue";
 import optionsMap from "~/components/leaflet/optionsMap.vue";
+import exportCSV from "@/components/leaflet/exportCSV.vue";
 
 export default {
   async asyncData({ $content }) {
@@ -121,13 +125,16 @@ export default {
       "Track me and add an area -->",
       "Show/hide measure area -->",
       "Delete last item -->",
-      "Show the legend -->"
+      "Show the legend -->",
+      "Export data to excel -->"
     ],
-    showLegend: false
+    showLegend: false,
+    modalExport: false,
   }),
   components: {
     dataGeoJson,
     optionsMap,
+    exportCSV,
   },
   methods: {
     helpModal() {
@@ -138,15 +145,18 @@ export default {
       const resetModal = (display) => {
         display.style.display = "none";
         this.messageModal = undefined;
-      }
+      };
       span.onclick = () => {
-        resetModal(modal)
+        resetModal(modal);
       };
       window.onclick = (event) => {
         if (event.target == modal) {
-          resetModal(modal)
+          resetModal(modal);
         }
       };
+    },
+    getModalExport(payload) {
+      this.modalExport = payload.message;
     },
     getData(payload) {
       this.showInputGeoDetail = payload.show;
@@ -197,7 +207,7 @@ export default {
       function createIcon(category, subCategory, size) {
         let colors;
         let path;
-        let view = '0 0 24 24'
+        let view = "0 0 24 24";
         if (category === "house") {
           switch (subCategory) {
             case "not interview":
@@ -231,8 +241,8 @@ export default {
             path = `<path fill="${colors}" d="M10,20V14H14V20H19V12H22L12,3L2,12H5V20H10Z" />`;
             break;
           case "bath":
-            view = '0 0 512 512'
-            path = `<path d="M511.094,264.722c-1.136-3.307-28.511-81.137-89.171-95.166c-30.729-7.107-63.124,3.303-96.526,30.938v-35.663    c6.222-2.428,10.637-8.464,10.637-15.545s-4.415-13.117-10.637-15.545V21.124c0-9.22-7.475-16.696-16.696-16.696h-89.595    c-9.22,0-16.696,7.475-16.696,16.696v46.166c-18.137-33.54-41.579-53.478-69.951-59.406C71.508-4.849,13.992,54.3,11.574,56.825    C6.875,61.728,5.615,68.989,8.387,75.19c2.773,6.2,9.015,10.103,15.811,9.873c82.495-2.81,169.04,34.422,169.902,34.798    c2.146,0.936,4.415,1.391,6.668,1.391c0.55,0,1.097-0.031,1.643-0.085v12.741c-5.986,2.538-10.185,8.467-10.185,15.378    s4.2,12.84,10.185,15.378v99.481c-13.69-36.175-34.515-59.305-62.158-68.907C81.436,174.809,16.819,226.106,14.098,228.3    c-5.288,4.262-7.467,11.302-5.513,17.805c1.956,6.503,7.654,11.176,14.416,11.815c6.876,0.651,13.745,1.588,20.559,2.751    c-26.815,24.958-41.321,57.285-42.141,59.145c-2.739,6.214-1.443,13.469,3.281,18.349c3.208,3.314,7.561,5.083,11.999,5.083    c2.096,0,4.212-0.395,6.233-1.209c76.563-30.832,170.624-25.43,171.564-25.372c2.816,0.178,5.51-0.359,7.913-1.449v27.787    c-5.986,2.538-10.185,8.467-10.185,15.378s4.2,12.84,10.185,15.378v117.115c0,9.22,7.475,16.696,16.696,16.696H308.7    c9.22,0,16.696-7.475,16.696-16.696V373.928c6.222-2.428,10.637-8.464,10.637-15.545s-4.415-13.117-10.637-15.545v-97.236    c22.507,1.287,99.826,7.886,162.387,39.448c2.383,1.202,4.958,1.79,7.516,1.79c3.954,0,7.87-1.404,10.977-4.113    C511.396,278.264,513.3,271.144,511.094,264.722z M70.033,53.522c16.303-9.503,36.4-16.998,55.681-12.936    c16.129,3.398,30.358,14.887,42.528,34.277C142.992,66.766,107.92,57.514,70.033,53.522z M55.265,296.723    c8.409-10.079,18.888-19.87,31.085-25.859c14.339,4.315,27.897,9.235,40.144,14.176    C104.959,286.978,80.307,290.495,55.265,296.723z M72.688,232.553c17.389-7.306,38.216-12.161,56.607-5.773    c15.598,5.418,28.267,18.643,37.87,39.466C143.202,255.001,109.679,241.362,72.688,232.553z M292.005,474.18h-56.204v-99.102    h56.204V474.18z M292.005,341.687h-56.204V165.981h56.204V341.687z M292.005,132.589h-56.204v-94.77h56.204V132.589z     M361.327,215.325c19.184-12.489,36.925-16.945,52.99-13.256c19.207,4.408,34.299,19.645,45.106,35.114    C423.36,224.901,387.642,218.575,361.327,215.325z"/> `
+            view = "0 0 512 512";
+            path = `<path d="M511.094,264.722c-1.136-3.307-28.511-81.137-89.171-95.166c-30.729-7.107-63.124,3.303-96.526,30.938v-35.663    c6.222-2.428,10.637-8.464,10.637-15.545s-4.415-13.117-10.637-15.545V21.124c0-9.22-7.475-16.696-16.696-16.696h-89.595    c-9.22,0-16.696,7.475-16.696,16.696v46.166c-18.137-33.54-41.579-53.478-69.951-59.406C71.508-4.849,13.992,54.3,11.574,56.825    C6.875,61.728,5.615,68.989,8.387,75.19c2.773,6.2,9.015,10.103,15.811,9.873c82.495-2.81,169.04,34.422,169.902,34.798    c2.146,0.936,4.415,1.391,6.668,1.391c0.55,0,1.097-0.031,1.643-0.085v12.741c-5.986,2.538-10.185,8.467-10.185,15.378    s4.2,12.84,10.185,15.378v99.481c-13.69-36.175-34.515-59.305-62.158-68.907C81.436,174.809,16.819,226.106,14.098,228.3    c-5.288,4.262-7.467,11.302-5.513,17.805c1.956,6.503,7.654,11.176,14.416,11.815c6.876,0.651,13.745,1.588,20.559,2.751    c-26.815,24.958-41.321,57.285-42.141,59.145c-2.739,6.214-1.443,13.469,3.281,18.349c3.208,3.314,7.561,5.083,11.999,5.083    c2.096,0,4.212-0.395,6.233-1.209c76.563-30.832,170.624-25.43,171.564-25.372c2.816,0.178,5.51-0.359,7.913-1.449v27.787    c-5.986,2.538-10.185,8.467-10.185,15.378s4.2,12.84,10.185,15.378v117.115c0,9.22,7.475,16.696,16.696,16.696H308.7    c9.22,0,16.696-7.475,16.696-16.696V373.928c6.222-2.428,10.637-8.464,10.637-15.545s-4.415-13.117-10.637-15.545v-97.236    c22.507,1.287,99.826,7.886,162.387,39.448c2.383,1.202,4.958,1.79,7.516,1.79c3.954,0,7.87-1.404,10.977-4.113    C511.396,278.264,513.3,271.144,511.094,264.722z M70.033,53.522c16.303-9.503,36.4-16.998,55.681-12.936    c16.129,3.398,30.358,14.887,42.528,34.277C142.992,66.766,107.92,57.514,70.033,53.522z M55.265,296.723    c8.409-10.079,18.888-19.87,31.085-25.859c14.339,4.315,27.897,9.235,40.144,14.176    C104.959,286.978,80.307,290.495,55.265,296.723z M72.688,232.553c17.389-7.306,38.216-12.161,56.607-5.773    c15.598,5.418,28.267,18.643,37.87,39.466C143.202,255.001,109.679,241.362,72.688,232.553z M292.005,474.18h-56.204v-99.102    h56.204V474.18z M292.005,341.687h-56.204V165.981h56.204V341.687z M292.005,132.589h-56.204v-94.77h56.204V132.589z     M361.327,215.325c19.184-12.489,36.925-16.945,52.99-13.256c19.207,4.408,34.299,19.645,45.106,35.114    C423.36,224.901,387.642,218.575,361.327,215.325z"/> `;
             break;
           case "grave":
             path = `<path fill="black" d="M10,2H14C17.31,2 19,4.69 19,8V18.66C16.88,17.63 15.07,17 12,17C8.93,17 7.12,17.63 5,18.66V8C5,4.69 6.69,2 10,2M8,8V9.5H16V8H8M9,12V13.5H15V12H9M3,22V21.31C5.66,19.62 13.23,15.84 21,21.25V22H3Z" />`;
@@ -252,7 +262,6 @@ export default {
           case "worship":
             path = `<path fill="black" d="M15.59,9C17.7,7.74 19,5.46 19,3H17A5,5 0 0,1 12,8A5,5 0 0,1 7,3H5C5,5.46 6.3,7.74 8.41,9C5.09,11 4,15.28 6,18.6C7.97,21.92 12.27,23 15.59,21C18.91,19.04 20,14.74 18,11.42C17.42,10.43 16.58,9.59 15.59,9M12,20A5,5 0 0,1 7,15A5,5 0 0,1 12,10A5,5 0 0,1 17,15A5,5 0 0,1 12,20Z" />`;
             break;
-
         }
         return L.divIcon({
           className: `${category}-icon`,
@@ -523,7 +532,7 @@ export default {
         '    <svg id="btn-print" style="width:27px;height:27px" viewBox="0 0 24 24"><path fill="black" d="M18,3H6V7H18M19,12A1,1 0 0,1 18,11A1,1 0 0,1 19,10A1,1 0 0,1 20,11A1,1 0 0,1 19,12M16,19H8V14H16M19,8H5A3,3 0 0,0 2,11V17H6V21H18V17H22V11A3,3 0 0,0 19,8Z" /></svg>' +
         "</button>" +
         '<button type="button" class="btn-map">' +
-          '<svg id="btn-tutorial" style="width:27px;height:27px" viewBox="0 0 24 24">  <path fill="green" d="M12 2C11.5 2 11 2.19 10.59 2.59L2.59 10.59C1.8 11.37 1.8 12.63 2.59 13.41L10.59 21.41C11.37 22.2 12.63 22.2 13.41 21.41L21.41 13.41C22.2 12.63 22.2 11.37 21.41 10.59L13.41 2.59C13 2.19 12.5 2 12 2M12 6.95C14.7 7.06 15.87 9.78 14.28 11.81C13.86 12.31 13.19 12.64 12.85 13.07C12.5 13.5 12.5 14 12.5 14.5H11C11 13.65 11 12.94 11.35 12.44C11.68 11.94 12.35 11.64 12.77 11.31C14 10.18 13.68 8.59 12 8.46C11.18 8.46 10.5 9.13 10.5 9.97H9C9 8.3 10.35 6.95 12 6.95M11 15.5H12.5V17H11V15.5Z" /></svg>' +
+        '<svg id="btn-tutorial" style="width:27px;height:27px" viewBox="0 0 24 24">  <path fill="green" d="M12 2C11.5 2 11 2.19 10.59 2.59L2.59 10.59C1.8 11.37 1.8 12.63 2.59 13.41L10.59 21.41C11.37 22.2 12.63 22.2 13.41 21.41L21.41 13.41C22.2 12.63 22.2 11.37 21.41 10.59L13.41 2.59C13 2.19 12.5 2 12 2M12 6.95C14.7 7.06 15.87 9.78 14.28 11.81C13.86 12.31 13.19 12.64 12.85 13.07C12.5 13.5 12.5 14 12.5 14.5H11C11 13.65 11 12.94 11.35 12.44C11.68 11.94 12.35 11.64 12.77 11.31C14 10.18 13.68 8.59 12 8.46C11.18 8.46 10.5 9.13 10.5 9.97H9C9 8.3 10.35 6.95 12 6.95M11 15.5H12.5V17H11V15.5Z" /></svg>' +
         "</button>",
       classes: "btn-group-icon-map-option1",
       style: styleControl,
@@ -536,7 +545,7 @@ export default {
           } else if (data.target.querySelector("#btn-print")) {
             window.print();
           } else if (data.target.querySelector("#btn-tutorial")) {
-            this.helpModal()
+            this.helpModal();
           }
         },
       },
@@ -559,6 +568,9 @@ export default {
         "</button>" +
         '<button type="button" class="btn-map">' +
         '    <svg  id="btn-legend" style="width:27px;height:27px" viewBox="0 0 24 24"><path fill="blue" d="M9,3L3.36,4.9C3.15,4.97 3,5.15 3,5.38V20.5A0.5,0.5 0 0,0 3.5,21L3.66,20.97L9,18.9L15,21L20.64,19.1C20.85,19.03 21,18.85 21,18.62V3.5A0.5,0.5 0 0,0 20.5,3L20.34,3.03L15,5.1L9,3M8,5.45V17.15L5,18.31V6.46L8,5.45M10,5.47L14,6.87V18.53L10,17.13V5.47M19,5.7V17.54L16,18.55V6.86L19,5.7M7.46,6.3L5.57,6.97V9.12L7.46,8.45V6.3M7.46,9.05L5.57,9.72V11.87L7.46,11.2V9.05M7.46,11.8L5.57,12.47V14.62L7.46,13.95V11.8M7.46,14.55L5.57,15.22V17.37L7.46,16.7V14.55Z" /></svg>' +
+        "</button>" +
+        '<button type="button" class="btn-map">' +
+        '    <svg  id="btn-export" style="width:27px;height:27px" viewBox="0 0 24 24"><path fill="blue" d="M2 12H4V17H20V12H22V17C22 18.11 21.11 19 20 19H4C2.9 19 2 18.11 2 17V12M12 15L17.55 9.54L16.13 8.13L13 11.25V2H11V11.25L7.88 8.13L6.46 9.55L12 15Z" /></svg>' +
         "</button>",
       classes: "btn-group-icon-map-option1",
       style: styleControl,
@@ -566,34 +578,36 @@ export default {
         click: (data) => {
           // style css button
           let disableButton = (num, originalColor) => {
-            let button = document.getElementsByClassName("btn-map")[num]
-            let attribut = button.getAttribute("disabled")
-            let path = button.getElementsByTagName('path')[0]
-            if(attribut != null) {
-              button.removeAttribute("disabled", "")
-              path.setAttribute("fill", originalColor)
+            let button = document.getElementsByClassName("btn-map")[num];
+            let attribut = button.getAttribute("disabled");
+            let path = button.getElementsByTagName("path")[0];
+            if (attribut != null) {
+              button.removeAttribute("disabled", "");
+              path.setAttribute("fill", originalColor);
             } else {
-              button.setAttribute("disabled", "")
-              path.setAttribute("fill", "grey")
+              button.setAttribute("disabled", "");
+              path.setAttribute("fill", "grey");
             }
           };
           // function on click
           if (data.target.querySelector("#btn-add")) {
             styleOnClick(data.target);
-            disableButton(5, 'blue');
+            disableButton(5, "blue");
             this.coordinatesOnLocation(true); // display differente type of coordinates one array
           } else if (data.target.querySelector("#btn-location")) {
             styleOnClick(data.target);
             this.coordinatesOnLocation(false); // display differente type of coordinates multiple array
-            disableButton(4, 'blue');
+            disableButton(4, "blue");
           } else if (data.target.querySelector("#btn-ruler")) {
             styleOnClick(data.target);
             this.showMeasure();
           } else if (data.target.querySelector("#btn-delete")) {
             this.deleteItem();
           } else if (data.target.querySelector("#btn-legend")) {
-            styleOnClick(data.target)
-            this.showLegend = !this.showLegend
+            styleOnClick(data.target);
+            this.showLegend = !this.showLegend;
+          } else if (data.target.querySelector("#btn-export")) {
+            this.modalExport = true;
           }
         },
       },
