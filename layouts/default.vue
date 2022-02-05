@@ -1,6 +1,6 @@
 <template>
   <v-app dark>
-    <v-navigation-drawer
+<!--     <v-navigation-drawer
       v-model="drawer"
       app
       temporary
@@ -29,7 +29,7 @@
     >
       <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
     </v-app-bar>
-    <v-main>
+ -->    <v-main>
       <v-container fluid>
         <Nuxt />
       </v-container>
