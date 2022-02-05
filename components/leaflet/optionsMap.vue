@@ -135,8 +135,6 @@ export default {
     color: black;
     font-size: 12px;
   }
-  & .legend__title {
-  }
 }
 .items--font {
   font-size: 12px;
