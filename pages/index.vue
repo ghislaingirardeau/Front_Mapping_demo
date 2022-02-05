@@ -121,6 +121,7 @@ export default {
       "Track me and add an area -->",
       "Show/hide measure area -->",
       "Delete last item -->",
+      "Show the legend -->"
     ],
     showLegend: false
   }),
@@ -134,13 +135,16 @@ export default {
       var modal = document.getElementById("helpModal");
       var span = document.getElementsByClassName("modal_close-icone")[0];
       modal.style.display = "block";
-      span.onclick = function () {
-        modal.style.display = "none";
+      const resetModal = (display) => {
+        display.style.display = "none";
         this.messageModal = undefined;
+      }
+      span.onclick = () => {
+        resetModal(modal)
       };
-      window.onclick = function (event) {
+      window.onclick = (event) => {
         if (event.target == modal) {
-          modal.style.display = "none";
+          resetModal(modal)
         }
       };
     },
@@ -519,7 +523,7 @@ export default {
         '    <svg id="btn-print" style="width:27px;height:27px" viewBox="0 0 24 24"><path fill="black" d="M18,3H6V7H18M19,12A1,1 0 0,1 18,11A1,1 0 0,1 19,10A1,1 0 0,1 20,11A1,1 0 0,1 19,12M16,19H8V14H16M19,8H5A3,3 0 0,0 2,11V17H6V21H18V17H22V11A3,3 0 0,0 19,8Z" /></svg>' +
         "</button>" +
         '<button type="button" class="btn-map">' +
-        '    <svg  id="btn-legend" style="width:27px;height:27px" viewBox="0 0 24 24"><path fill="blue" d="M9,3L3.36,4.9C3.15,4.97 3,5.15 3,5.38V20.5A0.5,0.5 0 0,0 3.5,21L3.66,20.97L9,18.9L15,21L20.64,19.1C20.85,19.03 21,18.85 21,18.62V3.5A0.5,0.5 0 0,0 20.5,3L20.34,3.03L15,5.1L9,3M8,5.45V17.15L5,18.31V6.46L8,5.45M10,5.47L14,6.87V18.53L10,17.13V5.47M19,5.7V17.54L16,18.55V6.86L19,5.7M7.46,6.3L5.57,6.97V9.12L7.46,8.45V6.3M7.46,9.05L5.57,9.72V11.87L7.46,11.2V9.05M7.46,11.8L5.57,12.47V14.62L7.46,13.95V11.8M7.46,14.55L5.57,15.22V17.37L7.46,16.7V14.55Z" /></svg>' +
+          '<svg id="btn-tutorial" style="width:27px;height:27px" viewBox="0 0 24 24">  <path fill="green" d="M12 2C11.5 2 11 2.19 10.59 2.59L2.59 10.59C1.8 11.37 1.8 12.63 2.59 13.41L10.59 21.41C11.37 22.2 12.63 22.2 13.41 21.41L21.41 13.41C22.2 12.63 22.2 11.37 21.41 10.59L13.41 2.59C13 2.19 12.5 2 12 2M12 6.95C14.7 7.06 15.87 9.78 14.28 11.81C13.86 12.31 13.19 12.64 12.85 13.07C12.5 13.5 12.5 14 12.5 14.5H11C11 13.65 11 12.94 11.35 12.44C11.68 11.94 12.35 11.64 12.77 11.31C14 10.18 13.68 8.59 12 8.46C11.18 8.46 10.5 9.13 10.5 9.97H9C9 8.3 10.35 6.95 12 6.95M11 15.5H12.5V17H11V15.5Z" /></svg>' +
         "</button>",
       classes: "btn-group-icon-map-option1",
       style: styleControl,
@@ -531,9 +535,8 @@ export default {
             this.removeGeoJson();
           } else if (data.target.querySelector("#btn-print")) {
             window.print();
-          } else if (data.target.querySelector("#btn-legend")) {
-            styleOnClick(data.target)
-            this.showLegend = !this.showLegend
+          } else if (data.target.querySelector("#btn-tutorial")) {
+            this.helpModal()
           }
         },
       },
@@ -555,7 +558,7 @@ export default {
         '<svg id="btn-delete" style="width:27px;height:27px" viewBox="0 0 24 24"><path fill="orange" d="M22,3H7C6.31,3 5.77,3.35 5.41,3.88L0,12L5.41,20.11C5.77,20.64 6.31,21 7,21H22A2,2 0 0,0 24,19V5A2,2 0 0,0 22,3M19,15.59L17.59,17L14,13.41L10.41,17L9,15.59L12.59,12L9,8.41L10.41,7L14,10.59L17.59,7L19,8.41L15.41,12" /></svg>' +
         "</button>" +
         '<button type="button" class="btn-map">' +
-        '<svg id="btn-tutorial" style="width:27px;height:27px" viewBox="0 0 24 24">  <path fill="green" d="M12 2C11.5 2 11 2.19 10.59 2.59L2.59 10.59C1.8 11.37 1.8 12.63 2.59 13.41L10.59 21.41C11.37 22.2 12.63 22.2 13.41 21.41L21.41 13.41C22.2 12.63 22.2 11.37 21.41 10.59L13.41 2.59C13 2.19 12.5 2 12 2M12 6.95C14.7 7.06 15.87 9.78 14.28 11.81C13.86 12.31 13.19 12.64 12.85 13.07C12.5 13.5 12.5 14 12.5 14.5H11C11 13.65 11 12.94 11.35 12.44C11.68 11.94 12.35 11.64 12.77 11.31C14 10.18 13.68 8.59 12 8.46C11.18 8.46 10.5 9.13 10.5 9.97H9C9 8.3 10.35 6.95 12 6.95M11 15.5H12.5V17H11V15.5Z" /></svg>' +
+        '    <svg  id="btn-legend" style="width:27px;height:27px" viewBox="0 0 24 24"><path fill="blue" d="M9,3L3.36,4.9C3.15,4.97 3,5.15 3,5.38V20.5A0.5,0.5 0 0,0 3.5,21L3.66,20.97L9,18.9L15,21L20.64,19.1C20.85,19.03 21,18.85 21,18.62V3.5A0.5,0.5 0 0,0 20.5,3L20.34,3.03L15,5.1L9,3M8,5.45V17.15L5,18.31V6.46L8,5.45M10,5.47L14,6.87V18.53L10,17.13V5.47M19,5.7V17.54L16,18.55V6.86L19,5.7M7.46,6.3L5.57,6.97V9.12L7.46,8.45V6.3M7.46,9.05L5.57,9.72V11.87L7.46,11.2V9.05M7.46,11.8L5.57,12.47V14.62L7.46,13.95V11.8M7.46,14.55L5.57,15.22V17.37L7.46,16.7V14.55Z" /></svg>' +
         "</button>",
       classes: "btn-group-icon-map-option1",
       style: styleControl,
@@ -588,8 +591,9 @@ export default {
             this.showMeasure();
           } else if (data.target.querySelector("#btn-delete")) {
             this.deleteItem();
-          } else if (data.target.querySelector("#btn-tutorial")) {
-            this.helpModal()
+          } else if (data.target.querySelector("#btn-legend")) {
+            styleOnClick(data.target)
+            this.showLegend = !this.showLegend
           }
         },
       },
@@ -619,7 +623,7 @@ export default {
 #map {
   height: 500px;
   width: 100%;
-  margin: 0px 2px 0px 2px;
+  margin: 2px 2px 2px 2px;
   z-index: 1;
 }
 
@@ -683,7 +687,7 @@ export default {
   &-actions {
     position: absolute;
     text-align: right;
-    top: 0px;
+    top: 30px;
     right: 60px;
     color: rgb(255, 255, 255);
     width: 70%; /* Could be more or less, depending on screen size */
@@ -695,8 +699,9 @@ export default {
 
 /* The Close Button */
 .modal_close {
-  margin: 10px auto;
+  margin: 10px 10px;
   text-align: center;
+  float: left;
   &-icone {
     color: rgb(255, 255, 255);
     font-size: 42px;
