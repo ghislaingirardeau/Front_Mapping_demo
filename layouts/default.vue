@@ -30,7 +30,7 @@
       <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
     </v-app-bar>
     <v-main>
-      <v-container fluid="true">
+      <v-container fluid>
         <Nuxt />
       </v-container>
     </v-main>
