@@ -1,41 +1,28 @@
 <template>
-  <v-col cols="6" v-show="modalExport">
-    <v-dialog v-model="modalExport" persistent max-width="600px">
-      <v-card>
-        <v-card-title>
-          <span class="text-h5">Convert datas to Excel</span>
-        </v-card-title>
-        <v-card-text v-if="errorMessage">
-          {{ errorMessage }}
-        </v-card-text>
-        <v-form v-else ref="form" v-model="valid" lazy-validation>
-          <v-col cols="10">
-            <v-text-field
-              v-model="fileName"
-              :counter="20"
-              :rules="fileNameRules"
-              label="File name"
-              required
-            ></v-text-field>
-          </v-col>
-        </v-form>
-
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn color="blue darken-1" text @click="close"> Close </v-btn>
-          <v-btn
-            :disabled="!valid"
-            color="success"
-            class="mr-4"
-            @click="convertMyJson"
-            v-if="!errorMessage"
-          >
-            Save
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
-  </v-col>
+    <div>
+      <p v-if="errorMessage">
+        {{ errorMessage }}
+      </p>
+      <v-form v-else ref="form" v-model="valid" lazy-validation>
+          <v-text-field
+            v-model="fileName"
+            :counter="20"
+            :rules="fileNameRules"
+            label="File name"
+            required
+          ></v-text-field>
+      </v-form>
+        <v-spacer></v-spacer>
+        <v-btn
+          :disabled="!valid"
+          color="success"
+          class="mr-4"
+          @click="convertMyJson"
+          v-if="!errorMessage"
+        >
+          Save
+        </v-btn>
+    </div>
 </template>
 
 <script>
@@ -54,12 +41,6 @@ export default {
     modalExport: Boolean,
   },
   methods: {
-    close() {
-      this.errorMessage = undefined;
-      this.$emit("send-modal", {
-        message: false,
-      });
-    },
     convertMyJson() {
       function convertToCSV(objArray) {
         var array = typeof objArray != "object" ? JSON.parse(objArray) : objArray;

@@ -1,5 +1,4 @@
 <template>
-  <v-col cols="12">
     <v-form
       ref="form"
       v-model="valid"
@@ -80,13 +79,12 @@
 
       <v-btn
         color="error"
-        class="mr-4"
+        class="mr-4 mt-3 mt-sm-0"
         @click="cancel"
       >
         Cancel
       </v-btn>
     </v-form>
-  </v-col>
 </template>
 
 <script>

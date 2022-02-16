@@ -15,7 +15,6 @@
         <span class="items--font">{{ item.content }}</span>
       </v-col>
     </v-row>
-
   </v-col>
 </template>
 
@@ -130,7 +129,7 @@ export default {
 <style lang="scss">
 .legend__bloc {
   background-color: white;
-  border: 2px solid grey;
+  border-radius: 5px 5px;
   & > div {
     color: black;
     font-size: 12px;

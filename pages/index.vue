@@ -1,23 +1,27 @@
 <template>
   <div class="container">
-    <v-expand-transition>
-      <dataGeoJson
-        v-if="showInputGeoDetail"
-        @send-data="getData"
-        :geoJsonHouse="geoJsonHouse"
-        :geoJsonVillage="geoJsonVillage"
-        :coordinates="coordinates"
-      />
-      <optionsMap v-if="showLegend" :showLegend="showLegend" />
 
-    </v-expand-transition>
-
-    <exportCSV :modalExport="modalExport" @send-modal="getModalExport" />
+    <modalCustom :showModal="showModal" @send-modal="modalResponse">
+        <template v-slot:title>
+          {{modalTitle}}
+        </template>
+        <template v-slot:content>
+          <legendModal v-if="showLegend" />
+          <dataGeoJson
+            v-if="showInputGeoDetail"
+            @send-data="getData"
+            :geoJsonHouse="geoJsonHouse"
+            :geoJsonVillage="geoJsonVillage"
+            :coordinates="coordinates"
+          />
+          <exportCSV v-if="modalExport" />
+        </template>
+    </modalCustom>
 
     <div id="helpModal" class="modal_help">
       <!-- Modal content -->
       <div class="modal_close">
-        <span class="modal_close-icone">&times;</span>
+        <span class="modal_close-icon">&times;</span>
       </div>
       <div v-show="messageModal" class="modal_message">
         <p>{{ messageModal }}</p>
@@ -32,15 +36,16 @@
       </div>
     </div>
 
-    <div id="map" v-show="expand"></div>
+    <div id="map" class="mt-5"></div>
     
   </div>
 </template>
 
 <script>
 import dataGeoJson from "@/components/leaflet/dataGeoJson.vue";
-import optionsMap from "~/components/leaflet/optionsMap.vue";
+import legendModal from "~/components/leaflet/legendModal.vue";
 import exportCSV from "@/components/leaflet/exportCSV.vue";
+import modalCustom from "@/components/leaflet/modalCustom.vue";
 
 export default {
   async asyncData({ $content }) {
@@ -111,7 +116,6 @@ export default {
     housesLayer: [],
     villageLayer: [],
     lastItem: undefined,
-    expand: true,
     layerGeoJson: undefined,
     layerStorageControl: undefined,
     layerActionControl: undefined,
@@ -128,19 +132,22 @@ export default {
       "Show the legend -->",
       "Export data to excel -->"
     ],
+    showModal: false,
     showLegend: false,
+    modalTitle: undefined,
     modalExport: false,
   }),
   components: {
     dataGeoJson,
-    optionsMap,
+    legendModal,
     exportCSV,
+    modalCustom
   },
   methods: {
     helpModal() {
       // affiche un message lors du click
       var modal = document.getElementById("helpModal");
-      var span = document.getElementsByClassName("modal_close-icone")[0];
+      var span = document.getElementsByClassName("modal_close-icon")[0];
       modal.style.display = "block";
       const resetModal = (display) => {
         display.style.display = "none";
@@ -155,12 +162,15 @@ export default {
         }
       };
     },
-    getModalExport(payload) {
+    modalResponse(payload) {
+      this.showModal = payload.message;
+      this.showLegend = payload.message;
       this.modalExport = payload.message;
+      this.showInputGeoDetail = payload.message;
     },
     getData(payload) {
       this.showInputGeoDetail = payload.show;
-      this.expand = !payload.show;
+      this.showModal = payload.show;
       this.lastItem = payload.layerGroup;
 
       switch (this.lastItem) {
@@ -370,6 +380,8 @@ export default {
         navigator.geolocation.clearWatch(this.watchMe);
         this.watchMe = undefined;
         this.showInputGeoDetail = true;
+        this.showModal = true;
+        this.modalTitle = "Add a symbol"
       } else {
         // track my location, update the coordinates
         let success = (position) => {
@@ -484,6 +496,8 @@ export default {
       await this.clickMapMark.setLatLng(e.latlng).addTo(this.map);
       this.coordinates.push([e.latlng.lng, e.latlng.lat]);
       this.showInputGeoDetail = true;
+      this.showModal = true;
+      this.modalTitle = "Add a symbol"
     };
     this.map.on("click", addMarker);
 
@@ -604,10 +618,13 @@ export default {
           } else if (data.target.querySelector("#btn-delete")) {
             this.deleteItem();
           } else if (data.target.querySelector("#btn-legend")) {
-            styleOnClick(data.target);
             this.showLegend = !this.showLegend;
+            this.showModal = !this.showModal;
+            this.modalTitle = "Map Legend"
           } else if (data.target.querySelector("#btn-export")) {
             this.modalExport = true;
+            this.showModal = !this.showModal;
+            this.modalTitle = "Convert datas to Excel"
           }
         },
       },
@@ -655,7 +672,7 @@ export default {
   border-radius: 5px 5px;
   background-color: white;
   position: relative;
-  margin-bottom: 6px;
+  margin-bottom: 2px;
   padding: 4px 2px 0px 2px;
   &::after {
     content: "";
@@ -683,7 +700,7 @@ export default {
   height: 100%; /* Full height */
   overflow: auto; /* Enable scroll if needed */
   background-color: rgb(0, 0, 0); /* Fallback color */
-  background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
+  background-color: rgba(0, 0, 0, 0.6); /* Black w/ opacity */
   font-family: "Architects Daughter", cursive;
 }
 
@@ -709,17 +726,17 @@ export default {
     color: rgb(255, 255, 255);
     width: 70%; /* Could be more or less, depending on screen size */
     & > p {
-      margin-bottom: 25px;
+      margin-bottom: 20px;
     }
   }
 }
 
 /* The Close Button */
 .modal_close {
-  margin: 10px 10px;
+  margin: 10px 0px 0px 30px;
   text-align: center;
   float: left;
-  &-icone {
+  &-icon {
     color: rgb(255, 255, 255);
     font-size: 42px;
     font-weight: bold;
