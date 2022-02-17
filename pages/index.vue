@@ -629,9 +629,8 @@ export default {
             this.showModal = !this.showModal;
             this.modalTitle = "Map Legend"
           } else if (data.target.querySelector("#btn-fullscreen")) {
-            const mapScreen = document.getElementById('map')
               if(!document.fullscreenElement) {
-                mapScreen.webkitRequestFullScreen()
+                document.body.webkitRequestFullScreen()
               } else {
                 document.exitFullscreen()
               }
