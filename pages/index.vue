@@ -130,7 +130,7 @@ export default {
       "Show/hide measure area -->",
       "Delete last item -->",
       "Show the legend -->",
-      "Export data to excel -->"
+      "Mode full screen -->"
     ],
     showModal: false,
     showLegend: false,
@@ -543,10 +543,13 @@ export default {
         '    <svg id="btn-erase" style="width:27px;height:27px" viewBox="0 0 24 24"><path fill="red" d="M16.24,3.56L21.19,8.5C21.97,9.29 21.97,10.55 21.19,11.34L12,20.53C10.44,22.09 7.91,22.09 6.34,20.53L2.81,17C2.03,16.21 2.03,14.95 2.81,14.16L13.41,3.56C14.2,2.78 15.46,2.78 16.24,3.56M4.22,15.58L7.76,19.11C8.54,19.9 9.8,19.9 10.59,19.11L14.12,15.58L9.17,10.63L4.22,15.58Z"/></svg>' +
         "</button>" +
         '<button type="button" class="btn-map ">' +
-        '    <svg id="btn-print" style="width:27px;height:27px" viewBox="0 0 24 24"><path fill="black" d="M18,3H6V7H18M19,12A1,1 0 0,1 18,11A1,1 0 0,1 19,10A1,1 0 0,1 20,11A1,1 0 0,1 19,12M16,19H8V14H16M19,8H5A3,3 0 0,0 2,11V17H6V21H18V17H22V11A3,3 0 0,0 19,8Z" /></svg>' +
+        '    <svg id="btn-print" style="width:27px;height:27px" viewBox="0 0 24 24"><path fill="green" d="M18,3H6V7H18M19,12A1,1 0 0,1 18,11A1,1 0 0,1 19,10A1,1 0 0,1 20,11A1,1 0 0,1 19,12M16,19H8V14H16M19,8H5A3,3 0 0,0 2,11V17H6V21H18V17H22V11A3,3 0 0,0 19,8Z" /></svg>' +
         "</button>" +
         '<button type="button" class="btn-map">' +
         '<svg id="btn-tutorial" style="width:27px;height:27px" viewBox="0 0 24 24">  <path fill="green" d="M12 2C11.5 2 11 2.19 10.59 2.59L2.59 10.59C1.8 11.37 1.8 12.63 2.59 13.41L10.59 21.41C11.37 22.2 12.63 22.2 13.41 21.41L21.41 13.41C22.2 12.63 22.2 11.37 21.41 10.59L13.41 2.59C13 2.19 12.5 2 12 2M12 6.95C14.7 7.06 15.87 9.78 14.28 11.81C13.86 12.31 13.19 12.64 12.85 13.07C12.5 13.5 12.5 14 12.5 14.5H11C11 13.65 11 12.94 11.35 12.44C11.68 11.94 12.35 11.64 12.77 11.31C14 10.18 13.68 8.59 12 8.46C11.18 8.46 10.5 9.13 10.5 9.97H9C9 8.3 10.35 6.95 12 6.95M11 15.5H12.5V17H11V15.5Z" /></svg>' +
+        "</button>" + 
+        '<button type="button" class="btn-map">' +
+        '<svg  id="btn-export" style="width:27px;height:27px" viewBox="0 0 24 24"><path fill="green" d="M2 12H4V17H20V12H22V17C22 18.11 21.11 19 20 19H4C2.9 19 2 18.11 2 17V12M12 15L17.55 9.54L16.13 8.13L13 11.25V2H11V11.25L7.88 8.13L6.46 9.55L12 15Z" /></svg>' +
         "</button>",
       classes: "btn-group-icon-map-option1",
       style: styleControl,
@@ -560,7 +563,11 @@ export default {
             window.print();
           } else if (data.target.querySelector("#btn-tutorial")) {
             this.helpModal();
-          }
+          } else if (data.target.querySelector("#btn-export")) {
+            this.modalExport = true;
+            this.showModal = !this.showModal;
+            this.modalTitle = "Convert datas to Excel"
+          }         
         },
       },
     });
@@ -575,16 +582,16 @@ export default {
         '<svg id="btn-location" style="width:27px;height:27px" viewBox="0 0 24 24"><path fill="blue" d="M12,8A4,4 0 0,1 16,12A4,4 0 0,1 12,16A4,4 0 0,1 8,12A4,4 0 0,1 12,8M3.05,13H1V11H3.05C3.5,6.83 6.83,3.5 11,3.05V1H13V3.05C17.17,3.5 20.5,6.83 20.95,11H23V13H20.95C20.5,17.17 17.17,20.5 13,20.95V23H11V20.95C6.83,20.5 3.5,17.17 3.05,13M12,5A7,7 0 0,0 5,12A7,7 0 0,0 12,19A7,7 0 0,0 19,12A7,7 0 0,0 12,5Z" /></svg>' +
         "</button>" +
         '<button type="button" class="btn-map">' +
-        '<svg id="btn-ruler" style="width:27px;height:27px" viewBox="0 0 24 24"><path fill="purple" d="M1.39,18.36L3.16,16.6L4.58,18L5.64,16.95L4.22,15.54L5.64,14.12L8.11,16.6L9.17,15.54L6.7,13.06L8.11,11.65L9.53,13.06L10.59,12L9.17,10.59L10.59,9.17L13.06,11.65L14.12,10.59L11.65,8.11L13.06,6.7L14.47,8.11L15.54,7.05L14.12,5.64L15.54,4.22L18,6.7L19.07,5.64L16.6,3.16L18.36,1.39L22.61,5.64L5.64,22.61L1.39,18.36Z" /></svg>' +
+        '<svg id="btn-delete" style="width:27px;height:27px" viewBox="0 0 24 24"><path fill="red" d="M22,3H7C6.31,3 5.77,3.35 5.41,3.88L0,12L5.41,20.11C5.77,20.64 6.31,21 7,21H22A2,2 0 0,0 24,19V5A2,2 0 0,0 22,3M19,15.59L17.59,17L14,13.41L10.41,17L9,15.59L12.59,12L9,8.41L10.41,7L14,10.59L17.59,7L19,8.41L15.41,12" /></svg>' +
         "</button>" +
         '<button type="button" class="btn-map">' +
-        '<svg id="btn-delete" style="width:27px;height:27px" viewBox="0 0 24 24"><path fill="orange" d="M22,3H7C6.31,3 5.77,3.35 5.41,3.88L0,12L5.41,20.11C5.77,20.64 6.31,21 7,21H22A2,2 0 0,0 24,19V5A2,2 0 0,0 22,3M19,15.59L17.59,17L14,13.41L10.41,17L9,15.59L12.59,12L9,8.41L10.41,7L14,10.59L17.59,7L19,8.41L15.41,12" /></svg>' +
+        '<svg id="btn-ruler" style="width:27px;height:27px" viewBox="0 0 24 24"><path fill="orange" d="M1.39,18.36L3.16,16.6L4.58,18L5.64,16.95L4.22,15.54L5.64,14.12L8.11,16.6L9.17,15.54L6.7,13.06L8.11,11.65L9.53,13.06L10.59,12L9.17,10.59L10.59,9.17L13.06,11.65L14.12,10.59L11.65,8.11L13.06,6.7L14.47,8.11L15.54,7.05L14.12,5.64L15.54,4.22L18,6.7L19.07,5.64L16.6,3.16L18.36,1.39L22.61,5.64L5.64,22.61L1.39,18.36Z" /></svg>' +
         "</button>" +
         '<button type="button" class="btn-map">' +
-        '    <svg  id="btn-legend" style="width:27px;height:27px" viewBox="0 0 24 24"><path fill="blue" d="M9,3L3.36,4.9C3.15,4.97 3,5.15 3,5.38V20.5A0.5,0.5 0 0,0 3.5,21L3.66,20.97L9,18.9L15,21L20.64,19.1C20.85,19.03 21,18.85 21,18.62V3.5A0.5,0.5 0 0,0 20.5,3L20.34,3.03L15,5.1L9,3M8,5.45V17.15L5,18.31V6.46L8,5.45M10,5.47L14,6.87V18.53L10,17.13V5.47M19,5.7V17.54L16,18.55V6.86L19,5.7M7.46,6.3L5.57,6.97V9.12L7.46,8.45V6.3M7.46,9.05L5.57,9.72V11.87L7.46,11.2V9.05M7.46,11.8L5.57,12.47V14.62L7.46,13.95V11.8M7.46,14.55L5.57,15.22V17.37L7.46,16.7V14.55Z" /></svg>' +
+        '<svg  id="btn-legend" style="width:27px;height:27px" viewBox="0 0 24 24"><path fill="orange" d="M9,3L3.36,4.9C3.15,4.97 3,5.15 3,5.38V20.5A0.5,0.5 0 0,0 3.5,21L3.66,20.97L9,18.9L15,21L20.64,19.1C20.85,19.03 21,18.85 21,18.62V3.5A0.5,0.5 0 0,0 20.5,3L20.34,3.03L15,5.1L9,3M8,5.45V17.15L5,18.31V6.46L8,5.45M10,5.47L14,6.87V18.53L10,17.13V5.47M19,5.7V17.54L16,18.55V6.86L19,5.7M7.46,6.3L5.57,6.97V9.12L7.46,8.45V6.3M7.46,9.05L5.57,9.72V11.87L7.46,11.2V9.05M7.46,11.8L5.57,12.47V14.62L7.46,13.95V11.8M7.46,14.55L5.57,15.22V17.37L7.46,16.7V14.55Z" /></svg>' +
         "</button>" +
         '<button type="button" class="btn-map">' +
-        '    <svg  id="btn-export" style="width:27px;height:27px" viewBox="0 0 24 24"><path fill="blue" d="M2 12H4V17H20V12H22V17C22 18.11 21.11 19 20 19H4C2.9 19 2 18.11 2 17V12M12 15L17.55 9.54L16.13 8.13L13 11.25V2H11V11.25L7.88 8.13L6.46 9.55L12 15Z" /></svg>' +
+        '<svg id="btn-fullscreen" style="width:27px;height:27px" viewBox="0 0 24 24">  <path fill="orange" d="M17 4H20C21.1 4 22 4.9 22 6V8H20V6H17V4M4 8V6H7V4H4C2.9 4 2 4.9 2 6V8H4M20 16V18H17V20H20C21.1 20 22 19.1 22 18V16H20M7 18H4V16H2V18C2 19.1 2.9 20 4 20H7V18M18 8H6V16H18V8Z" /></svg>' +
         "</button>",
       classes: "btn-group-icon-map-option1",
       style: styleControl,
@@ -606,12 +613,12 @@ export default {
           // function on click
           if (data.target.querySelector("#btn-add")) {
             styleOnClick(data.target);
-            disableButton(5, "blue");
+            disableButton(6, "blue");
             this.coordinatesOnLocation(true); // display differente type of coordinates one array
           } else if (data.target.querySelector("#btn-location")) {
             styleOnClick(data.target);
             this.coordinatesOnLocation(false); // display differente type of coordinates multiple array
-            disableButton(4, "blue");
+            disableButton(5, "blue");
           } else if (data.target.querySelector("#btn-ruler")) {
             styleOnClick(data.target);
             this.showMeasure();
@@ -621,10 +628,13 @@ export default {
             this.showLegend = !this.showLegend;
             this.showModal = !this.showModal;
             this.modalTitle = "Map Legend"
-          } else if (data.target.querySelector("#btn-export")) {
-            this.modalExport = true;
-            this.showModal = !this.showModal;
-            this.modalTitle = "Convert datas to Excel"
+          } else if (data.target.querySelector("#btn-fullscreen")) {
+            const mapScreen = document.getElementById('map')
+              if(!document.fullscreenElement) {
+                mapScreen.webkitRequestFullScreen()
+              } else {
+                document.exitFullscreen()
+              }
           }
         },
       },
