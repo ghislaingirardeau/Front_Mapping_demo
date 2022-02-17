@@ -585,13 +585,13 @@ export default {
         '<svg id="btn-delete" style="width:27px;height:27px" viewBox="0 0 24 24"><path fill="red" d="M22,3H7C6.31,3 5.77,3.35 5.41,3.88L0,12L5.41,20.11C5.77,20.64 6.31,21 7,21H22A2,2 0 0,0 24,19V5A2,2 0 0,0 22,3M19,15.59L17.59,17L14,13.41L10.41,17L9,15.59L12.59,12L9,8.41L10.41,7L14,10.59L17.59,7L19,8.41L15.41,12" /></svg>' +
         "</button>" +
         '<button type="button" class="btn-map">' +
-        '<svg id="btn-ruler" style="width:27px;height:27px" viewBox="0 0 24 24"><path fill="orange" d="M1.39,18.36L3.16,16.6L4.58,18L5.64,16.95L4.22,15.54L5.64,14.12L8.11,16.6L9.17,15.54L6.7,13.06L8.11,11.65L9.53,13.06L10.59,12L9.17,10.59L10.59,9.17L13.06,11.65L14.12,10.59L11.65,8.11L13.06,6.7L14.47,8.11L15.54,7.05L14.12,5.64L15.54,4.22L18,6.7L19.07,5.64L16.6,3.16L18.36,1.39L22.61,5.64L5.64,22.61L1.39,18.36Z" /></svg>' +
+        '<svg id="btn-fullscreen" style="width:27px;height:27px" viewBox="0 0 24 24">  <path fill="orange" d="M17 4H20C21.1 4 22 4.9 22 6V8H20V6H17V4M4 8V6H7V4H4C2.9 4 2 4.9 2 6V8H4M20 16V18H17V20H20C21.1 20 22 19.1 22 18V16H20M7 18H4V16H2V18C2 19.1 2.9 20 4 20H7V18M18 8H6V16H18V8Z" /></svg>' +
         "</button>" +
         '<button type="button" class="btn-map">' +
         '<svg  id="btn-legend" style="width:27px;height:27px" viewBox="0 0 24 24"><path fill="orange" d="M9,3L3.36,4.9C3.15,4.97 3,5.15 3,5.38V20.5A0.5,0.5 0 0,0 3.5,21L3.66,20.97L9,18.9L15,21L20.64,19.1C20.85,19.03 21,18.85 21,18.62V3.5A0.5,0.5 0 0,0 20.5,3L20.34,3.03L15,5.1L9,3M8,5.45V17.15L5,18.31V6.46L8,5.45M10,5.47L14,6.87V18.53L10,17.13V5.47M19,5.7V17.54L16,18.55V6.86L19,5.7M7.46,6.3L5.57,6.97V9.12L7.46,8.45V6.3M7.46,9.05L5.57,9.72V11.87L7.46,11.2V9.05M7.46,11.8L5.57,12.47V14.62L7.46,13.95V11.8M7.46,14.55L5.57,15.22V17.37L7.46,16.7V14.55Z" /></svg>' +
         "</button>" +
         '<button type="button" class="btn-map">' +
-        '<svg id="btn-fullscreen" style="width:27px;height:27px" viewBox="0 0 24 24">  <path fill="orange" d="M17 4H20C21.1 4 22 4.9 22 6V8H20V6H17V4M4 8V6H7V4H4C2.9 4 2 4.9 2 6V8H4M20 16V18H17V20H20C21.1 20 22 19.1 22 18V16H20M7 18H4V16H2V18C2 19.1 2.9 20 4 20H7V18M18 8H6V16H18V8Z" /></svg>' +
+        '<svg id="btn-ruler" style="width:27px;height:27px" viewBox="0 0 24 24"><path fill="orange" d="M1.39,18.36L3.16,16.6L4.58,18L5.64,16.95L4.22,15.54L5.64,14.12L8.11,16.6L9.17,15.54L6.7,13.06L8.11,11.65L9.53,13.06L10.59,12L9.17,10.59L10.59,9.17L13.06,11.65L14.12,10.59L11.65,8.11L13.06,6.7L14.47,8.11L15.54,7.05L14.12,5.64L15.54,4.22L18,6.7L19.07,5.64L16.6,3.16L18.36,1.39L22.61,5.64L5.64,22.61L1.39,18.36Z" /></svg>' +
         "</button>",
       classes: "btn-group-icon-map-option1",
       style: styleControl,
@@ -629,6 +629,7 @@ export default {
             this.showModal = !this.showModal;
             this.modalTitle = "Map Legend"
           } else if (data.target.querySelector("#btn-fullscreen")) {
+              styleOnClick(data.target);
               if(!document.fullscreenElement) {
                 document.body.webkitRequestFullScreen()
               } else {
