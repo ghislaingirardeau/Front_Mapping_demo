@@ -654,6 +654,7 @@ export default {
 .container{
   height: 100%;
   width: 100vw;
+  padding: 0px;
 }
 #map {
   height: 100%;
@@ -721,7 +722,7 @@ export default {
   &-actions {
     position: absolute;
     text-align: right;
-    top: 30px;
+    top: 20px;
     right: 70px;
     color: rgb(255, 255, 255);
     width: 70%; /* Could be more or less, depending on screen size */
