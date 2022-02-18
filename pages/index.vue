@@ -23,9 +23,14 @@
       <div class="modal_close">
         <span class="modal_close-icon">&times;</span>
       </div>
-      <div v-show="!messageModal" class="modal_tuto">
-        <div class="modal_tuto-actions">
-          <p v-for="item in tutorials" :key="item">
+      <div class="modal_tuto">
+        <div class="modal_tuto-actions" :style="{right: modalDiplay}">
+          <p v-for="item in tutorialsAction" :key="item">
+            {{ item }}
+          </p>
+        </div>
+        <div class="modal_tuto-data" :style="{left: modalDiplay}">
+          <p v-for="item in tutorialsData" :key="item">
             {{ item }}
           </p>
         </div>
@@ -119,7 +124,7 @@ export default {
     messageModal: undefined,
     watchMe: undefined,
     accuracyLocation: undefined,
-    tutorials: [
+    tutorialsAction: [
       "Select layers to show -->",
       "Find me and add a coordinate -->",
       "Track me and add an area -->",
@@ -128,11 +133,28 @@ export default {
       "Show the legend -->",
       "Show/hide measure area -->"
     ],
+    tutorialsData: [
+      "<-- Save data temporaly",
+      "<-- Remove data saved",
+      "<-- Print map",
+      "<-- Show tutorials",
+      "<-- Show data table details ",
+      "<-- Export datas to excel",
+    ],
     showModal: false,
     showLegend: false,
     modalTitle: undefined,
     modalExport: false,
   }),
+  computed: {
+    modalDiplay() {
+      if(this.$vuetify.breakpoint.width < 1000) {
+        return '60px'
+      } else {
+        return '140px'
+      }
+    }
+  },
   components: {
     dataGeoJson,
     legendModal,
@@ -728,11 +750,20 @@ export default {
     position: absolute;
     text-align: right;
     top: 20px;
-    right: 70px;
     color: rgb(255, 255, 255);
     width: 70%; /* Could be more or less, depending on screen size */
     & > p {
       margin-bottom: 20px;
+    }
+  }
+  &-data {
+    position: absolute;
+    text-align: left;
+    top: 90px;
+    color: rgb(255, 255, 255);
+    width: 70%; /* Could be more or less, depending on screen size */
+    & > p {
+      margin-bottom: 18px;
     }
   }
 }
