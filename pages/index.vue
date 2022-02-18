@@ -22,14 +22,29 @@
       <!-- Modal content -->
       <div class="modal_close">
         <span class="modal_close-icon">&times;</span>
+        <button 
+          class="modal_page-btn" 
+          @click="showTuto" 
+          v-if="this.$vuetify.breakpoint.width < 600" 
+        >
+          {{tutoPage ? 'Previous' : 'Next'}}
+        </button>
       </div>
       <div class="modal_tuto">
-        <div class="modal_tuto-actions" :style="{right: modalDiplay}">
+        <div 
+          class="modal_tuto-actions" 
+          :style="{right: modalDiplay}"
+          v-if="this.$vuetify.breakpoint.width > 600 || !tutoPage" 
+        > <!-- || counter if counter 1 show tuto 1, if 2 show tuto 2 -->
           <p v-for="item in tutorialsAction" :key="item">
             {{ item }}
           </p>
         </div>
-        <div class="modal_tuto-data" :style="{left: modalDiplay}">
+        <div 
+          class="modal_tuto-data" 
+          :style="{left: modalDiplay}"
+          v-if="this.$vuetify.breakpoint.width > 600 || tutoPage"
+        >
           <p v-for="item in tutorialsData" :key="item">
             {{ item }}
           </p>
@@ -139,8 +154,9 @@ export default {
       "<-- Print map",
       "<-- Show tutorials",
       "<-- Show data table details ",
-      "<-- Export datas to excel",
+      "<-- Export data to excel",
     ],
+    tutoPage: false,
     showModal: false,
     showLegend: false,
     modalTitle: undefined,
@@ -162,6 +178,10 @@ export default {
     modalCustom
   },
   methods: {
+    showTuto() {
+      this.tutoPage = !this.tutoPage
+      console.log(this.tutoPage)
+    },
     helpModal() {
       // affiche un message lors du click
       var modal = document.getElementById("helpModal");
@@ -441,6 +461,7 @@ export default {
     },
   },
   mounted() {
+    this.helpModal()
     // config mapbox
     const tokenMapbox =
       "pk.eyJ1IjoiZ2d3ZWJkZXYiLCJhIjoiY2t4OGVhemd5MXpyMzJvbzE4ZXpxajJzZCJ9.P2KXn7NQDyQ11BkYVkPEcQ";
@@ -770,7 +791,7 @@ export default {
 
 /* The Close Button */
 .modal_close {
-  margin: 10px 0px 0px 30px;
+  margin: 10px 0px 0px 25px;
   text-align: center;
   float: left;
   &-icon {
@@ -784,5 +805,14 @@ export default {
       cursor: pointer;
     }
   }
+}
+.modal_page-btn{
+  z-index: 6; 
+  position: absolute;
+  padding: 4px;
+  top: 25px;
+  left: 55px;
+  border: 2px white solid;
+  border-radius: 4px 4px;
 }
 </style>
