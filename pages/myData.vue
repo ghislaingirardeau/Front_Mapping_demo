@@ -3,8 +3,8 @@
     <v-btn color="primary" class="backToMap" @click="linkMap">
       <v-icon>mdi-map-outline</v-icon>
     </v-btn>
-    <h1>My data collected</h1>
-    <p :class="{ active: isActive }">Here you'll find all the datas details collected</p>
+    <h1>My datas</h1>
+    <p :class="{ active: isActive }">You have collected {{geoJsonFeature ? geoJsonFeature.length : ''}} datas</p>
     <nuxt-link to="/"></nuxt-link>
     <tableGeoJson v-if="geoJsonFeature" :geoJsonFeature="geoJsonFeature" />
     <p v-else>No data save yet</p>

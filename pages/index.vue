@@ -809,9 +809,9 @@ export default {
 .modal_page-btn {
   z-index: 6;
   position: absolute;
-  padding: 4px;
-  top: 25px;
-  left: 55px;
+  padding: 4px 6px;
+  left: 25px;
+  top: 350px;
   border: 2px white solid;
   border-radius: 4px 4px;
 }
