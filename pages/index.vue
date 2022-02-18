@@ -127,10 +127,10 @@ export default {
       "Select layers to show -->",
       "Find me and add a coordinate -->",
       "Track me and add an area -->",
-      "Show/hide measure area -->",
       "Delete last item -->",
+      "Mode full screen -->",
       "Show the legend -->",
-      "Mode full screen -->"
+      "Show/hide measure area -->"
     ],
     showModal: false,
     showLegend: false,
@@ -549,6 +549,9 @@ export default {
         '<svg id="btn-tutorial" style="width:27px;height:27px" viewBox="0 0 24 24">  <path fill="green" d="M12 2C11.5 2 11 2.19 10.59 2.59L2.59 10.59C1.8 11.37 1.8 12.63 2.59 13.41L10.59 21.41C11.37 22.2 12.63 22.2 13.41 21.41L21.41 13.41C22.2 12.63 22.2 11.37 21.41 10.59L13.41 2.59C13 2.19 12.5 2 12 2M12 6.95C14.7 7.06 15.87 9.78 14.28 11.81C13.86 12.31 13.19 12.64 12.85 13.07C12.5 13.5 12.5 14 12.5 14.5H11C11 13.65 11 12.94 11.35 12.44C11.68 11.94 12.35 11.64 12.77 11.31C14 10.18 13.68 8.59 12 8.46C11.18 8.46 10.5 9.13 10.5 9.97H9C9 8.3 10.35 6.95 12 6.95M11 15.5H12.5V17H11V15.5Z" /></svg>' +
         "</button>" + 
         '<button type="button" class="btn-map">' +
+        '<svg  id="btn-data" style="width:27px;height:27px" viewBox="0 0 24 24"><path fill="green" d="M4 12V9C4 11.2 7.6 13 12 13S20 11.2 20 9V12C20 12.5 19.8 12.9 19.5 13.4C18.7 13.1 17.9 13 17 13C14.5 13 12.1 14.1 10.6 15.9C6.8 15.6 4 14 4 12M12 11C16.4 11 20 9.2 20 7S16.4 3 12 3 4 4.8 4 7 7.6 11 12 11M9.1 19.7L8.8 19L9.1 18.3C9.2 18.1 9.3 18 9.3 17.8C6.2 17.2 4 15.8 4 14V17C4 18.8 6.4 20.3 9.7 20.8C9.5 20.5 9.3 20.1 9.1 19.7M17 18C16.4 18 16 18.4 16 19S16.4 20 17 20 18 19.6 18 19 17.6 18 17 18M23 19C22.1 21.3 19.7 23 17 23S11.9 21.3 11 19C11.9 16.7 14.3 15 17 15S22.1 16.7 23 19M19.5 19C19.5 17.6 18.4 16.5 17 16.5S14.5 17.6 14.5 19 15.6 21.5 17 21.5 19.5 20.4 19.5 19Z" /></svg>' +
+        "</button>" +
+        '<button type="button" class="btn-map">' +
         '<svg  id="btn-export" style="width:27px;height:27px" viewBox="0 0 24 24"><path fill="green" d="M2 12H4V17H20V12H22V17C22 18.11 21.11 19 20 19H4C2.9 19 2 18.11 2 17V12M12 15L17.55 9.54L16.13 8.13L13 11.25V2H11V11.25L7.88 8.13L6.46 9.55L12 15Z" /></svg>' +
         "</button>",
       classes: "btn-group-icon-map-option1",
@@ -567,7 +570,11 @@ export default {
             this.modalExport = true;
             this.showModal = !this.showModal;
             this.modalTitle = "Convert datas to Excel"
-          }         
+          } else if (data.target.querySelector("#btn-data")) {
+            let data = [this.geoJsonHouse, this.geoJsonVillage];
+            localStorage.setItem("APIGeoMap", JSON.stringify(data));
+            this.$router.push('myData')
+          }       
         },
       },
     });
