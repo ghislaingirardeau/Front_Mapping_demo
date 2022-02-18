@@ -1,48 +1,47 @@
 <template>
   <div class="container">
-
     <modalCustom :showModal="showModal" @send-modal="modalResponse">
-        <template v-slot:title>
-          {{modalTitle ? modalTitle : messageModal}}
-        </template>
-        <template v-slot:content>
-          <legendModal v-if="showLegend" />
-          <dataGeoJson
-            v-if="showInputGeoDetail"
-            @send-data="getData"
-            :geoJsonHouse="geoJsonHouse"
-            :geoJsonVillage="geoJsonVillage"
-            :coordinates="coordinates"
-          />
-          <exportCSV v-if="modalExport" />
-        </template>
+      <template v-slot:title>
+        {{ modalTitle ? modalTitle : messageModal }}
+      </template>
+      <template v-slot:content>
+        <legendModal v-if="showLegend" />
+        <dataGeoJson
+          v-if="showInputGeoDetail"
+          @send-data="getData"
+          :geoJsonHouse="geoJsonHouse"
+          :geoJsonVillage="geoJsonVillage"
+          :coordinates="coordinates"
+        />
+        <exportCSV v-if="modalExport" />
+      </template>
     </modalCustom>
 
     <div id="helpModal" class="modal_help">
       <!-- Modal content -->
       <div class="modal_close">
         <span class="modal_close-icon">&times;</span>
-        <button 
-          class="modal_page-btn" 
-          @click="showTuto" 
-          v-if="this.$vuetify.breakpoint.width < 600" 
+        <button
+          class="modal_page-btn"
+          @click="showTuto"
+          v-if="this.$vuetify.breakpoint.width < 600"
         >
-          {{tutoPage ? 'Previous' : 'Next'}}
+          {{ tutoPage ? "Previous" : "Next" }}
         </button>
       </div>
       <div class="modal_tuto">
-        <div 
-          class="modal_tuto-actions" 
-          :style="{right: modalDiplay}"
-          v-if="this.$vuetify.breakpoint.width > 600 || !tutoPage" 
-        > <!-- || counter if counter 1 show tuto 1, if 2 show tuto 2 -->
+        <div
+          class="modal_tuto-actions"
+          :style="{ right: modalDiplay }"
+          v-if="this.$vuetify.breakpoint.width > 600 || !tutoPage"
+        >
           <p v-for="item in tutorialsAction" :key="item">
             {{ item }}
           </p>
         </div>
-        <div 
-          class="modal_tuto-data" 
-          :style="{left: modalDiplay}"
+        <div
+          class="modal_tuto-data"
+          :style="{ left: modalDiplay }"
           v-if="this.$vuetify.breakpoint.width > 600 || tutoPage"
         >
           <p v-for="item in tutorialsData" :key="item">
@@ -53,7 +52,6 @@
     </div>
 
     <div id="map" class="mt-5"></div>
-    
   </div>
 </template>
 
@@ -146,7 +144,7 @@ export default {
       "Delete last item -->",
       "Mode full screen -->",
       "Show the legend -->",
-      "Show/hide measure area -->"
+      "Show/hide measure area -->",
     ],
     tutorialsData: [
       "<-- Save data temporaly",
@@ -164,23 +162,23 @@ export default {
   }),
   computed: {
     modalDiplay() {
-      if(this.$vuetify.breakpoint.width < 1000) {
-        return '60px'
+      if (this.$vuetify.breakpoint.width < 1000) {
+        return "60px";
       } else {
-        return '140px'
+        return "140px";
       }
-    }
+    },
   },
   components: {
     dataGeoJson,
     legendModal,
     exportCSV,
-    modalCustom
+    modalCustom,
   },
   methods: {
     showTuto() {
-      this.tutoPage = !this.tutoPage
-      console.log(this.tutoPage)
+      this.tutoPage = !this.tutoPage;
+      console.log(this.tutoPage);
     },
     helpModal() {
       // affiche un message lors du click
@@ -204,8 +202,8 @@ export default {
       this.showLegend = payload.message;
       this.modalExport = payload.message;
       this.showInputGeoDetail = payload.message;
-      this.messageModal = undefined
-      this.modalTitle = undefined
+      this.messageModal = undefined;
+      this.modalTitle = undefined;
     },
     getData(payload) {
       this.showInputGeoDetail = payload.show;
@@ -226,7 +224,7 @@ export default {
       }
       this.myLocationMark;
       this.clickMapMark.remove(this.map); // retire le marker click
-      this.modalTitle = undefined
+      this.modalTitle = undefined;
     },
     createGeoJsonLayer(layerType, groupType) {
       // layerType = le geojson que je souhaite envoyer dans le layer
@@ -383,7 +381,7 @@ export default {
         await layer.pop();
         this.createGeoJsonLayer(layer, group);
         this.messageModal = message;
-        this.showModal = true
+        this.showModal = true;
         this.lastItem = undefined;
       };
       switch (this.lastItem) {
@@ -399,20 +397,20 @@ export default {
           break;
         default:
           this.messageModal = "Nothings to remove";
-          this.showModal = true
+          this.showModal = true;
           break;
       }
     },
     removeGeoJson() {
       localStorage.removeItem("APIGeoMap");
       this.messageModal = "data removed";
-      this.showModal = true
+      this.showModal = true;
     },
     saveGeoJson() {
       let data = [this.geoJsonHouse, this.geoJsonVillage];
       localStorage.setItem("APIGeoMap", JSON.stringify(data));
       this.messageModal = "data save in local storage";
-      this.showModal = true
+      this.showModal = true;
     },
     coordinatesOnLocation(element) {
       if (this.watchMe) {
@@ -420,7 +418,7 @@ export default {
         this.watchMe = undefined;
         this.showInputGeoDetail = true;
         this.showModal = true;
-        this.modalTitle = "Add a symbol"
+        this.modalTitle = "Add a symbol";
       } else {
         // track my location, update the coordinates
         let success = (position) => {
@@ -443,7 +441,7 @@ export default {
 
         let error = () => {
           this.messageModal = "Unable to retrieve your location";
-          this.showModal = true
+          this.showModal = true;
         };
 
         if (navigator.geolocation) {
@@ -454,13 +452,13 @@ export default {
           });
         } else {
           this.messageModal = "Geolocation is not supported by your browser";
-          this.showModal = true
+          this.showModal = true;
         }
       }
     },
   },
   mounted() {
-    this.helpModal()
+    this.helpModal();
     // config mapbox
     const tokenMapbox =
       "pk.eyJ1IjoiZ2d3ZWJkZXYiLCJhIjoiY2t4OGVhemd5MXpyMzJvbzE4ZXpxajJzZCJ9.P2KXn7NQDyQ11BkYVkPEcQ";
@@ -537,7 +535,7 @@ export default {
       this.coordinates.push([e.latlng.lng, e.latlng.lat]);
       this.showInputGeoDetail = true;
       this.showModal = true;
-      this.modalTitle = "Add a symbol"
+      this.modalTitle = "Add a symbol";
     };
     this.map.on("click", addMarker);
 
@@ -587,7 +585,7 @@ export default {
         "</button>" +
         '<button type="button" class="btn-map">' +
         '<svg id="btn-tutorial" style="width:27px;height:27px" viewBox="0 0 24 24">  <path fill="green" d="M12 2C11.5 2 11 2.19 10.59 2.59L2.59 10.59C1.8 11.37 1.8 12.63 2.59 13.41L10.59 21.41C11.37 22.2 12.63 22.2 13.41 21.41L21.41 13.41C22.2 12.63 22.2 11.37 21.41 10.59L13.41 2.59C13 2.19 12.5 2 12 2M12 6.95C14.7 7.06 15.87 9.78 14.28 11.81C13.86 12.31 13.19 12.64 12.85 13.07C12.5 13.5 12.5 14 12.5 14.5H11C11 13.65 11 12.94 11.35 12.44C11.68 11.94 12.35 11.64 12.77 11.31C14 10.18 13.68 8.59 12 8.46C11.18 8.46 10.5 9.13 10.5 9.97H9C9 8.3 10.35 6.95 12 6.95M11 15.5H12.5V17H11V15.5Z" /></svg>' +
-        "</button>" + 
+        "</button>" +
         '<button type="button" class="btn-map">' +
         '<svg  id="btn-data" style="width:27px;height:27px" viewBox="0 0 24 24"><path fill="green" d="M4 12V9C4 11.2 7.6 13 12 13S20 11.2 20 9V12C20 12.5 19.8 12.9 19.5 13.4C18.7 13.1 17.9 13 17 13C14.5 13 12.1 14.1 10.6 15.9C6.8 15.6 4 14 4 12M12 11C16.4 11 20 9.2 20 7S16.4 3 12 3 4 4.8 4 7 7.6 11 12 11M9.1 19.7L8.8 19L9.1 18.3C9.2 18.1 9.3 18 9.3 17.8C6.2 17.2 4 15.8 4 14V17C4 18.8 6.4 20.3 9.7 20.8C9.5 20.5 9.3 20.1 9.1 19.7M17 18C16.4 18 16 18.4 16 19S16.4 20 17 20 18 19.6 18 19 17.6 18 17 18M23 19C22.1 21.3 19.7 23 17 23S11.9 21.3 11 19C11.9 16.7 14.3 15 17 15S22.1 16.7 23 19M19.5 19C19.5 17.6 18.4 16.5 17 16.5S14.5 17.6 14.5 19 15.6 21.5 17 21.5 19.5 20.4 19.5 19Z" /></svg>' +
         "</button>" +
@@ -609,12 +607,12 @@ export default {
           } else if (data.target.querySelector("#btn-export")) {
             this.modalExport = true;
             this.showModal = !this.showModal;
-            this.modalTitle = "Convert datas to Excel"
+            this.modalTitle = "Convert datas to Excel";
           } else if (data.target.querySelector("#btn-data")) {
             let data = [this.geoJsonHouse, this.geoJsonVillage];
             localStorage.setItem("APIGeoMap", JSON.stringify(data));
-            this.$router.push('myData')
-          }       
+            this.$router.push("myData");
+          }
         },
       },
     });
@@ -674,14 +672,14 @@ export default {
           } else if (data.target.querySelector("#btn-legend")) {
             this.showLegend = !this.showLegend;
             this.showModal = !this.showModal;
-            this.modalTitle = "Map Legend"
+            this.modalTitle = "Map Legend";
           } else if (data.target.querySelector("#btn-fullscreen")) {
-              styleOnClick(data.target);
-              if(!document.fullscreenElement) {
-                document.body.webkitRequestFullScreen()
-              } else {
-                document.exitFullscreen()
-              }
+            styleOnClick(data.target);
+            if (!document.fullscreenElement) {
+              document.body.webkitRequestFullScreen();
+            } else {
+              document.exitFullscreen();
+            }
           }
         },
       },
@@ -708,7 +706,7 @@ export default {
 <style lang="scss">
 @import url("https://fonts.googleapis.com/css2?family=Architects+Daughter&display=swap");
 
-.container{
+.container {
   height: 100%;
   width: 100vw;
   padding: 0px;
@@ -805,8 +803,8 @@ export default {
     }
   }
 }
-.modal_page-btn{
-  z-index: 6; 
+.modal_page-btn {
+  z-index: 6;
   position: absolute;
   padding: 4px;
   top: 25px;

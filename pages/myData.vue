@@ -4,8 +4,8 @@
       <v-icon>mdi-map-outline</v-icon>
     </v-btn>
     <h1>My data collected</h1>
-    <h2 :class="{active : isActive}">Here you'll find all the datas details collected</h2>
-    <nuxt-link to="/"></nuxt-link>   
+    <p :class="{ active: isActive }">Here you'll find all the datas details collected</p>
+    <nuxt-link to="/"></nuxt-link>
     <tableGeoJson v-if="geoJsonFeature" :geoJsonFeature="geoJsonFeature" />
     <p v-else>No data save yet</p>
   </div>
@@ -26,8 +26,8 @@ export default {
   },
   methods: {
     linkMap() {
-      this.$router.push("/")
-    }
+      this.$router.push("/");
+    },
   },
   mounted() {
     try {
@@ -40,11 +40,11 @@ export default {
 </script>
 
 <style lang="scss">
-.dataTable{
+.dataTable {
   padding: 12px;
   position: relative;
 }
-.backToMap{
+.backToMap {
   position: absolute;
   top: 20px;
   right: 20px;
