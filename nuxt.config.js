@@ -7,8 +7,8 @@ export default {
 
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
-    titleTemplate: 'map_Demo',
-    title: 'map_Demo',
+    titleTemplate: 'GG DevWeb Map',
+    title: 'GG DevWeb Map',
     htmlAttrs: {
       lang: 'en'
     },
@@ -19,7 +19,7 @@ export default {
       { name: 'format-detection', content: 'telephone=no' }
     ],
     link: [
-      { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
+      { rel: 'icon', type: 'image/png', href: '/favicon.PNG' },
       { rel: 'stylesheet', href: 'https://unpkg.com/leaflet@1.7.1/dist/leaflet.css', integrity: "sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A==", crossorigin: "" },
       { rel: 'stylesheet', href: 'measure/leaflet-measure-path.css' },
     ],
