@@ -178,7 +178,6 @@ export default {
   methods: {
     showTuto() {
       this.tutoPage = !this.tutoPage;
-      console.log(this.tutoPage);
     },
     helpModal() {
       // affiche un message lors du click
@@ -458,7 +457,6 @@ export default {
     },
   },
   mounted() {
-    this.helpModal();
     // config mapbox
     const tokenMapbox =
       "pk.eyJ1IjoiZ2d3ZWJkZXYiLCJhIjoiY2t4OGVhemd5MXpyMzJvbzE4ZXpxajJzZCJ9.P2KXn7NQDyQ11BkYVkPEcQ";
@@ -552,6 +550,8 @@ export default {
       } catch (error) {
         console.log(error);
       }
+    } else {
+      this.helpModal()
     }
 
     // CUSTOMIZE AN ICON MENU ACTIONS ON THE MAP: 2 option of adding custome icons
@@ -611,6 +611,9 @@ export default {
           } else if (data.target.querySelector("#btn-data")) {
             let data = [this.geoJsonHouse, this.geoJsonVillage];
             localStorage.setItem("APIGeoMap", JSON.stringify(data));
+            if (document.fullscreenElement) {
+              document.exitFullscreen();
+            }
             this.$router.push("myData");
           }
         },
@@ -741,7 +744,7 @@ export default {
 }
 /* style button on map on click */
 .click {
-  border: 2px solid rgb(60, 255, 34);
+  border: 2px solid rgb(2, 233, 2);
 }
 
 // STYLE THE MODAL
