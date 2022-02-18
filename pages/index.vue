@@ -3,7 +3,7 @@
 
     <modalCustom :showModal="showModal" @send-modal="modalResponse">
         <template v-slot:title>
-          {{modalTitle}}
+          {{modalTitle ? modalTitle : messageModal}}
         </template>
         <template v-slot:content>
           <legendModal v-if="showLegend" />
@@ -23,10 +23,6 @@
       <div class="modal_close">
         <span class="modal_close-icon">&times;</span>
       </div>
-      <div v-show="messageModal" class="modal_message">
-        <p>{{ messageModal }}</p>
-      </div>
-
       <div v-show="!messageModal" class="modal_tuto">
         <div class="modal_tuto-actions">
           <p v-for="item in tutorials" :key="item">
@@ -151,7 +147,6 @@ export default {
       modal.style.display = "block";
       const resetModal = (display) => {
         display.style.display = "none";
-        this.messageModal = undefined;
       };
       span.onclick = () => {
         resetModal(modal);
@@ -167,6 +162,8 @@ export default {
       this.showLegend = payload.message;
       this.modalExport = payload.message;
       this.showInputGeoDetail = payload.message;
+      this.messageModal = undefined
+      this.modalTitle = undefined
     },
     getData(payload) {
       this.showInputGeoDetail = payload.show;
@@ -187,6 +184,7 @@ export default {
       }
       this.myLocationMark;
       this.clickMapMark.remove(this.map); // retire le marker click
+      this.modalTitle = undefined
     },
     createGeoJsonLayer(layerType, groupType) {
       // layerType = le geojson que je souhaite envoyer dans le layer
@@ -344,7 +342,7 @@ export default {
         await layer.pop();
         this.createGeoJsonLayer(layer, group);
         this.messageModal = message;
-        this.helpModal();
+        this.showModal = true
         this.lastItem = undefined;
       };
       switch (this.lastItem) {
@@ -360,20 +358,20 @@ export default {
           break;
         default:
           this.messageModal = "Nothings to remove";
-          this.helpModal();
+          this.showModal = true
           break;
       }
     },
     removeGeoJson() {
       localStorage.removeItem("APIGeoMap");
-      this.messageModal = "data remove from local storage";
-      this.helpModal();
+      this.messageModal = "data removed";
+      this.showModal = true
     },
     saveGeoJson() {
       let data = [this.geoJsonHouse, this.geoJsonVillage];
       localStorage.setItem("APIGeoMap", JSON.stringify(data));
       this.messageModal = "data save in local storage";
-      this.helpModal();
+      this.showModal = true
     },
     coordinatesOnLocation(element) {
       if (this.watchMe) {
@@ -404,7 +402,7 @@ export default {
 
         let error = () => {
           this.messageModal = "Unable to retrieve your location";
-          this.helpModal();
+          this.showModal = true
         };
 
         if (navigator.geolocation) {
@@ -415,7 +413,7 @@ export default {
           });
         } else {
           this.messageModal = "Geolocation is not supported by your browser";
-          this.helpModal();
+          this.showModal = true
         }
       }
     },
@@ -620,12 +618,12 @@ export default {
           // function on click
           if (data.target.querySelector("#btn-add")) {
             styleOnClick(data.target);
-            disableButton(6, "blue");
+            disableButton(7, "blue");
             this.coordinatesOnLocation(true); // display differente type of coordinates one array
           } else if (data.target.querySelector("#btn-location")) {
             styleOnClick(data.target);
             this.coordinatesOnLocation(false); // display differente type of coordinates multiple array
-            disableButton(5, "blue");
+            disableButton(6, "blue");
           } else if (data.target.querySelector("#btn-ruler")) {
             styleOnClick(data.target);
             this.showMeasure();
@@ -723,16 +721,6 @@ export default {
 }
 
 /* Modal Content/Box */
-.modal_message {
-  margin: 5px auto; /* 15% from the top and centered */
-  padding: 20px;
-  color: rgb(255, 255, 255);
-  text-align: center;
-  width: 80%; /* Could be more or less, depending on screen size */
-  & > p {
-    margin-top: 10px;
-  }
-}
 
 .modal_tuto {
   position: relative;
