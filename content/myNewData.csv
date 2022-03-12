@@ -1,113 +1,113 @@
-category,subcategory,type,name,popupContent,coordinates
-house,interview,Point,id 1,,107.05718 13.750355
-house,interview,Point,id 2,,107.05721666666666 13.75038
-house,interview,Point,id 3,,107.057405 13.750528333333333
-house,interview,Point,id 4,,107.05738833333334 13.75074
-house,interview,Point,id 5,,107.05733 13.751498333333334
-house,interview,Point,id 6,,107.05749333333333 13.751743333333334
-house,interview,Point,id 7,,107.05754666666667 13.75155
-house,interview,Point,id 8,,107.05781166666667 13.752051666666667
-house,interview,Point,id 9,,107.05808666666667 13.752171666666667
-house,interview,Point,id 10,,107.058145 13.752293333333334
-house,interview,Point,id 11,,107.05810833333334 13.75251
-house,interview,Point,id 12,,107.05832166666667 13.752206666666666
-house,interview,Point,id 13,,107.05849333333333 13.752033333333333
-house,interview,Point,id 14,,107.05856666666666 13.751878333333334
-house,interview,Point,id 15,,107.05886833333334 13.75193
-house,interview,Point,id 16,,107.05821333333333 13.751573333333333
-house,interview,Point,id 17,,107.05806666666666 13.751633333333332
-house,interview,Point,id 18,,107.05817 13.751273333333334
-house,interview,Point,id 19,,107.05853333333333 13.751181666666668
-house,interview,Point,id 20,,107.058815 13.751598333333334
-house,interview,Point,id 21,,107.058275 13.750931666666666
-house,interview,Point,id 22,,107.05814833333334 13.750901666666667
-house,interview,Point,id 23,,107.05828666666666 13.750793333333334
-house,interview,Point,id 24,,107.05797666666666 13.75113
-house,interview,Point,id 25,,107.05792 13.750826666666667
-house,interview,Point,id 26,,107.058065 13.75065
-house,interview,Point,id 27,,107.05790333333333 13.75048
-house,interview,Point,id 28,,107.05782833333333 13.750523333333334
-house,interview,Point,id 29,,107.05788333333334 13.750296666666667
-house,interview,Point,id 30,,107.05758166666666 13.750253333333333
-house,interview,Point,id 31,,107.05754666666667 13.750131666666666
-house,interview,Point,id 32,,107.05764666666667 13.75014
-house,interview,Point,id 33,,107.05760833333333 13.749838333333333
-house,interview,Point,id 34,,107.05763333333333 13.74998
-house,interview,Point,id 35,,107.0575 13.749681666666667
-house,interview,Point,id 36,,107.05751333333333 13.749785
-house,interview,Point,id 37,,107.05779833333334 13.74971
-house,interview,Point,id 38,,107.06819166666666 13.759681666666667
-house,interview,Point,id 39,,107.07172666666666 13.759986666666666
-house,interview,Point,id 40,,107.073 13.757381666666667
-house,interview,Point,id 41,,107.05745333333333 13.749283333333333
-house,interview,Point,id 42,,107.05777666666667 13.749535
-house,interview,Point,id 43,,107.05793166666666 13.749215
-house,interview,Point,id 44,,107.058105 13.749406666666667
-house,interview,Point,id 45,,107.05811 13.749368333333333
-house,interview,Point,id 46,,107.058045 13.749081666666667
-house,interview,Point,id 47,,107.05783333333333 13.749118333333334
-house,interview,Point,id 48,,107.05756666666667 13.74849
-house,interview,Point,id 49,,107.05727333333333 13.748291666666667
-house,interview,Point,id 50,,107.05706 13.748408333333334
-house,interview,Point,id 51,,107.05706 13.748423333333333
-house,interview,Point,id 52,,107.05712166666666 13.748543333333334
-house,interview,Point,id 53,,107.05667666666666 13.74862
-house,interview,Point,id 54,,107.056415 13.748338333333333
-house,interview,Point,id 55,,107.05652333333333 13.749138333333333
-house,interview,Point,id 56,,107.05701 13.749225
-house,interview,Point,id 57,,107.05700666666667 13.749226666666667
-house,interview,Point,id 58,,107.05728666666667 13.748983333333333
-house,interview,Point,id 59,,107.05738666666667 13.748908333333333
-house,interview,Point,id 60,,107.05722333333334 13.749325
-house,interview,Point,id 61,,107.057175 13.749448333333333
-house,interview,Point,id 62,,107.05708166666666 13.74982
-house,interview,Point,id 63,,107.05660333333333 13.749726666666668
-house,interview,Point,id 64,,107.05667166666667 13.749808333333334
-house,interview,Point,id 65,,107.05676 13.750011666666667
-house,interview,Point,id 66,,107.05676666666666 13.749971666666667
-house,interview,Point,id 67,,107.05677833333333 13.750033333333333
-house,interview,Point,id 68,,107.05676333333334 13.75016
-house,interview,Point,id 69,,107.05683833333333 13.750256666666667
-house,interview,Point,id 70,,107.05687166666667 13.750386666666667
-house,lost land,Point,id 71,house sold,107.05723833333333 13.74976
-chief House,,Point,chief House,chief House,107.05783 13.748913333333334
-communal,,Point,communal,all decision made,107.05743666666666 13.750596666666667
-homestay,,Point,homestay,homestay,107.071625 13.751483333333333
-bath,,Point,bath,bamboo bath area,107.05912333333333 13.750173333333333
-grave,,Point,grave,natural death burial,107.05650833333333 13.753063333333333
-grave,,Point,grave,accidental death burial,107.05655 13.751328333333333
-grave,,Point,grave,natural death burial,107'03.3630 13'45.1757
-well,private,Point,well,clean water,107'03.4037 13'44.9457
-well,private,Point,well,clean water,107'03.3990 13'44.9960
-well,private,Point,well,clean water,107'03.4064 13'44.9685
-well,private,Point,well,clean water,107'03.4008 13'45.0168
-well,private,Point,well,clean water,107'03.4062 13'44.9939
-well,private,Point,well,clean water,107'03.4291 13'44.9844
-well,private,Point,well,clean water,107'03.4351 13'44.9510
-well,private,Point,well,clean water,107'03.4341 13'44.9856
-well,private,Point,well,clean water,107'03.4481 13'44.9906
-well,private,Point,well,clean water,107'03.4594 13'44.9605
-well,private,Point,well,clean water,107'03.4510 13'45.0615
-well,private,Point,well,clean water,107'03.4643 13'44.9818
-well,private,Point,well,clean water,107'03.4768 13'44.9422
-well,private,Point,well,clean water,107'03.4752 13'44.9656
-well,private,Point,well,clean water,107'03.4681 13'45.0769
-well,private,Point,well,clean water,107'03.4890 13'45.0078
-well,private,Point,well,clean water,107'03.4854 13'45.0673
-well,private,Point,well,clean water,107'03.5193 13'45.1237
-well,public,Point,well,clean water,107'03.3986 13'44.9644
-well,public,Point,well,clean water,107'03.4222 13'44.9671
-well,public,Point,well,clean water,107'03.4540 13'44.9397
-well,public,Point,well,clean water,107'03.4452 13'45.0227
-well,public,Point,well,clean water,107'03.4534 13'44.9776
-well,public,Point,well,clean water,107'03.5072 13'45.1041
-well,public,Point,well,clean water,107'03.4943 13'45.1306
-well,public,Point,well,clean water,107'03.4984 13'45.0711
-well,public,Point,well,clean water,107'03.4699 13'45.0617
-well,public,Point,well,clean water,107'03.4639 13'45.0553
-well,public,Point,well,clean water,107'03.4655 13'44.9819
-worship,,Point,worship,buffalo sacrificed,107'03.4326 13'44.9532
-worship,,Point,worship,buffalo sacrificed,107'03.4233 13'44.9906
-worship,,Point,worship,buffalo sacrificed,107'03.4102 13'44.9850
-homestay,,Point,Home stay , My home stay,107.0396213 13.8950018
-worship,,Point, Tycoon land, Tycoon land,107.107649 13.9246375
+category,subcategory,type,name,popupContent,coordinates,icon,color
+house,interview,Point,id 1,,107.05718 13.750355,home,red
+house,interview,Point,id 2,,107.05721666666666 13.75038,home,red
+house,interview,Point,id 3,,107.057405 13.750528333333333,home,red
+house,interview,Point,id 4,,107.05738833333334 13.75074,home,red
+house,interview,Point,id 5,,107.05733 13.751498333333334,home,red
+house,interview,Point,id 6,,107.05749333333333 13.751743333333334,home,red
+house,interview,Point,id 7,,107.05754666666667 13.75155,home,red
+house,interview,Point,id 8,,107.05781166666667 13.752051666666667,home,red
+house,interview,Point,id 9,,107.05808666666667 13.752171666666667,home,red
+house,interview,Point,id 10,,107.058145 13.752293333333334,home,red
+house,interview,Point,id 11,,107.05810833333334 13.75251,home,red
+house,interview,Point,id 12,,107.05832166666667 13.752206666666666,home,red
+house,interview,Point,id 13,,107.05849333333333 13.752033333333333,home,red
+house,interview,Point,id 14,,107.05856666666666 13.751878333333334,home,red
+house,interview,Point,id 15,,107.05886833333334 13.75193,home,red
+house,interview,Point,id 16,,107.05821333333333 13.751573333333333,home,red
+house,interview,Point,id 17,,107.05806666666666 13.751633333333332,home,red
+house,interview,Point,id 18,,107.05817 13.751273333333334,home,red
+house,interview,Point,id 19,,107.05853333333333 13.751181666666668,home,red
+house,interview,Point,id 20,,107.058815 13.751598333333334,home,red
+house,interview,Point,id 21,,107.058275 13.750931666666666,home,red
+house,interview,Point,id 22,,107.05814833333334 13.750901666666667,home,red
+house,interview,Point,id 23,,107.05828666666666 13.750793333333334,home,red
+house,interview,Point,id 24,,107.05797666666666 13.75113,home,red
+house,interview,Point,id 25,,107.05792 13.750826666666667,home,red
+house,interview,Point,id 26,,107.058065 13.75065,home,red
+house,interview,Point,id 27,,107.05790333333333 13.75048,home,red
+house,interview,Point,id 28,,107.05782833333333 13.750523333333334,home,red
+house,interview,Point,id 29,,107.05788333333334 13.750296666666667,home,red
+house,interview,Point,id 30,,107.05758166666666 13.750253333333333,home,red
+house,interview,Point,id 31,,107.05754666666667 13.750131666666666,home,red
+house,interview,Point,id 32,,107.05764666666667 13.75014,home,red
+house,interview,Point,id 33,,107.05760833333333 13.749838333333333,home,red
+house,interview,Point,id 34,,107.05763333333333 13.74998,home,red
+house,interview,Point,id 35,,107.0575 13.749681666666667,home,red
+house,interview,Point,id 36,,107.05751333333333 13.749785,home,red
+house,interview,Point,id 37,,107.05779833333334 13.74971,home,red
+house,interview,Point,id 38,,107.06819166666666 13.759681666666667,home,red
+house,interview,Point,id 39,,107.07172666666666 13.759986666666666,home,red
+house,interview,Point,id 40,,107.073 13.757381666666667,home,red
+house,interview,Point,id 41,,107.05745333333333 13.749283333333333,home,red
+house,interview,Point,id 42,,107.05777666666667 13.749535,home,red
+house,interview,Point,id 43,,107.05793166666666 13.749215,home,red
+house,interview,Point,id 44,,107.058105 13.749406666666667,home,red
+house,interview,Point,id 45,,107.05811 13.749368333333333,home,red
+house,interview,Point,id 46,,107.058045 13.749081666666667,home,red
+house,interview,Point,id 47,,107.05783333333333 13.749118333333334,home,red
+house,interview,Point,id 48,,107.05756666666667 13.74849,home,red
+house,interview,Point,id 49,,107.05727333333333 13.748291666666667,home,red
+house,interview,Point,id 50,,107.05706 13.748408333333334,home,red
+house,interview,Point,id 51,,107.05706 13.748423333333333,home,red
+house,interview,Point,id 52,,107.05712166666666 13.748543333333334,home,red
+house,interview,Point,id 53,,107.05667666666666 13.74862,home,red
+house,interview,Point,id 54,,107.056415 13.748338333333333,home,red
+house,interview,Point,id 55,,107.05652333333333 13.749138333333333,home,red
+house,interview,Point,id 56,,107.05701 13.749225,home,red
+house,interview,Point,id 57,,107.05700666666667 13.749226666666667,home,red
+house,interview,Point,id 58,,107.05728666666667 13.748983333333333,home,red
+house,interview,Point,id 59,,107.05738666666667 13.748908333333333,home,red
+house,interview,Point,id 60,,107.05722333333334 13.749325,home,red
+house,interview,Point,id 61,,107.057175 13.749448333333333,home,red
+house,interview,Point,id 62,,107.05708166666666 13.74982,home,red
+house,interview,Point,id 63,,107.05660333333333 13.749726666666668,home,red
+house,interview,Point,id 64,,107.05667166666667 13.749808333333334,home,red
+house,interview,Point,id 65,,107.05676 13.750011666666667,home,red
+house,interview,Point,id 66,,107.05676666666666 13.749971666666667,home,red
+house,interview,Point,id 67,,107.05677833333333 13.750033333333333,home,red
+house,interview,Point,id 68,,107.05676333333334 13.75016,home,red
+house,interview,Point,id 69,,107.05683833333333 13.750256666666667,home,red
+house,interview,Point,id 70,,107.05687166666667 13.750386666666667,home,red
+house,lost land,Point,id 71,house sold,107.05723833333333 13.74976,home,red
+chief House,,Point,chief House,chief House,107.05783 13.748913333333334,home,red
+communal,,Point,communal,all decision made,107.05743666666666 13.750596666666667,home,red
+homestay,,Point,homestay,homestay,107.071625 13.751483333333333,home,red
+bath,,Point,bath,bamboo bath area,107.05912333333333 13.750173333333333,home,red
+grave,,Point,grave,natural death burial,107.05650833333333 13.753063333333333,home,red
+grave,,Point,grave,accidental death burial,107.05655 13.751328333333333,home,red
+grave,,Point,grave,natural death burial,107'03.3630 13'45.1757,home,red
+well,private,Point,well,clean water,107'03.4037 13'44.9457,home,red
+well,private,Point,well,clean water,107'03.3990 13'44.9960,home,red
+well,private,Point,well,clean water,107'03.4064 13'44.9685,home,red
+well,private,Point,well,clean water,107'03.4008 13'45.0168,home,red
+well,private,Point,well,clean water,107'03.4062 13'44.9939,home,red
+well,private,Point,well,clean water,107'03.4291 13'44.9844,home,red
+well,private,Point,well,clean water,107'03.4351 13'44.9510,home,red
+well,private,Point,well,clean water,107'03.4341 13'44.9856,home,red
+well,private,Point,well,clean water,107'03.4481 13'44.9906,home,red
+well,private,Point,well,clean water,107'03.4594 13'44.9605,home,red
+well,private,Point,well,clean water,107'03.4510 13'45.0615,home,red
+well,private,Point,well,clean water,107'03.4643 13'44.9818,home,red
+well,private,Point,well,clean water,107'03.4768 13'44.9422,home,red
+well,private,Point,well,clean water,107'03.4752 13'44.9656,home,red
+well,private,Point,well,clean water,107'03.4681 13'45.0769,home,red
+well,private,Point,well,clean water,107'03.4890 13'45.0078,home,red
+well,private,Point,well,clean water,107'03.4854 13'45.0673,home,red
+well,private,Point,well,clean water,107'03.5193 13'45.1237,home,red
+well,public,Point,well,clean water,107'03.3986 13'44.9644,home,red
+well,public,Point,well,clean water,107'03.4222 13'44.9671,home,red
+well,public,Point,well,clean water,107'03.4540 13'44.9397,home,red
+well,public,Point,well,clean water,107'03.4452 13'45.0227,home,red
+well,public,Point,well,clean water,107'03.4534 13'44.9776,home,red
+well,public,Point,well,clean water,107'03.5072 13'45.1041,home,red
+well,public,Point,well,clean water,107'03.4943 13'45.1306,home,red
+well,public,Point,well,clean water,107'03.4984 13'45.0711,home,red
+well,public,Point,well,clean water,107'03.4699 13'45.0617,home,red
+well,public,Point,well,clean water,107'03.4639 13'45.0553,home,red
+well,public,Point,well,clean water,107'03.4655 13'44.9819,home,red
+worship,,Point,worship,buffalo sacrificed,107'03.4326 13'44.9532,home,red
+worship,,Point,worship,buffalo sacrificed,107'03.4233 13'44.9906,home,red
+worship,,Point,worship,buffalo sacrificed,107'03.4102 13'44.9850,home,red
+homestay,,Point,Home stay , My home stay,107.0396213 13.8950018,home,red
+worship,,Point, Tycoon land, Tycoon land,107.107649 13.9246375,home,red
