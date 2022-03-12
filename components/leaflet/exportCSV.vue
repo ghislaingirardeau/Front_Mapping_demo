@@ -100,6 +100,8 @@ export default {
           name: "name",
           comment: "popupContent",
           coordinates: "coordinates",
+          icon: "icon",
+          color: "color"
         };
 
         var itemsNotFormatted = jsonToConvert;
@@ -124,6 +126,8 @@ export default {
             name: item.properties.name,
             comment: item.properties.popupContent,
             coordinates: coordinates,
+            icon: item.icon.type,
+            color: item.icon.color
           });
         });
 
