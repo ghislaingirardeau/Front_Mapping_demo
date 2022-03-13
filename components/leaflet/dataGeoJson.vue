@@ -3,28 +3,19 @@
       ref="form"
       v-model="valid"
       lazy-validation
-    >
+    >{{addGeoJson}}
       <v-select
         v-model="addGeoJson.properties.category"
-        :items="GeoType"
+        :items="itemCategory.point"
         :rules="[v => !!v || 'Item is required']"
         label="Category"
         required
       ></v-select>
 
       <v-select
-        v-if="addGeoJson.properties.category === 'house'"
+        v-if="subCategory && subCategory.length > 0"
         v-model="addGeoJson.properties.subCategory"
-        :items="subCategoryHouse"
-        :rules="[v => !!v || 'Item is required']"
-        label="Sub category"
-        required
-      ></v-select>
-
-      <v-select
-        v-if="addGeoJson.properties.category === 'well'"
-        v-model="addGeoJson.properties.subCategory"
-        :items="subCategoryWell"
+        :items="subCategory"
         :rules="[v => !!v || 'Item is required']"
         label="Sub category"
         required
@@ -91,13 +82,18 @@
   export default {
     data: () => ({
       valid: true,
+      itemCategory: {
+        point: [],
+        multiLineString: [],
+        polygon: []
+      },
+      itemSubcategory: [],
       latitude: "13'44.4745",
       longitude: "106'58.6615",
       addGeoJson: {
           "type": "Feature",
           "properties": {
               "name": "Clean water",
-              "amount": '',
               "popupContent": " ",
               "category": "",
               "subCategory" : '',
@@ -105,10 +101,12 @@
           "geometry": {
               "type": "",
               "coordinates": []
+          },
+          "icon": {
+              "type": "", // a envoyer via la database pour afficher l'icone souhaité A FAIRE
+              "color": [] // a envoyer via la database pour afficher l'icone souhaité A FAIRE
           }
       },
-      subCategoryHouse: ['not interview', 'interview', 'indebted', 'lost land'],
-      subCategoryWell: ['private', 'public'],
       name: '',
       nameRules: [
         v => !!v || 'Name is required',
@@ -126,32 +124,20 @@
         coordinates: Array
     },
     computed: {
-      GeoType() {
-        if(this.coordinates.length > 1) {
-          return [
-            'rice',
-            'cashew',
-            'route'
-          ]
+      subCategory() {
+        let index = this.itemCategory.point.indexOf(this.addGeoJson.properties.category)
+        if(index === -1) {
+          return undefined
         } else {
-          return [
-            'house',
-            'bath',
-            'chief House',
-            'grave',
-            'worship',
-            'communal',
-            'homestay',
-            'well'
-          ]
+          return this.itemSubcategory[index]
         }
-      },
+      }
     },
 
     methods: {
       validate () {
         if(this.$refs.form.validate()) {
-
+          
             let getCoordinates = []
             let geoType 
 
@@ -213,6 +199,49 @@
             resetCoordinates: true
         })
       }
+    },
+    mounted () {
+                const requestIndexedDB = window.indexedDB.open("Map_Database", 1);
+                requestIndexedDB.onerror = event => {
+                    console.log(event);
+                };
+
+                // la requete
+                requestIndexedDB.onsuccess = event => {
+                    let db = event.target.result;
+
+                    let transaction = db.transaction("markers", "readwrite")
+                    let store = transaction.objectStore('markers') // store = table in sql
+                    let idQuery = store.openCursor() // recherche sur l'id
+                    idQuery.onsuccess = event => {
+                        var cursor = event.target.result;
+                        switch (cursor.value.type) {
+                          case "Point":
+                            this.itemCategory.point.push(cursor.value.category)
+                            this.itemSubcategory.push(cursor.value.subCategory)
+                            break;
+                          case "MultiLineString":
+                            this.itemCategory.multiLineString.push(cursor.value.category)
+                            this.itemSubcategory.push(cursor.value.subCategory)
+                            break;
+                          case "Polygon":
+                            this.itemCategory.polygon.push(cursor.value.category)
+                            this.itemSubcategory.push(cursor.value.subCategory)
+                            break;
+                        }
+                        cursor.continue();
+/*                         if (cursor) {
+                            this.itemCategory.push(cursor.value.category)
+                            this.itemSubcategory.push(cursor.value.subCategory)
+                            cursor.continue();
+                        }
+ */                    }
+
+                   // close db at the end of transaction
+                    transaction.oncomplete = () => {
+                        db.close()
+                    }
+                };
     },
   }
 </script>
