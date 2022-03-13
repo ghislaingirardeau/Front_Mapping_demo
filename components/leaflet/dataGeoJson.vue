@@ -240,48 +240,47 @@
       }
     },
     mounted () {
-                const requestIndexedDB = window.indexedDB.open("Map_Database", 1);
-                requestIndexedDB.onerror = event => {
-                    console.log(event);
-                };
+        const requestIndexedDB = window.indexedDB.open("Map_Database", 1);
+        requestIndexedDB.onerror = event => {
+            console.log(event);
+        };
 
-                // la requete
-                requestIndexedDB.onsuccess = event => {
-                    let db = event.target.result;
+        // la requete
+        requestIndexedDB.onsuccess = event => {
+            let db = event.target.result;
+            let transaction = db.transaction("markers", "readwrite")
+            let store = transaction.objectStore('markers') // store = table in sql
+            let idQuery = store.openCursor() // recherche sur l'id
+            idQuery.onsuccess = event => {
+                var cursor = event.target.result;
+                if(cursor){
+                  switch (cursor.value.type) {
+                    case "Point":
+                      this.itemsCategory.point.push(cursor.value.category)
+                      this.itemsSubcategory.push(cursor.value.subCategory)
+                      this.itemsIcon.type.push(cursor.value.icon)
+                      this.itemsIcon.color.push(cursor.value.color)
+                      break;
+                    case "MultiLineString":
+                      this.itemsCategory.multiLineString.push(cursor.value.category)
+                      this.itemsSubcategory.push(cursor.value.subCategory)
+                      this.lineColor.push(cursor.value.color)
+                      break;
+                    case "Polygon":
+                      this.itemsCategory.polygon.push(cursor.value.category)
+                      this.itemsSubcategory.push(cursor.value.subCategory)
+                      this.polygonColor.push(cursor.value.color)
+                      break;
+                  }
+                  cursor.continue();
+                }
+            }
 
-                    let transaction = db.transaction("markers", "readwrite")
-                    let store = transaction.objectStore('markers') // store = table in sql
-                    let idQuery = store.openCursor() // recherche sur l'id
-                    idQuery.onsuccess = event => {
-                        var cursor = event.target.result;
-                        if(cursor){
-                          switch (cursor.value.type) {
-                            case "Point":
-                              this.itemsCategory.point.push(cursor.value.category)
-                              this.itemsSubcategory.push(cursor.value.subCategory)
-                              this.itemsIcon.type.push(cursor.value.icon)
-                              this.itemsIcon.color.push(cursor.value.color)
-                              break;
-                            case "MultiLineString":
-                              this.itemsCategory.multiLineString.push(cursor.value.category)
-                              this.itemsSubcategory.push(cursor.value.subCategory)
-                              this.lineColor.push(cursor.value.color)
-                              break;
-                            case "Polygon":
-                              this.itemsCategory.polygon.push(cursor.value.category)
-                              this.itemsSubcategory.push(cursor.value.subCategory)
-                              this.polygonColor.push(cursor.value.color)
-                              break;
-                          }
-                          cursor.continue();
-                        }
-                    }
-
-                   // close db at the end of transaction
-                    transaction.oncomplete = () => {
-                        db.close()
-                    }
-                };
+           // close db at the end of transaction
+            transaction.oncomplete = () => {
+                db.close()
+            }
+        };
     },
   }
 </script>
