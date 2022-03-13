@@ -4,7 +4,16 @@
       v-model="valid"
       lazy-validation
     >
-    {{addGeoJson}}  {{colorsPick}}
+    {{addGeoJson}}
+      <v-select
+        v-if="coordinates.length > 1"
+        v-model="addGeoJson.geometry.type"
+        :items='geometryTypes'
+        :rules="[v => !!v || 'Item is required']"
+        label="Area type"
+        required
+      ></v-select>
+      
       <v-select
         v-model="addGeoJson.properties.category"
         :items="category"
@@ -84,6 +93,7 @@
   export default {
     data: () => ({
       valid: true,
+      geometryTypes: ["Polygon", "Trace"],
       itemsCategory: {
         point: [],
         multiLineString: [],
@@ -94,6 +104,8 @@
         type: [],
         color: []
       },
+      lineColor: [],
+      polygonColor: [],
       latitude: "13'44.4745",
       longitude: "106'58.6615",
       addGeoJson: {
@@ -132,9 +144,19 @@
     computed: {
       category() {
         if (this.coordinates.length === 1 || this.coordinates.length === 0) {
+          this.addGeoJson.geometry.type = "Point"
           return this.itemsCategory.point
         } else {
-          return this.itemsCategory.polygon.concat(this.itemsCategory.multiLineString)
+          switch (this.addGeoJson.geometry.type) {
+            case "Polygon":
+              this.addGeoJson.geometry.type = "Polygon"
+              return this.itemsCategory.polygon
+              break;
+            case "multiLineString":
+              this.addGeoJson.geometry.type = "multiLineString"
+              return this.itemsCategory.multiLineString
+              break;
+          }
         }
       },
       subCategory() {
@@ -165,12 +187,10 @@
         if(this.$refs.form.validate()) {
           
             let getCoordinates = []
-            let geoType 
 
             if(this.coordinates.length === 1) { 
               // si je n'ai qu'une coordonnée alors je ne veux enregistrer qu'un seul point
               getCoordinates = this.coordinates[0]
-              geoType = 'Point'
             } else if(this.coordinates.length === 0) {
               // je saisis manuellement les coordonnées
               // convertir les coordonnées en degres/minute en lng/lat
@@ -182,19 +202,12 @@
               }
               getCoordinates.push(convertCoordinate(this.longitude))
               getCoordinates.push(convertCoordinate(this.latitude))
-              geoType = 'Point'
             } else {
               // sinon j'enregistre un polygon
               getCoordinates.push(this.coordinates)
-              if(this.addGeoJson.properties.category === 'trace'){
-                geoType = 'MultiLineString'
-              } else {
-                geoType = 'Polygon'
-              }
             }
             
             this.addGeoJson.geometry.coordinates = getCoordinates
-            this.addGeoJson.geometry.type = geoType
 
             let group
             switch (this.addGeoJson.properties.category) {
@@ -252,10 +265,12 @@
                             case "MultiLineString":
                               this.itemsCategory.multiLineString.push(cursor.value.category)
                               this.itemsSubcategory.push(cursor.value.subCategory)
+                              this.lineColor.push(cursor.value.color)
                               break;
                             case "Polygon":
                               this.itemsCategory.polygon.push(cursor.value.category)
                               this.itemsSubcategory.push(cursor.value.subCategory)
+                              this.polygonColor.push(cursor.value.color)
                               break;
                           }
                           cursor.continue();
