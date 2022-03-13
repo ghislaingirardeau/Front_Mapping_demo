@@ -3,13 +3,15 @@
       ref="form"
       v-model="valid"
       lazy-validation
-    >{{addGeoJson}}
+    >
+    {{addGeoJson}}  {{colorsPick}}
       <v-select
         v-model="addGeoJson.properties.category"
-        :items="itemCategory.point"
+        :items="category"
         :rules="[v => !!v || 'Item is required']"
         label="Category"
         required
+        @change="addGeoJson.properties.subCategory = ''"
       ></v-select>
 
       <v-select
@@ -82,12 +84,16 @@
   export default {
     data: () => ({
       valid: true,
-      itemCategory: {
+      itemsCategory: {
         point: [],
         multiLineString: [],
         polygon: []
       },
-      itemSubcategory: [],
+      itemsSubcategory: [],
+      itemsIcon: {
+        type: [],
+        color: []
+      },
       latitude: "13'44.4745",
       longitude: "106'58.6615",
       addGeoJson: {
@@ -103,8 +109,8 @@
               "coordinates": []
           },
           "icon": {
-              "type": "", // a envoyer via la database pour afficher l'icone souhaité A FAIRE
-              "color": [] // a envoyer via la database pour afficher l'icone souhaité A FAIRE
+              "type": "",
+              "color": "red" 
           }
       },
       name: '',
@@ -124,16 +130,36 @@
         coordinates: Array
     },
     computed: {
+      category() {
+        if (this.coordinates.length === 1 || this.coordinates.length === 0) {
+          return this.itemsCategory.point
+        } else {
+          return this.itemsCategory.polygon.concat(this.itemsCategory.multiLineString)
+        }
+      },
       subCategory() {
-        let index = this.itemCategory.point.indexOf(this.addGeoJson.properties.category)
+        let index = this.itemsCategory.point.indexOf(this.addGeoJson.properties.category)
+        this.addGeoJson.icon.type = this.itemsIcon.type[index]  // charge directement dans json addgeojson
         if(index === -1) {
           return undefined
         } else {
-          return this.itemSubcategory[index]
+          return this.itemsSubcategory[index]
+        }
+      },
+      colorsPick() {
+        // recup de la couleur en fonction de l'index de la categorie puis de la soucategorie selectionné
+        let indexCategory = this.itemsCategory.point.indexOf(this.addGeoJson.properties.category)
+        if(this.addGeoJson.properties.subCategory) {
+          let colorsAttribut = this.itemsIcon.color[indexCategory]
+          let indexSubCategory = this.subCategory.indexOf(this.addGeoJson.properties.subCategory)
+          this.addGeoJson.icon.color = colorsAttribut[indexSubCategory] // charge directement dans json addgeojson
+          return colorsAttribut[indexSubCategory]
+        } else { 
+          this.addGeoJson.icon.color = this.itemsIcon.color[indexCategory] // charge directement dans json addgeojson
+          return this.itemsIcon.color[indexCategory]
         }
       }
     },
-
     methods: {
       validate () {
         if(this.$refs.form.validate()) {
@@ -160,7 +186,7 @@
             } else {
               // sinon j'enregistre un polygon
               getCoordinates.push(this.coordinates)
-              if(this.addGeoJson.properties.category === 'route'){
+              if(this.addGeoJson.properties.category === 'trace'){
                 geoType = 'MultiLineString'
               } else {
                 geoType = 'Polygon'
@@ -215,27 +241,26 @@
                     let idQuery = store.openCursor() // recherche sur l'id
                     idQuery.onsuccess = event => {
                         var cursor = event.target.result;
-                        switch (cursor.value.type) {
-                          case "Point":
-                            this.itemCategory.point.push(cursor.value.category)
-                            this.itemSubcategory.push(cursor.value.subCategory)
-                            break;
-                          case "MultiLineString":
-                            this.itemCategory.multiLineString.push(cursor.value.category)
-                            this.itemSubcategory.push(cursor.value.subCategory)
-                            break;
-                          case "Polygon":
-                            this.itemCategory.polygon.push(cursor.value.category)
-                            this.itemSubcategory.push(cursor.value.subCategory)
-                            break;
+                        if(cursor){
+                          switch (cursor.value.type) {
+                            case "Point":
+                              this.itemsCategory.point.push(cursor.value.category)
+                              this.itemsSubcategory.push(cursor.value.subCategory)
+                              this.itemsIcon.type.push(cursor.value.icon)
+                              this.itemsIcon.color.push(cursor.value.color)
+                              break;
+                            case "MultiLineString":
+                              this.itemsCategory.multiLineString.push(cursor.value.category)
+                              this.itemsSubcategory.push(cursor.value.subCategory)
+                              break;
+                            case "Polygon":
+                              this.itemsCategory.polygon.push(cursor.value.category)
+                              this.itemsSubcategory.push(cursor.value.subCategory)
+                              break;
+                          }
+                          cursor.continue();
                         }
-                        cursor.continue();
-/*                         if (cursor) {
-                            this.itemCategory.push(cursor.value.category)
-                            this.itemSubcategory.push(cursor.value.subCategory)
-                            cursor.continue();
-                        }
- */                    }
+                    }
 
                    // close db at the end of transaction
                     transaction.oncomplete = () => {

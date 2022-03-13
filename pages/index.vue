@@ -271,7 +271,7 @@ export default {
           case "cashew":
             colorPolygon = "#fcba03";
             break;
-          case "route":
+          case "trace":
             colorPolygon = "red";
             break;
         }

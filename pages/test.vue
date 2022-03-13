@@ -58,7 +58,7 @@
                     store.add({type: 'Point', category: "communal", subCategory: [], icon: "hoop-house", color: "blue" })
                     store.add({type: 'Point', category: "well", subCategory: ["private", "public"], icon: "water-pump", color: ["pink", "yellow"] })
                     store.add({type: 'Polygon', category: "rice", subCategory: [], icon: "", color: "blue" })
-                    store.add({type: 'MultiLineString', category: "route", subCategory: [], icon: "", color: "purple" })
+                    store.add({type: 'MultiLineString', category: "trace", subCategory: [], icon: "", color: "purple" })
                     
                     console.log('markers added to the store');
                     transaction.oncomplete = () => {
