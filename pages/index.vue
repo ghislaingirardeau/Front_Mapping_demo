@@ -262,22 +262,6 @@ export default {
         });
       }
 
-      function stylePolygon(element) {
-        let colorPolygon;
-        switch (element) {
-          case "rice":
-            colorPolygon = "#15e60e";
-            break;
-          case "cashew":
-            colorPolygon = "#fcba03";
-            break;
-          case "trace":
-            colorPolygon = "red";
-            break;
-        }
-        return { color: colorPolygon };
-      }
-
       this.layerGeoJson = L.geoJSON(layerType, {
         // on peut enchainer les options ici
         onEachFeature: onEachFeature,
@@ -293,7 +277,7 @@ export default {
         },
         style: (feature) => {
           // DEFINE SYTLE OF POLYGONS AND LINE
-          return stylePolygon(feature.properties.category);
+          return { color: feature.icon.color }
         },
       });
 

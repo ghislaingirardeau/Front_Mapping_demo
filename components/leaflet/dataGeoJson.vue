@@ -4,7 +4,6 @@
       v-model="valid"
       lazy-validation
     >
-    {{addGeoJson}}
       <v-select
         v-if="coordinates.length > 1"
         v-model="addGeoJson.geometry.type"
@@ -93,7 +92,7 @@
   export default {
     data: () => ({
       valid: true,
-      geometryTypes: ["Polygon", "Trace"],
+      geometryTypes: ["Polygon", "MultiLineString"],
       itemsCategory: {
         point: [],
         multiLineString: [],
@@ -152,8 +151,8 @@
               this.addGeoJson.geometry.type = "Polygon"
               return this.itemsCategory.polygon
               break;
-            case "multiLineString":
-              this.addGeoJson.geometry.type = "multiLineString"
+            case "MultiLineString":
+              this.addGeoJson.geometry.type = "MultiLineString"
               return this.itemsCategory.multiLineString
               break;
           }
@@ -168,26 +167,37 @@
           return this.itemsSubcategory[index]
         }
       },
-      colorsPick() {
-        // recup de la couleur en fonction de l'index de la categorie puis de la soucategorie selectionné
-        let indexCategory = this.itemsCategory.point.indexOf(this.addGeoJson.properties.category)
-        if(this.addGeoJson.properties.subCategory) {
-          let colorsAttribut = this.itemsIcon.color[indexCategory]
-          let indexSubCategory = this.subCategory.indexOf(this.addGeoJson.properties.subCategory)
-          this.addGeoJson.icon.color = colorsAttribut[indexSubCategory] // charge directement dans json addgeojson
-          return colorsAttribut[indexSubCategory]
-        } else { 
-          this.addGeoJson.icon.color = this.itemsIcon.color[indexCategory] // charge directement dans json addgeojson
-          return this.itemsIcon.color[indexCategory]
-        }
-      }
     },
     methods: {
+      colorsPick() {
+        let indexCategory
+        switch (this.addGeoJson.geometry.type) {
+          case "Polygon":
+              indexCategory = this.itemsCategory.polygon.indexOf(this.addGeoJson.properties.category)
+              this.addGeoJson.icon.color = this.polygonColor[indexCategory]
+            break;
+          case "MultiLineString":
+              indexCategory = this.itemsCategory.multiLineString.indexOf(this.addGeoJson.properties.category)
+              this.addGeoJson.icon.color = this.lineColor[indexCategory]
+            break;
+          default:
+              indexCategory = this.itemsCategory.point.indexOf(this.addGeoJson.properties.category)
+              if(this.addGeoJson.properties.subCategory) {
+                let colorsAttribut = this.itemsIcon.color[indexCategory]
+                let indexSubCategory = this.subCategory.indexOf(this.addGeoJson.properties.subCategory)
+                this.addGeoJson.icon.color = colorsAttribut[indexSubCategory] // charge directement dans json addgeojson
+              } else { 
+                this.addGeoJson.icon.color = this.itemsIcon.color[indexCategory] // charge directement dans json addgeojson
+              }
+            break;
+        }
+        // recup de la couleur en fonction de l'index de la categorie puis de la soucategorie selectionné
+      },
       validate () {
         if(this.$refs.form.validate()) {
-          
+            this.colorsPick()
             let getCoordinates = []
-
+            console.log(this.addGeoJson);
             if(this.coordinates.length === 1) { 
               // si je n'ai qu'une coordonnée alors je ne veux enregistrer qu'un seul point
               getCoordinates = this.coordinates[0]
