@@ -1,72 +1,126 @@
 <template>
   <v-row>
     <modalCustom :showModal="showModal" @send-modal="modalResponse">
-      <template v-slot:title> </template>
+      <template v-slot:title> Build your marker {{newIcon}} </template>
       <template v-slot:content>
-        {{ newIcon }} {{colorSelected}}
-        <v-row>
-        <v-col cols="12" sm="6">
-            <v-select
-            v-model="newIcon.type"
-            :items="typeSelection"
-            label="Type"
-            required
-            :disabled="disableInput"
-            ></v-select>
-        </v-col>
-        <v-col cols="12" sm="6">
-            <v-text-field
-            v-model="newIcon.category"
-            label="category"
-            required
-            :disabled="disableInput"
-            ></v-text-field>
-        </v-col>
-        <v-col cols="12" sm="6">
-            <v-text-field
-            v-model="subCategorySelected"
-            :disabled="disableInputMarker"
-            label="Sub Categorie Optionnal"
-            append-icon="mdi-plus-circle"
-            @click:append="addToArrayMarker(true)"
-            ></v-text-field>
-        </v-col>
-        <v-col cols="12" sm="6">
-            <v-text-field
-            v-model="newIcon.icon"
-            label="icon"
-            required
-            :disabled="disableInput"
-            ></v-text-field>
-        </v-col>
-        </v-row>
+        <v-stepper v-model="e1">
+          <v-stepper-header>
+            <v-stepper-step :complete="e1 > 1" step="1">
+              Name of step 1
+            </v-stepper-step>
 
-        <v-row class="text-center">
-            <v-col cols="7">
-                <v-color-picker
-                v-model="colorSelected"
-                dot-size="21"
-                swatches-max-height="100"
-                hide-inputs
-                ></v-color-picker>
-            </v-col>
-            <v-col cols="4">
-                <p>Add a color icon</p>
-                <v-icon size="36px" @click="addToArrayMarker(false)">mdi-plus-circle</v-icon>
-            </v-col>
-        </v-row>
-        
-        <!-- Fait apparaitre le résumé de la sélection -->
-        <v-row class="text-center" v-if="newIcon.color.length > 0">
-            <v-col cols="11" v-for="(item, l) in newIcon.color" :key="l">
-                <span>{{newIcon.subCategory[l]}}</span>
-                <v-icon :color="colorSelected" size="36px">mdi-{{newIcon.icon}}</v-icon>
-            </v-col>
-        </v-row>
+            <v-divider></v-divider>
 
+            <v-stepper-step :complete="e1 > 2" step="2">
+              Name of step 2
+            </v-stepper-step>
 
-        <v-btn color="primary" :disabled="disableInputMarker" @click="addNewMarker">Add the markers</v-btn>
-        <v-btn color="primary" @click="resetMarker">Reset</v-btn>
+            <v-divider></v-divider>
+
+            <v-stepper-step step="3"> Name of step 3 </v-stepper-step>
+          </v-stepper-header>
+
+          <v-stepper-items>
+            <v-stepper-content step="1">
+              <v-row>
+                <v-col cols="12" sm="6">
+                  <v-select
+                    v-model="newIcon.type"
+                    :items="typeSelection"
+                    label="Type"
+                    required
+                  ></v-select>
+                </v-col>
+                <v-col cols="12" sm="6">
+                  <v-text-field
+                    v-model="newIcon.category"
+                    label="category"
+                    required
+                  ></v-text-field>
+                </v-col>
+                <v-col cols="12" sm="6">
+                  <v-text-field
+                    v-model="newIcon.icon"
+                    label="icon"
+                    required
+                  ></v-text-field>
+                </v-col>
+              </v-row>
+
+              <v-btn color="primary" @click="e1 = 2"> Continue </v-btn>
+            </v-stepper-content>
+
+            <v-stepper-content step="2">
+              <v-row class="text-center">
+                <v-col cols="12" sm="6">
+                  <v-text-field
+                    v-model="subCategorySelected"
+                    :disabled="disableInputs"
+                    label="Sub Categorie Optionnal"
+                    append-icon="mdi-plus-circle"
+                    @click:append="addToArrayMarker(true)"
+                  ></v-text-field>
+                </v-col>
+
+                <v-col cols="7">
+                  <v-color-picker
+                    v-model="colorSelected"
+                    dot-size="21"
+                    swatches-max-height="100"
+                    hide-inputs
+                  ></v-color-picker>
+                </v-col>
+                <v-col cols="4">
+                  <p :class="{ alert: disableInputs }">
+                    {{
+                      disableInputs
+                        ? 'Pick a color for your subcategory'
+                        : 'Add a color icon'
+                    }}
+                  </p>
+                  <v-icon
+                    :class="{ alert: disableInputs }"
+                    :disabled="disableColor"
+                    size="36px"
+                    @click="addToArrayMarker(false)"
+                    >mdi-plus-circle</v-icon
+                  >
+                  <v-icon :color="colorSelected" size="36px"
+                    >mdi-{{ newIcon.icon }}</v-icon
+                  >
+                </v-col>
+              </v-row>
+
+              <v-btn color="primary" @click="e1 = 3" :disabled="disableInputs">
+                Continue
+              </v-btn>
+
+              <v-btn text @click="e1 = 1" :disabled="disableInputs">
+                back
+              </v-btn>
+            </v-stepper-content>
+
+            <v-stepper-content step="3">
+              <!-- Fait apparaitre le résumé de la sélection -->
+              <v-row class="text-center" v-if="newIcon.color.length > 0">
+                <v-col cols="11" v-for="(item, l) in newIcon.color" :key="l">
+                  <span>{{ newIcon.subCategory[l] }}</span>
+                  <v-icon :color="newIcon.color[l]" size="36px"
+                    >mdi-{{ newIcon.icon }}</v-icon
+                  >
+                </v-col>
+              </v-row>
+
+              <v-btn color="primary" @click="addNewMarker"
+                >Add the markers</v-btn
+              >
+              <v-btn color="primary" @click="resetMarker">Reset</v-btn>
+              <v-btn text @click="e1 = 2" :disabled="disableInputs">
+                back
+              </v-btn>
+            </v-stepper-content>
+          </v-stepper-items>
+        </v-stepper>
       </template>
     </modalCustom>
     <v-col cols="12">
@@ -103,12 +157,15 @@ import modalCustom from '@/components/leaflet/modalCustom.vue'
 export default {
   data() {
     return {
+      e1: 1, // stepper
       search: '',
+      // control inside modal
       showModal: true,
-      subCategorySelected: undefined,
-      disableInput: false,
-      disableInputMarker: false,
+      disableInputs: false,
+      disableColor: false,
       colorSelected: '',
+      // item for text fields
+      subCategorySelected: undefined,
       typeSelection: ['Point', 'Polygon', 'multiLineString'],
       newIcon: {
         type: 'Point',
@@ -117,8 +174,8 @@ export default {
         icon: 'account',
         color: [],
       },
+      // items for the table
       markers: [],
-      sub: [],
       headers: [
         {
           text: 'Type',
@@ -138,34 +195,30 @@ export default {
     modalCustom,
   },
   methods: {
-      // RESET THE FORM AND ENABLE ALL BUTTON
-      resetMarker() {
-          this.newIcon = {
-                type: 'Point',
-                category: 'test',
-                subCategory: [],
-                icon: 'account',
-                color: []
-            }
-            this.disableInput = false
-            this.disableInputMarker = false
-      },
-      addToArrayMarker(e){
-          if(e) {
-              this.newIcon.subCategory.push(this.subCategorySelected)
-              this.disableInput = true
-              this.disableInputMarker = true
-          } else {
-              if(this.newIcon.subCategory.length > 0){
-                // REACTIVE BTN ADD SUB CAT
-                this.disableInputMarker = false
-                this.newIcon.color.push(this.colorSelected)
-              } else {
-                this.newIcon.color.push(this.colorSelected)
-              }
-          }
-          
-      },
+    // RESET THE FORM AND ENABLE ALL BUTTON
+    resetMarker() {
+      this.newIcon = {
+        type: 'Point',
+        category: 'test',
+        subCategory: [],
+        icon: 'account',
+        color: [],
+      }
+      this.disableInputs = false
+    },
+    addToArrayMarker(e) {
+      if (e) {
+        this.disableColor = false // active icon add color de toute facon
+        this.newIcon.subCategory.push(this.subCategorySelected)
+        this.disableInputs = true // desactive tous les autres
+      } else {
+        this.newIcon.color.push(this.colorSelected)
+        this.disableInputs = false
+        if (this.newIcon.subCategory.length > 0) { // if already add one subcategory, disabled it after executing code above
+          this.disableColor = true
+        }
+      }
+    },
     modalResponse(payload) {
       this.showModal = payload.message
     },
@@ -271,23 +324,19 @@ export default {
       }
     },
     addNewMarker() {
-        if(this.newIcon.subCategory.length > this.newIcon.color.length) {
-            alert('Add a color to the category')
-        } else if(this.newIcon.subCategory.length > this.newIcon.color.length) {
-            const requestIndexedDB = window.indexedDB.open('Map_Database', 1)
-            requestIndexedDB.onsuccess = (event) => {
-                var db = event.target.result
+        const requestIndexedDB = window.indexedDB.open('Map_Database', 1)
+        requestIndexedDB.onsuccess = (event) => {
+          var db = event.target.result
 
-                var transaction = db.transaction('markers', 'readwrite')
-                const store = transaction.objectStore('markers') // store = table in sql
-                // insert data  in the store
-                store.add(this.newIcon)
+          var transaction = db.transaction('markers', 'readwrite')
+          const store = transaction.objectStore('markers') // store = table in sql
+          // insert data  in the store
+          store.add(this.newIcon)
 
-                console.log('markers added to the store')
-                transaction.oncomplete = () => {
-                db.close()
-                }
-            }
+          console.log('markers added to the store')
+          transaction.oncomplete = () => {
+            db.close()
+          }
         }
     },
     getDBid() {
@@ -455,4 +504,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.alert {
+  color: red;
+}
 </style>
