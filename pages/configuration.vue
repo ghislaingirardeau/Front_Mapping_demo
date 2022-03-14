@@ -1,12 +1,81 @@
 <template>
   <v-row>
+    <modalCustom :showModal="showModal" @send-modal="modalResponse">
+      <template v-slot:title> </template>
+      <template v-slot:content>
+        {{ newIcon }} {{colorSelected}}
+        <v-row>
+        <v-col cols="12" sm="6">
+            <v-select
+            v-model="newIcon.type"
+            :items="typeSelection"
+            label="Type"
+            required
+            :disabled="disableInput"
+            ></v-select>
+        </v-col>
+        <v-col cols="12" sm="6">
+            <v-text-field
+            v-model="newIcon.category"
+            label="category"
+            required
+            :disabled="disableInput"
+            ></v-text-field>
+        </v-col>
+        <v-col cols="12" sm="6">
+            <v-text-field
+            v-model="subCategorySelected"
+            :disabled="disableInputMarker"
+            label="Sub Categorie Optionnal"
+            append-icon="mdi-plus-circle"
+            @click:append="addToArrayMarker(true)"
+            ></v-text-field>
+        </v-col>
+        <v-col cols="12" sm="6">
+            <v-text-field
+            v-model="newIcon.icon"
+            label="icon"
+            required
+            :disabled="disableInput"
+            ></v-text-field>
+        </v-col>
+        </v-row>
+
+        <v-row class="text-center">
+            <v-col cols="7">
+                <v-color-picker
+                v-model="colorSelected"
+                dot-size="21"
+                swatches-max-height="100"
+                hide-inputs
+                ></v-color-picker>
+            </v-col>
+            <v-col cols="4">
+                <p>Add a color icon</p>
+                <v-icon size="36px" @click="addToArrayMarker(false)">mdi-plus-circle</v-icon>
+            </v-col>
+        </v-row>
+        
+        <!-- Fait apparaitre le résumé de la sélection -->
+        <v-row class="text-center" v-if="newIcon.color.length > 0">
+            <v-col cols="11" v-for="(item, l) in newIcon.color" :key="l">
+                <span>{{newIcon.subCategory[l]}}</span>
+                <v-icon :color="colorSelected" size="36px">mdi-{{newIcon.icon}}</v-icon>
+            </v-col>
+        </v-row>
+
+
+        <v-btn color="primary" :disabled="disableInputMarker" @click="addNewMarker">Add the markers</v-btn>
+        <v-btn color="primary" @click="resetMarker">Reset</v-btn>
+      </template>
+    </modalCustom>
     <v-col cols="12">
-      <h1>tutorial using IndexedDB</h1>
-      <v-btn @click="activateIndexedDB">Create the database</v-btn>
-      <v-btn @click="addToDB">add a data</v-btn>
+      <h1>My Icons configaurations</h1>
+      <v-btn disabled @click="activateIndexedDB">Create the database</v-btn>
+      <v-btn disabled @click="addToDB">add a data</v-btn>
       <v-btn @click="cursorDB">Show datas</v-btn>
       <v-btn @click="updateDB">update data</v-btn>
-      <v-btn @click="addNewData">add a new data</v-btn>
+      <v-btn @click="showModal = true">open modal</v-btn>
     </v-col>
     <v-col cols="12">
       <v-card>
@@ -21,9 +90,7 @@
         </v-card-title>
         <v-data-table :headers="headers" :items="markers" :search="search">
           <template v-slot:[`item.remove`]="{ item }">
-            <v-icon @click="removeDB(item)">
-                    mdi-delete
-                    </v-icon>
+            <v-icon @click="removeDB(item)"> mdi-delete </v-icon>
           </template>
         </v-data-table>
       </v-card>
@@ -32,10 +99,24 @@
 </template>
 
 <script>
+import modalCustom from '@/components/leaflet/modalCustom.vue'
 export default {
   data() {
     return {
       search: '',
+      showModal: true,
+      subCategorySelected: undefined,
+      disableInput: false,
+      disableInputMarker: false,
+      colorSelected: '',
+      typeSelection: ['Point', 'Polygon', 'multiLineString'],
+      newIcon: {
+        type: 'Point',
+        category: 'test',
+        subCategory: [],
+        icon: 'account',
+        color: [],
+      },
       markers: [],
       sub: [],
       headers: [
@@ -53,7 +134,41 @@ export default {
       ],
     }
   },
+  components: {
+    modalCustom,
+  },
   methods: {
+      // RESET THE FORM AND ENABLE ALL BUTTON
+      resetMarker() {
+          this.newIcon = {
+                type: 'Point',
+                category: 'test',
+                subCategory: [],
+                icon: 'account',
+                color: []
+            }
+            this.disableInput = false
+            this.disableInputMarker = false
+      },
+      addToArrayMarker(e){
+          if(e) {
+              this.newIcon.subCategory.push(this.subCategorySelected)
+              this.disableInput = true
+              this.disableInputMarker = true
+          } else {
+              if(this.newIcon.subCategory.length > 0){
+                // REACTIVE BTN ADD SUB CAT
+                this.disableInputMarker = false
+                this.newIcon.color.push(this.colorSelected)
+              } else {
+                this.newIcon.color.push(this.colorSelected)
+              }
+          }
+          
+      },
+    modalResponse(payload) {
+      this.showModal = payload.message
+    },
     activateIndexedDB() {
       const IndexedDB =
         window.indexedDB ||
@@ -155,27 +270,25 @@ export default {
         }
       }
     },
-    addNewData() {
-      const requestIndexedDB = window.indexedDB.open('Map_Database', 1)
-      requestIndexedDB.onsuccess = (event) => {
-        var db = event.target.result
+    addNewMarker() {
+        if(this.newIcon.subCategory.length > this.newIcon.color.length) {
+            alert('Add a color to the category')
+        } else if(this.newIcon.subCategory.length > this.newIcon.color.length) {
+            const requestIndexedDB = window.indexedDB.open('Map_Database', 1)
+            requestIndexedDB.onsuccess = (event) => {
+                var db = event.target.result
 
-        var transaction = db.transaction('markers', 'readwrite')
-        const store = transaction.objectStore('markers') // store = table in sql
-        // insert data  in the store
-        store.add({
-          type: 'Point',
-          category: 'bath',
-          subCategory: [],
-          icon: 'water',
-          color: 'blue',
-        })
+                var transaction = db.transaction('markers', 'readwrite')
+                const store = transaction.objectStore('markers') // store = table in sql
+                // insert data  in the store
+                store.add(this.newIcon)
 
-        console.log('markers added to the store')
-        transaction.oncomplete = () => {
-          db.close()
+                console.log('markers added to the store')
+                transaction.oncomplete = () => {
+                db.close()
+                }
+            }
         }
-      }
     },
     getDBid() {
       // ouvre la db
@@ -240,6 +353,7 @@ export default {
       }
     },
     cursorDB() {
+      this.markers = []
       const requestIndexedDB = window.indexedDB.open('Map_Database', 1)
       requestIndexedDB.onerror = (event) => {
         console.log(event)
@@ -254,13 +368,13 @@ export default {
         let idQuery = store.openCursor() // recherche sur l'id
         idQuery.onsuccess = (event) => {
           var cursor = event.target.result
-            
+
           if (cursor) {
             // if a get an array of sub category, i create a new object to send in this.markers array
             if (cursor.value.subCategory.length > 0) {
               class Data {
                 constructor(sub, color) {
-                    (this.type = cursor.value.type),
+                  ;(this.type = cursor.value.type),
                     (this.category = cursor.value.category),
                     (this.subCategory = sub),
                     (this.icon = cursor.value.icon),
@@ -283,7 +397,7 @@ export default {
             }
             cursor.continue()
           } else {
-              console.log(this.markers)
+            console.log(this.markers)
             console.log('No more entries!')
           }
         }
@@ -311,27 +425,21 @@ export default {
           const cursor = event.target.result
           if (cursor) {
             if (cursor.value.category === e.category) {
-                if(cursor.value.subCategory.length > 0){
-                    console.log('mutliple');
-                } else {
-                    let idQuery = store.delete(cursor.key)
-                    idQuery.onsuccess = (event) => {
-                    console.log('data deleted successfully', event)
-                    }
+              if (cursor.value.subCategory.length > 0) {
+                console.log('mutliple')
+              } else {
+                let idQuery = store.delete(cursor.key)
+                idQuery.onsuccess = (event) => {
+                  this.cursorDB()
+                  alert('this marker has been removed')
                 }
-              
+              }
             }
             cursor.continue()
           } else {
             console.log('Entries displayed.')
           }
         }
-
-
-        /* let idQuery = store.delete(3) // recherche sur l'id
-        idQuery.onsuccess = (event) => {
-          console.log('data deleted successfully', event)
-        } */
 
         transaction.oncomplete = () => {
           db.close()
