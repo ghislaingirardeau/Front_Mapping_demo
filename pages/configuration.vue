@@ -173,8 +173,27 @@
                     let idQuery = store.openCursor() // recherche sur l'id
                     idQuery.onsuccess = event => {
                         var cursor = event.target.result;
+                        
                         if (cursor) {
-                            this.markers.push(cursor.value)
+                            // if a get an array of sub category, i create a new object to send in this.markers array
+                            if (cursor.value.subCategory.length > 0) {
+                                class Data {
+                                    constructor(sub, color) {
+                                        this.type = cursor.value.type,
+                                        this.category = cursor.value.category,
+                                        this.subCategory = sub,
+                                        this.icon = cursor.value.icon ,
+                                        this.color = color
+                                    }
+                                }
+                                for (let index = 0; index < cursor.value.subCategory.length; index++) {
+                                    let formatedData = new Data(cursor.value.subCategory[index], cursor.value.color[index]);
+                                    console.log(formatedData);
+                                    this.markers.push(formatedData)
+                                }
+                            } else {
+                                this.markers.push(cursor.value)
+                            }
                             cursor.continue();
                         }
                         else {
