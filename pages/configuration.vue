@@ -1,25 +1,55 @@
 <template>
-    <div>
-        <h1>tutorial using IndexedDB</h1>
-        <v-btn @click="activateIndexedDB">Create the database</v-btn>
-        <v-btn @click="addToDB">add a data</v-btn>
-        <v-btn @click="getDBid">get datas</v-btn>
-        <v-btn @click="removeDB">remove data</v-btn>
-        <v-btn @click="cursorDB">All data in a glance</v-btn>
-        <v-btn @click="updateDB">update data</v-btn>
-        {{markers}}{{sub}}
-<!--         <div v-for="(item, i) in markers" :key="i">
-            <v-icon :size="item.size" :color="item.color">mdi-{{item.category}}</v-icon>
-        </div>
- -->    </div>
+    <v-row>
+        <v-col cols="12" >
+            <h1>tutorial using IndexedDB</h1>
+            <v-btn @click="activateIndexedDB">Create the database</v-btn>
+            <v-btn @click="addToDB">add a data</v-btn>
+            <v-btn @click="getDBid">get datas</v-btn>
+            <v-btn @click="removeDB">remove data</v-btn>
+            <v-btn @click="cursorDB">All data in a glance</v-btn>
+            <v-btn @click="updateDB">update data</v-btn>
+            {{markers}}{{sub}}
+        </v-col>
+        <v-col cols="12" >
+            <v-card>
+                <v-card-title>
+                <v-text-field
+                    v-model="search"
+                    append-icon="mdi-magnify"
+                    label="Search"
+                    single-line
+                    hide-details
+                ></v-text-field>
+                </v-card-title>
+                <v-data-table
+                :headers="headers"
+                :items="markers"
+                :search="search"
+                ></v-data-table>
+            </v-card>
+        </v-col>
+    </v-row>
 </template>
 
 <script>
     export default {
         data() {
             return {
+                search: '',
                 markers: [],
-                sub: []
+                sub: [],
+                headers: [
+                    {
+                        text: 'Type',
+                        align: 'start',
+                        filterable: false,
+                        value: 'type',
+                    },
+                    { text: 'Category', value: 'category' },
+                    { text: 'Sub Category', value: 'subCategory' },
+                    { text: 'Icon', value: 'icon' },
+                    { text: 'Color', value: 'color' },
+                ],
             }
         },
         methods: {
@@ -83,7 +113,6 @@
                     let allDatas = store.getAll() // renvoie tous les modeles qui sont vert
                     allDatas.onsuccess = () => {
                         this.markers = allDatas.result
-                        console.log(allDatas.result);
                     }
 
                    // close db at the end of transaction
@@ -145,13 +174,7 @@
                     idQuery.onsuccess = event => {
                         var cursor = event.target.result;
                         if (cursor) {
-                            this.markers.push(cursor.value.category)
-                            if(cursor.value.subCategory.length > 0) {
-                                this.sub.push({
-                                    cat: cursor.value.category,
-                                    sub: cursor.value.subCategory
-                                })
-                            }
+                            this.markers.push(cursor.value)
                             cursor.continue();
                         }
                         else {
