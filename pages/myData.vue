@@ -4,7 +4,9 @@
       <v-icon>mdi-map-outline</v-icon>
     </v-btn>
     <h1>My datas</h1>
-    <p :class="{ active: isActive }">You have collected {{geoJsonFeature ? geoJsonFeature.length : ''}} datas</p>
+    <p :class="{ active: isActive }">
+      You have collected {{ geoJsonFeature ? geoJsonFeature.length : '' }} datas
+    </p>
     <nuxt-link to="/"></nuxt-link>
     <tableGeoJson v-if="geoJsonFeature" :geoJsonFeature="geoJsonFeature" />
     <p v-else>No data save yet</p>
@@ -12,31 +14,31 @@
 </template>
 
 <script>
-import tableGeoJson from "@/components/leaflet/tableGeoJson.vue";
+import tableGeoJson from '@/components/leaflet/tableGeoJson.vue'
 
 export default {
   data() {
     return {
       geoJsonFeature: undefined,
       isActive: false,
-    };
+    }
   },
   components: {
     tableGeoJson,
   },
   methods: {
     linkMap() {
-      this.$router.push("/");
+      this.$router.push('/')
     },
   },
   mounted() {
     try {
       /* RECUPERE LES DONNEES SI PRESENT DANS LE LOCALSTORAGE */
-      let geoFromLocal = JSON.parse(localStorage.getItem("APIGeoMap"));
-      this.geoJsonFeature = [...geoFromLocal[0], ...geoFromLocal[1]];
+      let geoFromLocal = JSON.parse(localStorage.getItem('APIGeoMap'))
+      this.geoJsonFeature = [...geoFromLocal[0], ...geoFromLocal[1]]
     } catch (error) {}
   },
-};
+}
 </script>
 
 <style lang="scss">

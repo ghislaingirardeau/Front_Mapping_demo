@@ -29,7 +29,6 @@
             filterable: false,
             value: 'name',
           },
-          /* { text: 'amount', value: 'amount' }, */
           { text: 'Details', value: 'popupContent' },
           { text: 'Type', value: 'category' },
           { text: 'Coordonates', value: 'coordinates' },

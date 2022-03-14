@@ -225,7 +225,7 @@ export default {
       if (payload.resetCoordinates) {
         this.coordinates = [];
       }
-      this.myLocationMark;
+      /* this.myLocationMark; */ // a supprimer
       this.clickMapMark.remove(this.map); // retire le marker click
       this.modalTitle = undefined;
     },
