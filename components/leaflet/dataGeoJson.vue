@@ -97,7 +97,6 @@ export default {
       },
       multiLineString: [],
       polygon: [],
-      
     },
     latitude: "13'44.4745",
     longitude: "106'58.6615",

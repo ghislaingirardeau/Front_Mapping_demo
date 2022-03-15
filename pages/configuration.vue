@@ -6,18 +6,20 @@
         <v-stepper v-model="e1">
           <v-stepper-header>
             <v-stepper-step :complete="e1 > 1" step="1">
-              Name of step 1
+              Marker
             </v-stepper-step>
 
             <v-divider></v-divider>
 
             <v-stepper-step :complete="e1 > 2" step="2">
-              Name of step 2
+              Color
             </v-stepper-step>
 
             <v-divider></v-divider>
 
-            <v-stepper-step step="3"> Name of step 3 </v-stepper-step>
+            <v-stepper-step step="3"> 
+              Summary 
+            </v-stepper-step>
           </v-stepper-header>
 
           <v-stepper-items>
@@ -80,18 +82,29 @@
             </v-stepper-content>
 
             <v-stepper-content step="2">
-              <v-row>
-                <v-col cols="12" sm="8">
+              <v-row align="center">
+                <v-col cols="7">
+                  <h4>Optionnal</h4>
                   <v-text-field
                     v-model="subCategorySelected"
                     :disabled="disableInputs"
-                    label="Sub Categorie Optionnal"
-                    append-icon="mdi-plus-circle"
-                    @click:append="addToArrayMarker(true)"
+                    label="Add subcategories here"
                   ></v-text-field>
                 </v-col>
+                <v-col cols="5" class="text-center">
+                  <v-btn outlined :disabled="disableInputs" @click="addToArrayMarker(true)">Add</v-btn>
+                </v-col>
 
-                <v-col cols="12" sm="4">
+                <v-col cols="12">
+                  <h4>Pick a color</h4>
+                  <v-color-picker class="text-center"
+                    v-model="colorSelected"
+                    dot-size="21"
+                    swatches-max-height="50"
+                    hide-inputs
+                  ></v-color-picker>
+                </v-col>
+                <v-col cols="6">
                   <v-btn
                     outlined
                     color="primary"
@@ -102,17 +115,8 @@
                     >Add color</v-btn
                   >
                 </v-col>
-
-                <v-col cols="12" sm="7">
-                  <v-color-picker
-                    v-model="colorSelected"
-                    dot-size="21"
-                    swatches-max-height="100"
-                    hide-inputs
-                  ></v-color-picker>
-                </v-col>
-                <v-col cols="12" sm="4">
-                  <p v-if="newIcon.type === 'Point'">Preview icon color</p>
+                <v-col cols="6" class="text-center">
+                  <p v-if="newIcon.type === 'Point'">Preview</p>
                   <v-icon v-if="newIcon.type === 'Point'" :color="colorSelected" size="36px"
                     >mdi-{{ newIcon.icon }}</v-icon
                   >
@@ -121,7 +125,7 @@
                     :color="colorSelected"
                     label
                     x-large
-                  >color preview</v-chip>
+                  >Preview</v-chip>
                 </v-col>
                 <v-col cols="12">
                   <v-btn color="primary" @click="e1 = 3" v-if="newIcon.color.length > 0" :disabled="disableInputs">
