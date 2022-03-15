@@ -38,20 +38,39 @@
                     required
                   ></v-text-field>
                 </v-col>
-                <v-col cols="10" v-if="newIcon.type === 'Point'">
+                <v-col cols="12" v-if="newIcon.type === 'Point'">
                   <v-text-field
                     v-model="newIcon.icon"
                     label="Add the name of the icon ex: plus-circle"
+                    hint="Ony copy the name of the icon ex: help-circle-outline"
+                    persistent-hint
                     required
-                  ></v-text-field>
-                </v-col>
-                <v-col cols="2" v-if="newIcon.type === 'Point'">
-                  <v-icon v-if="newIcon.icon">mdi-{{ newIcon.icon }}</v-icon>
-                </v-col>
-                <v-col cols="12" v-if="newIcon.type === 'Point'">
-                  <a href="https://materialdesignicons.com/" target="_blank"
-                    >Get the name of all icons available</a
                   >
+                  <template v-slot:append>
+                    <v-tooltip
+                      bottom
+                    >
+                      <template v-slot:activator="{ on }">
+                        <v-icon v-on="on" @click="linkToIcon">
+                          mdi-help-circle-outline
+                        </v-icon>
+                      </template>
+                      Click to get the name of all icons available
+                    </v-tooltip>
+                  </template>
+                  <template v-slot:append-outer>
+                    <v-tooltip
+                      bottom
+                    >
+                      <template v-slot:activator="{ on }">
+                        <v-icon v-on="on">
+                          mdi-{{ newIcon.icon }}
+                        </v-icon>
+                      </template>
+                      Preview
+                    </v-tooltip>
+                  </template>
+                  </v-text-field>
                 </v-col>
                 <v-col cols="12">
                   <v-btn color="primary" @click="e1 = 2"> Continue </v-btn>
@@ -62,7 +81,9 @@
 
             <v-stepper-content step="2">
               <v-row>
-                <v-col cols="12" sm="6">
+                <v-col cols="12" sm="8">
+                <v-tooltip top>
+                  <template>
                   <v-text-field
                     v-model="subCategorySelected"
                     :disabled="disableInputs"
@@ -70,9 +91,12 @@
                     append-icon="mdi-plus-circle"
                     @click:append="addToArrayMarker(true)"
                   ></v-text-field>
+                  </template>
+                <span>Tooltip</span>
+                </v-tooltip>
                 </v-col>
 
-                <v-col cols="12" sm="6">
+                <v-col cols="12" sm="4">
                   <v-btn
                     outlined
                     color="primary"
@@ -80,7 +104,7 @@
                     @click="addToArrayMarker(false)"
                     :disabled="disableColor"
                     class="my-4"
-                    >Add this color</v-btn
+                    >Add color</v-btn
                   >
                 </v-col>
 
@@ -224,6 +248,9 @@ export default {
     modalCustom,
   },
   methods: {
+    linkToIcon() {
+      window.open('https://materialdesignicons.com/', '_blank')
+    },
     // RESET THE FORM AND ENABLE ALL BUTTON
     resetMarker() {
       this.newIcon = {
