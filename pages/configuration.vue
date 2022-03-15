@@ -95,7 +95,7 @@
                   <v-btn
                     outlined
                     color="primary"
-                    :class="{ alert: disableInputs }"
+                    :class="{ animationShake: disableInputs }"
                     @click="addToArrayMarker(false)"
                     :disabled="disableColor"
                     class="my-4"
@@ -392,6 +392,7 @@ export default {
           db.close()
         }
         this.showModal = false
+        this.resetMarker()
       }
     },
     getDBid() {
@@ -559,7 +560,27 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.alert {
-  color: red;
+@keyframes shake {
+  10%, 90% {
+    transform: translate3d(-1px, 0, 0);
+  }
+  
+  20%, 80% {
+    transform: translate3d(2px, 0, 0);
+  }
+
+  30%, 50%, 70% {
+    transform: translate3d(-4px, 0, 0);
+  }
+
+  40%, 60% {
+    transform: translate3d(4px, 0, 0);
+  }
+}
+
+.animationShake {
+  /* transform: scale(1.1);
+  transition: transform 400ms; */
+  animation: shake 0.82s cubic-bezier(.36,.07,.19,.97) both;
 }
 </style>
