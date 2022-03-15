@@ -1,7 +1,7 @@
 <template>
   <v-row>
     <modalCustom :showModal="showModal" @send-modal="modalResponse">
-      <template v-slot:title> Build your marker {{newIcon}} </template>
+      <template v-slot:title> Build your marker {{ newIcon }} </template>
       <template v-slot:content>
         <v-stepper v-model="e1">
           <v-stepper-header>
@@ -22,7 +22,7 @@
 
           <v-stepper-items>
             <v-stepper-content step="1">
-              <v-row>
+              <v-row align="center">
                 <v-col cols="12" sm="6">
                   <v-select
                     v-model="newIcon.type"
@@ -38,20 +38,30 @@
                     required
                   ></v-text-field>
                 </v-col>
-                <v-col cols="12" sm="6">
+                <v-col cols="10" v-if="newIcon.type === 'Point'">
                   <v-text-field
                     v-model="newIcon.icon"
-                    label="icon"
+                    label="Add the name of the icon ex: plus-circle"
                     required
                   ></v-text-field>
                 </v-col>
+                <v-col cols="2" v-if="newIcon.type === 'Point'">
+                  <v-icon v-if="newIcon.icon">mdi-{{ newIcon.icon }}</v-icon>
+                </v-col>
+                <v-col cols="12" v-if="newIcon.type === 'Point'">
+                  <a href="https://materialdesignicons.com/" target="_blank"
+                    >Get the name of all icons available</a
+                  >
+                </v-col>
+                <v-col cols="12">
+                  <v-btn color="primary" @click="e1 = 2"> Continue </v-btn>
+                </v-col>
               </v-row>
 
-              <v-btn color="primary" @click="e1 = 2"> Continue </v-btn>
             </v-stepper-content>
 
             <v-stepper-content step="2">
-              <v-row class="text-center">
+              <v-row>
                 <v-col cols="12" sm="6">
                   <v-text-field
                     v-model="subCategorySelected"
@@ -62,7 +72,19 @@
                   ></v-text-field>
                 </v-col>
 
-                <v-col cols="7">
+                <v-col cols="12" sm="6">
+                  <v-btn
+                    outlined
+                    color="primary"
+                    :class="{ alert: disableInputs }"
+                    @click="addToArrayMarker(false)"
+                    :disabled="disableColor"
+                    class="my-4"
+                    >Add this color</v-btn
+                  >
+                </v-col>
+
+                <v-col cols="12" sm="7">
                   <v-color-picker
                     v-model="colorSelected"
                     dot-size="21"
@@ -70,59 +92,66 @@
                     hide-inputs
                   ></v-color-picker>
                 </v-col>
-                <v-col cols="4">
-                  <p :class="{ alert: disableInputs }">
-                    {{
-                      disableInputs
-                        ? 'Pick a color for your subcategory'
-                        : 'Add a color icon'
-                    }}
-                  </p>
-                  <v-icon
-                    :class="{ alert: disableInputs }"
-                    :disabled="disableColor"
-                    size="36px"
-                    @click="addToArrayMarker(false)"
-                    >mdi-plus-circle</v-icon
-                  >
-                  <v-icon :color="colorSelected" size="36px"
+                <v-col cols="12" sm="4">
+                  <p v-if="newIcon.type === 'Point'">Preview icon color</p>
+                  <v-icon v-if="newIcon.type === 'Point'" :color="colorSelected" size="36px"
                     >mdi-{{ newIcon.icon }}</v-icon
                   >
+                  <v-chip
+                    v-else
+                    :color="colorSelected"
+                    label
+                    x-large
+                  >color preview</v-chip>
+                </v-col>
+                <v-col cols="12">
+                  <v-btn color="primary" @click="e1 = 3" v-if="newIcon.color.length > 0" :disabled="disableInputs">
+                    Continue
+                  </v-btn>
+
+                  <v-btn text @click="e1 = 1" :disabled="disableInputs">
+                    back
+                  </v-btn>
                 </v-col>
               </v-row>
 
-              <v-btn color="primary" @click="e1 = 3" :disabled="disableInputs">
-                Continue
-              </v-btn>
-
-              <v-btn text @click="e1 = 1" :disabled="disableInputs">
-                back
-              </v-btn>
             </v-stepper-content>
 
             <v-stepper-content step="3">
               <!-- Fait apparaitre le résumé de la sélection -->
-              <v-row class="text-center" v-if="newIcon.color.length > 0">
-                <v-col cols="11" v-for="(item, l) in newIcon.color" :key="l">
-                  <span>{{ newIcon.subCategory[l] }}</span>
-                  <v-icon :color="newIcon.color[l]" size="36px"
+              <v-row v-if="newIcon.color.length > 0">
+                <v-col cols="12">
+                  <h4>My markers selected</h4>
+                </v-col>
+                <v-col cols="4" v-for="(item, l) in newIcon.color" :key="l">
+                  <span v-if="newIcon.type === 'Point'">{{ newIcon.subCategory[l] ? newIcon.subCategory[l] : newIcon.category }}</span>
+                  <v-icon v-if="newIcon.type === 'Point'" :color="newIcon.color[l]" size="36px"
                     >mdi-{{ newIcon.icon }}</v-icon
                   >
+                  <v-chip
+                    v-else
+                    :color="newIcon.color[l]"
+                    label
+                    x-large
+                  >{{ newIcon.subCategory[l] ? newIcon.subCategory[l] : 'my preview' }}</v-chip>
+                </v-col>
+                <v-col cols="12">
+                  <v-btn color="primary" @click="addNewMarker"
+                    >Add the markers</v-btn
+                  >
+                  <v-btn color="primary" @click="resetMarker">Reset</v-btn>
+                  <v-btn text @click="e1 = 2" :disabled="disableInputs">
+                    back
+                  </v-btn>
                 </v-col>
               </v-row>
 
-              <v-btn color="primary" @click="addNewMarker"
-                >Add the markers</v-btn
-              >
-              <v-btn color="primary" @click="resetMarker">Reset</v-btn>
-              <v-btn text @click="e1 = 2" :disabled="disableInputs">
-                back
-              </v-btn>
             </v-stepper-content>
           </v-stepper-items>
         </v-stepper>
       </template>
     </modalCustom>
+
     <v-col cols="12">
       <h1>My Icons configaurations</h1>
       <v-btn disabled @click="activateIndexedDB">Create the database</v-btn>
@@ -171,7 +200,7 @@ export default {
         type: 'Point',
         category: 'test',
         subCategory: [],
-        icon: 'account',
+        icon: '',
         color: [],
       },
       // items for the table
@@ -201,10 +230,12 @@ export default {
         type: 'Point',
         category: 'test',
         subCategory: [],
-        icon: 'account',
+        icon: '',
         color: [],
       }
       this.disableInputs = false
+      this.disableColor = false
+      this.e1=1
     },
     addToArrayMarker(e) {
       if (e) {
@@ -214,7 +245,8 @@ export default {
       } else {
         this.newIcon.color.push(this.colorSelected)
         this.disableInputs = false
-        if (this.newIcon.subCategory.length > 0) { // if already add one subcategory, disabled it after executing code above
+        if (this.newIcon.subCategory.length > 0) {
+          // if already add one subcategory, disabled it after executing code above
           this.disableColor = true
         }
       }
@@ -324,20 +356,21 @@ export default {
       }
     },
     addNewMarker() {
-        const requestIndexedDB = window.indexedDB.open('Map_Database', 1)
-        requestIndexedDB.onsuccess = (event) => {
-          var db = event.target.result
+      const requestIndexedDB = window.indexedDB.open('Map_Database', 1)
+      requestIndexedDB.onsuccess = (event) => {
+        var db = event.target.result
 
-          var transaction = db.transaction('markers', 'readwrite')
-          const store = transaction.objectStore('markers') // store = table in sql
-          // insert data  in the store
-          store.add(this.newIcon)
+        var transaction = db.transaction('markers', 'readwrite')
+        const store = transaction.objectStore('markers') // store = table in sql
+        // insert data  in the store
+        store.add(this.newIcon)
 
-          console.log('markers added to the store')
-          transaction.oncomplete = () => {
-            db.close()
-          }
+        console.log('markers added to the store')
+        transaction.oncomplete = () => {
+          db.close()
         }
+        this.showModal = false
+      }
     },
     getDBid() {
       // ouvre la db
