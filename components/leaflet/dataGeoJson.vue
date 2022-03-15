@@ -85,7 +85,11 @@ export default {
       multiLineString: [],
       polygon: [],
     },
-    itemsSubcategory: [],
+    itemsSubcategory: {
+      point: [],
+      multiLineString: [],
+      polygon: [],
+    },
     itemsIcon: {
       type: [],
       color: [],
@@ -148,47 +152,61 @@ export default {
     },
     // return Array of subCategory depending on the category selected
     subCategory() {
-      let index = this.itemsCategory.point.indexOf(
-        this.addGeoJson.properties.category
-      )
-      this.addGeoJson.icon.type = this.itemsIcon.type[index] // charge directement dans json addgeojson
-      if (index === -1) {
-        return undefined
-      } else {
-        return this.itemsSubcategory[index]
+
+      const loadSubArray = (type, sub) => { // FONCTION POUR RECUP DU BON TABLEAU A ANALYSER
+        let index = type.indexOf(
+            this.addGeoJson.properties.category
+        )
+        this.addGeoJson.icon.type = this.itemsIcon.type[index] // charge directement dans json addgeojson
+
+        if (index === -1) {
+          return undefined
+        } else {
+          return sub[index]
+        }
       }
+
+      switch (this.addGeoJson.geometry.type) {
+        case 'Point':
+          return loadSubArray(this.itemsCategory.point, this.itemsSubcategory.point)
+          break;
+        case 'Polygon':
+          return loadSubArray(this.itemsCategory.polygon, this.itemsSubcategory.polygon)
+          break;
+        case 'MultiLineString':
+          return loadSubArray(this.itemsCategory.multiLineString, this.itemsSubcategory.multiLineString)
+          break;
+      }
+      
     },
   },
   methods: {
     colorsPick() {
       // recup de la couleur en fonction de l'index de la categorie. puisque quand je recupere les donnees de la db, les donnees sont renvoyé dans le meme ordre d'index
       let indexCategory
-      switch (this.addGeoJson.geometry.type) {
-        case 'Polygon':
-          indexCategory = this.itemsCategory.polygon.indexOf(
-            this.addGeoJson.properties.category
-          )
-          this.addGeoJson.icon.color = this.polygonColor[indexCategory]
-          break
-        case 'MultiLineString':
-          indexCategory = this.itemsCategory.multiLineString.indexOf(
-            this.addGeoJson.properties.category
-          )
-          this.addGeoJson.icon.color = this.lineColor[indexCategory]
-          break
-        default:
-          indexCategory = this.itemsCategory.point.indexOf(
+      const diplayColors = (cat, colorArray) => {
+        indexCategory = cat.indexOf(
             this.addGeoJson.properties.category
           )
           if (this.addGeoJson.properties.subCategory) {
-            let colorsAttribut = this.itemsIcon.color[indexCategory]
+            let colorsAttribut = colorArray[indexCategory]
             let indexSubCategory = this.subCategory.indexOf(
               this.addGeoJson.properties.subCategory
             )
             this.addGeoJson.icon.color = colorsAttribut[indexSubCategory] // charge directement dans json addgeojson
           } else {
-            this.addGeoJson.icon.color = this.itemsIcon.color[indexCategory] // charge directement dans json addgeojson
+            this.addGeoJson.icon.color = colorArray[indexCategory] // charge directement dans json addgeojson
           }
+      }
+      switch (this.addGeoJson.geometry.type) {
+        case 'Polygon':
+          diplayColors(this.itemsCategory.polygon, this.polygonColor)
+          break
+        case 'MultiLineString':
+          diplayColors(this.itemsCategory.multiLineString, this.lineColor)
+          break
+        default:
+          diplayColors(this.itemsCategory.point, this.itemsIcon.color)
           break
       }
     },
@@ -271,18 +289,18 @@ export default {
           switch (cursor.value.type) {
             case 'Point':
               this.itemsCategory.point.push(cursor.value.category)
-              this.itemsSubcategory.push(cursor.value.subCategory)
+              this.itemsSubcategory.point.push(cursor.value.subCategory)
               this.itemsIcon.type.push(cursor.value.icon)
               this.itemsIcon.color.push(cursor.value.color)
               break
             case 'MultiLineString':
               this.itemsCategory.multiLineString.push(cursor.value.category)
-              this.itemsSubcategory.push(cursor.value.subCategory)
+              this.itemsSubcategory.multiLineString.push(cursor.value.subCategory)
               this.lineColor.push(cursor.value.color)
               break
             case 'Polygon':
               this.itemsCategory.polygon.push(cursor.value.category)
-              this.itemsSubcategory.push(cursor.value.subCategory)
+              this.itemsSubcategory.polygon.push(cursor.value.subCategory)
               this.polygonColor.push(cursor.value.color)
               break
           }
