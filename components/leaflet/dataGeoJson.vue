@@ -90,12 +90,15 @@ export default {
       multiLineString: [],
       polygon: [],
     },
-    itemsIcon: {
-      type: [],
-      color: [],
+    itemsColor: {
+      point: {
+        type: [],
+        color: [],     
+      },
+      multiLineString: [],
+      polygon: [],
+      
     },
-    lineColor: [],
-    polygonColor: [],
     latitude: "13'44.4745",
     longitude: "106'58.6615",
     addGeoJson: {
@@ -157,7 +160,7 @@ export default {
         let index = type.indexOf(
             this.addGeoJson.properties.category
         )
-        this.addGeoJson.icon.type = this.itemsIcon.type[index] // charge directement dans json addgeojson
+        this.addGeoJson.icon.type = this.itemsColor.point.type[index] // charge directement dans json addgeojson
 
         if (index === -1) {
           return undefined
@@ -200,13 +203,13 @@ export default {
       }
       switch (this.addGeoJson.geometry.type) {
         case 'Polygon':
-          diplayColors(this.itemsCategory.polygon, this.polygonColor)
+          diplayColors(this.itemsCategory.polygon, this.itemsColor.polygon)
           break
         case 'MultiLineString':
-          diplayColors(this.itemsCategory.multiLineString, this.lineColor)
+          diplayColors(this.itemsCategory.multiLineString, this.itemsColor.multiLineString)
           break
         default:
-          diplayColors(this.itemsCategory.point, this.itemsIcon.color)
+          diplayColors(this.itemsCategory.point, this.itemsColor.point.color)
           break
       }
     },
@@ -290,18 +293,18 @@ export default {
             case 'Point':
               this.itemsCategory.point.push(cursor.value.category)
               this.itemsSubcategory.point.push(cursor.value.subCategory)
-              this.itemsIcon.type.push(cursor.value.icon)
-              this.itemsIcon.color.push(cursor.value.color)
+              this.itemsColor.point.type.push(cursor.value.icon)
+              this.itemsColor.point.color.push(cursor.value.color)
               break
             case 'MultiLineString':
               this.itemsCategory.multiLineString.push(cursor.value.category)
               this.itemsSubcategory.multiLineString.push(cursor.value.subCategory)
-              this.lineColor.push(cursor.value.color)
+              this.itemsColor.multiLineString.push(cursor.value.color)
               break
             case 'Polygon':
               this.itemsCategory.polygon.push(cursor.value.category)
               this.itemsSubcategory.polygon.push(cursor.value.subCategory)
-              this.polygonColor.push(cursor.value.color)
+              this.itemsColor.polygon.push(cursor.value.color)
               break
           }
           cursor.continue()
