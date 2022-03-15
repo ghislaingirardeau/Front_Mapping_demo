@@ -1,7 +1,7 @@
 <template>
   <v-row>
     <modalCustom :showModal="showModal" @send-modal="modalResponse">
-      <template v-slot:title> Build your marker {{ newIcon }} </template>
+      <template v-slot:title> Build your marker</template>
       <template v-slot:content>
         <v-stepper v-model="e1">
           <v-stepper-header>
@@ -82,8 +82,6 @@
             <v-stepper-content step="2">
               <v-row>
                 <v-col cols="12" sm="8">
-                <v-tooltip top>
-                  <template>
                   <v-text-field
                     v-model="subCategorySelected"
                     :disabled="disableInputs"
@@ -91,9 +89,6 @@
                     append-icon="mdi-plus-circle"
                     @click:append="addToArrayMarker(true)"
                   ></v-text-field>
-                  </template>
-                <span>Tooltip</span>
-                </v-tooltip>
                 </v-col>
 
                 <v-col cols="12" sm="4">
@@ -181,8 +176,8 @@
       <v-btn disabled @click="activateIndexedDB">Create the database</v-btn>
       <v-btn disabled @click="addToDB">add a data</v-btn>
       <v-btn @click="cursorDB">Show datas</v-btn>
-      <v-btn @click="updateDB">update data</v-btn>
-      <v-btn @click="showModal = true">open modal</v-btn>
+      <!-- <v-btn @click="updateDB">update data</v-btn> -->
+      <v-btn @click="showModal = true">Create a marker</v-btn>
     </v-col>
     <v-col cols="12">
       <v-card>
