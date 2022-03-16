@@ -177,7 +177,8 @@
     <v-col cols="12">
       <h1>My Icons configaurations</h1>
       <v-btn @click="showBtnDBExist ? deleteIndexedDB() : activateIndexedDB()">{{showBtnDBExist ? 'Delete database' : 'Create database'}}</v-btn>
-      <v-btn @click="addToDB">add a marker</v-btn>
+      
+      <!-- <v-btn @click="addToDB">add a marker</v-btn> -->
       <!-- <v-btn @click="showCursorDB">Show datas</v-btn> -->
       <!-- <v-btn @click="updateDB">update data</v-btn> -->
       <v-btn @click="showModal = true">Create a marker</v-btn>
@@ -192,6 +193,7 @@ import modalCustom from '@/components/leaflet/modalCustom.vue'
 import tableMarkers from '@/components/leaflet/tableMarkers.vue';
 
 export default {
+  layout: 'datasLayout',
   data() {
     return {
       // stepper

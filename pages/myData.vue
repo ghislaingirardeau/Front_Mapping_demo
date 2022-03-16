@@ -1,12 +1,18 @@
 <template>
-  <v-row class="dataTable">
-    <h1>My datas</h1>
-    <p :class="{ active: isActive }">
-      You have collected {{ geoJsonFeature ? geoJsonFeature.length : '' }} datas
-    </p>
-    <nuxt-link to="/"></nuxt-link>
+  <v-row>
+    <v-col cols="12">
+      <h1>My datas</h1>
+    </v-col>
+    <v-col cols="12">
+      <p :class="{ active: isActive }">
+        You have collected {{ geoJsonFeature ? geoJsonFeature.length : '' }} datas
+      </p>
+    </v-col>
     <tableGeoJson v-if="geoJsonFeature" :geoJsonFeature="geoJsonFeature" />
-    <p v-else>No data save yet</p>
+    <v-col v-else cols="12">
+      <p>No data save yet</p>
+    </v-col>
+
   </v-row>
 </template>
 
@@ -40,8 +46,4 @@ export default {
 </script>
 
 <style lang="scss">
-.dataTable {
-  padding: 12px;
-  position: relative;
-}
 </style>

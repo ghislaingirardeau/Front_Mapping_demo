@@ -1,20 +1,22 @@
 <template>
-  <v-card>
-    <v-card-title>
-      <v-text-field
-        v-model="search"
-        append-icon="mdi-magnify"
-        label="Search"
-        single-line
-        hide-details
-      ></v-text-field>
-    </v-card-title>
-    <v-data-table
-      :headers="headers"
-      :items="geoItems"
-      :search="search"
-    ></v-data-table>
-  </v-card>
+  <v-col cols="12">
+    <v-card>
+      <v-card-title>
+        <v-text-field
+          v-model="search"
+          append-icon="mdi-magnify"
+          label="Search"
+          single-line
+          hide-details
+        ></v-text-field>
+      </v-card-title>
+      <v-data-table
+        :headers="headers"
+        :items="geoItems"
+        :search="search"
+      ></v-data-table>
+    </v-card>
+  </v-col>
 </template>
 
 <script>
