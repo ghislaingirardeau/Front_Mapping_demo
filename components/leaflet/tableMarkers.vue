@@ -11,6 +11,10 @@
           ></v-text-field>
         </v-card-title>
         <v-data-table :headers="headers" :items="markers" :search="search">
+          <template v-slot:[`item.icon`]="{ item }">
+            <v-icon v-if="item.icon.length > 0" :color="item.color"> mdi-{{item.icon}} </v-icon>
+            <v-chip :color="item.color" small v-else>area</v-chip>
+          </template>
           <template v-slot:[`item.remove`]="{ item }">
             <v-icon @click="removeDB(item)"> mdi-delete </v-icon>
           </template>
@@ -26,15 +30,13 @@
                 search: '',
                 headers: [
                     {
-                    text: 'Type',
+                    text: 'Category',
                     align: 'start',
                     filterable: false,
-                    value: 'type',
+                    value: 'category',
                     },
-                    { text: 'Category', value: 'category' },
                     { text: 'Sub Category', value: 'subCategory' },
                     { text: 'Icon', value: 'icon' },
-                    { text: 'Color', value: 'color' },
                     { text: 'Remove', value: 'remove' },
                 ],
             }
@@ -45,44 +47,54 @@
         },
         methods: {
             removeDB(e) {
-                const requestIndexedDB = window.indexedDB.open('Map_Database', 1)
-                requestIndexedDB.onerror = (event) => {
-                    console.log(event)
-                }
+                const removeItem = (e) => {
+                    const requestIndexedDB = window.indexedDB.open('Map_Database', 1)
+                    requestIndexedDB.onerror = (event) => {
+                        console.log(event)
+                    }
 
-                // la requete
-                requestIndexedDB.onsuccess = (event) => {
-                    let db = event.target.result
+                    // la requete
+                    requestIndexedDB.onsuccess = (event) => {
+                        let db = event.target.result
 
-                    let transaction = db.transaction('markers', 'readwrite')
-                    let store = transaction.objectStore('markers') // store = table in sql
+                        let transaction = db.transaction('markers', 'readwrite')
+                        let store = transaction.objectStore('markers') // store = table in sql
 
-                    store.openCursor().onsuccess = (event) => {
-                    const cursor = event.target.result
-                    if (cursor) {
-                        if (cursor.value.category === e.category) {
-                        if (cursor.value.subCategory.length > 0) {
-                            console.log('mutliple category, has to be fix')
-                        } else {
-                            let idQuery = store.delete(cursor.key)
-                            idQuery.onsuccess = (event) => {
-                            this.showCursorDB()
-                            alert('this marker has been removed')
+                        store.openCursor().onsuccess = (event) => {
+                        const cursor = event.target.result
+                        if (cursor) {
+                            if (cursor.value.category === e.category) {
+                            if (cursor.value.subCategory.length > 0) {
+                                console.log('mutliple category, has to be fix')
+                            } else {
+                                let idQuery = store.delete(cursor.key)
+                                idQuery.onsuccess = (event) => {
+                                this.showCursorDB()
+                                alert('this marker has been removed')
+                                }
                             }
                         }
-                    }
-                    cursor.continue()
-                    } else {
-                        console.log('Entries displayed.')
-                    }
-                    }
+                        cursor.continue()
+                        } else {
+                            console.log('Entries displayed.')
+                        }
+                        }
 
-                    transaction.oncomplete = () => {
-                    db.close()
+                        transaction.oncomplete = () => {
+                        db.close()
+                        }
+                        transaction.onerror = (event) => {
+                        console.log(event)
+                        }
                     }
-                    transaction.onerror = (event) => {
-                    console.log(event)
-                    }
+                }
+                
+                if (e.subCategory.length > 0) {
+                    window.confirm(`This action will remove all sub category of the ${e.category} ?`)
+                    removeItem(e)
+                } else {
+                    window.confirm(`Remove the item ${e.category} ?`)
+                    removeItem(e)
                 }
             },
         },

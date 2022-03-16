@@ -178,7 +178,7 @@
       <h1>My Icons configaurations</h1>
       <v-btn @click="showBtnDBExist ? deleteIndexedDB() : activateIndexedDB()">{{showBtnDBExist ? 'Delete database' : 'Create database'}}</v-btn>
       
-      <!-- <v-btn @click="addToDB">add a marker</v-btn> -->
+      <v-btn @click="addToDB">add a marker</v-btn>
       <!-- <v-btn @click="showCursorDB">Show datas</v-btn> -->
       <!-- <v-btn @click="updateDB">update data</v-btn> -->
       <v-btn @click="showModal = true">Create a marker</v-btn>
@@ -361,6 +361,10 @@ export default {
       }
     },
     addNewMarker() {
+      if (this.newIcon.color.length === 1) {
+        let oneColor = this.newIcon.color[0]
+        this.newIcon.color = oneColor
+      }
       const requestIndexedDB = window.indexedDB.open('Map_Database', 1)
       requestIndexedDB.onsuccess = (event) => {
         var db = event.target.result
