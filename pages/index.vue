@@ -24,13 +24,6 @@
       <!-- Modal content -->
       <div class="modal_close">
         <span class="modal_close-icon">&times;</span>
-        <button
-          class="modal_page-btn"
-          @click="showTuto"
-          v-if="this.$vuetify.breakpoint.width < 600"
-        >
-          {{ tutoPage ? "Previous" : "Next" }}
-        </button>
       </div>
       <div class="modal_tuto">
         <div
@@ -39,15 +32,6 @@
           v-if="this.$vuetify.breakpoint.width > 600 || !tutoPage"
         >
           <p v-for="item in tutorialsAction" :key="item">
-            {{ item }}
-          </p>
-        </div>
-        <div
-          class="modal_tuto-data"
-          :style="{ left: modalDiplay }"
-          v-if="this.$vuetify.breakpoint.width > 600 || tutoPage"
-        >
-          <p v-for="item in tutorialsData" :key="item">
             {{ item }}
           </p>
         </div>
@@ -152,10 +136,6 @@ export default {
       "Mode full screen -->",
       "Show the legend -->",
       "Show/hide measure area -->",
-    ],
-    tutorialsData: [
-      "<-- Show tutorials",
-      "<-- Show data table details ",
     ],
     tutoPage: false,
     showModal: false,
@@ -427,6 +407,7 @@ export default {
     // build the container with switch layer
     this.map = L.map("map", {
       layers: [streets, outdoors, this.houseLayer, this.villageLayer],
+      zoomControl: false
     });
     this.map.locate({ setView: true, maxZoom: 16 });
 
