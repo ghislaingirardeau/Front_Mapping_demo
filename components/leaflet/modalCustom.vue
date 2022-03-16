@@ -4,6 +4,7 @@
       v-model="showModal"
       persistent
       max-width="590"
+      origin="center top"
     >
       <v-card class="modal__content">
         <v-card-title >

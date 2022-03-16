@@ -71,11 +71,6 @@ export default {
       items: [
         {
           icon: 'mdi-apps',
-          title: 'map',
-          to: '/'
-        },
-        {
-          icon: 'mdi-apps',
           title: 'Manage Datas',
           to: '/myData'
         },
