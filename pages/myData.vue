@@ -1,8 +1,5 @@
 <template>
-  <div class="dataTable">
-    <v-btn color="primary" class="backToMap" @click="linkMap">
-      <v-icon>mdi-map-outline</v-icon>
-    </v-btn>
+  <v-row class="dataTable">
     <h1>My datas</h1>
     <p :class="{ active: isActive }">
       You have collected {{ geoJsonFeature ? geoJsonFeature.length : '' }} datas
@@ -10,13 +7,14 @@
     <nuxt-link to="/"></nuxt-link>
     <tableGeoJson v-if="geoJsonFeature" :geoJsonFeature="geoJsonFeature" />
     <p v-else>No data save yet</p>
-  </div>
+  </v-row>
 </template>
 
 <script>
 import tableGeoJson from '@/components/leaflet/tableGeoJson.vue'
 
 export default {
+  layout: 'datasLayout',
   data() {
     return {
       geoJsonFeature: undefined,
@@ -45,10 +43,5 @@ export default {
 .dataTable {
   padding: 12px;
   position: relative;
-}
-.backToMap {
-  position: absolute;
-  top: 20px;
-  right: 20px;
 }
 </style>
