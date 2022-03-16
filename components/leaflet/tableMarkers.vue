@@ -40,7 +40,8 @@
             }
         },
         props: {
-            markers: Array
+            markers: Array,
+            showCursorDB: Function
         },
         methods: {
             removeDB(e) {
@@ -61,7 +62,7 @@
                     if (cursor) {
                         if (cursor.value.category === e.category) {
                         if (cursor.value.subCategory.length > 0) {
-                            console.log('mutliple')
+                            console.log('mutliple category, has to be fix')
                         } else {
                             let idQuery = store.delete(cursor.key)
                             idQuery.onsuccess = (event) => {
@@ -69,8 +70,8 @@
                             alert('this marker has been removed')
                             }
                         }
-                        }
-                        cursor.continue()
+                    }
+                    cursor.continue()
                     } else {
                         console.log('Entries displayed.')
                     }
