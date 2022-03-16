@@ -176,9 +176,9 @@
 
     <v-col cols="12">
       <h1>My Icons configaurations</h1>
-      <v-btn disabled @click="activateIndexedDB">Create the database</v-btn>
-      <v-btn disabled @click="addToDB">add a data</v-btn>
-      <v-btn @click="showCursorDB">Show datas</v-btn>
+      <v-btn @click="showBtnDBExist ? deleteIndexedDB() : activateIndexedDB()">{{showBtnDBExist ? 'Delete database' : 'Create database'}}</v-btn>
+      <v-btn @click="addToDB">add a marker</v-btn>
+      <!-- <v-btn @click="showCursorDB">Show datas</v-btn> -->
       <!-- <v-btn @click="updateDB">update data</v-btn> -->
       <v-btn @click="showModal = true">Create a marker</v-btn>
     </v-col>
@@ -194,9 +194,10 @@ import tableMarkers from '@/components/leaflet/tableMarkers.vue';
 export default {
   data() {
     return {
-      e1: 1, // stepper
+      // stepper
+      e1: 1, 
       // control inside modal
-      showModal: true,
+      showModal: false,
       disableInputs: false,
       disableColor: false,
       colorSelected: '',
@@ -210,7 +211,9 @@ export default {
         icon: '',
         color: [],
       },
+      // manage datas
       markers: [],
+      showBtnDBExist: false
     }
   },
   components: {
@@ -279,6 +282,7 @@ export default {
           unique: false,
         }) // créer les index de recherche
         console.log('database created')
+        this.showBtnDBExist = true
       }
     },
     addToDB() {
@@ -347,6 +351,8 @@ export default {
         })
 
         console.log('markers added to the store')
+        this.showCursorDB()
+
         transaction.oncomplete = () => {
           db.close()
         }
@@ -361,6 +367,7 @@ export default {
         const store = transaction.objectStore('markers') // store = table in sql
         // insert data  in the store
         store.add(this.newIcon)
+        this.showCursorDB()
 
         console.log('markers added to the store')
         transaction.oncomplete = () => {
@@ -384,9 +391,9 @@ export default {
         let transaction = db.transaction('markers', 'readwrite')
         let store = transaction.objectStore('markers') // store = table in sql
 
-        let allDatas = store.getAll() // renvoie tous les modeles qui sont vert
-        allDatas.onsuccess = () => {
-          this.markers = allDatas.result
+        let allMarkers = store.getAll() // renvoie tous les modeles qui sont vert
+        allMarkers.onsuccess = () => {
+          this.markers = allMarkers.result
         }
 
         // close db at the end of transaction
@@ -433,7 +440,7 @@ export default {
       }
     },
     showCursorDB() {
-      this.markers = []
+      this.markers = [] // reinitialise le tableau sinon doublon on show
       const requestIndexedDB = window.indexedDB.open('Map_Database', 1)
       requestIndexedDB.onerror = (event) => {
         console.log(event)
@@ -452,7 +459,7 @@ export default {
           if (cursor) {
             // if a get an array of sub category, i create a new object to send in this.markers array
             if (cursor.value.subCategory.length > 0) {
-              class Data {
+              class Marker {
                 constructor(sub, color) {
                   ;(this.type = cursor.value.type),
                     (this.category = cursor.value.category),
@@ -466,11 +473,11 @@ export default {
                 index < cursor.value.subCategory.length;
                 index++
               ) {
-                let formatedData = new Data(
+                let formatedMarker = new Marker(
                   cursor.value.subCategory[index],
                   cursor.value.color[index]
                 )
-                this.markers.push(formatedData)
+                this.markers.push(formatedMarker)
               }
             } else {
               this.markers.push(cursor.value)
@@ -487,6 +494,17 @@ export default {
         }
       }
     },
+    deleteIndexedDB() {
+        window.confirm('Are you sure you want to delete all the markers ?');
+        var DBDeleteReq = window.indexedDB.deleteDatabase("Map_Database");
+        DBDeleteReq.onsuccess = function(event) {
+          console.log("Database deleted successfully");
+          this.marker = []
+          this.showBtnDBExist = false
+        }
+        console.log(DBDeleteReq);
+        console.log(window.indexedDB.databases());
+     },   
   },
   mounted() {
     // check if the database exist
@@ -495,9 +513,11 @@ export default {
       const isExisting = (await window.indexedDB.databases()).map(db => db.name).includes(dbName);
       if(isExisting) {
         console.log('btn option: delete the db or export');
+        this.showBtnDBExist = true
         this.showCursorDB() // faire apparaitre les datas dans le tableau
       } else {
         console.log('btn option: create new db');
+        this.showBtnDBExist = false
       }
     }
     checkDB()
