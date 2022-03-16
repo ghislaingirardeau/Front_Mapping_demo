@@ -100,7 +100,6 @@
                   <v-color-picker class="text-center"
                     v-model="colorSelected"
                     dot-size="21"
-                    swatches-max-height="50"
                     hide-inputs
                   ></v-color-picker>
                 </v-col>
@@ -179,7 +178,7 @@
       <h1>My Icons configaurations</h1>
       <v-btn disabled @click="activateIndexedDB">Create the database</v-btn>
       <v-btn disabled @click="addToDB">add a data</v-btn>
-      <v-btn @click="cursorDB">Show datas</v-btn>
+      <v-btn @click="showCursorDB">Show datas</v-btn>
       <!-- <v-btn @click="updateDB">update data</v-btn> -->
       <v-btn @click="showModal = true">Create a marker</v-btn>
     </v-col>
@@ -461,7 +460,7 @@ export default {
         }
       }
     },
-    cursorDB() {
+    showCursorDB() {
       this.markers = []
       const requestIndexedDB = window.indexedDB.open('Map_Database', 1)
       requestIndexedDB.onerror = (event) => {
@@ -506,7 +505,6 @@ export default {
             }
             cursor.continue()
           } else {
-            console.log(this.markers)
             console.log('No more entries!')
           }
         }
@@ -539,7 +537,7 @@ export default {
               } else {
                 let idQuery = store.delete(cursor.key)
                 idQuery.onsuccess = (event) => {
-                  this.cursorDB()
+                  this.showCursorDB()
                   alert('this marker has been removed')
                 }
               }
@@ -559,7 +557,20 @@ export default {
       }
     },
   },
-  mounted() {},
+  mounted() {
+    // check if the database exist
+    const checkDB = async () => {
+      const dbName = 'Map_Database';
+      const isExisting = (await window.indexedDB.databases()).map(db => db.name).includes(dbName);
+      if(isExisting) {
+        console.log('btn option: delete the db or export');
+        this.showCursorDB() // faire apparaitre les datas dans le tableau
+      } else {
+        console.log('btn option: create new db');
+      }
+    }
+    checkDB()
+  },
 }
 </script>
 
