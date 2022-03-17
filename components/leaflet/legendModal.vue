@@ -1,18 +1,14 @@
 <template>
-  <v-col cols="12" class="option__bloc">
-    <v-row class="option__bloc legend__bloc" >
-      <v-col
-        v-for="item in items"
-        :key="item.content"
-        cols="4"
-        sm="3"
-        lg="2"
-        class="block__items"
-      >
-        <svg style="width: 24px; height: 24px" :viewBox="item.view">
-          <path :fill="item.iconColor" :d="item.path" />
-        </svg>
-        <span class="items--font">{{ item.content }}</span>
+  <v-col :cols="themeDarkColor ? '6' : undefined" :class="themeDarkColor ? 'legend__bloc' : ''">
+    <v-row class="text-center">
+      <v-col v-for="(i, l) in markers" :key="l" order="first">
+        <span>{{i.category}}</span>
+        <br>
+        
+        <v-icon v-if="i.icon.length > 0" :color="i.color"> mdi-{{i.icon}} </v-icon>
+        <v-chip :color="i.color" small v-else>area</v-chip>
+        <br>
+        <span v-if="i.subCategory.length > 0">{{i.subCategory}}</span>
       </v-col>
     </v-row>
   </v-col>
@@ -24,116 +20,81 @@ import exportCSV from "@/components/leaflet/exportCSV.vue";
 export default {
   data: () => ({
     showContent: false,
-    items: [
-      {
-        content: "Not interviewed",
-        path: "M10,20V14H14V20H19V12H22L12,3L2,12H5V20H10Z",
-        iconColor: "black",
-        view: '0 0 24 24'
-      },
-      {
-        content: "Interviewed",
-        path: "M10,20V14H14V20H19V12H22L12,3L2,12H5V20H10Z",
-        iconColor: "green",
-        view: '0 0 24 24'
-      },
-      {
-        content: "indebted",
-        path: "M10,20V14H14V20H19V12H22L12,3L2,12H5V20H10Z",
-        iconColor: "orange",
-        view: '0 0 24 24'
-      },
-      {
-        content: "land lost",
-        path: "M10,20V14H14V20H19V12H22L12,3L2,12H5V20H10Z",
-        iconColor: "red",
-        view: '0 0 24 24'
-      },
-      {
-        content: "bath",
-        path:
-          "M511.094,264.722c-1.136-3.307-28.511-81.137-89.171-95.166c-30.729-7.107-63.124,3.303-96.526,30.938v-35.663    c6.222-2.428,10.637-8.464,10.637-15.545s-4.415-13.117-10.637-15.545V21.124c0-9.22-7.475-16.696-16.696-16.696h-89.595    c-9.22,0-16.696,7.475-16.696,16.696v46.166c-18.137-33.54-41.579-53.478-69.951-59.406C71.508-4.849,13.992,54.3,11.574,56.825    C6.875,61.728,5.615,68.989,8.387,75.19c2.773,6.2,9.015,10.103,15.811,9.873c82.495-2.81,169.04,34.422,169.902,34.798    c2.146,0.936,4.415,1.391,6.668,1.391c0.55,0,1.097-0.031,1.643-0.085v12.741c-5.986,2.538-10.185,8.467-10.185,15.378    s4.2,12.84,10.185,15.378v99.481c-13.69-36.175-34.515-59.305-62.158-68.907C81.436,174.809,16.819,226.106,14.098,228.3    c-5.288,4.262-7.467,11.302-5.513,17.805c1.956,6.503,7.654,11.176,14.416,11.815c6.876,0.651,13.745,1.588,20.559,2.751    c-26.815,24.958-41.321,57.285-42.141,59.145c-2.739,6.214-1.443,13.469,3.281,18.349c3.208,3.314,7.561,5.083,11.999,5.083    c2.096,0,4.212-0.395,6.233-1.209c76.563-30.832,170.624-25.43,171.564-25.372c2.816,0.178,5.51-0.359,7.913-1.449v27.787    c-5.986,2.538-10.185,8.467-10.185,15.378s4.2,12.84,10.185,15.378v117.115c0,9.22,7.475,16.696,16.696,16.696H308.7    c9.22,0,16.696-7.475,16.696-16.696V373.928c6.222-2.428,10.637-8.464,10.637-15.545s-4.415-13.117-10.637-15.545v-97.236    c22.507,1.287,99.826,7.886,162.387,39.448c2.383,1.202,4.958,1.79,7.516,1.79c3.954,0,7.87-1.404,10.977-4.113    C511.396,278.264,513.3,271.144,511.094,264.722z M70.033,53.522c16.303-9.503,36.4-16.998,55.681-12.936    c16.129,3.398,30.358,14.887,42.528,34.277C142.992,66.766,107.92,57.514,70.033,53.522z M55.265,296.723    c8.409-10.079,18.888-19.87,31.085-25.859c14.339,4.315,27.897,9.235,40.144,14.176    C104.959,286.978,80.307,290.495,55.265,296.723z M72.688,232.553c17.389-7.306,38.216-12.161,56.607-5.773    c15.598,5.418,28.267,18.643,37.87,39.466C143.202,255.001,109.679,241.362,72.688,232.553z M292.005,474.18h-56.204v-99.102    h56.204V474.18z M292.005,341.687h-56.204V165.981h56.204V341.687z M292.005,132.589h-56.204v-94.77h56.204V132.589z     M361.327,215.325c19.184-12.489,36.925-16.945,52.99-13.256c19.207,4.408,34.299,19.645,45.106,35.114    C423.36,224.901,387.642,218.575,361.327,215.325z",
-        iconColor: "black",
-        view: '0 0 512 512'
-      },
-      {
-        content: "grave",
-        path:
-          "M10,2H14C17.31,2 19,4.69 19,8V18.66C16.88,17.63 15.07,17 12,17C8.93,17 7.12,17.63 5,18.66V8C5,4.69 6.69,2 10,2M8,8V9.5H16V8H8M9,12V13.5H15V12H9M3,22V21.31C5.66,19.62 13.23,15.84 21,21.25V22H3Z",
-        iconColor: "black",
-        view: '0 0 24 24'
-      },
-      {
-        content: "chief House",
-        path:
-          "M10,2V4.26L12,5.59V4H22V19H17V21H24V2H10M7.5,5L0,10V21H15V10L7.5,5M14,6V6.93L15.61,8H16V6H14M18,6V8H20V6H18M7.5,7.5L13,11V19H10V13H5V19H2V11L7.5,7.5M18,10V12H20V10H18M18,14V16H20V14H18Z",
-        iconColor: "black",
-        view: '0 0 24 24'
-      },
-      {
-        content: "homestay",
-        path:
-          "M12,3L2,12H5V20H19V12H22L12,3M12,7.7C14.1,7.7 15.8,9.4 15.8,11.5C15.8,14.5 12,18 12,18C12,18 8.2,14.5 8.2,11.5C8.2,9.4 9.9,7.7 12,7.7M12,10A1.5,1.5 0 0,0 10.5,11.5A1.5,1.5 0 0,0 12,13A1.5,1.5 0 0,0 13.5,11.5A1.5,1.5 0 0,0 12,10Z",
-        iconColor: "black",
-        view: '0 0 24 24'
-      },
-      {
-        content: "communal",
-        path:
-          "M12 5C6.5 5 2 9.5 2 15V21H22V15C22 9.5 17.5 5 12 5M12 7C14.53 7 16.78 8.17 18.25 10H5.76C7.22 8.17 9.47 7 12 7M8 19H4V15C4 13.94 4.21 12.93 4.58 12H8V19M14 19H10V12H14V19M20 19H16V12H19.42C19.79 12.93 20 13.94 20 15V19Z",
-        iconColor: "black",
-        view: '0 0 24 24'
-      },
-      {
-        content: "well public",
-        path:
-          "M3.62 8H5V15H7V8H11V10H13V8H17V15H19V8H20.61C21.16 8 21.61 7.56 21.61 7C21.61 6.89 21.6 6.78 21.56 6.68L19 2H5L2.72 6.55C2.47 7.04 2.67 7.64 3.16 7.89C3.31 7.96 3.46 8 3.62 8M6.24 4H17.76L18.76 6H5.24L6.24 4M2 16V18H4V22H20V18H22V16H2M18 20H6V18H18V20M13.93 11C14.21 11 14.43 11.22 14.43 11.5C14.43 11.5 14.43 11.54 14.43 11.56L14.05 14.56C14 14.81 13.81 15 13.56 15H10.44C10.19 15 10 14.81 9.95 14.56L9.57 11.56C9.54 11.29 9.73 11.04 10 11C10.03 11 10.05 11 10.07 11H13.93Z",
-        iconColor: "red",
-        view: '0 0 24 24'
-      },
-      {
-        content: "well private",
-        path:
-          "M3.62 8H5V15H7V8H11V10H13V8H17V15H19V8H20.61C21.16 8 21.61 7.56 21.61 7C21.61 6.89 21.6 6.78 21.56 6.68L19 2H5L2.72 6.55C2.47 7.04 2.67 7.64 3.16 7.89C3.31 7.96 3.46 8 3.62 8M6.24 4H17.76L18.76 6H5.24L6.24 4M2 16V18H4V22H20V18H22V16H2M18 20H6V18H18V20M13.93 11C14.21 11 14.43 11.22 14.43 11.5C14.43 11.5 14.43 11.54 14.43 11.56L14.05 14.56C14 14.81 13.81 15 13.56 15H10.44C10.19 15 10 14.81 9.95 14.56L9.57 11.56C9.54 11.29 9.73 11.04 10 11C10.03 11 10.05 11 10.07 11H13.93Z",
-        iconColor: "blue",
-        view: '0 0 24 24'
-      },
-      {
-        content: "worship",
-        path:
-          "M15.59,9C17.7,7.74 19,5.46 19,3H17A5,5 0 0,1 12,8A5,5 0 0,1 7,3H5C5,5.46 6.3,7.74 8.41,9C5.09,11 4,15.28 6,18.6C7.97,21.92 12.27,23 15.59,21C18.91,19.04 20,14.74 18,11.42C17.42,10.43 16.58,9.59 15.59,9M12,20A5,5 0 0,1 7,15A5,5 0 0,1 12,10A5,5 0 0,1 17,15A5,5 0 0,1 12,20Z",
-        iconColor: "black",
-        view: '0 0 24 24'
-      },
-    ],
+    markers: [],
   }),
   props: {
-    showLegend: Boolean
+    showLegend: Boolean,
+    themeDarkColor: Boolean
   },
   components: {
     exportCSV,
   },
   methods: {
-    houseIcon(colors, size) {
-      return `<svg style="width:${size}px;height:${size}px" viewBox="0 0 24 24">
-				<path fill="${colors}" d="M10,20V14H14V20H19V12H22L12,3L2,12H5V20H10Z" />
-            </svg>`;
-    },
     legend() {
       this.showContent = !this.showContent;
     },
   },
+  mounted () {
+      this.markers = [] // reinitialise le tableau sinon doublon on show
+      const requestIndexedDB = window.indexedDB.open('Map_Database', 1)
+      requestIndexedDB.onerror = (event) => {
+        console.log(event)
+      }
+
+      // la requete
+      requestIndexedDB.onsuccess = (event) => {
+        let db = event.target.result
+
+        let transaction = db.transaction('markers', 'readwrite')
+        let store = transaction.objectStore('markers') // store = table in sql
+        let idQuery = store.openCursor() // recherche sur l'id
+        idQuery.onsuccess = (event) => {
+          var cursor = event.target.result
+
+          if (cursor) {
+            // if a get an array of sub category, i create a new object to send in this.markers array
+            if (cursor.value.subCategory.length > 0) {
+              class Marker {
+                constructor(sub, color) {
+                  ;(this.type = cursor.value.type),
+                    (this.category = cursor.value.category),
+                    (this.subCategory = sub),
+                    (this.icon = cursor.value.icon),
+                    (this.color = color)
+                }
+              }
+              for (
+                let index = 0;
+                index < cursor.value.subCategory.length;
+                index++
+              ) {
+                let formatedMarker = new Marker(
+                  cursor.value.subCategory[index],
+                  cursor.value.color[index]
+                )
+                this.markers.push(formatedMarker)
+              }
+            } else {
+              this.markers.push(cursor.value)
+            }
+            cursor.continue()
+          } else {
+            console.log('No more entries!')
+          }
+        }
+
+        // close db at the end of transaction
+        transaction.oncomplete = () => {
+          db.close()
+        }
+      }
+  }
 };
 </script>
 
 <style lang="scss">
 .legend__bloc {
-  background-color: white;
-  border-radius: 5px 5px;
-  & > div {
-    color: black;
-    font-size: 12px;
-  }
+  border: 2px solid grey;
 }
 .items--font {
   font-size: 12px;
