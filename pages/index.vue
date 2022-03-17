@@ -142,6 +142,7 @@ export default {
     showLegend: false,
     showSetting: false,
     modalTitle: undefined,
+    printDisplay: true
   }),
   computed: {
     modalDiplay() {
@@ -234,10 +235,16 @@ export default {
       }
 
       // FUNCTION RETURN ICON HOUSE SVG DEPENDING ON COLOR PARAMS
-      function createIcon(type, color, size) {
+      const createIcon = (type, color, size, name) => {
+        let showHtml
+        if(this.printDisplay) {
+          showHtml = `<i aria-hidden="true" class="v-icon notranslate mdi mdi-${type} theme--dark" style="font-size: ${size}; color:${color};"></i><span style="color:${color};">${name}</span>`
+        } else {
+          showHtml = `<i aria-hidden="true" class="v-icon notranslate mdi mdi-${type} theme--dark" style="font-size: ${size}; color:${color};"></i>`
+        }
         return L.divIcon({
           className: `${type}-icon`,
-          html: `<i aria-hidden="true" class="v-icon notranslate mdi mdi-${type} theme--dark" style="font-size: ${size}; color:${color};"></i>`,
+          html: showHtml,
         });
       }
 
@@ -250,7 +257,8 @@ export default {
             icon: createIcon(
               feature.icon.type,
               feature.icon.color,
-              "small"
+              "small",
+              feature.properties.name
             ),
           });
         },
