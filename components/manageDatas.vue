@@ -85,7 +85,7 @@ import exportCSV from '@/components/leaflet/exportCSV.vue';
         },
         props: {
             geoJsonHouse: Array,
-            geoJsonVillage: Array
+            geoJsonVillage: Array,
         },
         methods: {
             removeGeoJson() {
@@ -112,7 +112,7 @@ import exportCSV from '@/components/leaflet/exportCSV.vue';
                         this.removeGeoJson();
                         break;
                     case '4':
-                        window.print();
+                        this.$router.push({name: 'print'})
                         break;
                 }
             }
