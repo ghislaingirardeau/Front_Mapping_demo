@@ -38,33 +38,25 @@
       </div>
     </div>
 
-    <v-snackbar
-      v-model="snackbar"
-      timeout="-1"
-    >
-    <template>
+    <div class="hub__target--btn" v-if="snackbar">
       <v-btn
-        color="pink"
+        color="black"
         class="mx-3"
         @click="saveTarget(false)"
       >
         Cancel
       </v-btn>
-    </template>
-    <template>
       <v-btn
-        color="pink"
+        color="black"
         class="mx-3"
         @click="saveTarget(true)"
       >
         OK
       </v-btn>
-    </template>
-
-      
-    </v-snackbar>
+    </div>
       
     <i id="targetIconLocate" @click="locationTarget" aria-hidden="true" class="hub__target--icon mdi mdi-target"></i>
+    
     <div id="map" class="mt-5"></div>
   </div>
 </template>
@@ -440,7 +432,6 @@ export default {
           element.setAttribute("disabled", "");
           element.firstChild.style.color = 'grey'
         }
-
       }
     }
   },
@@ -532,8 +523,7 @@ export default {
       this.helpModal()
     }
 
-    // CUSTOMIZE AN ICON MENU ACTIONS ON THE MAP: 2 option of adding custome icons
-
+    // CUSTOMIZE AN ICON MENU ACTIONS ON THE MAP
     let styleControl = {
       margin: "15px",
       padding: "0px",
@@ -613,13 +603,14 @@ export default {
             // LOAD THE HUB FOR TARGET
             let x = ((this.map.getSize().x / 2) - 24) 
             let y = ((this.map.getSize().y / 2) - 30) 
+
+            this.snackbar = true
             
             let icon =  document.getElementById('targetIconLocate')
             icon.style.display = 'block'
+            
             icon.style.top = `${y}px`
             icon.style.left = `${x}px`
-            
-            this.snackbar = true
           }
         },
       },
@@ -698,6 +689,18 @@ export default {
     z-index: 2;
     color:black;
     font-size: 50px;
+  }
+  &--btn{
+    display: flex;
+    justify-content: space-between;
+    position: absolute;
+    bottom: 10%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    width: 270px;
+    height: 50px;
+    background-color: transparent;
+    z-index: 2;
   }
 }
 .icon--name{
