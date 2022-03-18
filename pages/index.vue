@@ -148,8 +148,6 @@ export default {
     villageLayer: [],
     lastItem: undefined,
     layerGeoJson: undefined,
-    layerStorageControl: undefined,
-    layerActionControl: undefined,
     btnMeasure: true,
     messageModal: undefined,
     watchMe: undefined,
@@ -391,7 +389,7 @@ export default {
     },
     locationTarget() {
       let style = {
-        color: 'black',
+        color: 'red',
         fillColor: 'grey',
         radius: 3
       }
@@ -425,14 +423,24 @@ export default {
     },
     activateOrNotBtn (elt) {
       let button = document.getElementById(elt)
+      let actionsBtn = document.getElementsByClassName('btn-map--action')
       let attribut = button.parentElement.getAttribute("disabled");
 
       if (attribut != null ) {
         button.parentElement.removeAttribute("disabled", "");
         button.style.color = 'white'
+        for(let element of actionsBtn) {
+          element.removeAttribute("disabled", "");
+          element.firstChild.style.color = 'rgb(33, 150, 243)'
+        }
       } else {
         button.parentElement.setAttribute("disabled", "");
         button.style.color = 'grey'
+        for(let element of actionsBtn) {
+          element.setAttribute("disabled", "");
+          element.firstChild.style.color = 'grey'
+        }
+
       }
     }
   },
@@ -541,23 +549,23 @@ export default {
       }
     };
 
-    this.layerStorageControl = L.control.custom({
+    let actionsControl = L.control.custom({
       position: "topleft",
       content:
-        '<button type="button" class="btn-map">' +
-        '<svg id="btn-tutorial" style="width:27px;height:27px" viewBox="0 0 24 24">  <path fill="rgb(33, 150, 243)" d="M12 2C11.5 2 11 2.19 10.59 2.59L2.59 10.59C1.8 11.37 1.8 12.63 2.59 13.41L10.59 21.41C11.37 22.2 12.63 22.2 13.41 21.41L21.41 13.41C22.2 12.63 22.2 11.37 21.41 10.59L13.41 2.59C13 2.19 12.5 2 12 2M12 6.95C14.7 7.06 15.87 9.78 14.28 11.81C13.86 12.31 13.19 12.64 12.85 13.07C12.5 13.5 12.5 14 12.5 14.5H11C11 13.65 11 12.94 11.35 12.44C11.68 11.94 12.35 11.64 12.77 11.31C14 10.18 13.68 8.59 12 8.46C11.18 8.46 10.5 9.13 10.5 9.97H9C9 8.3 10.35 6.95 12 6.95M11 15.5H12.5V17H11V15.5Z" /></svg>' +
+        '<button type="button" class="btn-map btn-map--action">' +
+        '<i id="btn-tutorial" aria-hidden="true" class="v-icon notranslate mdi mdi-help-circle theme--dark" style="color:rgb(33, 150, 243);"></i>' +        
         "</button>" +
-        '<button type="button" class="btn-map">' +
-        '<svg  id="btn-data" style="width:27px;height:27px" viewBox="0 0 24 24"><path fill="rgb(33, 150, 243)" d="M4 12V9C4 11.2 7.6 13 12 13S20 11.2 20 9V12C20 12.5 19.8 12.9 19.5 13.4C18.7 13.1 17.9 13 17 13C14.5 13 12.1 14.1 10.6 15.9C6.8 15.6 4 14 4 12M12 11C16.4 11 20 9.2 20 7S16.4 3 12 3 4 4.8 4 7 7.6 11 12 11M9.1 19.7L8.8 19L9.1 18.3C9.2 18.1 9.3 18 9.3 17.8C6.2 17.2 4 15.8 4 14V17C4 18.8 6.4 20.3 9.7 20.8C9.5 20.5 9.3 20.1 9.1 19.7M17 18C16.4 18 16 18.4 16 19S16.4 20 17 20 18 19.6 18 19 17.6 18 17 18M23 19C22.1 21.3 19.7 23 17 23S11.9 21.3 11 19C11.9 16.7 14.3 15 17 15S22.1 16.7 23 19M19.5 19C19.5 17.6 18.4 16.5 17 16.5S14.5 17.6 14.5 19 15.6 21.5 17 21.5 19.5 20.4 19.5 19Z" /></svg>' +
+        '<button type="button" class="btn-map btn-map--action">' +
+        '<i id="btn-data" aria-hidden="true" class="v-icon notranslate mdi mdi-sitemap theme--dark" style="color:rgb(33, 150, 243);"></i>' +        
         "</button>" +
-        '<button type="button" class="btn-map">' +
-        '<svg id="btn-delete" style="width:27px;height:27px" viewBox="0 0 24 24"><path fill="rgb(33, 150, 243)" d="M22,3H7C6.31,3 5.77,3.35 5.41,3.88L0,12L5.41,20.11C5.77,20.64 6.31,21 7,21H22A2,2 0 0,0 24,19V5A2,2 0 0,0 22,3M19,15.59L17.59,17L14,13.41L10.41,17L9,15.59L12.59,12L9,8.41L10.41,7L14,10.59L17.59,7L19,8.41L15.41,12" /></svg>' +
+        '<button type="button" class="btn-map btn-map--action">' +
+        '<i id="btn-delete" aria-hidden="true" class="v-icon notranslate mdi mdi-map-marker-remove theme--dark" style="color:rgb(33, 150, 243);"></i>' +        
         "</button>" +
-        '<button type="button" class="btn-map">' +
-        '<svg  id="btn-legend" style="width:27px;height:27px" viewBox="0 0 24 24"><path fill="rgb(33, 150, 243)" d="M9,3L3.36,4.9C3.15,4.97 3,5.15 3,5.38V20.5A0.5,0.5 0 0,0 3.5,21L3.66,20.97L9,18.9L15,21L20.64,19.1C20.85,19.03 21,18.85 21,18.62V3.5A0.5,0.5 0 0,0 20.5,3L20.34,3.03L15,5.1L9,3M8,5.45V17.15L5,18.31V6.46L8,5.45M10,5.47L14,6.87V18.53L10,17.13V5.47M19,5.7V17.54L16,18.55V6.86L19,5.7M7.46,6.3L5.57,6.97V9.12L7.46,8.45V6.3M7.46,9.05L5.57,9.72V11.87L7.46,11.2V9.05M7.46,11.8L5.57,12.47V14.62L7.46,13.95V11.8M7.46,14.55L5.57,15.22V17.37L7.46,16.7V14.55Z" /></svg>' +
+        '<button type="button" class="btn-map btn-map--action">' +
+        '<i id="btn-legend" aria-hidden="true" class="v-icon notranslate mdi mdi-map-legend theme--dark" style="color:rgb(33, 150, 243);"></i>' +        
         "</button>" +
-        '<button type="button" class="btn-map">' +
-        '<svg id="btn-ruler" style="width:27px;height:27px" viewBox="0 0 24 24"><path fill="rgb(33, 150, 243)" d="M1.39,18.36L3.16,16.6L4.58,18L5.64,16.95L4.22,15.54L5.64,14.12L8.11,16.6L9.17,15.54L6.7,13.06L8.11,11.65L9.53,13.06L10.59,12L9.17,10.59L10.59,9.17L13.06,11.65L14.12,10.59L11.65,8.11L13.06,6.7L14.47,8.11L15.54,7.05L14.12,5.64L15.54,4.22L18,6.7L19.07,5.64L16.6,3.16L18.36,1.39L22.61,5.64L5.64,22.61L1.39,18.36Z" /></svg>' +
+        '<button type="button" class="btn-map btn-map--action">' +
+        '<i id="btn-ruler" aria-hidden="true" class="v-icon notranslate mdi mdi-ruler theme--dark" style="color:rgb(33, 150, 243);"></i>' +        
         "</button>",
       classes: "btn-group-icon-map-option1",
       style: styleControl,
@@ -617,7 +625,7 @@ export default {
       },
     });
 
-    this.layerActionControl = L.control.custom({
+    let locationsControl = L.control.custom({
       position: "topright",
       content:
         '<button type="button" class="btn-map btn-map--location">' +
@@ -646,8 +654,8 @@ export default {
       },
     });
 
-    this.map.addControl(this.layerStorageControl);
-    this.map.addControl(this.layerActionControl);
+    this.map.addControl(actionsControl);
+    this.map.addControl(locationsControl);
     this.map.addControl(layerPickerControl);
 
     // ecoute si online ou non automatiquement
@@ -700,11 +708,11 @@ export default {
 }
 .btn-map {
   border: 2px solid black;
-  border-radius: 5px 5px;
+  border-radius: 10px 10px;
   background-color: black;
   position: relative;
-  margin-bottom: 2px;
-  padding: 4px 2px 0px 2px;
+  margin-bottom: 6px;
+  padding: 8px;
   &--location{
     padding: 15px;
     border-radius: 30px 30px;
