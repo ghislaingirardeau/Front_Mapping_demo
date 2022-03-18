@@ -22,8 +22,15 @@
 
     <div id="helpModal" class="modal_help">
       <!-- Modal content -->
-      <div class="modal_close">
-        <span class="modal_close-icon">&times;</span>
+      <div class="modal_action">
+        <span class="modal_action-close">&times;</span>
+        <button
+          class="modal_action-btn"
+          @click="showTuto"
+          v-if="this.$vuetify.breakpoint.width < 600"
+        >
+          {{ tutoPage ? "Previous" : "Next" }}
+        </button>
       </div>
       <div class="modal_tuto">
         <div
@@ -32,6 +39,15 @@
           v-if="this.$vuetify.breakpoint.width > 600 || !tutoPage"
         >
           <p v-for="item in tutorialsAction" :key="item">
+            {{ item }}
+          </p>
+        </div>
+        <div
+          class="modal_tuto-data"
+          :style="{ left: modalDiplay }"
+          v-if="this.$vuetify.breakpoint.width > 600 || tutoPage"
+        >
+          <p v-for="item in tutorialsData" :key="item">
             {{ item }}
           </p>
         </div>
@@ -148,10 +164,14 @@ export default {
       "Select layers to show -->",
       "Find me and add a coordinate -->",
       "Track me and add an area -->",
-      "Delete last item -->",
-      "Mode full screen -->",
-      "Show the legend -->",
-      "Show/hide measure area -->",
+      "Add or draw a location -->",
+    ],
+    tutorialsData: [
+      "<-- Show tutorial",
+      "<-- Settings and datas",
+      "<-- Delete last item",
+      "<-- Show legend",
+      "<-- Show area measure",
     ],
     tutoPage: false,
     showModal: false,
@@ -165,7 +185,7 @@ export default {
   computed: {
     modalDiplay() {
       if (this.$vuetify.breakpoint.width < 1000) {
-        return "60px";
+        return "80px";
       } else {
         return "140px";
       }
@@ -184,7 +204,7 @@ export default {
     helpModal() {
       // affiche un message lors du click
       var modal = document.getElementById("helpModal");
-      var span = document.getElementsByClassName("modal_close-icon")[0];
+      var span = document.getElementsByClassName("modal_action-close")[0];
       modal.style.display = "block";
       const resetModal = (display) => {
         display.style.display = "none";
@@ -765,27 +785,28 @@ export default {
     color: rgb(255, 255, 255);
     width: 70%; /* Could be more or less, depending on screen size */
     & > p {
-      margin-bottom: 20px;
+      margin-bottom: 40px;
     }
   }
   &-data {
     position: absolute;
     text-align: left;
-    top: 90px;
+    top: 20px;
     color: rgb(255, 255, 255);
     width: 70%; /* Could be more or less, depending on screen size */
     & > p {
-      margin-bottom: 18px;
+      margin-bottom: 25px;
     }
   }
 }
 
 /* The Close Button */
-.modal_close {
-  margin: 10px 0px 0px 25px;
-  text-align: center;
-  float: left;
-  &-icon {
+.modal_action {
+  position: absolute;
+  left: 50%;
+  top: 250px;
+
+  &-close {
     color: rgb(255, 255, 255);
     font-size: 42px;
     font-weight: bold;
@@ -796,14 +817,10 @@ export default {
       cursor: pointer;
     }
   }
-}
-.modal_page-btn {
-  z-index: 2;
-  position: absolute;
-  padding: 4px 6px;
-  left: 25px;
-  top: 350px;
-  border: 2px white solid;
-  border-radius: 4px 4px;
+  &-btn{
+    padding: 4px 6px;
+    border: 2px white solid;
+    border-radius: 4px 4px;
+  }
 }
 </style>
