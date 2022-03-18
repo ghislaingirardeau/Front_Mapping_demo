@@ -687,6 +687,10 @@ export default {
   width: 100%;
   z-index: 1;
 }
+.leaflet-touch .leaflet-control-layers-toggle{
+  background-color: black;
+  color: white;
+}
 .hub__target{
   &--icon{
     display: none;
