@@ -389,18 +389,6 @@ export default {
         }
       }
     },
-    pickLocationHub() {
-      // HERE BUILD CONTROL TO DRAW ON THE MAP: POLYGON, LINE OR POINT
-      let x = ((this.map.getSize().x / 2) - 24) 
-      let y = ((this.map.getSize().y / 2) - 30) 
-      
-      let icon =  document.getElementById('targetIconLocate')
-      icon.style.display = 'block'
-      icon.style.top = `${y}px`
-      icon.style.left = `${x}px`
-      
-      this.snackbar = true
-    },
     locationTarget() {
       let style = {
         color: 'black',
@@ -425,15 +413,27 @@ export default {
         this.showInputGeoDetail = true;
         this.showModal = true;
         this.modalTitle = "Add a symbol";
-        if(this.coordinates.length === 1) {
-
-        }
 
       } else { // if false, reset all
         this.coordinates = []
       }
       this.snackbar = false
       this.markerTarget.clearLayers()
+      this.activateOrNotBtn('btn-add')
+      this.activateOrNotBtn('btn-trace')
+      this.activateOrNotBtn('btn-target')
+    },
+    activateOrNotBtn (elt) {
+      let button = document.getElementById(elt)
+      let attribut = button.parentElement.getAttribute("disabled");
+
+      if (attribut != null ) {
+        button.parentElement.removeAttribute("disabled", "");
+        button.style.color = 'white'
+      } else {
+        button.parentElement.setAttribute("disabled", "");
+        button.style.color = 'grey'
+      }
     }
   },
   mounted() {
@@ -588,25 +588,6 @@ export default {
       },
     });
 
-        // style css button
-    let disableButton = (id1, id2) => {
-      let button1 = document.getElementById(id1)
-      let button2 = document.getElementById(id2)
-      let attribut = button1.parentElement.getAttribute("disabled");
-
-      if (attribut != null ) {
-        button1.parentElement.removeAttribute("disabled", "");
-        button1.style.color = 'white'
-        button2.parentElement.removeAttribute("disabled", "");
-        button2.style.color = 'white'
-      } else {
-        button1.parentElement.setAttribute("disabled", "");
-        button1.style.color = 'grey'
-        button2.parentElement.setAttribute("disabled", "");
-        button2.style.color = 'grey'
-      }
-    };
-
     let layerPickerControl = L.control.custom({
       position: "bottomright",
       content:
@@ -618,9 +599,19 @@ export default {
       events: {
         click: (data) => {
           if (data.target.querySelector("#btn-target")) {
-            styleOnClick(data.target);
-            disableButton("btn-add", 'btn-trace');
-            this.pickLocationHub();
+            this.activateOrNotBtn('btn-add')
+            this.activateOrNotBtn('btn-trace')
+            this.activateOrNotBtn('btn-target')
+            // LOAD THE HUB FOR TARGET
+            let x = ((this.map.getSize().x / 2) - 24) 
+            let y = ((this.map.getSize().y / 2) - 30) 
+            
+            let icon =  document.getElementById('targetIconLocate')
+            icon.style.display = 'block'
+            icon.style.top = `${y}px`
+            icon.style.left = `${x}px`
+            
+            this.snackbar = true
           }
         },
       },
@@ -642,12 +633,14 @@ export default {
           // function on click
           if (data.target.querySelector("#btn-add")) {
             styleOnClick(data.target);
-            disableButton('btn-trace', 'btn-target');
+            this.activateOrNotBtn('btn-trace')
+            this.activateOrNotBtn('btn-target')
             this.coordinatesOnLocation(true); // display differente type of coordinates one array
           } else if (data.target.querySelector("#btn-trace")) {
             styleOnClick(data.target);
             this.coordinatesOnLocation(false); // display differente type of coordinates multiple array
-            disableButton("btn-add", 'btn-target');
+            this.activateOrNotBtn('btn-add')
+            this.activateOrNotBtn('btn-target')
           }
         },
       },
