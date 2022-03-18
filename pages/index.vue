@@ -37,26 +37,33 @@
         </div>
       </div>
     </div>
+
     <v-snackbar
       v-model="snackbar"
       timeout="-1"
     >
-      Validate selection ?
-
+    <template>
       <v-btn
         color="pink"
+        class="mx-3"
         @click="saveTarget(false)"
       >
         Cancel
       </v-btn>
-
+    </template>
+    <template>
       <v-btn
         color="pink"
+        class="mx-3"
         @click="saveTarget(true)"
       >
         OK
       </v-btn>
+    </template>
+
+      
     </v-snackbar>
+      
     <i id="targetIconLocate" @click="locationTarget" aria-hidden="true" class="hub__target--icon mdi mdi-target"></i>
     <div id="map" class="mt-5"></div>
   </div>
@@ -400,11 +407,13 @@ export default {
         fillColor: 'grey',
         radius: 3
       }
-      this.markerTarget = L.circleMarker();
+      
+      let target = L.circleMarker();
       let addMarker = (e) => {
         let center = this.map.getCenter()
-        this.markerTarget.setLatLng(center).setStyle(style).addTo(this.map);
+        target.setLatLng(center).setStyle(style)
         this.coordinates.push([center.lng, center.lat]);
+        this.markerTarget.addLayer(target);
       };
       addMarker()
       
@@ -413,18 +422,18 @@ export default {
       let iconTarget =  document.getElementById('targetIconLocate')
       iconTarget.style.display = 'none'
       if(e) { // if click on save marker true
-
-        if(this.coordinates.length === 1){
-          this.map.removeLayer(this.markerTarget)
-        }
-
         this.showInputGeoDetail = true;
         this.showModal = true;
         this.modalTitle = "Add a symbol";
+        if(this.coordinates.length === 1) {
+
+        }
+
       } else { // if false, reset all
         this.coordinates = []
       }
       this.snackbar = false
+      this.markerTarget.clearLayers()
     }
   },
   mounted() {
@@ -468,6 +477,7 @@ export default {
     };
     this.villageLayer = L.layerGroup();
     this.houseLayer = L.layerGroup();
+    this.markerTarget = L.layerGroup()
     var overlayMaps = {
       village: this.villageLayer,
       house: this.houseLayer,
@@ -478,7 +488,7 @@ export default {
 
     // build the container with switch layer
     this.map = L.map("map", {
-      layers: [streets, outdoors, this.houseLayer, this.villageLayer],
+      layers: [streets, outdoors, this.houseLayer, this.villageLayer, this.markerTarget],
       zoomControl: false
     });
     this.map.locate({ setView: true, maxZoom: 16 });
@@ -561,10 +571,10 @@ export default {
     });
 
     let layerPickerControl = L.control.custom({
-      position: "bottomright",
+      position: "bottomleft",
       content:
-        '<button type="button" class="btn-map">' +
-        '<i id="btn-picker" aria-hidden="true" class="v-icon notranslate mdi mdi-marker theme--dark" style="color:white;"></i>' +        
+        '<button type="button" class="btn-map btn-map--picker">' +
+        '<i id="btn-picker" aria-hidden="true" class="v-icon notranslate mdi mdi-map-marker-plus theme--dark" style="color:white;"></i>' +        
         "</button>",
       classes: "btn-group-icon-map-option1",
       style: styleControl,
@@ -685,7 +695,7 @@ export default {
   &--icon{
     display: none;
     position: absolute;
-    z-index: 10;
+    z-index: 2;
     color:black;
     font-size: 50px;
   }
@@ -707,6 +717,10 @@ export default {
   position: relative;
   margin-bottom: 2px;
   padding: 4px 2px 0px 2px;
+  &--picker{
+    padding: 15px;
+    border-radius: 30px 30px;
+  }
   &::after {
     content: "";
     position: absolute;
@@ -726,7 +740,7 @@ export default {
 .modal_help {
   display: none; /* Hidden by default */
   position: fixed; /* Stay in place */
-  z-index: 6; /* Sit on top */
+  z-index: 2; /* Sit on top */
   left: 0;
   top: 0;
   width: 100%; /* Full width */
@@ -781,7 +795,7 @@ export default {
   }
 }
 .modal_page-btn {
-  z-index: 6;
+  z-index: 2;
   position: absolute;
   padding: 4px 6px;
   left: 25px;
