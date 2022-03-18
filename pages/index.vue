@@ -37,7 +37,27 @@
         </div>
       </div>
     </div>
+    <v-snackbar
+      v-model="snackbar"
+      timeout="-1"
+    >
+      Validate selection ?
 
+      <v-btn
+        color="pink"
+        @click="saveTarget(false)"
+      >
+        Cancel
+      </v-btn>
+
+      <v-btn
+        color="pink"
+        @click="saveTarget(true)"
+      >
+        OK
+      </v-btn>
+    </v-snackbar>
+    <i id="targetIconLocate" @click="locationTarget" aria-hidden="true" class="hub__target--icon mdi mdi-target"></i>
     <div id="map" class="mt-5"></div>
   </div>
 </template>
@@ -116,7 +136,6 @@ export default {
     map: Object,
     coordinates: [],
     myLocationMark: undefined,
-    clickMapMark: undefined,
     showInputGeoDetail: false,
     housesLayer: [],
     villageLayer: [],
@@ -142,7 +161,9 @@ export default {
     showLegend: false,
     showSetting: false,
     modalTitle: undefined,
-    printDisplay: false
+    printDisplay: false,
+    markerTarget: undefined,
+    snackbar: false
   }),
   computed: {
     modalDiplay() {
@@ -151,7 +172,7 @@ export default {
       } else {
         return "140px";
       }
-    },
+    }
   },
   components: {
     dataGeoJson,
@@ -206,7 +227,6 @@ export default {
         this.coordinates = [];
       }
       /* this.myLocationMark; */ // a supprimer
-      this.clickMapMark.remove(this.map); // retire le marker click
       this.modalTitle = undefined;
     },
     createGeoJsonLayer(layerType, groupType) {
@@ -362,6 +382,50 @@ export default {
         }
       }
     },
+    pickLocationHub() {
+      // HERE BUILD CONTROL TO DRAW ON THE MAP: POLYGON, LINE OR POINT
+      let x = ((this.map.getSize().x / 2) - 24) 
+      let y = ((this.map.getSize().y / 2) - 30) 
+      
+      let icon =  document.getElementById('targetIconLocate')
+      icon.style.display = 'block'
+      icon.style.top = `${y}px`
+      icon.style.left = `${x}px`
+      
+      this.snackbar = true
+    },
+    locationTarget() {
+      let style = {
+        color: 'black',
+        fillColor: 'grey',
+        radius: 3
+      }
+      this.markerTarget = L.circleMarker();
+      let addMarker = (e) => {
+        let center = this.map.getCenter()
+        this.markerTarget.setLatLng(center).setStyle(style).addTo(this.map);
+        this.coordinates.push([center.lng, center.lat]);
+      };
+      addMarker()
+      
+    },
+    saveTarget(e) {
+      let iconTarget =  document.getElementById('targetIconLocate')
+      iconTarget.style.display = 'none'
+      if(e) { // if click on save marker true
+
+        if(this.coordinates.length === 1){
+          this.map.removeLayer(this.markerTarget)
+        }
+
+        this.showInputGeoDetail = true;
+        this.showModal = true;
+        this.modalTitle = "Add a symbol";
+      } else { // if false, reset all
+        this.coordinates = []
+      }
+      this.snackbar = false
+    }
   },
   mounted() {
     // config mapbox
@@ -432,18 +496,6 @@ export default {
     };
     this.map.on("locationfound", onLocationFound);
 
-    // remove the marker each click
-    // add a new marker to new click
-    // get the coordinates
-    this.clickMapMark = L.marker();
-    let addMarker = async (e) => {
-      await this.clickMapMark.setLatLng(e.latlng).addTo(this.map);
-      this.coordinates.push([e.latlng.lng, e.latlng.lat]);
-      this.showInputGeoDetail = true;
-      this.showModal = true;
-      this.modalTitle = "Add a symbol";
-    };
-    this.map.on("click", addMarker);
 
     /* RECUPERE LES DONNEES SI PRESENT DANS LE LOCALSTORAGE */
     let geoFromLocal = JSON.parse(localStorage.getItem("APIGeoMap"));
@@ -503,6 +555,23 @@ export default {
             this.showModal = true
             this.messageModal = "Manage my datas"
             this.showSetting = true
+          }
+        },
+      },
+    });
+
+    let layerPickerControl = L.control.custom({
+      position: "bottomright",
+      content:
+        '<button type="button" class="btn-map">' +
+        '<i id="btn-picker" aria-hidden="true" class="v-icon notranslate mdi mdi-marker theme--dark" style="color:white;"></i>' +        
+        "</button>",
+      classes: "btn-group-icon-map-option1",
+      style: styleControl,
+      events: {
+        click: (data) => {
+          if (data.target.querySelector("#btn-picker")) {
+            this.pickLocationHub();
           }
         },
       },
@@ -578,6 +647,7 @@ export default {
 
     this.map.addControl(this.layerStorageControl);
     this.map.addControl(this.layerActionControl);
+    this.map.addControl(layerPickerControl);
 
     // ecoute si online ou non automatiquement
     // fonctionnalité permettant d'enregistrer le geojson en mode offline
@@ -601,11 +671,24 @@ export default {
   height: 100%;
   width: 100vw;
   padding: 0px;
+  position: relative;
 }
 #map {
   height: 100%;
   width: 100%;
   z-index: 1;
+}
+.leaflet-container.crosshair-cursor-enabled {
+    cursor:crosshair;
+}
+.hub__target{
+  &--icon{
+    display: none;
+    position: absolute;
+    z-index: 10;
+    color:black;
+    font-size: 50px;
+  }
 }
 .icon--name{
   padding-left: 10px;
