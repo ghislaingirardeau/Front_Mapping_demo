@@ -527,7 +527,7 @@ export default {
     // CUSTOMIZE AN ICON MENU ACTIONS ON THE MAP: 2 option of adding custome icons
 
     let styleControl = {
-      margin: "10px",
+      margin: "15px",
       padding: "0px",
       cursor: "pointer",
     };
@@ -549,6 +549,15 @@ export default {
         "</button>" +
         '<button type="button" class="btn-map">' +
         '<svg  id="btn-data" style="width:27px;height:27px" viewBox="0 0 24 24"><path fill="rgb(33, 150, 243)" d="M4 12V9C4 11.2 7.6 13 12 13S20 11.2 20 9V12C20 12.5 19.8 12.9 19.5 13.4C18.7 13.1 17.9 13 17 13C14.5 13 12.1 14.1 10.6 15.9C6.8 15.6 4 14 4 12M12 11C16.4 11 20 9.2 20 7S16.4 3 12 3 4 4.8 4 7 7.6 11 12 11M9.1 19.7L8.8 19L9.1 18.3C9.2 18.1 9.3 18 9.3 17.8C6.2 17.2 4 15.8 4 14V17C4 18.8 6.4 20.3 9.7 20.8C9.5 20.5 9.3 20.1 9.1 19.7M17 18C16.4 18 16 18.4 16 19S16.4 20 17 20 18 19.6 18 19 17.6 18 17 18M23 19C22.1 21.3 19.7 23 17 23S11.9 21.3 11 19C11.9 16.7 14.3 15 17 15S22.1 16.7 23 19M19.5 19C19.5 17.6 18.4 16.5 17 16.5S14.5 17.6 14.5 19 15.6 21.5 17 21.5 19.5 20.4 19.5 19Z" /></svg>' +
+        "</button>" +
+        '<button type="button" class="btn-map">' +
+        '<svg id="btn-delete" style="width:27px;height:27px" viewBox="0 0 24 24"><path fill="rgb(33, 150, 243)" d="M22,3H7C6.31,3 5.77,3.35 5.41,3.88L0,12L5.41,20.11C5.77,20.64 6.31,21 7,21H22A2,2 0 0,0 24,19V5A2,2 0 0,0 22,3M19,15.59L17.59,17L14,13.41L10.41,17L9,15.59L12.59,12L9,8.41L10.41,7L14,10.59L17.59,7L19,8.41L15.41,12" /></svg>' +
+        "</button>" +
+        '<button type="button" class="btn-map">' +
+        '<svg  id="btn-legend" style="width:27px;height:27px" viewBox="0 0 24 24"><path fill="rgb(33, 150, 243)" d="M9,3L3.36,4.9C3.15,4.97 3,5.15 3,5.38V20.5A0.5,0.5 0 0,0 3.5,21L3.66,20.97L9,18.9L15,21L20.64,19.1C20.85,19.03 21,18.85 21,18.62V3.5A0.5,0.5 0 0,0 20.5,3L20.34,3.03L15,5.1L9,3M8,5.45V17.15L5,18.31V6.46L8,5.45M10,5.47L14,6.87V18.53L10,17.13V5.47M19,5.7V17.54L16,18.55V6.86L19,5.7M7.46,6.3L5.57,6.97V9.12L7.46,8.45V6.3M7.46,9.05L5.57,9.72V11.87L7.46,11.2V9.05M7.46,11.8L5.57,12.47V14.62L7.46,13.95V11.8M7.46,14.55L5.57,15.22V17.37L7.46,16.7V14.55Z" /></svg>' +
+        "</button>" +
+        '<button type="button" class="btn-map">' +
+        '<svg id="btn-ruler" style="width:27px;height:27px" viewBox="0 0 24 24"><path fill="rgb(33, 150, 243)" d="M1.39,18.36L3.16,16.6L4.58,18L5.64,16.95L4.22,15.54L5.64,14.12L8.11,16.6L9.17,15.54L6.7,13.06L8.11,11.65L9.53,13.06L10.59,12L9.17,10.59L10.59,9.17L13.06,11.65L14.12,10.59L11.65,8.11L13.06,6.7L14.47,8.11L15.54,7.05L14.12,5.64L15.54,4.22L18,6.7L19.07,5.64L16.6,3.16L18.36,1.39L22.61,5.64L5.64,22.61L1.39,18.36Z" /></svg>' +
         "</button>",
       classes: "btn-group-icon-map-option1",
       style: styleControl,
@@ -565,75 +574,6 @@ export default {
             this.showModal = true
             this.messageModal = "Manage my datas"
             this.showSetting = true
-          }
-        },
-      },
-    });
-
-    let layerPickerControl = L.control.custom({
-      position: "bottomleft",
-      content:
-        '<button type="button" class="btn-map btn-map--picker">' +
-        '<i id="btn-picker" aria-hidden="true" class="v-icon notranslate mdi mdi-map-marker-plus theme--dark" style="color:white;"></i>' +        
-        "</button>",
-      classes: "btn-group-icon-map-option1",
-      style: styleControl,
-      events: {
-        click: (data) => {
-          if (data.target.querySelector("#btn-picker")) {
-            this.pickLocationHub();
-          }
-        },
-      },
-    });
-
-    this.layerActionControl = L.control.custom({
-      position: "topright",
-      content:
-        '<button type="button" class="btn-map">' +
-        '<svg id="btn-add" style="width:27px;height:27px" viewBox="0 0 24 24"><path fill="rgb(33, 150, 243)" d="M17,13H13V17H11V13H7V11H11V7H13V11H17M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z" /></svg>' +
-        "</button>" +
-        '<button type="button" class="btn-map">' +
-        '<svg id="btn-location" style="width:27px;height:27px" viewBox="0 0 24 24"><path fill="rgb(33, 150, 243)" d="M12,8A4,4 0 0,1 16,12A4,4 0 0,1 12,16A4,4 0 0,1 8,12A4,4 0 0,1 12,8M3.05,13H1V11H3.05C3.5,6.83 6.83,3.5 11,3.05V1H13V3.05C17.17,3.5 20.5,6.83 20.95,11H23V13H20.95C20.5,17.17 17.17,20.5 13,20.95V23H11V20.95C6.83,20.5 3.5,17.17 3.05,13M12,5A7,7 0 0,0 5,12A7,7 0 0,0 12,19A7,7 0 0,0 19,12A7,7 0 0,0 12,5Z" /></svg>' +
-        "</button>" +
-        '<button type="button" class="btn-map">' +
-        '<svg id="btn-delete" style="width:27px;height:27px" viewBox="0 0 24 24"><path fill="rgb(33, 150, 243)" d="M22,3H7C6.31,3 5.77,3.35 5.41,3.88L0,12L5.41,20.11C5.77,20.64 6.31,21 7,21H22A2,2 0 0,0 24,19V5A2,2 0 0,0 22,3M19,15.59L17.59,17L14,13.41L10.41,17L9,15.59L12.59,12L9,8.41L10.41,7L14,10.59L17.59,7L19,8.41L15.41,12" /></svg>' +
-        "</button>" +
-        '<button type="button" class="btn-map">' +
-        '<svg id="btn-fullscreen" style="width:27px;height:27px" viewBox="0 0 24 24">  <path fill="rgb(33, 150, 243)" d="M17 4H20C21.1 4 22 4.9 22 6V8H20V6H17V4M4 8V6H7V4H4C2.9 4 2 4.9 2 6V8H4M20 16V18H17V20H20C21.1 20 22 19.1 22 18V16H20M7 18H4V16H2V18C2 19.1 2.9 20 4 20H7V18M18 8H6V16H18V8Z" /></svg>' +
-        "</button>" +
-        '<button type="button" class="btn-map">' +
-        '<svg  id="btn-legend" style="width:27px;height:27px" viewBox="0 0 24 24"><path fill="rgb(33, 150, 243)" d="M9,3L3.36,4.9C3.15,4.97 3,5.15 3,5.38V20.5A0.5,0.5 0 0,0 3.5,21L3.66,20.97L9,18.9L15,21L20.64,19.1C20.85,19.03 21,18.85 21,18.62V3.5A0.5,0.5 0 0,0 20.5,3L20.34,3.03L15,5.1L9,3M8,5.45V17.15L5,18.31V6.46L8,5.45M10,5.47L14,6.87V18.53L10,17.13V5.47M19,5.7V17.54L16,18.55V6.86L19,5.7M7.46,6.3L5.57,6.97V9.12L7.46,8.45V6.3M7.46,9.05L5.57,9.72V11.87L7.46,11.2V9.05M7.46,11.8L5.57,12.47V14.62L7.46,13.95V11.8M7.46,14.55L5.57,15.22V17.37L7.46,16.7V14.55Z" /></svg>' +
-        "</button>" +
-        '<button type="button" class="btn-map">' +
-        '<svg id="btn-ruler" style="width:27px;height:27px" viewBox="0 0 24 24"><path fill="rgb(33, 150, 243)" d="M1.39,18.36L3.16,16.6L4.58,18L5.64,16.95L4.22,15.54L5.64,14.12L8.11,16.6L9.17,15.54L6.7,13.06L8.11,11.65L9.53,13.06L10.59,12L9.17,10.59L10.59,9.17L13.06,11.65L14.12,10.59L11.65,8.11L13.06,6.7L14.47,8.11L15.54,7.05L14.12,5.64L15.54,4.22L18,6.7L19.07,5.64L16.6,3.16L18.36,1.39L22.61,5.64L5.64,22.61L1.39,18.36Z" /></svg>' +
-        "</button>",
-      classes: "btn-group-icon-map-option1",
-      style: styleControl,
-      events: {
-        click: (data) => {
-          // style css button
-          let disableButton = (num) => {
-            let button = document.getElementsByClassName("btn-map")[num];
-            let attribut = button.getAttribute("disabled");
-            let path = button.getElementsByTagName("path")[0];
-            if (attribut != null) {
-              button.removeAttribute("disabled", "");
-              path.setAttribute("fill", 'rgb(33, 150, 243)');
-            } else {
-              button.setAttribute("disabled", "");
-              path.setAttribute("fill", "grey");
-            }
-          };
-          // function on click
-          if (data.target.querySelector("#btn-add")) {
-            styleOnClick(data.target);
-            disableButton(3, "blue");
-            this.coordinatesOnLocation(true); // display differente type of coordinates one array
-          } else if (data.target.querySelector("#btn-location")) {
-            styleOnClick(data.target);
-            this.coordinatesOnLocation(false); // display differente type of coordinates multiple array
-            disableButton(2, "blue");
           } else if (data.target.querySelector("#btn-ruler")) {
             styleOnClick(data.target);
             this.showMeasure();
@@ -643,13 +583,71 @@ export default {
             this.showLegend = !this.showLegend;
             this.showModal = !this.showModal;
             this.modalTitle = "Map Legend";
-          } else if (data.target.querySelector("#btn-fullscreen")) {
+          }
+        },
+      },
+    });
+
+        // style css button
+    let disableButton = (id1, id2) => {
+      let button1 = document.getElementById(id1)
+      let button2 = document.getElementById(id2)
+      let attribut = button1.parentElement.getAttribute("disabled");
+
+      if (attribut != null ) {
+        button1.parentElement.removeAttribute("disabled", "");
+        button1.style.color = 'white'
+        button2.parentElement.removeAttribute("disabled", "");
+        button2.style.color = 'white'
+      } else {
+        button1.parentElement.setAttribute("disabled", "");
+        button1.style.color = 'grey'
+        button2.parentElement.setAttribute("disabled", "");
+        button2.style.color = 'grey'
+      }
+    };
+
+    let layerPickerControl = L.control.custom({
+      position: "bottomright",
+      content:
+        '<button type="button" class="btn-map btn-map--location">' +
+        '<i id="btn-target" aria-hidden="true" class="v-icon notranslate mdi mdi-map-marker-plus theme--dark" style="color:white;"></i>' +        
+        "</button>",
+      classes: "btn-group-icon-map-option1",
+      style: styleControl,
+      events: {
+        click: (data) => {
+          if (data.target.querySelector("#btn-target")) {
             styleOnClick(data.target);
-            if (!document.fullscreenElement) {
-              document.body.webkitRequestFullScreen();
-            } else {
-              document.exitFullscreen();
-            }
+            disableButton("btn-add", 'btn-trace');
+            this.pickLocationHub();
+          }
+        },
+      },
+    });
+
+    this.layerActionControl = L.control.custom({
+      position: "topright",
+      content:
+        '<button type="button" class="btn-map btn-map--location">' +
+        '<i id="btn-add" aria-hidden="true" class="v-icon notranslate mdi mdi-map-marker-radius theme--dark" style="color:white;"></i>' +        
+        "</button>" +
+        '<button type="button" class="btn-map btn-map--location">' +
+        '<i id="btn-trace" aria-hidden="true" class="v-icon notranslate mdi mdi-map-marker-path theme--dark" style="color:white;"></i>' +        
+        "</button>",
+      classes: "btn-group-icon-map-option1",
+      style: styleControl,
+      events: {
+        click: (data) => {
+          // function on click
+          if (data.target.querySelector("#btn-add")) {
+            styleOnClick(data.target);
+            disableButton('btn-trace', 'btn-target');
+            this.coordinatesOnLocation(true); // display differente type of coordinates one array
+          } else if (data.target.querySelector("#btn-trace")) {
+            styleOnClick(data.target);
+            this.coordinatesOnLocation(false); // display differente type of coordinates multiple array
+            disableButton("btn-add", 'btn-target');
           }
         },
       },
@@ -688,9 +686,6 @@ export default {
   width: 100%;
   z-index: 1;
 }
-.leaflet-container.crosshair-cursor-enabled {
-    cursor:crosshair;
-}
 .hub__target{
   &--icon{
     display: none;
@@ -717,7 +712,7 @@ export default {
   position: relative;
   margin-bottom: 2px;
   padding: 4px 2px 0px 2px;
-  &--picker{
+  &--location{
     padding: 15px;
     border-radius: 30px 30px;
   }
