@@ -92,9 +92,9 @@ export default {
         // GET THE FILE IMPORTED AND APPLY THE FUNCTION
         var fileInput = document.getElementById("csv")
         
-            let readFile = function () {
+            let readFile = () => {
                 var reader = new FileReader();
-                reader.onload = function () {
+                reader.onload = async () => {
                   // get the csv data here
                   let csv = reader.result
                   // CONVERT CSV TO JSON
@@ -117,16 +117,35 @@ export default {
                   let JsonFromCsv = result
                   let geoJsonVillage = [];
                   let geoJsonHouse = [];
+                  let countCategories = []
 
-                  JsonFromCsv.forEach((element) => {
+                  await JsonFromCsv.forEach(element => { // recupere le nombre de category differentes créées
+                    if(countCategories.indexOf(element.category) === -1) {
+                      countCategories.push(element.category)
+                    }
+                  });
+                  /* let objetData = {} */
+                  countCategories.forEach(element => { // pour chaque category, je lui crée un nouveau tableau
+                    let name = element
+                    element = new Array()
+                    JsonFromCsv.forEach((index) => { // j'envoie le geojson dans le tableau correspondant
+                      if(index.category === name) {
+                        createGeoJsons(index, element);
+                      }
+                    });
+                    
+                  });
+                  console.log(well);
+                  /* JsonFromCsv.forEach((element) => {
                     if (element.category === "house") {
                       createGeoJsons(element, geoJsonHouse);
                     } else {
                       createGeoJsons(element, geoJsonVillage);
                     }
                   });
+
                   let data = [geoJsonHouse, geoJsonVillage];
-                  localStorage.setItem("APIGeoMap", JSON.stringify(data));
+                  localStorage.setItem("APIGeoMap", JSON.stringify(data)); */
                 };
                 reader.readAsBinaryString(fileInput.files[0]);
             };
