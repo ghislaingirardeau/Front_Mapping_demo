@@ -4,6 +4,14 @@
       <h1>My datas</h1>
     </v-col>
     <v-col cols="12">
+      <h2>Import your datas</h2>
+      <v-file-input
+        label="Selelct CSV file"
+        @click="readFileTest"
+        id="csv"
+      ></v-file-input>
+    </v-col>
+    <v-col cols="12">
       <p :class="{ active: isActive }">
         You have collected {{ geoJsonFeature ? geoJsonFeature.length : '' }} datas
       </p>
@@ -34,6 +42,97 @@ export default {
     linkMap() {
       this.$router.push('/')
     },
+    async readFileTest() {
+    // convert the coordinates
+        const convertCoordinate = (coordinates, data) => {
+          let indexLng = data.indexOf("'");
+          if (indexLng === -1) {
+            coordinates.push(parseFloat(data));
+          } else {
+            let degres = data.slice(0, indexLng);
+            let minute = data.slice(indexLng + 1) / 60;
+            coordinates.push(parseFloat(degres) + parseFloat(minute));
+          }
+        };
+        // function to create the layer for each category of json
+        const createGeoJsons = (element, layer) => {
+          let coordinates = [];
+          if (element.coordinates.indexOf("/") === -1) {
+            let coordinateNumber = element.coordinates.split(" ");
+            coordinateNumber.forEach((element) => {
+              convertCoordinate(coordinates, element);
+            });
+          } else {
+            let coordinateNumber = element.coordinates.split("/");
+            let array = [];
+            coordinateNumber.forEach((element) => {
+              array.push(element.split(" "));
+            });
+            coordinates.push(array);
+          }
+          let newGeoJson = {
+            type: "Feature",
+            properties: {
+              name: element.name,
+              popupContent: element.popupContent,
+              category: element.category,
+              subCategory: element.subcategory,
+            },
+            geometry: {
+              type: element.type,
+              coordinates: coordinates,
+            },
+            icon: {
+              type: element.icon,
+              color: element.color
+            }
+          };
+          layer.push(newGeoJson);
+        };
+        // GET THE FILE IMPORTED AND APPLY THE FUNCTION
+        var fileInput = document.getElementById("csv")
+        
+            let readFile = function () {
+                var reader = new FileReader();
+                reader.onload = function () {
+                  // get the csv data here
+                  let csv = reader.result
+                  // CONVERT CSV TO JSON
+                  var lines=csv.split("\n");
+                  var result = [];
+                  var headers=lines[0].split(",");
+
+                  for(var i=1;i<(lines.length - 1);i++){
+
+                      var obj = {};
+                      var currentline=lines[i].split(",");
+                      
+                      for(var j=0;j<headers.length;j++){
+                          obj[headers[j]] = currentline[j];
+                      }
+
+                      result.push(obj);
+
+                  }
+                  let JsonFromCsv = result
+                  let geoJsonVillage = [];
+                  let geoJsonHouse = [];
+
+                  JsonFromCsv.forEach((element) => {
+                    if (element.category === "house") {
+                      createGeoJsons(element, geoJsonHouse);
+                    } else {
+                      createGeoJsons(element, geoJsonVillage);
+                    }
+                  });
+                  let data = [geoJsonHouse, geoJsonVillage];
+                  localStorage.setItem("APIGeoMap", JSON.stringify(data));
+                };
+                reader.readAsBinaryString(fileInput.files[0]);
+            };
+
+        fileInput.addEventListener('change', readFile);
+    }
   },
   mounted() {
     try {

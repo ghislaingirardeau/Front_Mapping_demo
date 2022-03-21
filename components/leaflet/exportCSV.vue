@@ -29,7 +29,6 @@
 export default {
   data: () => ({
     valid: true,
-    dialog: false,
     errorMessage: undefined,
     fileName: "",
     fileNameRules: [
@@ -101,7 +100,8 @@ export default {
           comment: "popupContent",
           coordinates: "coordinates",
           icon: "icon",
-          color: "color"
+          color: "color",
+          data: "data"
         };
 
         var itemsNotFormatted = jsonToConvert;

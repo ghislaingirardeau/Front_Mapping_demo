@@ -84,69 +84,6 @@ import modalCustom from "@/components/leaflet/modalCustom.vue";
 import manageDatas from '@/components/manageDatas.vue';
 
 export default {
-  async asyncData({ $content }) {
-    // convert the coordinates
-    const convertCoordinate = (coordinates, data) => {
-      let indexLng = data.indexOf("'");
-      if (indexLng === -1) {
-        coordinates.push(parseFloat(data));
-      } else {
-        let degres = data.slice(0, indexLng);
-        let minute = data.slice(indexLng + 1) / 60;
-        coordinates.push(parseFloat(degres) + parseFloat(minute));
-      }
-    };
-    // function to create the layer for each category of json
-    const createGeoJsons = (element, layer) => {
-      let coordinates = [];
-      if (element.coordinates.indexOf("/") === -1) {
-        let coordinateNumber = element.coordinates.split(" ");
-        coordinateNumber.forEach((element) => {
-          convertCoordinate(coordinates, element);
-        });
-      } else {
-        let coordinateNumber = element.coordinates.split("/");
-        let array = [];
-        coordinateNumber.forEach((element) => {
-          array.push(element.split(" "));
-        });
-        coordinates.push(array);
-      }
-      let newGeoJson = {
-        type: "Feature",
-        properties: {
-          name: element.name,
-          popupContent: element.popupContent,
-          category: element.category,
-          subCategory: element.subcategory,
-        },
-        geometry: {
-          type: element.type,
-          coordinates: coordinates,
-        },
-        icon: {
-          type: element.icon,
-          color: element.color
-        }
-      };
-      layer.push(newGeoJson);
-    };
-
-    let geoJsonVillage = [];
-    let geoJsonHouse = [];
-
-    const doc = await $content("myNewData").fetch(); // convert CSV files in content folder to json
-
-    doc.body.forEach((element) => {
-      if (element.category === "house") {
-        createGeoJsons(element, geoJsonHouse);
-      } else {
-        createGeoJsons(element, geoJsonVillage);
-      }
-    });
-
-    return { geoJsonHouse, geoJsonVillage };
-  },
   data: () => ({
     map: Object,
     coordinates: [],
@@ -154,6 +91,8 @@ export default {
     showInputGeoDetail: false,
     housesLayer: [],
     villageLayer: [],
+    geoJsonHouse: [],
+    geoJsonVillage: [],
     lastItem: undefined,
     layerGeoJson: undefined,
     btnMeasure: true,
@@ -502,9 +441,6 @@ export default {
       house: this.houseLayer,
     };
 
-    this.createGeoJsonLayer(this.geoJsonVillage, this.villageLayer);
-    this.createGeoJsonLayer(this.geoJsonHouse, this.houseLayer);
-
     // build the container with switch layer
     this.map = L.map("map", {
       layers: [streets, outdoors, this.houseLayer, this.villageLayer, this.markerTarget],
@@ -586,9 +522,6 @@ export default {
           } else if (data.target.querySelector("#btn-data")) {
             let data = [this.geoJsonHouse, this.geoJsonVillage];
             localStorage.setItem("APIGeoMap", JSON.stringify(data));
-            if (document.fullscreenElement) {
-              document.exitFullscreen();
-            }
             this.showModal = true
             this.messageModal = "Manage my datas"
             this.showSetting = true
@@ -605,6 +538,9 @@ export default {
         },
       },
     });
+
+    const addControl = () => {
+    }
 
     let layerPickerControl = L.control.custom({
       position: "bottomright",

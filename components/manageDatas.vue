@@ -65,15 +65,10 @@ import exportCSV from '@/components/leaflet/exportCSV.vue';
                     {
                     id: '2',
                     icon: 'mdi-apps',
-                    title: 'Save temporaly',
-                    },
-                    {
-                    id: '3',
-                    icon: 'mdi-apps',
                     title: 'remove temporaly',
                     },
                     {
-                    id: '4',
+                    id: '3',
                     icon: 'mdi-printer',
                     title: 'print',
                     }
@@ -93,12 +88,6 @@ import exportCSV from '@/components/leaflet/exportCSV.vue';
                 this.message = 'datas removed'
                 this.showMenu = false
             },
-            saveGeoJson() {
-                let data = [this.geoJsonHouse, this.geoJsonVillage];
-                localStorage.setItem("APIGeoMap", JSON.stringify(data));
-                this.message = 'datas saved'
-                this.showMenu = false
-            },
             doThisFunction(e) {
                 switch (e) {
                     case '1':
@@ -106,12 +95,9 @@ import exportCSV from '@/components/leaflet/exportCSV.vue';
                         this.showMenu = false
                         break;
                     case '2':
-                        this.saveGeoJson();
-                        break;
-                    case '3':
                         this.removeGeoJson();
                         break;
-                    case '4':
+                    case '3':
                         this.$router.push({name: 'print'})
                         break;
                 }
