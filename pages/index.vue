@@ -119,7 +119,8 @@ export default {
     modalTitle: undefined,
     printDisplay: false,
     markerTarget: undefined,
-    snackbar: false
+    snackbar: false,
+    dynamicLayerGroup: {}
   }),
   computed: {
     modalDiplay() {
@@ -184,6 +185,68 @@ export default {
       }
       /* this.myLocationMark; */ // a supprimer
       this.modalTitle = undefined;
+    },
+    createGeoJsonBeta(layerType, groupLayer) {
+      // layerType = le geojson que je souhaite envoyer dans le layer
+      // groupLayer = dans quel groupe de layer je charge celui-ci : village ou house
+
+      function showPopupMarker(e) {
+        var layer = e.target;
+        layer.openPopup();
+      }
+
+      function hidePopupMarker(e) {
+        var layer = e.target;
+        layer.closePopup();
+      }
+
+      function onEachFeature(feature, layer) {
+        // pour faire apparaitre le popup du marker si popupContent est defini
+        if (feature.properties && feature.properties.popupContent) {
+          layer.bindPopup(feature.properties.popupContent);
+        }
+        layer.on({
+          mouseover: showPopupMarker,
+          mouseout: hidePopupMarker,
+        });
+      }
+
+      // FUNCTION RETURN ICON HOUSE SVG DEPENDING ON COLOR PARAMS
+      const createIcon = (type, color, size, name) => {
+        let showHtml
+        if(this.printDisplay) {
+          showHtml = `<i aria-hidden="true" class="v-icon notranslate mdi mdi-${type} theme--dark" style="font-size: ${size}; color:${color};"></i><span class='icon--name' style="color:${color};">${name}</span>`
+        } else {
+          showHtml = `<i aria-hidden="true" class="v-icon notranslate mdi mdi-${type} theme--dark" style="font-size: ${size}; color:${color};"></i>`
+        }
+        return L.divIcon({
+          className: `${type}-icon`,
+          html: showHtml,
+        });
+      }
+
+      this.layerGeoJson = L.geoJSON(layerType, {
+        // on peut enchainer les options ici
+        onEachFeature: onEachFeature,
+        pointToLayer: (feature, latlng) => {
+          // CREATE THE MARKERS
+          return L.marker(latlng, {
+            icon: createIcon(
+              feature.icon.type,
+              feature.icon.color,
+              "small",
+              feature.properties.name
+            ),
+          });
+        },
+        style: (feature) => {
+          // DEFINE SYTLE OF POLYGONS AND LINE
+          return { color: feature.icon.color }
+        },
+      });
+
+      // GROUPE DE LAYER DANS LEQUEL J'ENREGISTRE LE JSON
+      groupLayer.addLayer(this.layerGeoJson);
     },
     createGeoJsonLayer(layerType, groupType) {
       // layerType = le geojson que je souhaite envoyer dans le layer
@@ -433,23 +496,44 @@ export default {
       /* "Satellite": satellite, */
       Outdoors: outdoors,
     };
-    this.villageLayer = L.layerGroup();
-    this.houseLayer = L.layerGroup();
+
+        /* RECUPERE LES DONNEES SI PRESENT DANS LE LOCALSTORAGE */
+    let geoFromLocal = JSON.parse(localStorage.getItem("APIGeoMap"));
+    let propertiesNames
+    if (geoFromLocal) {
+      // if there is data from a file, loaded
+      try {
+        propertiesNames = Object.getOwnPropertyNames(geoFromLocal) // recupere le nom de chaque propriete
+        propertiesNames.forEach(element => {
+          this.dynamicLayerGroup[element] = L.layerGroup(); // creer un nouveau groupe de layer pour chaque nom
+          this.createGeoJsonBeta(geoFromLocal[element], this.dynamicLayerGroup[element]) // charge le array de goejsons dans le layer
+        });        
+      } catch (error) {
+        console.log(error);
+      }
+    } else {
+      this.helpModal()
+    }
+
+    const layersToShow = () => {
+      let array = [streets, outdoors, this.markerTarget] // layer by default
+      propertiesNames.forEach(element => { // layers from localstorage
+        array.push(this.dynamicLayerGroup[element])
+      });
+      return array
+    }
+    
     this.markerTarget = L.layerGroup()
-    var overlayMaps = {
-      village: this.villageLayer,
-      house: this.houseLayer,
-    };
 
     // build the container with switch layer
     this.map = L.map("map", {
-      layers: [streets, outdoors, this.houseLayer, this.villageLayer, this.markerTarget],
+      layers: layersToShow(),
       zoomControl: false
     });
     this.map.locate({ setView: true, maxZoom: 16 });
 
     // control layer choice
-    L.control.layers(baseMaps, overlayMaps).addTo(this.map);
+    L.control.layers(baseMaps, this.dynamicLayerGroup).addTo(this.map);
     // ADD scale control
     L.control.scale().addTo(this.map);
 
@@ -460,24 +544,6 @@ export default {
       this.myLocationMark.setLatLng(e.latlng).setRadius(radius).addTo(this.map);
     };
     this.map.on("locationfound", onLocationFound);
-
-
-    /* RECUPERE LES DONNEES SI PRESENT DANS LE LOCALSTORAGE */
-    let geoFromLocal = JSON.parse(localStorage.getItem("APIGeoMap"));
-
-    if (geoFromLocal) {
-      // if there is data from a file, loaded
-      try {
-        this.geoJsonHouse = geoFromLocal[0];
-        this.geoJsonVillage = geoFromLocal[1];
-        this.createGeoJsonLayer(this.geoJsonVillage, this.villageLayer);
-        this.createGeoJsonLayer(this.geoJsonHouse, this.houseLayer);
-      } catch (error) {
-        console.log(error);
-      }
-    } else {
-      this.helpModal()
-    }
 
     // CUSTOMIZE AN ICON MENU ACTIONS ON THE MAP
     let styleControl = {
