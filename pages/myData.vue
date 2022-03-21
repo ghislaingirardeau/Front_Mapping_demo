@@ -125,7 +125,7 @@ export default {
                     }
                   });
                   let objetData = {}
-                  countCategories.forEach(element => { // pour chaque category, je lui crée un nouveau tableau
+                  await countCategories.forEach(element => { // pour chaque category, je lui crée un nouveau tableau
                     let name = element
                     objetData[element] = new Array()
                     JsonFromCsv.forEach((index) => { // j'envoie le geojson dans le tableau correspondant
@@ -135,7 +135,6 @@ export default {
                     });
                     
                   });
-                  console.log(objetData);
                   localStorage.setItem("APIGeoMap", JSON.stringify(objetData));
                 };
                 reader.readAsBinaryString(fileInput.files[0]);
