@@ -124,28 +124,19 @@ export default {
                       countCategories.push(element.category)
                     }
                   });
-                  /* let objetData = {} */
+                  let objetData = {}
                   countCategories.forEach(element => { // pour chaque category, je lui crée un nouveau tableau
                     let name = element
-                    element = new Array()
+                    objetData[element] = new Array()
                     JsonFromCsv.forEach((index) => { // j'envoie le geojson dans le tableau correspondant
                       if(index.category === name) {
-                        createGeoJsons(index, element);
+                        createGeoJsons(index, objetData[element]);
                       }
                     });
                     
                   });
-                  console.log(well);
-                  /* JsonFromCsv.forEach((element) => {
-                    if (element.category === "house") {
-                      createGeoJsons(element, geoJsonHouse);
-                    } else {
-                      createGeoJsons(element, geoJsonVillage);
-                    }
-                  });
-
-                  let data = [geoJsonHouse, geoJsonVillage];
-                  localStorage.setItem("APIGeoMap", JSON.stringify(data)); */
+                  console.log(objetData);
+                  localStorage.setItem("APIGeoMap", JSON.stringify(objetData));
                 };
                 reader.readAsBinaryString(fileInput.files[0]);
             };
