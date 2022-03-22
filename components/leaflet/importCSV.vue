@@ -5,12 +5,11 @@
         label="Selelct CSV file"
         id="csv"
         @click="readFileTest"
-        required
+        accept='.csv'
       ></v-file-input>
     </v-form>
     <v-spacer></v-spacer>
     <v-btn
-      :disabled="!valid"
       color="success"
       class="mr-4"
       @click="validImport"
@@ -24,7 +23,8 @@
 export default {
   data: () => ({
     valid: true,
-    objetData: {}
+    objetData: {},
+    newMarker: []
   }),
   methods: {
     async readFileTest() {
@@ -104,9 +104,18 @@ export default {
             // recupere le nombre de category differentes créées
             if (countCategories.indexOf(element.category) === -1) {
               countCategories.push(element.category)
+              this.newMarker.push({
+                type: element.type,
+                category: element.category,
+                subCategory: [],
+                icon: element.icon,
+                color: []
+              })
             }
+            
           })
-          await countCategories.forEach((element) => {
+          
+          await countCategories.forEach((element, i) => {
             // pour chaque category, je lui crée un nouveau tableau
             let name = element
             this.objetData[element] = new Array()
@@ -114,6 +123,11 @@ export default {
               // j'envoie le geojson dans le tableau correspondant
               if (index.category === name) {
                 createGeoJsons(index, this.objetData[element])
+              }
+              // enregistre la sous category et la couleur si category presente mais sous category n'existe pas
+              if (this.newMarker[i].category === index.category && this.newMarker[i].subCategory.indexOf(index.subCategory) === -1) {
+                  this.newMarker[i].subCategory.push(index.subCategory)
+                  this.newMarker[i].color.push(index.color)
               }
             })
           })
@@ -126,8 +140,35 @@ export default {
     validImport() {
         let confirm = window.confirm('Import a file will remove all the data actually displayed')
         if(confirm) {
-            localStorage.setItem('APIGeoMap', JSON.stringify(this.objetData))
-            this.$router.push('/myData')
+            this.newMarker.forEach((element, i) => {
+              if (element.color.length === 1) {
+                let oneColor = element.color[0]
+                console.log(oneColor);
+                this.newMarker[i].color = oneColor
+              }
+            });
+            try {
+              const requestIndexedDB = window.indexedDB.open('Map_Database', 1)
+              requestIndexedDB.onsuccess = (event) => {
+                var db = event.target.result
+
+                var transaction = db.transaction('markers', 'readwrite')
+                const store = transaction.objectStore('markers') // store = table in sql
+                // insert data  in the store
+                this.newMarker.forEach(element => {
+                  store.add(element)
+                });
+                
+                console.log('markers added to the store')
+                transaction.oncomplete = () => {
+                  db.close()
+                }
+              }
+              localStorage.setItem('APIGeoMap', JSON.stringify(this.objetData))
+              this.$router.push('/myData')
+            } catch (error) {
+              console.log(error);
+            }
         }
     }
   },
