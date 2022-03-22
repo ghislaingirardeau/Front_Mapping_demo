@@ -137,8 +137,11 @@ export default {
       };
       if (this.$refs.form.validate()) {
         try {
+          let allDatas = []
           let geoFromLocal = JSON.parse(localStorage.getItem("APIGeoMap"));
-          let allDatas = [...geoFromLocal[0], ...geoFromLocal[1]];
+          for (let property in geoFromLocal) {
+            allDatas.push(...geoFromLocal[property])
+          }
           download(allDatas);
           this.$emit("send-modal", {
             message: false,
