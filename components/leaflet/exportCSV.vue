@@ -36,9 +36,6 @@ export default {
       (v) => (v && v.length <= 20) || "Name must be less than 20 characters",
     ],
   }),
-  props: {
-    modalExport: Boolean,
-  },
   methods: {
     convertMyJson() {
       function convertToCSV(objArray) {
