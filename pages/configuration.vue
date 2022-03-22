@@ -11,15 +11,11 @@
 
             <v-divider></v-divider>
 
-            <v-stepper-step :complete="e1 > 2" step="2">
-              Color
-            </v-stepper-step>
+            <v-stepper-step :complete="e1 > 2" step="2"> Color </v-stepper-step>
 
             <v-divider></v-divider>
 
-            <v-stepper-step step="3"> 
-              Summary 
-            </v-stepper-step>
+            <v-stepper-step step="3"> Summary </v-stepper-step>
           </v-stepper-header>
 
           <v-stepper-items>
@@ -48,37 +44,30 @@
                     persistent-hint
                     required
                   >
-                  <template v-slot:append>
-                    <v-tooltip
-                      bottom
-                    >
-                      <template v-slot:activator="{ on }">
-                        <v-icon v-on="on" @click="linkToIcon">
-                          mdi-help-circle-outline
-                        </v-icon>
-                      </template>
-                      Click to get the name of all icons available
-                    </v-tooltip>
-                  </template>
-                  <template v-slot:append-outer>
-                    <v-tooltip
-                      bottom
-                    >
-                      <template v-slot:activator="{ on }">
-                        <v-icon v-on="on">
-                          mdi-{{ newIcon.icon }}
-                        </v-icon>
-                      </template>
-                      Preview
-                    </v-tooltip>
-                  </template>
+                    <template v-slot:append>
+                      <v-tooltip bottom>
+                        <template v-slot:activator="{ on }">
+                          <v-icon v-on="on" @click="linkToIcon">
+                            mdi-help-circle-outline
+                          </v-icon>
+                        </template>
+                        Click to get the name of all icons available
+                      </v-tooltip>
+                    </template>
+                    <template v-slot:append-outer>
+                      <v-tooltip bottom>
+                        <template v-slot:activator="{ on }">
+                          <v-icon v-on="on"> mdi-{{ newIcon.icon }} </v-icon>
+                        </template>
+                        Preview
+                      </v-tooltip>
+                    </template>
                   </v-text-field>
                 </v-col>
                 <v-col cols="12">
                   <v-btn color="primary" @click="e1 = 2"> Continue </v-btn>
                 </v-col>
               </v-row>
-
             </v-stepper-content>
 
             <v-stepper-content step="2">
@@ -92,12 +81,18 @@
                   ></v-text-field>
                 </v-col>
                 <v-col cols="5" class="text-center">
-                  <v-btn outlined :disabled="disableInputs" @click="addToArrayMarker(true)">Add</v-btn>
+                  <v-btn
+                    outlined
+                    :disabled="disableInputs"
+                    @click="addToArrayMarker(true)"
+                    >Add</v-btn
+                  >
                 </v-col>
 
                 <v-col cols="12">
                   <h4>Pick a color</h4>
-                  <v-color-picker class="text-center"
+                  <v-color-picker
+                    class="text-center"
                     v-model="colorSelected"
                     dot-size="21"
                     hide-inputs
@@ -116,18 +111,23 @@
                 </v-col>
                 <v-col cols="6" class="text-center">
                   <p v-if="newIcon.type === 'Point'">Preview</p>
-                  <v-icon v-if="newIcon.type === 'Point'" :color="colorSelected" size="36px"
+                  <v-icon
+                    v-if="newIcon.type === 'Point'"
+                    :color="colorSelected"
+                    size="36px"
                     >mdi-{{ newIcon.icon }}</v-icon
                   >
-                  <v-chip
-                    v-else
-                    :color="colorSelected"
-                    label
-                    x-large
-                  >Preview</v-chip>
+                  <v-chip v-else :color="colorSelected" label x-large
+                    >Preview</v-chip
+                  >
                 </v-col>
                 <v-col cols="12">
-                  <v-btn color="primary" @click="e1 = 3" v-if="newIcon.color.length > 0" :disabled="disableInputs">
+                  <v-btn
+                    color="primary"
+                    @click="e1 = 3"
+                    v-if="newIcon.color.length > 0"
+                    :disabled="disableInputs"
+                  >
                     Continue
                   </v-btn>
 
@@ -136,7 +136,6 @@
                   </v-btn>
                 </v-col>
               </v-row>
-
             </v-stepper-content>
 
             <v-stepper-content step="3">
@@ -146,16 +145,22 @@
                   <h4>My markers selected</h4>
                 </v-col>
                 <v-col cols="4" v-for="(item, l) in newIcon.color" :key="l">
-                  <span v-if="newIcon.type === 'Point'">{{ newIcon.subCategory[l] ? newIcon.subCategory[l] : newIcon.category }}</span>
-                  <v-icon v-if="newIcon.type === 'Point'" :color="newIcon.color[l]" size="36px"
+                  <span v-if="newIcon.type === 'Point'">{{
+                    newIcon.subCategory[l]
+                      ? newIcon.subCategory[l]
+                      : newIcon.category
+                  }}</span>
+                  <v-icon
+                    v-if="newIcon.type === 'Point'"
+                    :color="newIcon.color[l]"
+                    size="36px"
                     >mdi-{{ newIcon.icon }}</v-icon
                   >
-                  <v-chip
-                    v-else
-                    :color="newIcon.color[l]"
-                    label
-                    x-large
-                  >{{ newIcon.subCategory[l] ? newIcon.subCategory[l] : 'my preview' }}</v-chip>
+                  <v-chip v-else :color="newIcon.color[l]" label x-large>{{
+                    newIcon.subCategory[l]
+                      ? newIcon.subCategory[l]
+                      : 'my preview'
+                  }}</v-chip>
                 </v-col>
                 <v-col cols="12">
                   <v-btn color="primary" @click="addNewMarker"
@@ -167,7 +172,6 @@
                   </v-btn>
                 </v-col>
               </v-row>
-
             </v-stepper-content>
           </v-stepper-items>
         </v-stepper>
@@ -175,29 +179,31 @@
     </modalCustom>
 
     <v-col cols="12">
-      <h1>My Icons configaurations</h1>
-      <v-btn @click="showBtnDBExist ? deleteIndexedDB() : activateIndexedDB()">{{showBtnDBExist ? 'Delete database' : 'Create database'}}</v-btn>
-      
-      <v-btn @click="addToDB">add a marker</v-btn>
+      <h1>My Markers</h1>
+      <v-btn @click="showBtnDBExist ? deleteDB() : activateIndexedDB()">{{
+        showBtnDBExist ? 'Delete database' : 'Create database'
+      }}</v-btn>
+
       <!-- <v-btn @click="showCursorDB">Show datas</v-btn> -->
       <!-- <v-btn @click="updateDB">update data</v-btn> -->
       <v-btn @click="showModal = true">Create a marker</v-btn>
     </v-col>
 
-    <tableMarkers :markers="markers" :showCursorDB="showCursorDB"/>
+    <tableMarkers :markers="markers" :showCursorDB="showCursorDB" />
   </v-row>
 </template>
 
 <script>
 import modalCustom from '@/components/leaflet/modalCustom.vue'
-import tableMarkers from '@/components/leaflet/tableMarkers.vue';
+import tableMarkers from '@/components/leaflet/tableMarkers.vue'
+import { createIndexedDB, deleteIndexedDB } from '@/static/functions/indexedDb'
 
 export default {
   layout: 'datasLayout',
   data() {
     return {
       // stepper
-      e1: 1, 
+      e1: 1,
       // control inside modal
       showModal: false,
       disableInputs: false,
@@ -215,12 +221,12 @@ export default {
       },
       // manage datas
       markers: [],
-      showBtnDBExist: false
+      showBtnDBExist: false,
     }
   },
   components: {
     modalCustom,
-    tableMarkers
+    tableMarkers,
   },
   methods: {
     linkToIcon() {
@@ -237,7 +243,7 @@ export default {
       }
       this.disableInputs = false
       this.disableColor = false
-      this.e1=1
+      this.e1 = 1
     },
     addToArrayMarker(e) {
       if (e) {
@@ -256,108 +262,18 @@ export default {
     modalResponse(payload) {
       this.showModal = payload.message
     },
-    activateIndexedDB() {
-      const IndexedDB =
-        window.indexedDB ||
-        window.mozIndexedDB ||
-        window.webkitIndexedDB ||
-        window.msIndexedDB
-      if (!IndexedDB) {
-        alert(
-          "Your browser doesn't support a stable version of IndexedDB. Such and such feature will not be available."
-        )
-      }
-      const requestIndexedDB = window.indexedDB.open('Map_Database', 1)
-
-      requestIndexedDB.onerror = (event) => {
-        console.log(event)
-      }
-      requestIndexedDB.onupgradeneeded = (event) => {
-        // Save the IDBDatabase interface
-        var db = event.target.result
-
-        // Create an objectStore for this database
-        var objectStore = db.createObjectStore('markers', {
-          autoIncrement: true,
-        })
-        objectStore.createIndex('markers_category', ['category'], {
-          unique: false,
-        }) // créer les index de recherche
-        console.log('database created')
-        this.showBtnDBExist = true
-      }
+    async activateIndexedDB() {
+      await createIndexedDB()
+      this.showBtnDBExist = true
     },
-    addToDB() {
-      const requestIndexedDB = window.indexedDB.open('Map_Database', 1)
-      requestIndexedDB.onsuccess = (event) => {
-        var db = event.target.result
-
-        var transaction = db.transaction('markers', 'readwrite')
-        const store = transaction.objectStore('markers') // store = table in sql
-        // insert data  in the store
-        store.add({
-          type: 'Point',
-          category: 'house',
-          subCategory: ['indebted', 'interview'],
-          icon: 'home',
-          color: ['green', 'red'],
-        })
-        store.add({
-          type: 'Point',
-          category: 'bath',
-          subCategory: [],
-          icon: 'water',
-          color: 'blue',
-        })
-        store.add({
-          type: 'Point',
-          category: 'grave',
-          subCategory: [],
-          icon: 'grave-stone',
-          color: 'blue',
-        })
-        store.add({
-          type: 'Point',
-          category: 'worship',
-          subCategory: [],
-          icon: 'hands-pray',
-          color: 'blue',
-        })
-        store.add({
-          type: 'Point',
-          category: 'communal',
-          subCategory: [],
-          icon: 'hoop-house',
-          color: 'blue',
-        })
-        store.add({
-          type: 'Point',
-          category: 'well',
-          subCategory: ['private', 'public'],
-          icon: 'water-pump',
-          color: ['pink', 'yellow'],
-        })
-        store.add({
-          type: 'Polygon',
-          category: 'rice',
-          subCategory: [],
-          icon: '',
-          color: 'blue',
-        })
-        store.add({
-          type: 'MultiLineString',
-          category: 'trace',
-          subCategory: [],
-          icon: '',
-          color: 'purple',
-        })
-
-        console.log('markers added to the store')
-        this.showCursorDB()
-
-        transaction.oncomplete = () => {
-          db.close()
-        }
+    async deleteDB() {
+      let confirm = window.confirm(
+        'Are you sure you want to delete all the markers ?'
+      )
+      if (confirm) {
+        await deleteIndexedDB()
+        this.markers = []
+        this.showBtnDBExist = false
       }
     },
     addNewMarker() {
@@ -381,35 +297,6 @@ export default {
         }
         this.showModal = false
         this.resetMarker()
-      }
-    },
-    getDBid() {
-      // ouvre la db
-      const requestIndexedDB = window.indexedDB.open('Map_Database', 1)
-      requestIndexedDB.onerror = (event) => {
-        console.log(event)
-      }
-
-      // la requete
-      requestIndexedDB.onsuccess = (event) => {
-        let db = event.target.result
-
-        let transaction = db.transaction('markers', 'readwrite')
-        let store = transaction.objectStore('markers') // store = table in sql
-
-        let allMarkers = store.getAll() // renvoie tous les modeles qui sont vert
-        allMarkers.onsuccess = () => {
-          this.markers = allMarkers.result
-        }
-
-        // close db at the end of transaction
-        transaction.oncomplete = () => {
-          db.close()
-        }
-        transaction.onerror = (event) => {
-          // si il y a une erreur dans la requete
-          console.log(event)
-        }
       }
     },
     updateDB() {
@@ -500,31 +387,18 @@ export default {
         }
       }
     },
-    deleteIndexedDB() {
-        let confirm = window.confirm('Are you sure you want to delete all the markers ?');
-        if(confirm) {
-          var DBDeleteReq = window.indexedDB.deleteDatabase("Map_Database");
-          DBDeleteReq.onsuccess = function(event) {
-            console.log("Database deleted successfully");
-            this.marker = []
-            this.showBtnDBExist = false
-          }
-          console.log(DBDeleteReq);
-          console.log(window.indexedDB.databases());
-        }
-     },   
   },
   mounted() {
     // check if the database exist
     const checkDB = async () => {
-      const dbName = 'Map_Database';
-      const isExisting = (await window.indexedDB.databases()).map(db => db.name).includes(dbName);
-      if(isExisting) {
-        console.log('btn option: delete the db or export');
+      const dbName = 'Map_Database'
+      const isExisting = (await window.indexedDB.databases())
+        .map((db) => db.name)
+        .includes(dbName)
+      if (isExisting) {
         this.showBtnDBExist = true
         this.showCursorDB() // faire apparaitre les datas dans le tableau
       } else {
-        console.log('btn option: create new db');
         this.showBtnDBExist = false
       }
     }
@@ -535,19 +409,24 @@ export default {
 
 <style lang="scss" scoped>
 @keyframes shake {
-  10%, 90% {
+  10%,
+  90% {
     transform: translate3d(-1px, 0, 0);
   }
-  
-  20%, 80% {
+
+  20%,
+  80% {
     transform: translate3d(2px, 0, 0);
   }
 
-  30%, 50%, 70% {
+  30%,
+  50%,
+  70% {
     transform: translate3d(-4px, 0, 0);
   }
 
-  40%, 60% {
+  40%,
+  60% {
     transform: translate3d(4px, 0, 0);
   }
 }
@@ -555,6 +434,6 @@ export default {
 .animationShake {
   /* transform: scale(1.1);
   transition: transform 400ms; */
-  animation: shake 0.82s cubic-bezier(.36,.07,.19,.97) both;
+  animation: shake 0.82s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
 }
 </style>
