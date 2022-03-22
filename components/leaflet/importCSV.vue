@@ -140,13 +140,6 @@ export default {
     validImport() {
         let confirm = window.confirm('Import a file will remove all the data actually displayed')
         if(confirm) {
-            this.newMarker.forEach((element, i) => {
-              if (element.color.length === 1) {
-                let oneColor = element.color[0]
-                console.log(oneColor);
-                this.newMarker[i].color = oneColor
-              }
-            });
             try {
               const requestIndexedDB = window.indexedDB.open('Map_Database', 1)
               requestIndexedDB.onsuccess = (event) => {
