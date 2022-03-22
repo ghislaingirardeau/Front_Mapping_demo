@@ -11,10 +11,7 @@
           @send-data="getData"
           :coordinates="coordinates"
         />
-        <manageDatas v-if="showSetting"
-          :geoJsonHouse="geoJsonHouse"
-          :geoJsonVillage="geoJsonVillage"
-        />
+        <manageDatas v-if="showSetting" />
       </template>
     </modalCustom>
 
@@ -87,10 +84,6 @@ export default {
     coordinates: [],
     myLocationMark: undefined,
     showInputGeoDetail: false,
-    housesLayer: [],
-    villageLayer: [],
-    geoJsonHouse: [],
-    geoJsonVillage: [],
     lastItem: undefined,
     layerGeoJson: undefined,
     btnMeasure: true,
@@ -118,8 +111,9 @@ export default {
     printDisplay: false,
     markerTarget: undefined,
     snackbar: false,
-    dynamicLayerGroup: {},
-    propertiesNames: []
+    dynamicLayerGroup: {}, // each layer contain the array of geojson
+    propertiesNames: [], // name inside the layers control
+    controlLayers: undefined // control and add dynamic layers
   }),
   computed: {
     modalDiplay() {
@@ -170,14 +164,14 @@ export default {
       this.showModal = payload.show;
       let newGeoJson = payload.newGeoJson;
       let groupLayer = newGeoJson.properties.category
-      if(this.propertiesNames.indexOf(groupLayer) === -1) {
-        console.log('category do not exist');
+
+      if(this.propertiesNames.indexOf(groupLayer) === -1) { // if category is not inside the layer control, i add it
         this.propertiesNames.push(groupLayer)
         this.dynamicLayerGroup[groupLayer] = L.layerGroup();
-        this.createGeoJsonBeta(newGeoJson, this.dynamicLayerGroup[groupLayer])
+        this.createGeoJsonLayer(newGeoJson, this.dynamicLayerGroup[groupLayer])
+        this.controlLayers.addOverlay(this.dynamicLayerGroup[groupLayer], groupLayer)
       } else {
-        console.log('category exist');
-        this.createGeoJsonBeta(newGeoJson, this.dynamicLayerGroup[groupLayer])
+        this.createGeoJsonLayer(newGeoJson, this.dynamicLayerGroup[groupLayer])
       }
       
       if (payload.resetCoordinates) {
@@ -186,7 +180,7 @@ export default {
       /* this.myLocationMark; */ // a supprimer
       this.modalTitle = undefined;
     },
-    createGeoJsonBeta(layerType, groupLayer) {
+    createGeoJsonLayer(layerType, groupLayer) {
       // layerType = le geojson que je souhaite envoyer dans le layer
       // groupLayer = dans quel groupe de layer je charge celui-ci : village ou house
 
@@ -248,68 +242,6 @@ export default {
       // GROUPE DE LAYER DANS LEQUEL J'ENREGISTRE LE JSON
       groupLayer.addLayer(this.layerGeoJson);
     },
-    createGeoJsonLayer(layerType, groupType) {
-      // layerType = le geojson que je souhaite envoyer dans le layer
-      // groupType = dans quel groupe de layer je charge celui-ci : village ou house
-
-      function showPopupMarker(e) {
-        var layer = e.target;
-        layer.openPopup();
-      }
-
-      function hidePopupMarker(e) {
-        var layer = e.target;
-        layer.closePopup();
-      }
-
-      function onEachFeature(feature, layer) {
-        // pour faire apparaitre le popup du marker si popupContent est defini
-        if (feature.properties && feature.properties.popupContent) {
-          layer.bindPopup(feature.properties.popupContent);
-        }
-        layer.on({
-          mouseover: showPopupMarker,
-          mouseout: hidePopupMarker,
-        });
-      }
-
-      // FUNCTION RETURN ICON HOUSE SVG DEPENDING ON COLOR PARAMS
-      const createIcon = (type, color, size, name) => {
-        let showHtml
-        if(this.printDisplay) {
-          showHtml = `<i aria-hidden="true" class="v-icon notranslate mdi mdi-${type} theme--dark" style="font-size: ${size}; color:${color};"></i><span class='icon--name' style="color:${color};">${name}</span>`
-        } else {
-          showHtml = `<i aria-hidden="true" class="v-icon notranslate mdi mdi-${type} theme--dark" style="font-size: ${size}; color:${color};"></i>`
-        }
-        return L.divIcon({
-          className: `${type}-icon`,
-          html: showHtml,
-        });
-      }
-
-      this.layerGeoJson = L.geoJSON(layerType, {
-        // on peut enchainer les options ici
-        onEachFeature: onEachFeature,
-        pointToLayer: (feature, latlng) => {
-          // CREATE THE MARKERS
-          return L.marker(latlng, {
-            icon: createIcon(
-              feature.icon.type,
-              feature.icon.color,
-              "small",
-              feature.properties.name
-            ),
-          });
-        },
-        style: (feature) => {
-          // DEFINE SYTLE OF POLYGONS AND LINE
-          return { color: feature.icon.color }
-        },
-      });
-
-      // GROUPE DE LAYER DANS LEQUEL J'ENREGISTRE LE JSON
-      groupType.addLayer(this.layerGeoJson);
-    },
     showMeasure() {
       // show measure on click
       // HIDE MEASURE ON SECOND CLICK + BUTTON DYNAMIC
@@ -331,31 +263,7 @@ export default {
       }
       this.btnMeasure = !this.btnMeasure;
     },
-    async deleteItem() {
-      const removeLastData = async (group, layer, message) => {
-        await group.removeLayer(this.layerGeoJson);
-        await layer.pop();
-        this.createGeoJsonLayer(layer, group);
-        this.messageModal = message;
-        this.showModal = true;
-        this.lastItem = undefined;
-      };
-      switch (this.lastItem) {
-        case "house":
-          removeLastData(this.houseLayer, this.geoJsonHouse, "Last house data removed");
-          break;
-        case "village":
-          removeLastData(
-            this.villageLayer,
-            this.geoJsonVillage,
-            "Last village data removed"
-          );
-          break;
-        default:
-          this.messageModal = "Nothings to remove";
-          this.showModal = true;
-          break;
-      }
+    deleteItem() {
     },
     coordinatesOnLocation(element) {
       if (this.watchMe) {
@@ -505,7 +413,7 @@ export default {
         this.propertiesNames = Object.getOwnPropertyNames(geoFromLocal) // recupere le nom de chaque propriete
         this.propertiesNames.forEach(element => {
           this.dynamicLayerGroup[element] = L.layerGroup(); // creer un nouveau groupe de layer pour chaque nom
-          this.createGeoJsonBeta(geoFromLocal[element], this.dynamicLayerGroup[element]) // charge le array de goejsons dans le layer
+          this.createGeoJsonLayer(geoFromLocal[element], this.dynamicLayerGroup[element]) // charge le array de goejsons dans le layer
         });        
       } catch (error) {
         console.log(error);
@@ -533,7 +441,8 @@ export default {
     this.map.locate({ setView: true, maxZoom: 16 });
 
     // control layer choice
-    L.control.layers(baseMaps, this.dynamicLayerGroup).addTo(this.map);
+    this.controlLayers = L.control.layers(baseMaps, this.dynamicLayerGroup)
+    this.controlLayers.addTo(this.map);
     // ADD scale control
     L.control.scale().addTo(this.map);
 
@@ -586,8 +495,6 @@ export default {
           if (data.target.querySelector("#btn-tutorial")) {
             this.helpModal();
           } else if (data.target.querySelector("#btn-data")) {
-            let data = [this.geoJsonHouse, this.geoJsonVillage];
-            localStorage.setItem("APIGeoMap", JSON.stringify(data));
             this.showModal = true
             this.messageModal = "Manage my datas"
             this.showSetting = true
@@ -604,9 +511,6 @@ export default {
         },
       },
     });
-
-    const addControl = () => {
-    }
 
     let layerPickerControl = L.control.custom({
       position: "bottomright",
