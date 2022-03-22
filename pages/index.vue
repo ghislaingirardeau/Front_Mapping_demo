@@ -9,8 +9,6 @@
         <dataGeoJson
           v-if="showInputGeoDetail"
           @send-data="getData"
-          :geoJsonHouse="geoJsonHouse"
-          :geoJsonVillage="geoJsonVillage"
           :coordinates="coordinates"
         />
         <manageDatas v-if="showSetting"
@@ -120,7 +118,8 @@ export default {
     printDisplay: false,
     markerTarget: undefined,
     snackbar: false,
-    dynamicLayerGroup: {}
+    dynamicLayerGroup: {},
+    propertiesNames: []
   }),
   computed: {
     modalDiplay() {
@@ -169,17 +168,18 @@ export default {
     getData(payload) {
       this.showInputGeoDetail = payload.show;
       this.showModal = payload.show;
-      this.lastItem = payload.layerGroup;
-
-      switch (this.lastItem) {
-        case "house":
-          this.createGeoJsonLayer(this.geoJsonHouse, this.houseLayer);
-          break;
-        case "village":
-          this.createGeoJsonLayer(this.geoJsonVillage, this.villageLayer);
-          break;
+      let newGeoJson = payload.newGeoJson;
+      let groupLayer = newGeoJson.properties.category
+      if(this.propertiesNames.indexOf(groupLayer) === -1) {
+        console.log('category do not exist');
+        this.propertiesNames.push(groupLayer)
+        this.dynamicLayerGroup[groupLayer] = L.layerGroup();
+        this.createGeoJsonBeta(newGeoJson, this.dynamicLayerGroup[groupLayer])
+      } else {
+        console.log('category exist');
+        this.createGeoJsonBeta(newGeoJson, this.dynamicLayerGroup[groupLayer])
       }
-
+      
       if (payload.resetCoordinates) {
         this.coordinates = [];
       }
@@ -499,12 +499,11 @@ export default {
 
         /* RECUPERE LES DONNEES SI PRESENT DANS LE LOCALSTORAGE */
     let geoFromLocal = JSON.parse(localStorage.getItem("APIGeoMap"));
-    let propertiesNames
     if (geoFromLocal) {
       // if there is data from a file, loaded
       try {
-        propertiesNames = Object.getOwnPropertyNames(geoFromLocal) // recupere le nom de chaque propriete
-        propertiesNames.forEach(element => {
+        this.propertiesNames = Object.getOwnPropertyNames(geoFromLocal) // recupere le nom de chaque propriete
+        this.propertiesNames.forEach(element => {
           this.dynamicLayerGroup[element] = L.layerGroup(); // creer un nouveau groupe de layer pour chaque nom
           this.createGeoJsonBeta(geoFromLocal[element], this.dynamicLayerGroup[element]) // charge le array de goejsons dans le layer
         });        
@@ -512,13 +511,13 @@ export default {
         console.log(error);
       }
     } else {
-      propertiesNames = []
+      this.propertiesNames = []
       this.helpModal()
     }
 
     const layersToShow = () => {
       let array = [streets, outdoors, this.markerTarget] // layer by default
-      propertiesNames.forEach(element => { // layers from localstorage
+      this.propertiesNames.forEach(element => { // layers from localstorage
         array.push(this.dynamicLayerGroup[element])
       });
       return array

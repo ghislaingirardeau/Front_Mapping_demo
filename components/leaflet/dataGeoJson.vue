@@ -129,8 +129,6 @@ export default {
   }),
 
   props: {
-    geoJsonHouse: Array,
-    geoJsonVillage: Array,
     coordinates: Array,
   },
   computed: {
@@ -238,23 +236,10 @@ export default {
 
         this.addGeoJson.geometry.coordinates = getCoordinates
 
-        let group
-        switch (this.addGeoJson.properties.category) {
-          case 'house':
-            this.geoJsonHouse.push(this.addGeoJson)
-            group = 'house'
-            break
-
-          default:
-            this.geoJsonVillage.push(this.addGeoJson)
-            group = 'village'
-            break
-        }
-
         this.$emit('send-data', {
           show: false,
           resetCoordinates: true,
-          layerGroup: group,
+          newGeoJson: this.addGeoJson
         })
       }
     },
