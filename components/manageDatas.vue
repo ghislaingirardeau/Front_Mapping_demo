@@ -2,6 +2,7 @@
     <div>
         <h1 v-if="message">{{message}}</h1>
         <exportCSV v-if="modalExport" />
+        <importCSV v-if="modalImport" />
         <v-list v-if="showMenu">
             <h2>setting</h2>
         <v-list-item
@@ -38,10 +39,12 @@
 
 <script>
 import exportCSV from '@/components/leaflet/exportCSV.vue';
+import importCSV from '@/components/leaflet/importCSV.vue';
     export default {
         data() {
             return {
                 modalExport: false,
+                modalImport: false,
                 message: undefined,
                 showMenu: true,
                 settings: [
@@ -60,15 +63,20 @@ import exportCSV from '@/components/leaflet/exportCSV.vue';
                     {
                     id: '1',
                     icon: 'mdi-apps',
-                    title: 'Export',
+                    title: 'Export Datas to CSV',
                     },
                     {
                     id: '2',
                     icon: 'mdi-apps',
-                    title: 'remove temporaly',
+                    title: 'Import CSV File',
                     },
                     {
                     id: '3',
+                    icon: 'mdi-apps',
+                    title: 'remove temporaly',
+                    },
+                    {
+                    id: '4',
                     icon: 'mdi-printer',
                     title: 'print',
                     }
@@ -77,6 +85,7 @@ import exportCSV from '@/components/leaflet/exportCSV.vue';
         },
         components: {
             exportCSV,
+            importCSV
         },
         methods: {
             removeGeoJson() {
@@ -91,9 +100,13 @@ import exportCSV from '@/components/leaflet/exportCSV.vue';
                         this.showMenu = false
                         break;
                     case '2':
-                        this.removeGeoJson();
+                        this.modalImport = true
+                        this.showMenu = false
                         break;
                     case '3':
+                        this.removeGeoJson();
+                        break;
+                    case '4':
                         this.$router.push({name: 'print'})
                         break;
                 }
