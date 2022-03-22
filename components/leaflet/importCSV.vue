@@ -3,8 +3,8 @@
     <v-form ref="form" v-model="valid" lazy-validation>
       <v-file-input
         label="Selelct CSV file"
-        @click="readFileTest"
         id="csv"
+        @click="readFileTest"
         required
       ></v-file-input>
     </v-form>
@@ -13,7 +13,7 @@
       :disabled="!valid"
       color="success"
       class="mr-4"
-      @click="readFileTest"
+      @click="validImport"
     >
       Import
     </v-btn>
@@ -24,6 +24,7 @@
 export default {
   data: () => ({
     valid: true,
+    objetData: {}
   }),
   methods: {
     async readFileTest() {
@@ -97,8 +98,6 @@ export default {
             result.push(obj)
           }
           let JsonFromCsv = result
-          let geoJsonVillage = []
-          let geoJsonHouse = []
           let countCategories = []
 
           await JsonFromCsv.forEach((element) => {
@@ -107,26 +106,30 @@ export default {
               countCategories.push(element.category)
             }
           })
-          let objetData = {}
           await countCategories.forEach((element) => {
             // pour chaque category, je lui crée un nouveau tableau
             let name = element
-            objetData[element] = new Array()
+            this.objetData[element] = new Array()
             JsonFromCsv.forEach((index) => {
               // j'envoie le geojson dans le tableau correspondant
               if (index.category === name) {
-                createGeoJsons(index, objetData[element])
+                createGeoJsons(index, this.objetData[element])
               }
             })
           })
-          localStorage.setItem('APIGeoMap', JSON.stringify(objetData))
-          this.$router.push('/')
         }
         reader.readAsBinaryString(fileInput.files[0])
       }
 
       fileInput.addEventListener('change', readFile)
     },
+    validImport() {
+        let confirm = window.confirm('Import a file will remove all the data actually displayed')
+        if(confirm) {
+            localStorage.setItem('APIGeoMap', JSON.stringify(this.objetData))
+            this.$router.push('/myData')
+        }
+    }
   },
 }
 </script>

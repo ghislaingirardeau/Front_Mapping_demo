@@ -501,15 +501,17 @@ export default {
       }
     },
     deleteIndexedDB() {
-        window.confirm('Are you sure you want to delete all the markers ?');
-        var DBDeleteReq = window.indexedDB.deleteDatabase("Map_Database");
-        DBDeleteReq.onsuccess = function(event) {
-          console.log("Database deleted successfully");
-          this.marker = []
-          this.showBtnDBExist = false
+        let confirm = window.confirm('Are you sure you want to delete all the markers ?');
+        if(confirm) {
+          var DBDeleteReq = window.indexedDB.deleteDatabase("Map_Database");
+          DBDeleteReq.onsuccess = function(event) {
+            console.log("Database deleted successfully");
+            this.marker = []
+            this.showBtnDBExist = false
+          }
+          console.log(DBDeleteReq);
+          console.log(window.indexedDB.databases());
         }
-        console.log(DBDeleteReq);
-        console.log(window.indexedDB.databases());
      },   
   },
   mounted() {

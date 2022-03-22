@@ -90,11 +90,15 @@
                 }
                 
                 if (e.subCategory.length > 0) {
-                    window.confirm(`This action will remove all sub category of the ${e.category} ?`)
-                    removeItem(e)
+                    let confirm = window.confirm(`This action will remove all sub category of the ${e.category} ?`)
+                    if(confirm) {
+                        removeItem(e)
+                    }
                 } else {
-                    window.confirm(`Remove the item ${e.category} ?`)
-                    removeItem(e)
+                    let confirm = window.confirm(`Remove the item ${e.category} ?`)
+                    if(confirm) {
+                        removeItem(e)
+                    }
                 }
             },
         },
