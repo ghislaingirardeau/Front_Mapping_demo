@@ -407,6 +407,7 @@ export default {
 
         /* RECUPERE LES DONNEES SI PRESENT DANS LE LOCALSTORAGE */
     let geoFromLocal = JSON.parse(localStorage.getItem("APIGeoMap"));
+    console.log(geoFromLocal);
     if (geoFromLocal) {
       // if there is data from a file, loaded
       try {
@@ -495,6 +496,16 @@ export default {
           if (data.target.querySelector("#btn-tutorial")) {
             this.helpModal();
           } else if (data.target.querySelector("#btn-data")) {
+            let jsonToSave = {} 
+            for (let property in this.dynamicLayerGroup) {
+              jsonToSave[property] = []
+              let listItems = this.dynamicLayerGroup[property].getLayers()[0]._layers
+              for(let i in listItems) {
+                let feature = listItems[i].feature
+                jsonToSave[feature.properties.category].push(feature)
+              }
+            }
+            localStorage.setItem("APIGeoMap", JSON.stringify(jsonToSave));
             this.showModal = true
             this.messageModal = "Manage my datas"
             this.showSetting = true

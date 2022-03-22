@@ -1,10 +1,9 @@
 # map_Demo
 
 to do :
-dynamic legend 
 print: go the page to display : map zoom village, legend and global map
-show a marker cursor to move on map before to select
 list icon to show
+recreate createjson function to keep dynamic layer
 
 ## Build Setup
 
