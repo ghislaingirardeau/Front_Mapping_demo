@@ -512,6 +512,7 @@ export default {
         console.log(error);
       }
     } else {
+      propertiesNames = []
       this.helpModal()
     }
 
