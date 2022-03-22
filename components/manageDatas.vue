@@ -78,10 +78,6 @@ import exportCSV from '@/components/leaflet/exportCSV.vue';
         components: {
             exportCSV,
         },
-        props: {
-            geoJsonHouse: Array,
-            geoJsonVillage: Array,
-        },
         methods: {
             removeGeoJson() {
                 localStorage.removeItem("APIGeoMap");
