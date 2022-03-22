@@ -140,9 +140,7 @@ export default {
             allDatas.push(...geoFromLocal[property])
           }
           download(allDatas);
-          this.$emit("send-modal", {
-            message: false,
-          });
+          this.errorMessage = "Your CSV file is downloaded";
         } catch (error) {
           this.errorMessage = "Failed to save the file, save first your data on map !";
         }
