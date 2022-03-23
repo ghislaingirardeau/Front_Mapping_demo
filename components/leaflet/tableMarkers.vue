@@ -59,25 +59,36 @@
 
                         let transaction = db.transaction('markers', 'readwrite')
                         let store = transaction.objectStore('markers') // store = table in sql
-
                         store.openCursor().onsuccess = (event) => {
-                        const cursor = event.target.result
-                        if (cursor) {
-                            if (cursor.value.category === e.category) {
-                            if (cursor.value.subCategory.length > 0) {
-                                console.log('mutliple category, has to be fix')
-                            } else {
-                                let idQuery = store.delete(cursor.key)
-                                idQuery.onsuccess = (event) => {
-                                this.showCursorDB()
-                                alert('this marker has been removed')
+                            const cursor = event.target.result
+                            
+                            if (cursor) {
+                                
+                                if (cursor.value.category === e.category) {
+                                    if (cursor.value.subCategory.length > 1) { // si multi sub category, update color and subcat en supprimant l'item du tableau
+                                        let indexColor = cursor.value.color.indexOf(e.color[0])
+                                        let indexSubCategory = cursor.value.subCategory.indexOf(e.subCategory[0])
+                                        
+                                        cursor.value.color.splice(indexColor, 1)
+                                        cursor.value.subCategory.splice(indexSubCategory, 1)
+                                        const request = cursor.update(cursor.value)
+                                        request.onsuccess = () => {
+                                            console.log('Data updated')
+                                            this.showCursorDB()
+                                        }
+                                    } else { // si array sucategory is empty or have '' == remove item
+                                        let idQuery = store.delete(cursor.key)
+                                        idQuery.onsuccess = (event) => {
+                                        this.showCursorDB()
+                                        alert('this marker has been removed')
+                                        }
+                                    }
                                 }
-                            }
-                        }
-                        cursor.continue()
-                        } else {
-                            console.log('Entries displayed.')
-                        }
+                                cursor.continue()
+                            } else {
+                                console.log('Entries displayed.')
+                                
+                            }                            
                         }
 
                         transaction.oncomplete = () => {
@@ -88,17 +99,9 @@
                         }
                     }
                 }
-                
-                if (e.subCategory.length > 0) {
-                    let confirm = window.confirm(`This action will remove all sub category of the ${e.category} ?`)
-                    if(confirm) {
-                        removeItem(e)
-                    }
-                } else {
-                    let confirm = window.confirm(`Remove the item ${e.category} ?`)
-                    if(confirm) {
-                        removeItem(e)
-                    }
+                let confirm = window.confirm(`Remove the item ${e.category} ?`)
+                if(confirm) {
+                    removeItem(e)
                 }
             },
         },
