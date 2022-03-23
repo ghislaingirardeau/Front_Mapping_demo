@@ -1,5 +1,5 @@
 <template>
-  <v-form ref="form" v-model="valid" lazy-validation> {{itemsCategory}}
+  <v-form ref="form" v-model="valid" lazy-validation>
     <v-select
       v-if="coordinates.length > 1"
       v-model="addGeoJson.geometry.type"
@@ -159,7 +159,7 @@ export default {
 
         if (index === -1) {
           return undefined
-        } else {
+        } else if(sub[index] != '') { // Debug on import, the array is not empty, but with ''
           return sub[index]
         }
       }
