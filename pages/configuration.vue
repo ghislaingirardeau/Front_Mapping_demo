@@ -187,7 +187,6 @@
       }}</v-btn>
 
       <!-- <v-btn @click="showCursorDB">Show datas</v-btn> -->
-      <!-- <v-btn @click="updateDB">update data</v-btn> -->
       <v-btn @click="showModal = true">Create a marker</v-btn>
     </v-col>
 
@@ -310,39 +309,6 @@ export default {
         }
         this.showModal = false
         this.resetMarker()
-      }
-    },
-    updateDB() {
-      // ouvre la db
-      const requestIndexedDB = window.indexedDB.open('Map_Database', 1)
-      requestIndexedDB.onerror = (event) => {
-        console.log(event)
-      }
-
-      // la requete
-      requestIndexedDB.onsuccess = (event) => {
-        let db = event.target.result
-
-        let transaction = db.transaction('markers', 'readwrite')
-        let store = transaction.objectStore('markers') // store = table in sql
-
-        store.openCursor().onsuccess = (event) => {
-          const cursor = event.target.result
-          if (cursor) {
-            if (cursor.value.category === 'basket') {
-              const updateData = cursor.value
-
-              updateData.size = 'large'
-              const request = cursor.update(updateData)
-              request.onsuccess = () => {
-                console.log('Data updated')
-              }
-            }
-            cursor.continue()
-          } else {
-            console.log('Entries displayed.')
-          }
-        }
       }
     },
     showCursorDB() {
