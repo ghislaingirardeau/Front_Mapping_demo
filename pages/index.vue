@@ -317,7 +317,7 @@ export default {
     locationTarget() {
       let style = {
         color: 'red',
-        fillColor: 'grey',
+        fillColor: 'red',
         radius: 3
       }
       
@@ -542,7 +542,7 @@ export default {
             this.activateOrNotBtn('btn-trace')
             this.activateOrNotBtn('btn-target')
             // LOAD THE HUB FOR TARGET
-            let x = ((this.map.getSize().x / 2) - 24) 
+            let x = ((this.map.getSize().x / 2) - 24.3) 
             let y = ((this.map.getSize().y / 2) - 30) 
 
             this.snackbar = true
