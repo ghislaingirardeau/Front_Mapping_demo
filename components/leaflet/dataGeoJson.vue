@@ -1,5 +1,5 @@
 <template>
-  <v-form ref="form" v-model="valid" lazy-validation>
+  <v-form ref="form" v-model="valid" lazy-validation> {{itemsCategory}}
     <v-select
       v-if="coordinates.length > 1"
       v-model="addGeoJson.geometry.type"
@@ -65,10 +65,10 @@
       Manual
     </v-btn>
 
-    <v-btn color="secondary" class="mr-4" @click="addCoordinate">
+    <!-- <v-btn color="secondary" class="mr-4" @click="addCoordinate">
       Add
     </v-btn>
-
+ -->
     <v-btn color="error" class="mr-4 mt-3 mt-sm-0" @click="cancel">
       Cancel
     </v-btn>
@@ -140,11 +140,9 @@ export default {
       } else {
         switch (this.addGeoJson.geometry.type) {
           case 'Polygon':
-            this.addGeoJson.geometry.type = 'Polygon'
             return this.itemsCategory.polygon
             break
           case 'MultiLineString':
-            this.addGeoJson.geometry.type = 'MultiLineString'
             return this.itemsCategory.multiLineString
             break
         }
@@ -239,6 +237,7 @@ export default {
         this.$emit('send-data', {
           show: false,
           resetCoordinates: true,
+          createGeoJon: true,
           newGeoJson: this.addGeoJson
         })
       }
@@ -252,11 +251,11 @@ export default {
         resetCoordinates: true,
       })
     },
-    addCoordinate() {
+    /* addCoordinate() {
         this.$emit('send-data', {
             show: false,
         })
-    }
+    } */
   },
   mounted() {
     const requestIndexedDB = window.indexedDB.open('Map_Database', 1)

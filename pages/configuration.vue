@@ -180,6 +180,7 @@
 
     <v-col cols="12">
       <h1>My Markers</h1>
+      <p v-if="DBmessage">{{DBmessage}}</p>
       <v-btn @click="showBtnDBExist ? deleteDB() : activateIndexedDB()">{{
         showBtnDBExist ? 'Delete database' : 'Create database'
       }}</v-btn>
@@ -211,7 +212,7 @@ export default {
       colorSelected: '',
       // item for text fields
       subCategorySelected: undefined,
-      typeSelection: ['Point', 'Polygon', 'multiLineString'],
+      typeSelection: ['Point', 'Polygon', 'MultiLineString'],
       newIcon: {
         type: 'Point',
         category: 'test',
@@ -222,6 +223,7 @@ export default {
       // manage datas
       markers: [],
       showBtnDBExist: false,
+      DBmessage: undefined
     }
   },
   components: {
@@ -263,24 +265,34 @@ export default {
       this.showModal = payload.message
     },
     async activateIndexedDB() {
-      await createIndexedDB()
-      this.showBtnDBExist = true
+      let response = await createIndexedDB()
+      console.log(response);
+      if(response) {
+        this.showBtnDBExist = true
+        this.DBmessage = response.message
+      } else {
+        this.DBmessage = 'an error is occured'
+      }
+      
     },
     async deleteDB() {
       let confirm = window.confirm(
         'Are you sure you want to delete all the markers ?'
       )
       if (confirm) {
-        await deleteIndexedDB()
-        this.markers = []
-        this.showBtnDBExist = false
+        let response = await deleteIndexedDB()
+        console.log(response);
+        if(response) {
+          this.markers = []
+          this.showBtnDBExist = false
+          this.DBmessage = response.message
+        } else {
+          this.DBmessage = 'an error is occured'
+        }
       }
     },
     addNewMarker() {
-      if (this.newIcon.color.length === 1) {
-        let oneColor = this.newIcon.color[0]
-        this.newIcon.color = oneColor
-      }
+     
       const requestIndexedDB = window.indexedDB.open('Map_Database', 1)
       requestIndexedDB.onsuccess = (event) => {
         var db = event.target.result
@@ -352,25 +364,21 @@ export default {
           if (cursor) {
             // if a get an array of sub category, i create a new object to send in this.markers array
             if (cursor.value.subCategory.length > 0) {
-              class Marker {
-                constructor(sub, color) {
-                  ;(this.type = cursor.value.type),
-                    (this.category = cursor.value.category),
-                    (this.subCategory = sub),
-                    (this.icon = cursor.value.icon),
-                    (this.color = color)
-                }
-              }
               for (
                 let index = 0;
                 index < cursor.value.subCategory.length;
                 index++
               ) {
-                let formatedMarker = new Marker(
-                  cursor.value.subCategory[index],
-                  cursor.value.color[index]
-                )
-                this.markers.push(formatedMarker)
+                let multiMarker = {
+                  type: cursor.value.type,
+                  category: cursor.value.category,
+                  subCategory: [],
+                  icon: cursor.value.icon,
+                  color: []
+                }
+                multiMarker.subCategory.push(cursor.value.subCategory[index])
+                multiMarker.color.push(cursor.value.color[index])
+                this.markers.push(multiMarker)
               }
             } else {
               this.markers.push(cursor.value)

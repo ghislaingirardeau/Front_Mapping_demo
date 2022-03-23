@@ -12,8 +12,8 @@
         </v-card-title>
         <v-data-table :headers="headers" :items="markers" :search="search">
           <template v-slot:[`item.icon`]="{ item }">
-            <v-icon v-if="item.icon.length > 0" :color="item.color"> mdi-{{item.icon}} </v-icon>
-            <v-chip :color="item.color" small v-else>area</v-chip>
+            <v-icon v-if="item.icon.length > 0" :color="item.color[0]"> mdi-{{item.icon}}</v-icon>
+            <v-chip :color="item.color[0]" small v-else>area</v-chip>
           </template>
           <template v-slot:[`item.remove`]="{ item }">
             <v-icon @click="removeDB(item)"> mdi-delete </v-icon>

@@ -5,10 +5,10 @@
         <span>{{i.category}}</span>
         <br>
         
-        <v-icon v-if="i.icon.length > 0" :color="i.color"> mdi-{{i.icon}} </v-icon>
-        <v-chip :color="i.color" small v-else>area</v-chip>
+        <v-icon v-if="i.icon.length > 0" :color="i.color[0]"> mdi-{{i.icon}} </v-icon>
+        <v-chip :color="i.color[0]" small v-else>area</v-chip>
         <br>
-        <span v-if="i.subCategory.length > 0">{{i.subCategory}}</span>
+        <span v-if="i.subCategory.length > 0">{{i.subCategory[0]}}</span>
       </v-col>
     </v-row>
   </v-col>
@@ -54,26 +54,21 @@ export default {
           if (cursor) {
             // if a get an array of sub category, i create a new object to send in this.markers array
             if (cursor.value.subCategory.length > 0) {
-              class Marker {
-                constructor(sub, color) {
-                  ;(this.type = cursor.value.type),
-                    (this.category = cursor.value.category),
-                    (this.subCategory = sub),
-                    (this.icon = cursor.value.icon),
-                    (this.color = color)
-                }
-              }
               for (
                 let index = 0;
                 index < cursor.value.subCategory.length;
                 index++
               ) {
-                let formatedMarker = new Marker(
-                  cursor.value.subCategory[index],
-                  cursor.value.color[index]
-                )
-                this.markers.push(formatedMarker)
-              }
+                let multiMarker = {
+                  type: cursor.value.type,
+                  category: cursor.value.category,
+                  subCategory: [],
+                  icon: cursor.value.icon,
+                  color: []
+                }
+                multiMarker.subCategory.push(cursor.value.subCategory[index])
+                multiMarker.color.push(cursor.value.color[index])
+                this.markers.push(multiMarker)              }
             } else {
               this.markers.push(cursor.value)
             }
