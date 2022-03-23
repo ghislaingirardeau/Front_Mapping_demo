@@ -40,8 +40,9 @@
                   <v-text-field
                     v-model="newIcon.icon"
                     label="Add the name of the icon ex: plus-circle"
-                    hint="Ony copy the name of the icon ex: help-circle-outline"
+                    hint="Only copy the name of the icon ex: help-circle-outline"
                     persistent-hint
+                    prefix="mdi-"
                     required
                   >
                     <template v-slot:append>
@@ -232,7 +233,7 @@ export default {
   },
   methods: {
     linkToIcon() {
-      window.open('https://materialdesignicons.com/', '_blank')
+      window.open('https://pictogrammers.github.io/@mdi/font/6.5.95/', '_blank')
     },
     // RESET THE FORM AND ENABLE ALL BUTTON
     resetMarker() {

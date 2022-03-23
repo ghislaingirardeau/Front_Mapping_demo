@@ -233,7 +233,7 @@ export default {
             icon: createIcon(
               feature.icon.type,
               feature.icon.color,
-              "small",
+              "large",
               feature.properties.name
             ),
           });
