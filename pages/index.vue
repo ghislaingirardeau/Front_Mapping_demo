@@ -162,23 +162,28 @@ export default {
     getData(payload) {
       this.showInputGeoDetail = payload.show;
       this.showModal = payload.show;
-      let newGeoJson = payload.newGeoJson;
-      let groupLayer = newGeoJson.properties.category
+      this.modalTitle = undefined;
 
-      if(this.propertiesNames.indexOf(groupLayer) === -1) { // if category is not inside the layer control, i add it
-        this.propertiesNames.push(groupLayer)
-        this.dynamicLayerGroup[groupLayer] = L.layerGroup();
-        this.createGeoJsonLayer(newGeoJson, this.dynamicLayerGroup[groupLayer])
-        this.controlLayers.addOverlay(this.dynamicLayerGroup[groupLayer], groupLayer)
+      if (payload.createGeoJon) { // si je valide la creation
+        let newGeoJson = payload.newGeoJson;
+        let groupLayer = newGeoJson.properties.category
+
+        if(this.propertiesNames.indexOf(groupLayer) === -1) { // if category is not inside the layer control, i add it
+          this.propertiesNames.push(groupLayer)
+          this.dynamicLayerGroup[groupLayer] = L.layerGroup();
+          this.createGeoJsonLayer(newGeoJson, this.dynamicLayerGroup[groupLayer])
+          this.controlLayers.addOverlay(this.dynamicLayerGroup[groupLayer], groupLayer)
+        } else {
+          this.createGeoJsonLayer(newGeoJson, this.dynamicLayerGroup[groupLayer])
+        }
       } else {
-        this.createGeoJsonLayer(newGeoJson, this.dynamicLayerGroup[groupLayer])
+        // sinon je l'ai annulé en cliquant sur cancel
       }
       
       if (payload.resetCoordinates) {
         this.coordinates = [];
       }
-      /* this.myLocationMark; */ // a supprimer
-      this.modalTitle = undefined;
+      
     },
     createGeoJsonLayer(layerType, groupLayer) {
       // layerType = le geojson que je souhaite envoyer dans le layer
