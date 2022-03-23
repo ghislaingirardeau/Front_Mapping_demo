@@ -34,11 +34,6 @@ export default {
   ],
 
   plugins: [
-    /* { src: "~plugins/crisp.js", mode: "client" } */
-    /* {
-        src: '@/plugins/vuelayers.js',
-        ssr: false
-    }, */
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
