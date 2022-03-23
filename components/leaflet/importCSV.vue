@@ -20,6 +20,8 @@
 </template>
 
 <script>
+import { createIndexedDB, deleteIndexedDB } from '@/static/functions/indexedDb'
+
 export default {
   data: () => ({
     valid: true,
@@ -137,10 +139,12 @@ export default {
 
       fileInput.addEventListener('change', readFile)
     },
-    validImport() {
+    async validImport() {
         let confirm = window.confirm('Import a file will remove all the data actually displayed')
         if(confirm) {
             try {
+              /* await deleteIndexedDB()
+              await createIndexedDB() */
               const requestIndexedDB = window.indexedDB.open('Map_Database', 1)
               requestIndexedDB.onsuccess = (event) => {
                 var db = event.target.result
