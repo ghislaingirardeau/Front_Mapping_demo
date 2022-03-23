@@ -33,6 +33,7 @@
                   <v-text-field
                     v-model="newIcon.category"
                     label="category"
+                    :rules="rulesCategory"
                     required
                   ></v-text-field>
                 </v-col>
@@ -66,7 +67,7 @@
                   </v-text-field>
                 </v-col>
                 <v-col cols="12">
-                  <v-btn color="primary" @click="e1 = 2"> Continue </v-btn>
+                  <v-btn color="primary" @click="checkStep1"> Continue </v-btn>
                 </v-col>
               </v-row>
             </v-stepper-content>
@@ -212,6 +213,7 @@ export default {
       colorSelected: '',
       // item for text fields
       subCategorySelected: undefined,
+      rulesCategory: [v => v.length >= 2 || 'Mininum 2 characters'],
       typeSelection: ['Point', 'Polygon', 'MultiLineString'],
       newIcon: {
         type: 'Point',
@@ -234,6 +236,15 @@ export default {
     linkToIcon() {
       window.open('https://pictogrammers.github.io/@mdi/font/6.5.95/', '_blank')
     },
+    checkStep1() {
+      let nameExist
+      this.markers.forEach(element => {
+        if(element.category.indexOf(this.newIcon.category) != -1) {
+          nameExist = true
+        }
+      });
+      nameExist ? this.rulesCategory = ['this category already exist'] : this.e1 = 2
+    },
     // RESET THE FORM AND ENABLE ALL BUTTON
     resetMarker() {
       this.newIcon = {
@@ -246,6 +257,7 @@ export default {
       this.disableInputs = false
       this.disableColor = false
       this.e1 = 1
+      this.rulesCategory = [v => v.length >= 2 || 'Mininum 2 characters']
     },
     addToArrayMarker(e) {
       if (e) {
@@ -263,6 +275,7 @@ export default {
     },
     modalResponse(payload) {
       this.showModal = payload.message
+      this.resetMarker()
     },
     async activateIndexedDB() {
       let response = await createIndexedDB()
