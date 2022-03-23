@@ -5,17 +5,11 @@
         label="Selelct CSV file"
         id="csv"
         @click="readFileTest"
-        accept='.csv'
+        accept=".csv"
       ></v-file-input>
     </v-form>
     <v-spacer></v-spacer>
-    <v-btn
-      color="success"
-      class="mr-4"
-      @click="validImport"
-    >
-      Import
-    </v-btn>
+    <v-btn color="success" class="mr-4" @click="validImport"> Import </v-btn>
   </div>
 </template>
 
@@ -26,7 +20,7 @@ export default {
   data: () => ({
     valid: true,
     objetData: {},
-    newMarker: []
+    newMarker: [],
   }),
   methods: {
     async readFileTest() {
@@ -111,12 +105,11 @@ export default {
                 category: element.category,
                 subCategory: [],
                 icon: element.icon,
-                color: []
+                color: [],
               })
             }
-            
           })
-          
+
           await countCategories.forEach((element, i) => {
             // pour chaque category, je lui crée un nouveau tableau
             let name = element
@@ -127,9 +120,12 @@ export default {
                 createGeoJsons(index, this.objetData[element])
               }
               // enregistre la sous category et la couleur si category presente mais sous category n'existe pas
-              if (this.newMarker[i].category === index.category && this.newMarker[i].subCategory.indexOf(index.subCategory) === -1) {
-                  this.newMarker[i].subCategory.push(index.subCategory)
-                  this.newMarker[i].color.push(index.color)
+              if (
+                this.newMarker[i].category === index.category &&
+                this.newMarker[i].subCategory.indexOf(index.subCategory) === -1
+              ) {
+                this.newMarker[i].subCategory.push(index.subCategory)
+                this.newMarker[i].color.push(index.color)
               }
             })
           })
@@ -140,34 +136,49 @@ export default {
       fileInput.addEventListener('change', readFile)
     },
     async validImport() {
-        let confirm = window.confirm('Import a file will remove all the data actually displayed')
-        if(confirm) {
-            try {
-              /* await deleteIndexedDB()
-              await createIndexedDB() */
-              const requestIndexedDB = window.indexedDB.open('Map_Database', 1)
-              requestIndexedDB.onsuccess = (event) => {
-                var db = event.target.result
+      // reinitialise la base de donnée marker si presente ou non
+      let response = await window.indexedDB.databases()
+      let DBname = []
+      response.forEach((element) => {
+        DBname.push(element.name)
+      })
+      if (DBname.indexOf('Map_Database') === -1) {
+        console.log('create')
+        await createIndexedDB()
+      } else {
+        console.log('delete and create')
+        await deleteIndexedDB()
+        await createIndexedDB()
+      }
 
-                var transaction = db.transaction('markers', 'readwrite')
-                const store = transaction.objectStore('markers') // store = table in sql
-                // insert data  in the store
-                this.newMarker.forEach(element => {
-                  store.add(element)
-                });
-                
-                console.log('markers added to the store')
-                transaction.oncomplete = () => {
-                  db.close()
-                }
-              }
-              localStorage.setItem('APIGeoMap', JSON.stringify(this.objetData))
-              this.$router.push('/myData')
-            } catch (error) {
-              console.log(error);
+      let confirm = window.confirm(
+        'Import a file will remove all the data actually displayed'
+      )
+      if (confirm) {
+        try {
+          const requestIndexedDB = window.indexedDB.open('Map_Database', 1)
+          requestIndexedDB.onsuccess = (event) => {
+            var db = event.target.result
+
+            var transaction = db.transaction('markers', 'readwrite')
+            const store = transaction.objectStore('markers') // store = table in sql
+            // insert data  in the store
+            this.newMarker.forEach((element) => {
+              store.add(element)
+            })
+
+            console.log('markers added to the store')
+            transaction.oncomplete = () => {
+              db.close()
             }
+          }
+          localStorage.setItem('APIGeoMap', JSON.stringify(this.objetData))
+          this.$router.push('/myData')
+        } catch (error) {
+          console.log(error)
         }
-    }
+      }
+    },
   },
 }
 </script>
