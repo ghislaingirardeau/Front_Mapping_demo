@@ -407,7 +407,6 @@ export default {
 
         /* RECUPERE LES DONNEES SI PRESENT DANS LE LOCALSTORAGE */
     let geoFromLocal = JSON.parse(localStorage.getItem("APIGeoMap"));
-    console.log(geoFromLocal);
     if (geoFromLocal) {
       // if there is data from a file, loaded
       try {
