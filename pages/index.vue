@@ -49,7 +49,7 @@
       </div>
     </div>
 
-    <div class="hub__target--btn" v-if="snackbar">
+    <div class="hub__target--btn" v-if="hubTargetDisplay">
       <v-btn
         color="black"
         class="mx-3"
@@ -84,12 +84,10 @@ export default {
     coordinates: [],
     myLocationMark: undefined,
     showInputGeoDetail: false,
-    lastItem: undefined,
-    layerGeoJson: undefined,
     btnMeasure: true,
-    messageModal: undefined,
     watchMe: undefined,
     accuracyLocation: undefined,
+    // tutorial
     tutorialsAction: [
       "Select layers to show -->",
       "Find me and add a coordinate -->",
@@ -104,16 +102,19 @@ export default {
       "<-- Show area measure",
     ],
     tutoPage: false,
+    // modal
     showModal: false,
     showLegend: false,
     showSetting: false,
     modalTitle: undefined,
-    printDisplay: false,
+    messageModal: undefined,
+    // hub display
     markerTarget: undefined,
-    snackbar: false,
-    dynamicLayerGroup: {}, // each layer contain the array of geojson
-    propertiesNames: [], // name inside the layers control
-    controlLayers: undefined // control and add dynamic layers
+    hubTargetDisplay: false,
+    // layers & layer group
+    dynamicLayerGroup: {},
+    propertiesNames: [],
+    controlLayers: undefined
   }),
   computed: {
     modalDiplay() {
@@ -199,6 +200,11 @@ export default {
         layer.closePopup();
       }
 
+      function clickMarker(e) {
+        var layer = e.target;
+        console.log(layer);
+      }
+
       function onEachFeature(feature, layer) {
         // pour faire apparaitre le popup du marker si popupContent est defini
         if (feature.properties && feature.properties.popupContent) {
@@ -207,24 +213,21 @@ export default {
         layer.on({
           mouseover: showPopupMarker,
           mouseout: hidePopupMarker,
+          click: clickMarker
         });
       }
 
       // FUNCTION RETURN ICON HOUSE SVG DEPENDING ON COLOR PARAMS
       const createIcon = (type, color, size, name) => {
-        let showHtml
-        if(this.printDisplay) {
-          showHtml = `<i aria-hidden="true" class="v-icon notranslate mdi mdi-${type} theme--dark" style="font-size: ${size}; color:${color};"></i><span class='icon--name' style="color:${color};">${name}</span>`
-        } else {
-          showHtml = `<i aria-hidden="true" class="v-icon notranslate mdi mdi-${type} theme--dark" style="font-size: ${size}; color:${color};"></i>`
-        }
+        
+        let showHtml = `<i aria-hidden="true" class="v-icon notranslate mdi mdi-${type} theme--dark" style="font-size: ${size}; color:${color};"></i>`
         return L.divIcon({
           className: `${type}-icon`,
           html: showHtml,
         });
       }
 
-      this.layerGeoJson = L.geoJSON(layerType, {
+      let layerGeoJson = L.geoJSON(layerType, {
         // on peut enchainer les options ici
         onEachFeature: onEachFeature,
         pointToLayer: (feature, latlng) => {
@@ -245,7 +248,7 @@ export default {
       });
 
       // GROUPE DE LAYER DANS LEQUEL J'ENREGISTRE LE JSON
-      groupLayer.addLayer(this.layerGeoJson);
+      groupLayer.addLayer(layerGeoJson);
     },
     showMeasure() {
       // show measure on click
@@ -342,7 +345,7 @@ export default {
       } else { // if false, reset all
         this.coordinates = []
       }
-      this.snackbar = false
+      this.hubTargetDisplay = false
       this.markerTarget.clearLayers()
       this.activateOrNotBtn('btn-add')
       this.activateOrNotBtn('btn-trace')
@@ -545,7 +548,7 @@ export default {
             let x = ((this.map.getSize().x / 2) - 24.3) 
             let y = ((this.map.getSize().y / 2) - 30) 
 
-            this.snackbar = true
+            this.hubTargetDisplay = true
             
             let icon =  document.getElementById('targetIconLocate')
             icon.style.display = 'block'
