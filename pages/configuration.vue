@@ -182,7 +182,7 @@
 
     <v-col cols="12">
       <h1>My Markers</h1>
-      <p v-if="DBmessage">{{DBmessage}}</p>
+      <p v-if="DBmessage">{{ DBmessage }}</p>
       <v-btn @click="showBtnDBExist ? deleteDB() : activateIndexedDB()">{{
         showBtnDBExist ? 'Delete database' : 'Create database'
       }}</v-btn>
@@ -213,7 +213,7 @@ export default {
       colorSelected: '',
       // item for text fields
       subCategorySelected: undefined,
-      rulesCategory: [v => v.length >= 2 || 'Mininum 2 characters'],
+      rulesCategory: [(v) => v.length >= 2 || 'Mininum 2 characters'],
       typeSelection: ['Point', 'Polygon', 'MultiLineString'],
       newIcon: {
         type: 'Point',
@@ -225,7 +225,7 @@ export default {
       // manage datas
       markers: [],
       showBtnDBExist: false,
-      DBmessage: undefined
+      DBmessage: undefined,
     }
   },
   components: {
@@ -238,12 +238,14 @@ export default {
     },
     checkStep1() {
       let nameExist
-      this.markers.forEach(element => {
-        if(element.category.indexOf(this.newIcon.category) != -1) {
+      this.markers.forEach((element) => {
+        if (element.category.indexOf(this.newIcon.category) != -1) {
           nameExist = true
         }
-      });
-      nameExist ? this.rulesCategory = ['this category already exist'] : this.e1 = 2
+      })
+      nameExist
+        ? (this.rulesCategory = ['this category already exist'])
+        : (this.e1 = 2)
     },
     // RESET THE FORM AND ENABLE ALL BUTTON
     resetMarker() {
@@ -257,7 +259,7 @@ export default {
       this.disableInputs = false
       this.disableColor = false
       this.e1 = 1
-      this.rulesCategory = [v => v.length >= 2 || 'Mininum 2 characters']
+      this.rulesCategory = [(v) => v.length >= 2 || 'Mininum 2 characters']
     },
     addToArrayMarker(e) {
       if (e) {
@@ -279,14 +281,13 @@ export default {
     },
     async activateIndexedDB() {
       let response = await createIndexedDB()
-      console.log(response);
-      if(response) {
+      console.log(response)
+      if (response) {
         this.showBtnDBExist = true
         this.DBmessage = response.message
       } else {
         this.DBmessage = 'an error is occured'
       }
-      
     },
     async deleteDB() {
       let confirm = window.confirm(
@@ -294,8 +295,8 @@ export default {
       )
       if (confirm) {
         let response = await deleteIndexedDB()
-        console.log(response);
-        if(response) {
+        console.log(response)
+        if (response) {
           this.markers = []
           this.showBtnDBExist = false
           this.DBmessage = response.message
@@ -305,7 +306,6 @@ export default {
       }
     },
     addNewMarker() {
-     
       const requestIndexedDB = window.indexedDB.open('Map_Database', 1)
       requestIndexedDB.onsuccess = (event) => {
         var db = event.target.result
@@ -354,7 +354,7 @@ export default {
                   category: cursor.value.category,
                   subCategory: [],
                   icon: cursor.value.icon,
-                  color: []
+                  color: [],
                 }
                 multiMarker.subCategory.push(cursor.value.subCategory[index])
                 multiMarker.color.push(cursor.value.color[index])
