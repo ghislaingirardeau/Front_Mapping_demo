@@ -502,11 +502,11 @@ export default {
           } else if (data.target.querySelector("#btn-data")) {
             let jsonToSave = {} 
             for (let property in this.dynamicLayerGroup) {
-              jsonToSave[property] = []
-              let listItems = this.dynamicLayerGroup[property].getLayers()[0]._layers
+              jsonToSave[property] = [] // create a property as an array empty
+              let listItems = this.dynamicLayerGroup[property].getLayers()[0]._layers // get all the markers refer to the property
               for(let i in listItems) {
                 let feature = listItems[i].feature
-                jsonToSave[feature.properties.category].push(feature)
+                jsonToSave[feature.properties.category].push(feature) // send all the markers to the json correct property
               }
             }
             localStorage.setItem("APIGeoMap", JSON.stringify(jsonToSave));
