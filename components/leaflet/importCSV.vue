@@ -94,6 +94,7 @@ export default {
             result.push(obj)
           }
           let JsonFromCsv = result
+          console.log(JsonFromCsv);
           let countCategories = []
 
           await JsonFromCsv.forEach((element) => {

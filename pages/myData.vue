@@ -28,6 +28,7 @@ export default {
     return {
       allDatas: [],
       isActive: false,
+      objetData: {}
     }
   },
   components: {
@@ -37,7 +38,7 @@ export default {
     linkMap() {
       this.$router.push('/')
     },
-    tableUpdate(playload) {
+    async tableUpdate(playload) {
       if(playload.action) {
         this.allDatas.splice(playload.index, 1)
       } else {
@@ -46,14 +47,34 @@ export default {
         this.allDatas[index].properties.name = name
         this.allDatas[index].properties.popupContent = popupContent
       }
-      // UPDATE LOCALSTORAGE AT THE END
+      // FUNCTION TO UPDATE JSON IN LOCALSTORAGE
+      let countCategories = []
+
+      await this.allDatas.forEach((element) => {
+        // recupere le nombre de category differentes créées
+        if (countCategories.indexOf(element.properties.category) === -1) {
+          countCategories.push(element.properties.category)
+        }
+      })   
+      await countCategories.forEach((element) => {
+        // pour chaque category, je lui crée un nouveau tableau
+        let name = element
+        this.objetData[element] = new Array()
+        this.allDatas.forEach((index) => {
+          // j'envoie le tableau de geosjon dans la categorie correspondante
+          if (index.properties.category === name) {
+            this.objetData[element].push(index)
+          }
+        })
+      })
+      localStorage.setItem('APIGeoMap', JSON.stringify(this.objetData))
     }
   },
   mounted() {
     try {
       /* RECUPERE LES DONNEES SI PRESENT DANS LE LOCALSTORAGE */
       let geoFromLocal = JSON.parse(localStorage.getItem('APIGeoMap'))
-      console.log(geoFromLocal)
+      
       for (let property in geoFromLocal) {
         this.allDatas.push(...geoFromLocal[property])
       }
