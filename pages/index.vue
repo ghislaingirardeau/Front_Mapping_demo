@@ -200,11 +200,6 @@ export default {
         layer.closePopup();
       }
 
-      function clickMarker(e) {
-        var layer = e.target;
-        console.log(layer);
-      }
-
       function onEachFeature(feature, layer) {
         // pour faire apparaitre le popup du marker si popupContent est defini
         if (feature.properties && feature.properties.popupContent) {
@@ -213,7 +208,6 @@ export default {
         layer.on({
           mouseover: showPopupMarker,
           mouseout: hidePopupMarker,
-          click: clickMarker
         });
       }
 
