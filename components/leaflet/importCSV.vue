@@ -1,5 +1,6 @@
 <template>
   <div>
+    <p>Import a file will remove all the data actually displayed !</p>
     <v-form ref="form" v-model="valid" lazy-validation>
       <v-file-input
         label="Selelct CSV file"

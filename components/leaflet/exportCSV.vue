@@ -1,8 +1,10 @@
 <template>
     <div>
+      <p>Export to CSV file, type the new file name to download it</p>
       <p v-if="errorMessage">
         {{ errorMessage }}
       </p>
+      
       <v-form v-else ref="form" v-model="valid" lazy-validation>
           <v-text-field
             v-model="fileName"

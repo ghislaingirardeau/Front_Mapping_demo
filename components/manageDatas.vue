@@ -1,6 +1,12 @@
 <template>
     <div>
-        <p v-if="message">{{message}}</p>
+        <div v-if="removeBtn">
+            <p>All you coordinates added will be erase. The markers data will be remain</p>
+            <v-btn @click="removeGeoJson" color="warning">
+                Confirm remove data 
+            </v-btn>
+        </div>
+        <p v-else>{{message}}</p>
         <exportCSV v-if="modalExport" />
         <importCSV v-if="modalImport" />
         <v-list v-if="showMenu">
@@ -45,6 +51,7 @@ import importCSV from '@/components/leaflet/importCSV.vue';
             return {
                 modalExport: false,
                 modalImport: false,
+                removeBtn: false,
                 message: undefined,
                 showMenu: true,
                 settings: [
@@ -90,8 +97,9 @@ import importCSV from '@/components/leaflet/importCSV.vue';
         methods: {
             removeGeoJson() {
                 localStorage.removeItem("APIGeoMap");
-                this.message = 'datas removed'
+                this.message = 'datas have been removed successfully'
                 this.showMenu = false
+                this.removeBtn = false
             },
             doThisFunction(e) {
                 switch (e) {
@@ -104,7 +112,8 @@ import importCSV from '@/components/leaflet/importCSV.vue';
                         this.showMenu = false
                         break;
                     case '3':
-                        this.removeGeoJson();
+                        this.removeBtn = true
+                        this.showMenu = false
                         break;
                     case '4':
                         this.$router.push({name: 'print'})
