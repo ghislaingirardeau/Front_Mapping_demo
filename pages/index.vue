@@ -87,6 +87,7 @@ export default {
     btnMeasure: true,
     watchMe: undefined,
     accuracyLocation: undefined,
+    layerGeoJson: undefined,
     // tutorial
     tutorialsAction: [
       "Select layers to show -->",
@@ -221,7 +222,7 @@ export default {
         });
       }
 
-      let layerGeoJson = L.geoJSON(layerType, {
+      this.layerGeoJson = L.geoJSON(layerType, {
         // on peut enchainer les options ici
         onEachFeature: onEachFeature,
         pointToLayer: (feature, latlng) => {
@@ -242,7 +243,7 @@ export default {
       });
 
       // GROUPE DE LAYER DANS LEQUEL J'ENREGISTRE LE JSON
-      groupLayer.addLayer(layerGeoJson);
+      groupLayer.addLayer(this.layerGeoJson);
     },
     showMeasure() {
       // show measure on click
@@ -498,13 +499,22 @@ export default {
             this.helpModal();
           } else if (data.target.querySelector("#btn-data")) {
             let jsonToSave = {} 
+            
             for (let property in this.dynamicLayerGroup) {
-              jsonToSave[property] = [] // create a property as an array empty
-              let listItems = this.dynamicLayerGroup[property].getLayers()[0]._layers // get all the markers refer to the property
-              for(let i in listItems) {
-                let feature = listItems[i].feature
-                jsonToSave[feature.properties.category].push(feature) // send all the markers to the json correct property
-              }
+              jsonToSave[property] = [] // create a property as an array empty              
+              let arrayPerProperty = this.dynamicLayerGroup[property].getLayers()
+              arrayPerProperty.forEach(element => {
+                let feature = element.getLayers()
+                if(feature.length > 1) { // when it add a geojson to the grouplayer, it create an other array of what it's added
+                  feature.forEach(element => {
+                    let item = element.feature
+                    jsonToSave[item.properties.category].push(item)
+                  });
+                } else { // when it's mounted it create an array / layer => so we look only for the [0]
+                  let item = feature[0].feature
+                  jsonToSave[item.properties.category].push(item)
+                }
+              });
             }
             localStorage.setItem("APIGeoMap", JSON.stringify(jsonToSave));
             this.showModal = true
