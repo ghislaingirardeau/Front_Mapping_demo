@@ -42,20 +42,19 @@
         :items="geoItems"
         :search="search"
       >
-        <template v-slot:[`item.edit`]="{ item }">
-          <v-icon
-            @click="itemAction(item, false)"
-          >
-            mdi-pencil
-          </v-icon>
-        </template>
-        <template v-slot:[`item.remove`]="{ item }">
-          <v-icon 
-            @click="itemAction(item, true)"
-          > 
-            mdi-delete 
-          </v-icon>
-        </template>      
+        <template v-slot:[`item.actions`]="{ item }">
+              <v-icon
+                class="mr-15"
+                @click="itemAction(item, false)"
+              >
+                mdi-pencil
+              </v-icon>
+              <v-icon
+                @click="itemAction(item, true)"
+              >
+                mdi-delete
+              </v-icon>
+            </template>      
       </v-data-table>
     </v-card>
   </v-col>
@@ -76,8 +75,7 @@ import modalCustom from '@/components/leaflet/modalCustom.vue';
           },
           { text: 'Details', value: 'popupContent' },
           { text: 'Type', value: 'category' },
-          { text: 'Edit', value: 'edit' },
-          { text: 'Remove', value: 'remove' }
+          { text: 'Actions', value: 'actions' },
         ],
         showModal: false,
         valid: true,
