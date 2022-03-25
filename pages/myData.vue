@@ -49,6 +49,7 @@ export default {
       }
       // FUNCTION TO UPDATE JSON IN LOCALSTORAGE
       let countCategories = []
+      this.allDatas.reverse()
 
       await this.allDatas.forEach((element) => {
         // recupere le nombre de category differentes créées
@@ -74,9 +75,10 @@ export default {
     try {
       /* RECUPERE LES DONNEES SI PRESENT DANS LE LOCALSTORAGE */
       let geoFromLocal = JSON.parse(localStorage.getItem('APIGeoMap'))
-      
+
       for (let property in geoFromLocal) {
         this.allDatas.push(...geoFromLocal[property])
+        this.allDatas.reverse()
       }
     } catch (error) {}
   },
