@@ -292,7 +292,7 @@ export default {
             .setLatLng(updatePositionMarker)
             .setRadius(position.coords.accuracy);
 
-          this.map.flyTo(updatePositionMarker);
+          this.map.flyTo(updatePositionMarker, 13);
         };
 
         let error = () => {
@@ -410,6 +410,10 @@ export default {
 
         /* RECUPERE LES DONNEES SI PRESENT DANS LE LOCALSTORAGE */
     let geoFromLocal = JSON.parse(localStorage.getItem("APIGeoMap"));
+    let setMapView = {
+      center: [0,0],
+      zoom: 1
+    }
     if (geoFromLocal) {
       // if there is data from a file, loaded
       try {
@@ -417,7 +421,14 @@ export default {
         this.propertiesNames.forEach(element => {
           this.dynamicLayerGroup[element] = L.layerGroup(); // creer un nouveau groupe de layer pour chaque nom
           this.createGeoJsonLayer(geoFromLocal[element], this.dynamicLayerGroup[element]) // charge le array de goejsons dans le layer
-        });        
+          // zoom the map on the last point added coordinates
+          if(geoFromLocal[element][0].geometry.type === 'Point') {
+            setMapView.center = []
+            setMapView.center.push(geoFromLocal[element][0].geometry.coordinates[1])
+            setMapView.center.push(geoFromLocal[element][0].geometry.coordinates[0])
+            setMapView.zoom = 13
+          }
+        });  
       } catch (error) {
         console.log(error);
       }
@@ -433,29 +444,24 @@ export default {
       });
       return array
     }
-    
-    this.markerTarget = L.layerGroup()
 
+    this.markerTarget = L.layerGroup()
+    this.myLocationMark = L.circleMarker();
+    
+    console.log(setMapView.center);
     // build the container with switch layer
     this.map = L.map("map", {
       layers: layersToShow(),
+      center: setMapView.center,
+      zoom: setMapView.zoom,
       zoomControl: false
     });
-    this.map.locate({ setView: true, maxZoom: 16 });
 
     // control layer choice
     this.controlLayers = L.control.layers(baseMaps, this.dynamicLayerGroup)
     this.controlLayers.addTo(this.map);
     // ADD scale control
     L.control.scale().addTo(this.map);
-
-    // show my location on load
-    this.myLocationMark = L.circleMarker();
-    let onLocationFound = (e) => {
-      var radius = e.accuracy;
-      this.myLocationMark.setLatLng(e.latlng).setRadius(radius).addTo(this.map);
-    };
-    this.map.on("locationfound", onLocationFound);
 
     // CUSTOMIZE AN ICON MENU ACTIONS ON THE MAP
     let styleControl = {

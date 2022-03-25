@@ -1,6 +1,6 @@
 <template>
     <div>
-        <h1 v-if="message">{{message}}</h1>
+        <p v-if="message">{{message}}</p>
         <exportCSV v-if="modalExport" />
         <importCSV v-if="modalImport" />
         <v-list v-if="showMenu">
