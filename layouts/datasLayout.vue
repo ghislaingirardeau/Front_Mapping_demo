@@ -34,9 +34,6 @@
         <v-col cols="2">
           <v-app-bar-nav-icon @click.stop="drawer = !drawer" />
         </v-col>
-        <v-col cols="5">
-          <v-toolbar-title>Manage</v-toolbar-title>
-        </v-col>
         <v-col cols="5" class="text-sm-center">
           <v-btn color="primary" @click="linkMap">
             <v-icon>mdi-map-outline</v-icon>
@@ -51,13 +48,6 @@
         <Nuxt keep-alive />
       </v-container>
     </v-main>
-<!--     <v-footer
-      :absolute="!fixed"
-      app
-    >
-      <span>&copy; {{ new Date().getFullYear() }}</span>
-    </v-footer>
- -->    
   </v-app>
 </template>
 
@@ -70,13 +60,13 @@ export default {
       fixed: false,
       items: [
         {
-          icon: 'mdi-apps',
-          title: 'Manage Datas',
+          icon: 'mdi-database-eye',
+          title: 'Manage My Datas',
           to: '/myData'
         },
         {
-          icon: 'mdi-apps',
-          title: 'Manage Markers',
+          icon: 'mdi-database-marker',
+          title: 'Manage My Markers',
           to: '/configuration'
         }
       ],

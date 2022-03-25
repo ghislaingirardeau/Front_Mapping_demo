@@ -180,7 +180,7 @@
       </template>
     </modalCustom>
 
-    <v-col cols="12">
+    <v-col cols="12" class="text-center">
       <h1>My Markers</h1>
       <p v-if="DBmessage">{{ DBmessage }}</p>
       <v-btn @click="showBtnDBExist ? deleteDB() : activateIndexedDB()">{{

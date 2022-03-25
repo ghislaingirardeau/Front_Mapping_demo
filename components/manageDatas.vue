@@ -4,7 +4,7 @@
         <exportCSV v-if="modalExport" />
         <importCSV v-if="modalImport" />
         <v-list v-if="showMenu">
-            <h2>setting</h2>
+            <h2>Settings</h2>
         <v-list-item
             v-for="(item, i) in settings"
             :key="i"
@@ -20,7 +20,7 @@
             </v-list-item-content>
         </v-list-item>
 
-            <h2>actions</h2>
+            <h2>Actions</h2>
         <v-list-item
             v-for="item in actions"
             :key="item.title"
@@ -49,30 +49,30 @@ import importCSV from '@/components/leaflet/importCSV.vue';
                 showMenu: true,
                 settings: [
                     {
-                    icon: 'mdi-apps',
-                    title: 'Manage Datas',
+                    icon: 'mdi-database-eye',
+                    title: 'Manage My Datas',
                     to: '/myData'
                     },
                     {
-                    icon: 'mdi-apps',
-                    title: 'Manage Markers',
+                    icon: 'mdi-database-marker',
+                    title: 'Manage My Markers',
                     to: '/configuration'
                     }
                 ],
                 actions: [
                     {
                     id: '1',
-                    icon: 'mdi-apps',
+                    icon: 'mdi-export',
                     title: 'Export Datas to CSV',
                     },
                     {
                     id: '2',
-                    icon: 'mdi-apps',
+                    icon: 'mdi-import',
                     title: 'Import CSV File',
                     },
                     {
                     id: '3',
-                    icon: 'mdi-apps',
+                    icon: 'mdi-eraser',
                     title: 'remove temporaly',
                     },
                     {

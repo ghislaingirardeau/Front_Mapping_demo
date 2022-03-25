@@ -448,7 +448,6 @@ export default {
     this.markerTarget = L.layerGroup()
     this.myLocationMark = L.circleMarker();
     
-    console.log(setMapView.center);
     // build the container with switch layer
     this.map = L.map("map", {
       layers: layersToShow(),

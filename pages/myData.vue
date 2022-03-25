@@ -1,9 +1,9 @@
 <template>
   <v-row>
-    <v-col cols="12">
+    <v-col cols="12" class="text-center">
       <h1>My datas</h1>
     </v-col>
-    <v-col cols="12">
+    <v-col cols="12" class="text-center">
       <p :class="{ active: isActive }">
         You have collected {{ allDatas ? allDatas.length : '' }} datas
       </p>
