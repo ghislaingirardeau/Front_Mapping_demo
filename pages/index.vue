@@ -266,8 +266,6 @@ export default {
       }
       this.btnMeasure = !this.btnMeasure;
     },
-    deleteItem() {
-    },
     coordinatesOnLocation(element) {
       if (this.watchMe) {
         navigator.geolocation.clearWatch(this.watchMe);
@@ -488,9 +486,6 @@ export default {
         '<i id="btn-data" aria-hidden="true" class="v-icon notranslate mdi mdi-sitemap theme--dark" style="color:rgb(33, 150, 243);"></i>' +        
         "</button>" +
         '<button type="button" class="btn-map btn-map--action">' +
-        '<i id="btn-delete" aria-hidden="true" class="v-icon notranslate mdi mdi-map-marker-remove theme--dark" style="color:rgb(33, 150, 243);"></i>' +        
-        "</button>" +
-        '<button type="button" class="btn-map btn-map--action">' +
         '<i id="btn-legend" aria-hidden="true" class="v-icon notranslate mdi mdi-map-legend theme--dark" style="color:rgb(33, 150, 243);"></i>' +        
         "</button>" +
         '<button type="button" class="btn-map btn-map--action">' +
@@ -528,8 +523,6 @@ export default {
           } else if (data.target.querySelector("#btn-ruler")) {
             styleOnClick(data.target);
             this.showMeasure();
-          } else if (data.target.querySelector("#btn-delete")) {
-            this.deleteItem();
           } else if (data.target.querySelector("#btn-legend")) {
             this.showLegend = !this.showLegend;
             this.showModal = !this.showModal;
