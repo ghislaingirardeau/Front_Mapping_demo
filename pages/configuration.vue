@@ -73,7 +73,7 @@
             </v-stepper-content>
 
             <v-stepper-content step="2">
-              <v-row align="center">
+              <v-row align="center" justify="space-around">
                 <v-col cols="7">
                   <h4>Optionnal</h4>
                   <v-text-field
@@ -91,37 +91,49 @@
                   >
                 </v-col>
 
-                <v-col cols="12">
-                  <h4>Pick a color</h4>
-                  <v-color-picker
-                    class="text-center"
-                    v-model="colorSelected"
-                    dot-size="21"
-                    hide-inputs
-                  ></v-color-picker>
+                <v-col 
+                  cols="2" 
+                  v-for="(i, l) in swatches" 
+                  :key="l" 
+                >
+                    <v-chip 
+                    :color="i"
+                    label
+                    @click="colorSelected = i"
+                  >
+                  </v-chip>
                 </v-col>
-                <v-col cols="6">
-                  <v-btn
+
+               <v-col cols="2" sm="3">
+                  <!-- <v-btn
                     outlined
                     color="primary"
                     :class="{ animationShake: disableInputs }"
                     @click="addToArrayMarker(false)"
                     :disabled="disableColor"
                     class="my-4"
-                    >Add color</v-btn
-                  >
+                    >
+                    
+                    </v-btn
+                    
+                  > -->
+                  <v-icon
+                    color="primary"
+                    :class="{ animationShake: disableInputs }"
+                    @click="addToArrayMarker(false)"
+                    :disabled="disableColor"
+                  >mdi-plus-circle</v-icon>
                 </v-col>
-                <v-col cols="6" class="text-center">
-                  <p v-if="newIcon.type === 'Point'">Preview</p>
+                <v-col cols="3" sm="3" class="text-center">
                   <v-icon
                     v-if="newIcon.type === 'Point'"
                     :color="colorSelected"
                     size="36px"
                     >mdi-{{ newIcon.icon }}</v-icon
                   >
-                  <v-chip v-else :color="colorSelected" label x-large
-                    >Preview</v-chip
-                  >
+                  <v-chip v-else :color="colorSelected" label
+                    >area
+                  </v-chip>
                 </v-col>
                 <v-col cols="12">
                   <v-btn
@@ -146,7 +158,7 @@
                 <v-col cols="12">
                   <h4>My markers selected</h4>
                 </v-col>
-                <v-col cols="4" v-for="(item, l) in newIcon.color" :key="l">
+                <v-col cols="6" sm="4" v-for="(item, l) in newIcon.color" :key="l">
                   <span v-if="newIcon.type === 'Point'">{{
                     newIcon.subCategory[l]
                       ? newIcon.subCategory[l]
@@ -211,6 +223,13 @@ export default {
       disableInputs: false,
       disableColor: false,
       colorSelected: '',
+      swatches: [
+        '#FF0000', '#AA0000', '#550000',
+        '#FFFF00', '#AAAA00', '#555500',
+        '#00FF00', '#00AA00', '#005500',
+        '#00FFFF', '#00AAAA', '#005555',
+        '#0000FF', '#0000AA', '#000055',
+      ],
       // item for text fields
       subCategorySelected: undefined,
       rulesCategory: [(v) => v.length >= 2 || 'Mininum 2 characters'],
@@ -256,6 +275,7 @@ export default {
         icon: '',
         color: [],
       }
+      this.subCategorySelected = undefined
       this.disableInputs = false
       this.disableColor = false
       this.e1 = 1
