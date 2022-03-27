@@ -201,6 +201,12 @@ export default {
         layer.closePopup();
       }
 
+      function testClick(e) { // TEST TO MODIFY DIRECTLY HERE !!!!!!!!!
+        var layer = e.target;
+        let test = document.getElementById('helpModal')
+        console.log(layer);
+      }
+
       function onEachFeature(feature, layer) {
         // pour faire apparaitre le popup du marker si popupContent est defini
         if (feature.properties && feature.properties.popupContent) {
@@ -209,6 +215,7 @@ export default {
         layer.on({
           mouseover: showPopupMarker,
           mouseout: hidePopupMarker,
+          dblclick: testClick
         });
       }
 
@@ -277,11 +284,16 @@ export default {
         // track my location, update the coordinates
         let success = (position) => {
           this.accuracyLocation = position.coords.accuracy;
-          if (element) {
+          if (element && this.accuracyLocation < 30) {
             this.coordinates = [[position.coords.longitude, position.coords.latitude]];
-          } else {
+            console.log(this.coordinates);
+          } else if (this.accuracyLocation < 30) {
             this.coordinates.push([position.coords.longitude, position.coords.latitude]);
+            console.log(this.coordinates);
+          } else {
+            console.log('position is not accurate enought');
           }
+          
           let updatePositionMarker = {
             lat: position.coords.latitude,
             lng: position.coords.longitude,
@@ -290,7 +302,8 @@ export default {
             .setLatLng(updatePositionMarker)
             .setRadius(position.coords.accuracy);
 
-          this.map.flyTo(updatePositionMarker, 13);
+          this.map.flyTo(updatePositionMarker, 16);
+          this.myLocationMark.addTo(this.map);
         };
 
         let error = () => {
@@ -350,6 +363,7 @@ export default {
       let attribut = button.parentElement.getAttribute("disabled");
 
       if (attribut != null ) {
+        this.myLocationMark.removeFrom(this.map);
         button.parentElement.removeAttribute("disabled", "");
         button.style.color = 'white'
         for(let element of actionsBtn) {
@@ -533,7 +547,7 @@ export default {
     });
 
     let layerPickerControl = L.control.custom({
-      position: "bottomright",
+      position: "topright",
       content:
         '<button type="button" class="btn-map btn-map--location">' +
         '<i id="btn-target" aria-hidden="true" class="v-icon notranslate mdi mdi-map-marker-plus theme--dark" style="color:white;"></i>' +        
