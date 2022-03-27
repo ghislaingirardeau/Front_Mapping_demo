@@ -49,10 +49,8 @@
       </div>
     </div>
 
-    <div class="hub__accuracy">
-      <span>
-        Accuracy : {{accuracyLocation}}
-      </span>
+    <div class="hub__accuracy" v-if="hubPosition">
+        {{hubCoordinate}}
     </div>
 
     <div class="hub__target--btn" v-if="hubTargetDisplay">
@@ -93,6 +91,7 @@ export default {
     btnMeasure: true,
     watchMe: undefined,
     accuracyLocation: undefined,
+    hubPosition: undefined,
     layerGeoJson: undefined,
     // tutorial
     tutorialsAction: [
@@ -129,6 +128,14 @@ export default {
         return "80px";
       } else {
         return "140px";
+      }
+    },
+    hubCoordinate() {
+      let crd = this.coordinates[this.coordinates.length - 1]
+      if(this.coordinates.length > 0) {
+        return `Acc ${parseInt(this.accuracyLocation)}, lat ${crd[1]}, lng ${crd[0]}`
+      } else {
+        'Position is not accurate enough'
       }
     }
   },
@@ -286,18 +293,18 @@ export default {
         this.showInputGeoDetail = true;
         this.showModal = true;
         this.modalTitle = "Add a symbol";
+        this.hubPosition = false
       } else {
         // track my location, update the coordinates
+        
         let success = (position) => {
           this.accuracyLocation = position.coords.accuracy;
-          if (element && this.accuracyLocation < 30) {
+          if (element && this.accuracyLocation < 10) {
             this.coordinates = [[position.coords.longitude, position.coords.latitude]];
-            console.log(this.coordinates);
-          } else if (this.accuracyLocation < 30) {
+            this.hubPosition = true
+          } else if (this.accuracyLocation < 10) {
             this.coordinates.push([position.coords.longitude, position.coords.latitude]);
-            console.log(this.coordinates);
-          } else {
-            console.log('position is not accurate enought');
+            this.hubPosition = true
           }
           
           let updatePositionMarker = {
@@ -652,7 +659,7 @@ export default {
   &--icon{
     display: none;
     position: absolute;
-    z-index: 2;
+    z-index: 3;
     color:black;
     font-size: 50px;
   }
@@ -666,19 +673,20 @@ export default {
     width: 270px;
     height: 50px;
     background-color: transparent;
-    z-index: 2;
+    z-index: 3;
   }
 }
 .hub__accuracy {
     display: block;
     position: absolute;
-    top: 13%;
-    left: 50%;
-    transform: translate(-50%,-50%);
-    width: 300px;
-    height: 50px;
+    bottom: 13%;
+    left: 2%;
+    padding: 5px;
     z-index: 2;
-    color: black;
+    background-color: black;
+    color: white;
+    font-size: 12px;
+    border-radius: 5px 5px;
 }
 .icon--name{
   padding-left: 10px;
