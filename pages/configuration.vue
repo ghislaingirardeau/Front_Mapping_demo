@@ -343,6 +343,9 @@ export default {
         this.showModal = false
         this.resetMarker()
       }
+      requestIndexedDB.onerror = (event) => {
+        this.DBmessage = event
+      }
     },
     showCursorDB() {
       this.markers = [] // reinitialise le tableau sinon doublon on show
@@ -406,8 +409,10 @@ export default {
       if (isExisting) {
         this.showBtnDBExist = true
         this.showCursorDB() // faire apparaitre les datas dans le tableau
+        this.DBmessage = 'the db is existing'
       } else {
         this.showBtnDBExist = false
+        this.DBmessage = 'the db not exist'
       }
     }
     checkDB()
