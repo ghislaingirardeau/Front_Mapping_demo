@@ -2,8 +2,8 @@
 
 to do :
 print: go the page to display : map zoom village, legend and global map
-list icon to show
-recreate createjson function to keep dynamic layer
+for print => shape print page js
+color and subcat selection for marker = add rules and restriction
 
 ## Build Setup
 
