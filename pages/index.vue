@@ -135,7 +135,7 @@ export default {
       if(this.coordinates.length > 0) {
         return `Acc ${parseInt(this.accuracyLocation)}, lat ${crd[1]}, lng ${crd[0]}`
       } else {
-        'Position is not accurate enough'
+        return 'Searching position...'
       }
     }
   },
@@ -298,13 +298,12 @@ export default {
         // track my location, update the coordinates
         
         let success = (position) => {
+          this.hubPosition = true
           this.accuracyLocation = position.coords.accuracy;
           if (element && this.accuracyLocation < 10) {
             this.coordinates = [[position.coords.longitude, position.coords.latitude]];
-            this.hubPosition = true
           } else if (this.accuracyLocation < 10) {
             this.coordinates.push([position.coords.longitude, position.coords.latitude]);
-            this.hubPosition = true
           }
           
           let updatePositionMarker = {
