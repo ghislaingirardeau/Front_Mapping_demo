@@ -49,6 +49,12 @@
       </div>
     </div>
 
+    <div class="hub__accuracy">
+      <span>
+        Accuracy : {{accuracyLocation}}
+      </span>
+    </div>
+
     <div class="hub__target--btn" v-if="hubTargetDisplay">
       <v-btn
         color="black"
@@ -662,6 +668,17 @@ export default {
     background-color: transparent;
     z-index: 2;
   }
+}
+.hub__accuracy {
+    display: block;
+    position: absolute;
+    top: 13%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    width: 300px;
+    height: 50px;
+    z-index: 2;
+    color: black;
 }
 .icon--name{
   padding-left: 10px;
