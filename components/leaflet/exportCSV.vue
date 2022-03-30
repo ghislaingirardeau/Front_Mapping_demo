@@ -98,7 +98,7 @@ export default {
           coordinates: "coordinates",
           icon: "icon",
           color: "color",
-          data: "data"
+          data: "let column empty"
         };
 
         var itemsNotFormatted = jsonToConvert;

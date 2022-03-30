@@ -100,7 +100,6 @@ export default {
           await JsonFromCsv.forEach((element) => {
             // recupere le nombre de category differentes créées
             if (countCategories.indexOf(element.category) === -1) {
-              console.log(element);
               countCategories.push(element.category)
               this.newMarker.push({
                 type: element.type,
@@ -112,7 +111,6 @@ export default {
               
             }
           })
-          console.log(this.newMarker);
 
           await countCategories.forEach((element, i) => {
             // pour chaque category, je lui crée un nouveau tableau
@@ -140,26 +138,28 @@ export default {
       fileInput.addEventListener('change', readFile)
     },
     async validImport() {
-      // reinitialise la base de donnée marker si presente ou non
-      let response = await window.indexedDB.databases()
-      let DBname = []
-      response.forEach((element) => {
-        DBname.push(element.name)
-      })
-      if (DBname.indexOf('Map_Database') === -1) {
-        console.log('create')
-        await createIndexedDB()
-      } else {
-        console.log('delete and create')
-        await deleteIndexedDB()
-        await createIndexedDB()
-      }
 
       let confirm = window.confirm(
         'Import a file will remove all the data actually displayed'
       )
       if (confirm) {
         try {
+
+          // reinitialise la base de donnée marker si presente ou non
+          let response = await window.indexedDB.databases()
+          let DBname = []
+          response.forEach((element) => {
+            DBname.push(element.name)
+          })
+          if (DBname.indexOf('Map_Database') === -1) {
+            console.log('create')
+            await createIndexedDB()
+          } else {
+            console.log('delete and create')
+            await deleteIndexedDB()
+            await createIndexedDB()
+          }
+          
           const requestIndexedDB = window.indexedDB.open('Map_Database', 1)
           requestIndexedDB.onsuccess = (event) => {
             var db = event.target.result
