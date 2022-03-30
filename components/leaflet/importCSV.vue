@@ -95,12 +95,12 @@ export default {
             result.push(obj)
           }
           let JsonFromCsv = result
-          console.log(JsonFromCsv);
           let countCategories = []
 
           await JsonFromCsv.forEach((element) => {
             // recupere le nombre de category differentes créées
             if (countCategories.indexOf(element.category) === -1) {
+              console.log(element);
               countCategories.push(element.category)
               this.newMarker.push({
                 type: element.type,
@@ -109,8 +109,10 @@ export default {
                 icon: element.icon,
                 color: [],
               })
+              
             }
           })
+          console.log(this.newMarker);
 
           await countCategories.forEach((element, i) => {
             // pour chaque category, je lui crée un nouveau tableau
