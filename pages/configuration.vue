@@ -326,25 +326,29 @@ export default {
       }
     },
     addNewMarker() {
-      const requestIndexedDB = window.indexedDB.open('Map_Database', 1)
-      requestIndexedDB.onsuccess = (event) => {
-        var db = event.target.result
+      try {
+        const requestIndexedDB = window.indexedDB.open('Map_Database', 1)
+        requestIndexedDB.onsuccess = (event) => {
+          var db = event.target.result
 
-        var transaction = db.transaction('markers', 'readwrite')
-        const store = transaction.objectStore('markers') // store = table in sql
-        // insert data  in the store
-        store.add(this.newIcon)
-        this.showCursorDB()
+          var transaction = db.transaction('markers', 'readwrite')
+          const store = transaction.objectStore('markers') // store = table in sql
+          // insert data  in the store
+          store.add(this.newIcon)
+          this.showCursorDB()
 
-        console.log('markers added to the store')
-        transaction.oncomplete = () => {
-          db.close()
+          console.log('markers added to the store')
+          transaction.oncomplete = () => {
+            db.close()
+          }
+          this.showModal = false
+          this.resetMarker()
         }
-        this.showModal = false
-        this.resetMarker()
-      }
-      requestIndexedDB.onerror = (event) => {
-        this.DBmessage = event
+        requestIndexedDB.onerror = (event) => {
+          this.DBmessage = event
+        }
+      } catch (error) {
+        console.log(error);
       }
     },
     showCursorDB() {
