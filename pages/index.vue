@@ -441,7 +441,8 @@ export default {
     if (geoFromLocal) {
       // if there is data from a file, loaded
       try {
-        this.propertiesNames = Object.getOwnPropertyNames(geoFromLocal) // recupere le nom de chaque propriete
+        this.propertiesNames = Object.keys(geoFromLocal) // recupere le nom de chaque propriete
+
         this.propertiesNames.forEach(element => {
           this.dynamicLayerGroup[element] = L.layerGroup(); // creer un nouveau groupe de layer pour chaque nom
           this.createGeoJsonLayer(geoFromLocal[element], this.dynamicLayerGroup[element]) // charge le array de goejsons dans le layer
@@ -463,7 +464,7 @@ export default {
 
     const layersToShow = () => {
       let array = [streets, outdoors, this.markerTarget] // layer by default
-      this.propertiesNames.forEach(element => { // layers from localstorage
+      this.propertiesNames.forEach(element => { 
         array.push(this.dynamicLayerGroup[element])
       });
       return array
