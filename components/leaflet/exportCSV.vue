@@ -120,7 +120,7 @@ export default {
           }
           itemsFormatted.push({
             category: item.properties.category,
-            subCategory: item.properties.subCategory,
+            subCategory: item.properties.subCategory ? item.properties.subCategory : '',
             type: item.geometry.type,
             name: item.properties.name,
             comment: item.properties.popupContent,
