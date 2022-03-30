@@ -116,7 +116,6 @@ import modalCustom from '@/components/leaflet/modalCustom.vue';
         }
       },
       updateItem() {
-        console.log(this.$refs.form.validate());
         if(this.$refs.form.validate()) {
           this.$emit('data-update', {
             action: false,
