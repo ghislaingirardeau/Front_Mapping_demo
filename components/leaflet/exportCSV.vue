@@ -43,7 +43,6 @@ export default {
       function convertToCSV(objArray) {
         var array = typeof objArray != "object" ? JSON.parse(objArray) : objArray;
         var str = "";
-
         for (var i = 0; i < array.length; i++) {
           var line = "";
           for (var index in array[i]) {
@@ -65,7 +64,6 @@ export default {
 
         // Convert Object to JSON
         var jsonObject = JSON.stringify(items);
-
         var csv = convertToCSV(jsonObject);
 
         var exportedFilename = fileTitle + ".csv" || "export.csv";
@@ -126,7 +124,8 @@ export default {
             comment: item.properties.popupContent,
             coordinates: coordinates,
             icon: item.icon.type,
-            color: item.icon.color
+            color: item.icon.color,
+            data: ''
           });
         });
 
