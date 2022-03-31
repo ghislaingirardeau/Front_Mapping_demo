@@ -1,5 +1,6 @@
 <template>
   <div class="container">
+    <!-- MODAL SETTING -->
     <modalCustom :showModal="showModal" @send-modal="modalResponse">
       <template v-slot:title>
         {{ modalTitle ? modalTitle : messageModal }}
@@ -15,8 +16,8 @@
       </template>
     </modalCustom>
 
+    <!-- MODAL TUTORIAL -->
     <div id="helpModal" class="modal_help">
-      <!-- Modal content -->
       <div class="modal_action">
         <span class="modal_action-close">&times;</span>
         <button
@@ -46,11 +47,11 @@
         </div>
       </div>
     </div>
-
+    <!-- MODAL COORDINATES -->
     <div class="hub__accuracy" v-if="hubPosition">
       {{ hubCoordinate }}
     </div>
-
+    <!-- MODAL HUB POINT LOCATION -->
     <div class="hub__target--btn" v-if="hubTargetDisplay">
       <v-btn color="black" class="mx-3" @click="saveTarget(false)">
         Cancel
@@ -65,7 +66,14 @@
       class="hub__target--icon mdi mdi-target"
     ></i>
 
+    <!-- MAP -->
+    <span class="print__block--title">Title here</span>
     <div id="map" class="mt-5"></div>
+    
+    <!-- DISPLAY FOR PRINTING -->
+    <div class="print__block">
+      <legendModal class="print__block--legend"/>
+    </div>
   </div>
 </template>
 
@@ -554,8 +562,11 @@ export default {
         '</button>' +
         '<button type="button" class="btn-map btn-map--action">' +
         '<i id="btn-ruler" aria-hidden="true" class="v-icon notranslate mdi mdi-ruler theme--dark" style="color:rgb(33, 150, 243);"></i>' +
+        '</button>' +
+        '<button type="button" class="btn-map btn-map--action">' +
+        '<i id="btn-printer" aria-hidden="true" class="v-icon notranslate mdi mdi-printer theme--dark" style="color:rgb(33, 150, 243);"></i>' +
         '</button>',
-      classes: 'btn-group-icon-map-option1',
+      classes: 'btn-group-icon-map',
       style: styleControl,
       events: {
         click: (data) => {
@@ -573,6 +584,8 @@ export default {
             this.showLegend = !this.showLegend
             this.showModal = !this.showModal
             this.modalTitle = 'Map Legend'
+          } else if (data.target.querySelector('#btn-printer')) {
+            window.print()
           }
         },
       },
@@ -590,7 +603,7 @@ export default {
         '<button type="button" class="btn-map btn-map--location">' +
         '<i id="btn-target" aria-hidden="true" class="v-icon notranslate mdi mdi-map-marker-plus theme--dark" style="color:white;"></i>' +
         '</button>',      
-      classes: 'btn-group-icon-map-option1',
+      classes: 'btn-group-icon-map',
       style: styleControl,
       events: {
         click: (data) => {
@@ -695,7 +708,7 @@ export default {
   font-weight: 800;
 }
 // STYLE BTN GROUP OM MAP
-.btn-group-icon-map-option1 {
+.btn-group-icon-map {
   position: relative;
   display: flex;
   flex-direction: column;
@@ -797,6 +810,12 @@ export default {
     border-radius: 4px 4px;
   }
 }
+.print__block{
+    display: none;
+    &--title{
+      display: none;
+    }
+}
 
 @media screen and (min-width: 990px) {
     .modal_tuto {
@@ -821,6 +840,41 @@ export default {
         left: 280px;
       }
     }
+}
+
+@media print {
+  body {
+    -webkit-print-color-adjust: exact !important;
+  }
+  #app {
+        background-color: white !important;
+
+  }
+  .container {
+    height: 50%;
+    width: 100%;
+  }
+  #map {
+    border: 2px solid grey;
+    width: 740px;
+  }
+  .leaflet-control-container {
+    display: none;
+  }
+  .print__block{
+    display: block;
+    &--legend{
+      border: 2px solid grey;
+      color: grey !important;
+      background-color: white !important;
+    }
+    &--title{
+      margin-top: 30px;
+      display: block;
+      color: red;
+      font-size: 30px;
+    }
+  }
 }
 
 </style>
