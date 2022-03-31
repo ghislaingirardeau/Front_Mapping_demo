@@ -30,7 +30,6 @@
       <div class="modal_tuto">
         <div
           class="modal_tuto-actions"
-          :style="{ right: modalDiplay }"
           v-if="this.$vuetify.breakpoint.width > 600 || !tutoPage"
         >
           <p v-for="item in tutorialsAction" :key="item">
@@ -39,7 +38,6 @@
         </div>
         <div
           class="modal_tuto-data"
-          :style="{ left: modalDiplay }"
           v-if="this.$vuetify.breakpoint.width > 600 || tutoPage"
         >
           <p v-for="item in tutorialsData" :key="item">
@@ -93,12 +91,11 @@ export default {
       'Select layers to show -->',
       'Find me and add a coordinate -->',
       'Track me and add an area -->',
-      'Add or draw a location -->',
+      'Add or draw on map -->',
     ],
     tutorialsData: [
       '<-- Show tutorial',
       '<-- Settings and datas',
-      '<-- Delete last item',
       '<-- Show legend',
       '<-- Show area measure',
     ],
@@ -118,13 +115,6 @@ export default {
     controlLayers: undefined,
   }),
   computed: {
-    modalDiplay() {
-      if (this.$vuetify.breakpoint.width < 1000) {
-        return '80px'
-      } else {
-        return '140px'
-      }
-    },
     hubCoordinate() {
       let crd = this.coordinates[this.coordinates.length - 1]
       if (this.coordinates.length > 0) {
@@ -758,6 +748,7 @@ export default {
   &-actions {
     position: absolute;
     text-align: right;
+    right: 80px;
     top: 20px;
     color: rgb(255, 255, 255);
     width: 70%; /* Could be more or less, depending on screen size */
@@ -768,6 +759,7 @@ export default {
   &-data {
     position: absolute;
     text-align: left;
+    left: 80px;
     top: 20px;
     color: rgb(255, 255, 255);
     width: 70%; /* Could be more or less, depending on screen size */
@@ -780,12 +772,13 @@ export default {
 /* The Close Button */
 .modal_action {
   position: absolute;
-  left: 50%;
+  left: 5%;
   top: 250px;
+  width: 90%;
 
   &-close {
     color: rgb(255, 255, 255);
-    font-size: 42px;
+    font-size: 62px;
     font-weight: bold;
     &:hover,
     &:focus {
@@ -795,9 +788,39 @@ export default {
     }
   }
   &-btn {
-    padding: 4px 6px;
+    position: absolute;
+    right: 5%;
+    top: 20px;
+    font-size: 24px;
+    padding: 8px 10px;
     border: 2px white solid;
     border-radius: 4px 4px;
   }
 }
+
+@media screen and (min-width: 990px) {
+    .modal_tuto {
+      &-actions {
+        right: 160px;
+      }
+      &-data {
+        left: 160px;
+      }
+    }
+    .modal_action {
+      padding-left: 100px;
+    }
+}
+
+@media screen and (min-width: 1400px) {
+    .modal_tuto {
+      &-actions {
+        right: 280px;
+      }
+      &-data {
+        left: 280px;
+      }
+    }
+}
+
 </style>
