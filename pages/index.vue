@@ -221,7 +221,7 @@ export default {
         layer.closePopup()
       }
 
-      function testClick(e) {
+      let testClick = (e) => {
         // TEST TO MODIFY DIRECTLY HERE !!!!!!!!!
         var layer = e.target
         let test = document.getElementById('helpModal')
@@ -588,17 +588,34 @@ export default {
       },
     })
 
-    let layerPickerControl = L.control.custom({
+    let locationsControl = L.control.custom({
       position: 'topright',
       content:
         '<button type="button" class="btn-map btn-map--location">' +
+        '<i id="btn-add" aria-hidden="true" class="v-icon notranslate mdi mdi-map-marker-radius theme--dark" style="color:white;"></i>' +
+        '</button>' +
+        '<button type="button" class="btn-map btn-map--location">' +
+        '<i id="btn-trace" aria-hidden="true" class="v-icon notranslate mdi mdi-map-marker-path theme--dark" style="color:white;"></i>' +
+        '</button>' +
+        '<button type="button" class="btn-map btn-map--location">' +
         '<i id="btn-target" aria-hidden="true" class="v-icon notranslate mdi mdi-map-marker-plus theme--dark" style="color:white;"></i>' +
-        '</button>',
+        '</button>',      
       classes: 'btn-group-icon-map-option1',
       style: styleControl,
       events: {
         click: (data) => {
-          if (data.target.querySelector('#btn-target')) {
+          // function on click
+          if (data.target.querySelector('#btn-add')) {
+            styleOnClick(data.target)
+            this.activateOrNotBtn('btn-trace')
+            this.activateOrNotBtn('btn-target')
+            this.coordinatesOnLocation(true) // display differente type of coordinates one array
+          } else if (data.target.querySelector('#btn-trace')) {
+            styleOnClick(data.target)
+            this.coordinatesOnLocation(false) // display differente type of coordinates multiple array
+            this.activateOrNotBtn('btn-add')
+            this.activateOrNotBtn('btn-target')
+          } else if (data.target.querySelector('#btn-target')) {
             this.activateOrNotBtn('btn-add')
             this.activateOrNotBtn('btn-trace')
             this.activateOrNotBtn('btn-target')
@@ -618,44 +635,10 @@ export default {
       },
     })
 
-    let locationsControl = L.control.custom({
-      position: 'topright',
-      content:
-        '<button type="button" class="btn-map btn-map--location">' +
-        '<i id="btn-add" aria-hidden="true" class="v-icon notranslate mdi mdi-map-marker-radius theme--dark" style="color:white;"></i>' +
-        '</button>' +
-        '<button type="button" class="btn-map btn-map--location">' +
-        '<i id="btn-trace" aria-hidden="true" class="v-icon notranslate mdi mdi-map-marker-path theme--dark" style="color:white;"></i>' +
-        '</button>',
-      classes: 'btn-group-icon-map-option1',
-      style: styleControl,
-      events: {
-        click: (data) => {
-          // function on click
-          if (data.target.querySelector('#btn-add')) {
-            styleOnClick(data.target)
-            this.activateOrNotBtn('btn-trace')
-            this.activateOrNotBtn('btn-target')
-            this.coordinatesOnLocation(true) // display differente type of coordinates one array
-          } else if (data.target.querySelector('#btn-trace')) {
-            styleOnClick(data.target)
-            this.coordinatesOnLocation(false) // display differente type of coordinates multiple array
-            this.activateOrNotBtn('btn-add')
-            this.activateOrNotBtn('btn-target')
-          }
-        },
-      },
-    })
-
     this.map.addControl(actionsControl)
     this.map.addControl(locationsControl)
-    this.map.addControl(layerPickerControl)
 
     // ecoute si online ou non automatiquement
-    // fonctionnalité permettant d'enregistrer le geojson en mode offline
-    // mettre un bouton precisant que l'on souhaite travailler en offline
-    // enregistre le geojson dans le localstorage
-    // ou retour de la connection, faire apparaitre le bouton pour sauvegarder le json dans le DB
     window.addEventListener('offline', function (e) {
       console.log('offline')
     })
