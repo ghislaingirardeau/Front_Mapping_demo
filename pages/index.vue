@@ -13,6 +13,7 @@
           :coordinates="coordinates"
         />
         <manageDatas v-if="showSetting" />
+        <printOptions v-if="showPrintOption" @send-modal="printResponse"/>
       </template>
     </modalCustom>
 
@@ -67,12 +68,12 @@
     ></i>
 
     <!-- MAP -->
-    <span class="print__block--title">Title here</span>
+    <span class="print__block--title">{{titleDocPrint}}</span>
     <div id="map" class="mt-5"></div>
-    
+
     <!-- DISPLAY FOR PRINTING -->
     <div class="print__block">
-      <legendModal class="print__block--legend"/>
+      <legendModal class="print__block--legend" />
     </div>
   </div>
 </template>
@@ -81,6 +82,7 @@
 import dataGeoJson from '@/components/leaflet/dataGeoJson.vue'
 import legendModal from '~/components/leaflet/legendModal.vue'
 import modalCustom from '@/components/leaflet/modalCustom.vue'
+import printOptions from '@/components/leaflet/printOptions.vue'
 import manageDatas from '@/components/manageDatas.vue'
 
 export default {
@@ -114,6 +116,9 @@ export default {
     showSetting: false,
     modalTitle: undefined,
     messageModal: undefined,
+    // print
+    showPrintOption: false,
+    titleDocPrint: undefined,
     // hub display
     markerTarget: undefined,
     hubTargetDisplay: false,
@@ -139,6 +144,7 @@ export default {
     legendModal,
     modalCustom,
     manageDatas,
+    printOptions
   },
   methods: {
     showTuto() {
@@ -168,6 +174,13 @@ export default {
       this.showSetting = payload.message
       this.messageModal = undefined
       this.modalTitle = undefined
+      this.showPrintOption = false
+    },
+    printResponse(payload) {
+      this.modalTitle = undefined
+      this.showModal = payload.message
+      this.showPrintOption = payload.message
+      this.titleDocPrint = payload.titleDocPrint
     },
     getData(payload) {
       this.showInputGeoDetail = payload.show
@@ -585,7 +598,10 @@ export default {
             this.showModal = !this.showModal
             this.modalTitle = 'Map Legend'
           } else if (data.target.querySelector('#btn-printer')) {
-            window.print()
+            this.showPrintOption = !this.showPrintOption
+            this.showModal = !this.showModal
+            this.modalTitle = 'Print option'
+            /* window.print() */
           }
         },
       },
@@ -602,7 +618,7 @@ export default {
         '</button>' +
         '<button type="button" class="btn-map btn-map--location">' +
         '<i id="btn-target" aria-hidden="true" class="v-icon notranslate mdi mdi-map-marker-plus theme--dark" style="color:white;"></i>' +
-        '</button>',      
+        '</button>',
       classes: 'btn-group-icon-map',
       style: styleControl,
       events: {
@@ -810,36 +826,36 @@ export default {
     border-radius: 4px 4px;
   }
 }
-.print__block{
+.print__block {
+  display: none;
+  &--title {
     display: none;
-    &--title{
-      display: none;
-    }
+  }
 }
 
 @media screen and (min-width: 990px) {
-    .modal_tuto {
-      &-actions {
-        right: 160px;
-      }
-      &-data {
-        left: 160px;
-      }
+  .modal_tuto {
+    &-actions {
+      right: 160px;
     }
-    .modal_action {
-      padding-left: 100px;
+    &-data {
+      left: 160px;
     }
+  }
+  .modal_action {
+    padding-left: 100px;
+  }
 }
 
 @media screen and (min-width: 1400px) {
-    .modal_tuto {
-      &-actions {
-        right: 280px;
-      }
-      &-data {
-        left: 280px;
-      }
+  .modal_tuto {
+    &-actions {
+      right: 280px;
     }
+    &-data {
+      left: 280px;
+    }
+  }
 }
 
 @media print {
@@ -847,8 +863,7 @@ export default {
     -webkit-print-color-adjust: exact !important;
   }
   #app {
-        background-color: white !important;
-
+    background-color: white !important;
   }
   .container {
     height: 50%;
@@ -861,20 +876,19 @@ export default {
   .leaflet-control-container {
     display: none;
   }
-  .print__block{
+  .print__block {
     display: block;
-    &--legend{
+    &--legend {
       border: 2px solid grey;
       color: grey !important;
       background-color: white !important;
     }
-    &--title{
+    &--title {
       margin-top: 30px;
       display: block;
-      color: red;
+      color: grey;
       font-size: 30px;
     }
   }
 }
-
 </style>
