@@ -75,7 +75,7 @@
     <div class="print__block">
       <legendModal class="print__block--legend" />
     </div>
-    <div id="mapPrint" class="mt-5" v-show="showPrintMap"></div>
+    <div id="mapPrint" v-show="showPrintMap"></div>
   </div>
 
 </template>
@@ -713,8 +713,9 @@ export default {
 }
 #mapPrint {
   height: 50%;
-  width: 50%;
+  width: 100%;
   z-index: 1;
+  border: 2px solid grey;
 }
 .leaflet-touch .leaflet-control-layers-toggle {
   background-color: black;
@@ -900,7 +901,7 @@ export default {
     background-color: white !important;
   }
   .container {
-    height: 50%;
+    height: 40%;
     width: 100%;
   }
   #map {
