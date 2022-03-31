@@ -13,7 +13,7 @@
     export default {
         data() {
             return {
-                titleDocPrint: undefined
+                titleDocPrint: 'My map'
             }
         },
         methods: {

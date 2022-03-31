@@ -712,8 +712,8 @@ export default {
   z-index: 1;
 }
 #mapPrint {
-  height: 50%;
-  width: 100%;
+  height: 80%;
+  width: 50%;
   z-index: 1;
   border: 2px solid grey;
 }
@@ -901,12 +901,19 @@ export default {
     background-color: white !important;
   }
   .container {
-    height: 40%;
+    height: 100%;
     width: 100%;
   }
   #map {
+    height: 40%;
     border: 2px solid grey;
     width: 740px;
+  }
+  #mapPrint {
+    height: 25%;
+    position: absolute;
+    top: 2%;
+    left: 50%;
   }
   .leaflet-control-container {
     display: none;
@@ -914,9 +921,13 @@ export default {
   .print__block {
     display: block;
     &--legend {
+      width: 48%;
       border: 2px solid grey;
       color: grey !important;
       background-color: white !important;
+      position: absolute;
+      left: 0px;
+      top: 50%;
     }
     &--title {
       margin-top: 30px;
