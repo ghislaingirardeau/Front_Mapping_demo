@@ -82,11 +82,6 @@ import importCSV from '@/components/leaflet/importCSV.vue';
                     icon: 'mdi-eraser',
                     title: 'remove temporaly',
                     },
-                    {
-                    id: '4',
-                    icon: 'mdi-printer',
-                    title: 'print',
-                    }
                 ],                
             }
         },
@@ -114,9 +109,6 @@ import importCSV from '@/components/leaflet/importCSV.vue';
                     case '3':
                         this.removeBtn = true
                         this.showMenu = false
-                        break;
-                    case '4':
-                        this.$router.push({name: 'print'})
                         break;
                 }
             }
