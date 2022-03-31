@@ -75,7 +75,9 @@
     <div class="print__block">
       <legendModal class="print__block--legend" />
     </div>
+    <div id="mapPrint" class="mt-5" v-show="showPrintMap"></div>
   </div>
+
 </template>
 
 <script>
@@ -118,7 +120,9 @@ export default {
     messageModal: undefined,
     // print
     showPrintOption: false,
+    showPrintMap: false,
     titleDocPrint: undefined,
+    printMap: undefined,
     // hub display
     markerTarget: undefined,
     hubTargetDisplay: false,
@@ -475,6 +479,13 @@ export default {
         zoomOffset: -1,
         attribution: mapboxAttribution,
         accessToken: tokenMapbox,
+      }),
+      print = L.tileLayer(mapBoxUrl, {
+        id: mapboxOutdoors,
+        tileSize: 512,
+        zoomOffset: -1,
+        attribution: mapboxAttribution,
+        accessToken: tokenMapbox,
       })
     // bouton pour le switch
     var baseMaps = {
@@ -539,6 +550,10 @@ export default {
       zoomControl: false,
     })
 
+    /* let printMap = L.map('mapPrint').setView(setMapView.center, 9);
+    satellite.addTo(printMap);
+    L.marker(setMapView.center).addTo(printMap) */
+
     // control layer choice
     this.controlLayers = L.control.layers(baseMaps, this.dynamicLayerGroup)
     this.controlLayers.addTo(this.map)
@@ -582,7 +597,7 @@ export default {
       classes: 'btn-group-icon-map',
       style: styleControl,
       events: {
-        click: (data) => {
+        click: async (data) => {
           if (data.target.querySelector('#btn-tutorial')) {
             this.helpModal()
           } else if (data.target.querySelector('#btn-data')) {
@@ -598,10 +613,24 @@ export default {
             this.showModal = !this.showModal
             this.modalTitle = 'Map Legend'
           } else if (data.target.querySelector('#btn-printer')) {
-            this.showPrintOption = !this.showPrintOption
-            this.showModal = !this.showModal
-            this.modalTitle = 'Print option'
-            /* window.print() */
+            
+            let openPrintOptions = () => {
+              this.showPrintOption = !this.showPrintOption // modal for options ex: add a title
+              this.showModal = !this.showModal // open common modal
+              this.showPrintMap = !this.showPrintMap // build map print container
+              this.modalTitle = 'Print option' 
+            }
+            await openPrintOptions() // display components first
+            let actualMapCenter = [this.map.getCenter().lat, this.map.getCenter().lng] // get center of the map dynamicaly
+            // mount the map after
+            this.printMap = L.map('mapPrint').setView(actualMapCenter, 6);
+            print.addTo(this.printMap);
+            L.marker(actualMapCenter).addTo(this.printMap)
+            // hide the container after the printing: cancel or save
+            window.onafterprint = (event) => {
+              this.showPrintMap = false
+              this.printMap.remove() // debug error, remove the map built
+            };
           }
         },
       },
@@ -663,7 +692,7 @@ export default {
     })
     window.addEventListener('online', function (e) {
       console.log('online')
-    })
+    })  
   },
 }
 </script>
@@ -680,6 +709,11 @@ export default {
 #map {
   height: 100%;
   width: 100%;
+  z-index: 1;
+}
+#mapPrint {
+  height: 50%;
+  width: 50%;
   z-index: 1;
 }
 .leaflet-touch .leaflet-control-layers-toggle {

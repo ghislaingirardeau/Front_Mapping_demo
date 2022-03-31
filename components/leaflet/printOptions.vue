@@ -24,7 +24,7 @@
                 })
                 setTimeout(() => {
                     window.print()
-                }, 300);
+                }, 500);
             }
         },
     }
