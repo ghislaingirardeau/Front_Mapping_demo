@@ -4,9 +4,9 @@
       <v-col v-for="(i, l) in markers" :key="l" order="first">
         <span>{{i.category}}</span>
         <br>
-        
         <v-icon v-if="i.icon.length > 0" :color="i.color[0]"> mdi-{{i.icon}} </v-icon>
-        <v-chip :color="i.color[0]" small v-else>area</v-chip>
+        <v-chip :color="i.color[0]" small label outlined v-else-if="i.type === 'Polygon'">area</v-chip>
+        <v-icon v-else :color="i.color[0]"> mdi-vector-polyline </v-icon>
         <br>
         <span v-if="i.subCategory.length > 0">{{i.subCategory[0]}}</span>
       </v-col>
@@ -97,10 +97,4 @@ export default {
 .block__items {
   padding: 2px;
 }
-/* @media print { 
-	.option__bloc{
-		display: none;
-	}
-}
- */
 </style>
