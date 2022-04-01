@@ -216,6 +216,10 @@ import modalCustom from '@/components/leaflet/modalCustom.vue'
 import tableMarkers from '@/components/leaflet/tableMarkers.vue'
 import { createIndexedDB, deleteIndexedDB } from '@/static/functions/indexedDb'
 
+let countArray = (a, b) => {
+  return a - b
+}
+
 export default {
   layout: 'datasLayout',
   data() {
@@ -244,9 +248,6 @@ export default {
         subCategory: [],
         icon: '',
         color: [],
-        count: function () {
-          return this.color.length - this.subCategory.length
-        }
       },
       // manage datas
       markers: [],
@@ -291,10 +292,10 @@ export default {
     addToArraySubCat() {
       this.newIcon.subCategory.push(this.subCategorySelected)
 
-      if(this.newIcon.count() === -1) {
+      if(countArray(this.newIcon.color.length, this.newIcon.subCategory.length) === -1) {
         this.disableColor = false // active icon add color de toute facon
         this.disableInputs = true // desactive tous les autres
-      } else if (this.newIcon.count() === 0) {
+      } else if (countArray(this.newIcon.color.length, this.newIcon.subCategory.length) === 0) {
         this.disableInputs = false
       }
 
@@ -303,8 +304,8 @@ export default {
       this.newIcon.color.push(this.colorSelected)
       this.disableInputs = false
       let countSubCategory = this.newIcon.subCategory.length
-      
-      if (countSubCategory > 0 || this.newIcon.count() > 0) {
+
+      if (countSubCategory > 0 || countArray(this.newIcon.color.length, this.newIcon.subCategory.length) > 0) {
         // if already add one subcategory, disabled it after executing code above
         console.log('fct here');
         this.disableColor = true
