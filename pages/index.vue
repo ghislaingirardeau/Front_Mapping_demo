@@ -273,7 +273,7 @@ export default {
             icon: createIcon(
               feature.icon.type,
               feature.icon.color,
-              'large',
+              'small',
               feature.properties.name
             ),
           })
@@ -716,8 +716,8 @@ export default {
   z-index: 1;
 }
 #mapPrint {
-  height: 80%;
-  width: 50%;
+  height: 300px;
+  width: 360px;
   z-index: 1;
   border: 2px solid grey;
 }
@@ -909,15 +909,15 @@ export default {
     width: 100%;
   }
   #map {
-    height: 40%;
+    height: 400px;
+    width: 580px;
     border: 2px solid grey;
     width: 740px;
   }
   #mapPrint {
-    height: 25%;
     position: absolute;
     top: 2%;
-    left: 50%;
+    left: 51%;
   }
   .leaflet-control-container {
     display: none;
@@ -931,7 +931,7 @@ export default {
       background-color: white !important;
       position: absolute;
       left: 0px;
-      top: 50%;
+      top: 51%;
     }
     &--title {
       margin-top: 30px;
