@@ -546,13 +546,17 @@ export default {
     this.map = L.map('map', {
       layers: layersToShow(),
       center: setMapView.center,
+      zoomSnap: 0.25,
+      zoomDelta: 0.25,
       zoom: setMapView.zoom,
       zoomControl: false,
+      wheelPxPerZoomLevel: 300
     })
 
-    /* let printMap = L.map('mapPrint').setView(setMapView.center, 9);
-    satellite.addTo(printMap);
-    L.marker(setMapView.center).addTo(printMap) */
+/*     this.map.on('zoom', () => {
+      console.log(this.map.getZoom());
+    })
+ */    
 
     // control layer choice
     this.controlLayers = L.control.layers(baseMaps, this.dynamicLayerGroup)
