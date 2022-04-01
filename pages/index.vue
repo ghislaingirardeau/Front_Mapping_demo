@@ -73,7 +73,7 @@
 
     <!-- DISPLAY FOR PRINTING -->
     <div class="print__block">
-      <legendModal class="print__block--legend" />
+      <legendModal class="print__block--legend" v-if="showPrintMap"/>
     </div>
     <div id="mapPrint" v-show="showPrintMap"></div>
   </div>
