@@ -62,6 +62,7 @@ export default {
   // Vuetify module configuration: https://go.nuxtjs.dev/config-vuetify
   vuetify: {
     customVariables: ['~/assets/variables.scss'],
+    treeShake: true, // add to change the variables
     theme: {
       dark: true,
       themes: {
