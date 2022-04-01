@@ -90,7 +90,7 @@
                   <v-col cols="3" class="text-center">
                     <v-icon
                       color="teal"
-                      style="border: 2px solid teal; padding: 5px"
+                      :style="{border: `2px solid ${disableInputs ? 'grey' : 'teal'}`, padding: `5px`}"
                       :disabled="disableInputs"
                       @click="addToArrayMarker(true)"
                     >mdi-plus-circle</v-icon>
@@ -122,7 +122,7 @@
                     <v-icon
                       color="teal"
                       :class="{ animationShake: disableInputs}"
-                      style="border: 2px solid teal; padding: 5px"
+                      :style="{border: `2px solid ${disableColor ? 'grey' : 'teal'}`, padding: `5px`}"
                       @click="addToArrayMarker(false)"
                       :disabled="disableColor"
                     >mdi-plus-circle</v-icon>
