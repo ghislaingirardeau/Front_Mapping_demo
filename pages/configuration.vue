@@ -92,7 +92,7 @@
                       color="teal"
                       :style="{border: `2px solid ${disableInputs ? 'grey' : 'teal'}`, padding: `5px`}"
                       :disabled="disableInputs"
-                      @click="addToArrayMarker(true)"
+                      @click="addToArraySubCat"
                     >mdi-plus-circle</v-icon>
                   </v-col>
 
@@ -123,7 +123,7 @@
                       color="teal"
                       :class="{ animationShake: disableInputs}"
                       :style="{border: `2px solid ${disableColor ? 'grey' : 'teal'}`, padding: `5px`}"
-                      @click="addToArrayMarker(false)"
+                      @click="addToArrayMarker"
                       :disabled="disableColor"
                     >mdi-plus-circle</v-icon>
                   </v-col>
@@ -244,6 +244,9 @@ export default {
         subCategory: [],
         icon: '',
         color: [],
+        count: function () {
+          return this.color.length - this.subCategory.length
+        }
       },
       // manage datas
       markers: [],
@@ -285,18 +288,26 @@ export default {
       this.e1 = 1
       this.rulesCategory = [(v) => v.length >= 2 || 'Mininum 2 characters']
     },
-    addToArrayMarker(e) {
-      if (e) {
+    addToArraySubCat() {
+      this.newIcon.subCategory.push(this.subCategorySelected)
+
+      if(this.newIcon.count() === -1) {
         this.disableColor = false // active icon add color de toute facon
-        this.newIcon.subCategory.push(this.subCategorySelected)
         this.disableInputs = true // desactive tous les autres
-      } else {
-        this.newIcon.color.push(this.colorSelected)
+      } else if (this.newIcon.count() === 0) {
         this.disableInputs = false
-        if (this.newIcon.subCategory.length > 0) {
-          // if already add one subcategory, disabled it after executing code above
-          this.disableColor = true
-        }
+      }
+
+    },
+    addToArrayMarker() {
+      this.newIcon.color.push(this.colorSelected)
+      this.disableInputs = false
+      let countSubCategory = this.newIcon.subCategory.length
+      
+      if (countSubCategory > 0 || this.newIcon.count() > 0) {
+        // if already add one subcategory, disabled it after executing code above
+        console.log('fct here');
+        this.disableColor = true
       }
     },
     modalResponse(payload) {
