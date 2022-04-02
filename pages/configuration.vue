@@ -20,9 +20,8 @@
 
           <v-stepper-items>
             <v-stepper-content step="1">
-               <v-container>
-                <v-row align="center">
-                  <v-col cols="12" sm="6">
+                <v-row align="center" justify="center" class="my-2">
+                  <v-col cols="11" sm="6">
                     <v-select
                       v-model="newIcon.type"
                       :items="typeSelection"
@@ -30,7 +29,7 @@
                       required
                     ></v-select>
                   </v-col>
-                  <v-col cols="12" sm="6">
+                  <v-col cols="11" sm="6">
                     <v-text-field
                       v-model="newIcon.category"
                       label="category"
@@ -38,10 +37,10 @@
                       required
                     ></v-text-field>
                   </v-col>
-                  <v-col cols="12" v-if="newIcon.type === 'Point'">
+                  <v-col cols="11" v-if="newIcon.type === 'Point'">
                     <v-text-field
                       v-model="newIcon.icon"
-                      label="Add the name of the icon ex: plus-circle"
+                      label="Icon's name ex: plus-circle"
                       hint="Only copy the name of the icon ex: help-circle-outline"
                       persistent-hint
                       prefix="mdi-"
@@ -67,20 +66,18 @@
                       </template>
                     </v-text-field>
                   </v-col>
-                  <v-col cols="12">
+                  <v-col cols="11">
                     <v-btn color="primary" @click="checkStep1"> Continue </v-btn>
                   </v-col>
                 </v-row>
-               </v-container>
             </v-stepper-content>
 
             <v-stepper-content step="2"> 
-              <v-container>
-                <v-row align="center" justify="space-around">
-                  <v-col cols="12">
+                <v-row align="center" justify="center" class="my-2">
+                  <v-col cols="11">
                     <span>Add subcategories (Optionnal)</span>
                   </v-col>
-                  <v-col cols="9">
+                  <v-col cols="8">
                     <v-text-field
                       v-model="subCategorySelected"
                       :disabled="disableInputs"
@@ -96,29 +93,27 @@
                     >mdi-plus-circle</v-icon>
                   </v-col>
 
-                  <v-col cols="12" class="divider__block">
+                  <v-col cols="11" class="divider__block">
                     <span>Pick the color</span>
                   </v-col>
 
-                  <v-container>
-                    <v-row>
-                  <v-col 
-                    cols="1"
-                    class="mr-1" 
-                    v-for="(i, l) in swatches" 
-                    :key="l" 
-                  >
-                      <v-chip 
-                      :color="i"
-                      label
-                      @click="colorSelected = i"
+                  <v-row>
+                    <v-col 
+                      cols="1"
+                      class="mx-3" 
+                      v-for="(i, l) in swatches" 
+                      :key="l" 
                     >
-                    </v-chip>
-                  </v-col>
-                    </v-row>
-                  </v-container>
+                        <v-chip 
+                        :color="i"
+                        label
+                        @click="colorSelected = i"
+                      >
+                      </v-chip>
+                    </v-col>
+                  </v-row>
 
-                <v-col cols="6" sm="3" class="text-center">
+                  <v-col cols="5" sm="3" class="text-center">
                     <v-icon
                       color="teal"
                       :class="{ animationShake: disableInputs}"
@@ -127,7 +122,7 @@
                       :disabled="disableColor"
                     >mdi-plus-circle</v-icon>
                   </v-col>
-                  <v-col cols="6" sm="3" class="text-center">
+                  <v-col cols="5" sm="3" class="text-center">
                     <v-icon
                       v-if="newIcon.type === 'Point'"
                       :color="colorSelected"
@@ -138,7 +133,7 @@
                       >{{newIcon.category}}
                     </span>
                   </v-col>
-                  <v-col cols="12">
+                  <v-col cols="11">
                     <v-btn
                       color="primary"
                       @click="e1 = 3"
@@ -147,22 +142,20 @@
                     >
                       Continue
                     </v-btn>
-
                     <v-btn text @click="e1 = 1" :disabled="disableInputs" outlined color="info">
                       back
                     </v-btn>
                   </v-col>
                 </v-row>
-              </v-container>
             </v-stepper-content>
 
             <v-stepper-content step="3">
               <!-- Fait apparaitre le résumé de la sélection -->
-              <v-row v-if="newIcon.color.length > 0">
-                <v-col cols="12">
+              <v-row v-if="newIcon.color.length > 0" justify="center" class="my-2">
+                <v-col cols="11">
                   <h4>My markers selected</h4>
                 </v-col>
-                <v-col cols="6" sm="4" v-for="(item, l) in newIcon.color" :key="l">
+                <v-col cols="5" sm="4" v-for="(item, l) in newIcon.color" :key="l">
                   <span v-if="newIcon.type === 'Point'">{{
                     newIcon.subCategory[l]
                       ? newIcon.subCategory[l]
@@ -180,7 +173,7 @@
                       : newIcon.category
                   }}</v-chip>
                 </v-col>
-                <v-col cols="12">
+                <v-col cols="11">
                   <v-btn color="primary" @click="addNewMarker"
                     >Confirm</v-btn
                   >
