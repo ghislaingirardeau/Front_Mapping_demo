@@ -86,6 +86,7 @@ import legendModal from '~/components/leaflet/legendModal.vue'
 import modalCustom from '@/components/leaflet/modalCustom.vue'
 import printOptions from '@/components/leaflet/printOptions.vue'
 import manageDatas from '@/components/manageDatas.vue'
+import { createIndexedDB } from '@/static/functions/indexedDb'
 
 export default {
   data: () => ({
@@ -689,6 +690,19 @@ export default {
 
     this.map.addControl(actionsControl)
     this.map.addControl(locationsControl)
+
+    const checkDB = async () => {
+      const dbName = 'Map_Database'
+      const isExisting = (await window.indexedDB.databases())
+        .map((db) => db.name)
+        .includes(dbName)
+      if (isExisting) {
+      } else {
+        let response = await createIndexedDB()
+        console.log(response)
+      }
+    }
+    checkDB()
 
     // ecoute si online ou non automatiquement
     window.addEventListener('offline', function (e) {
