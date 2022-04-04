@@ -108,7 +108,7 @@ export default {
     ],
     tutorialsData: [
       '<-- Show tutorial',
-      '<-- Settings and datas',
+      '<-- Settings and add markers',
       '<-- Show legend',
       '<-- Show area measure',
     ],
@@ -691,6 +691,7 @@ export default {
     this.map.addControl(actionsControl)
     this.map.addControl(locationsControl)
 
+    // CREATE A THE DB FOR THE FIRST CONNECTION AND TO TEST THE APP
     const checkDB = async () => {
       const dbName = 'Map_Database'
       const isExisting = (await window.indexedDB.databases())
@@ -699,7 +700,31 @@ export default {
       if (isExisting) {
       } else {
         let response = await createIndexedDB()
-        console.log(response)
+        if(response) {
+          const requestIndexedDB = window.indexedDB.open('Map_Database', 1)
+          requestIndexedDB.onsuccess = (event) => {
+            var db = event.target.result
+
+            var transaction = db.transaction('markers', 'readwrite')
+            const store = transaction.objectStore('markers')
+            let newIcon = {
+              type: 'Point',
+              category: 'home',
+              subCategory: [],
+              icon: 'home',
+              color: ['red'],
+            }
+            store.add(newIcon)
+
+            console.log('markers added to the store')
+            transaction.oncomplete = () => {
+              db.close()
+            }
+          }
+          requestIndexedDB.onerror = (event) => {
+            console.log(event);
+          }
+        }
       }
     }
     checkDB()
