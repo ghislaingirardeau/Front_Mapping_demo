@@ -46,6 +46,7 @@
                     persistent-hint
                     prefix="mdi-"
                     required
+                    @keyup="showIconsList(newIcon.icon)"
                   >
                     <template v-slot:append>
                       <v-tooltip bottom>
@@ -66,6 +67,12 @@
                       </v-tooltip>
                     </template>
                   </v-text-field>
+                  <v-select
+                    v-model="newIcon.icon"
+                    :items="iconsSuggest"
+                    label="List"
+                  >
+                  </v-select>
                 </v-col>
                 <v-col cols="11">
                   <v-btn color="primary" :disabled="!nameExist" @click="e1 = 2"> Continue </v-btn>
@@ -304,6 +311,8 @@ export default {
       markers: [],
       showBtnDBExist: false,
       DBmessage: undefined,
+      iconsListing: [],
+      iconsSuggest: []
     }
   },
   components: {
@@ -330,6 +339,14 @@ export default {
     }
   },
   methods: {
+    showIconsList(e) {
+      this.iconsSuggest = []
+      this.iconsListing.forEach(element => {
+        if (element.startsWith(e)) {
+          this.iconsSuggest.push(element)
+        } 
+      });
+    },
     linkToIcon() {
       window.open('https://pictogrammers.github.io/@mdi/font/6.5.95/', '_blank')
     },
@@ -379,7 +396,6 @@ export default {
           0
       ) {
         // if already add one subcategory, disabled it after executing code above
-        console.log('fct here')
         this.disableColor = true
       }
     },
@@ -508,6 +524,19 @@ export default {
       }
     }
     checkDB()
+    // LOAD ALL THE ICON AVAILABLE
+    const iconList = async () => {
+      let result = await this.$axios.$get('https://pictogrammers.github.io/@mdi/font/6.5.95/css/materialdesignicons.min.css')
+      if(result) {
+        let listing = result.split('.mdi-')
+        listing.forEach((element, i) => {
+          let index = element.indexOf(':')
+          let icons = element.slice(0, index)
+          this.iconsListing.push(icons)
+        });
+      }
+    }
+    iconList()
   },
 }
 </script>
