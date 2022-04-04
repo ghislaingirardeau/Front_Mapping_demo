@@ -41,8 +41,7 @@
                 <v-col cols="11" v-if="newIcon.type === 'Point'">
                   <v-text-field
                     v-model="newIcon.icon"
-                    label="Icon's name ex: plus-circle"
-                    hint="Only copy the name of the icon ex: help-circle-outline"
+                    label="Search Icons"
                     persistent-hint
                     prefix="mdi-"
                     required
@@ -70,11 +69,13 @@
                   <v-select
                     v-model="newIcon.icon"
                     :items="iconsSuggest"
-                    label="List"
+                    label="List suggest icons"
+                    outlined
+                    class="mt-4"
                   >
                   </v-select>
                 </v-col>
-                <v-col cols="11">
+                <v-col cols="11" class="mt-n-5">
                   <v-btn color="primary" :disabled="!nameExist" @click="e1 = 2"> Continue </v-btn>
                 </v-col>
               </v-row>
