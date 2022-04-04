@@ -21,7 +21,7 @@
           <v-stepper-items>
             <v-stepper-content step="1">
               <v-row align="center" justify="center" class="my-2">
-                <v-col cols="11" sm="6">
+                <v-col cols="11" sm="5">
                   <v-select
                     v-model="newIcon.type"
                     :items="typeSelection"
@@ -33,7 +33,8 @@
                   <v-text-field
                     v-model="newIcon.category"
                     label="category"
-                    :rules="rulesCategory"
+                    :rules="checkCatExist"
+                    @keyup="checkCatExist"
                     required
                   ></v-text-field>
                 </v-col>
@@ -67,7 +68,7 @@
                   </v-text-field>
                 </v-col>
                 <v-col cols="11">
-                  <v-btn color="primary" @click="checkStep1"> Continue </v-btn>
+                  <v-btn color="primary" :disabled="!nameExist" @click="e1 = 2"> Continue </v-btn>
                 </v-col>
               </v-row>
             </v-stepper-content>
@@ -288,6 +289,7 @@ export default {
         '#000055',
       ],
       // item for text fields
+      nameExist: true,
       subCategorySelected: undefined,
       rulesCategory: [(v) => v.length >= 2 || 'Mininum 2 characters'],
       typeSelection: ['Point', 'Polygon', 'MultiLineString'],
@@ -308,20 +310,28 @@ export default {
     modalCustom,
     tableMarkers,
   },
+  computed: {
+    checkCatExist() {
+      let array = []
+      this.markers.forEach((element) => {
+        if (array.indexOf(element.category) === -1) {
+          array.push(element.category)
+        }
+      })
+      if(array.indexOf(this.newIcon.category) != -1 || this.newIcon.category.length < 2) {
+        this.nameExist = false
+      } else {
+        this.nameExist = true
+      }
+      return [
+        (v) => v.length >= 2 || 'Mininum 2 characters',
+        (v) => this.nameExist || 'this category already exist',
+      ]
+    }
+  },
   methods: {
     linkToIcon() {
       window.open('https://pictogrammers.github.io/@mdi/font/6.5.95/', '_blank')
-    },
-    checkStep1() {
-      let nameExist
-      this.markers.forEach((element) => {
-        if (element.category.indexOf(this.newIcon.category) != -1) {
-          nameExist = true
-        }
-      })
-      nameExist
-        ? (this.rulesCategory = ['this category already exist'])
-        : (this.e1 = 2)
     },
     // RESET THE FORM AND ENABLE ALL BUTTON
     resetMarker() {
