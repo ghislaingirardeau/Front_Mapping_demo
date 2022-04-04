@@ -20,143 +20,174 @@
 
           <v-stepper-items>
             <v-stepper-content step="1">
-                <v-row align="center" justify="center" class="my-2">
-                  <v-col cols="11" sm="6">
-                    <v-select
-                      v-model="newIcon.type"
-                      :items="typeSelection"
-                      label="Type"
-                      required
-                    ></v-select>
-                  </v-col>
-                  <v-col cols="11" sm="6">
-                    <v-text-field
-                      v-model="newIcon.category"
-                      label="category"
-                      :rules="rulesCategory"
-                      required
-                    ></v-text-field>
-                  </v-col>
-                  <v-col cols="11" v-if="newIcon.type === 'Point'">
-                    <v-text-field
-                      v-model="newIcon.icon"
-                      label="Icon's name ex: plus-circle"
-                      hint="Only copy the name of the icon ex: help-circle-outline"
-                      persistent-hint
-                      prefix="mdi-"
-                      required
-                    >
-                      <template v-slot:append>
-                        <v-tooltip bottom>
-                          <template v-slot:activator="{ on }">
-                            <v-icon v-on="on" @click="linkToIcon">
-                              mdi-help-circle-outline
-                            </v-icon>
-                          </template>
-                          Click to get the name of all icons available
-                        </v-tooltip>
-                      </template>
-                      <template v-slot:append-outer>
-                        <v-tooltip bottom>
-                          <template v-slot:activator="{ on }">
-                            <v-icon v-on="on"> mdi-{{ newIcon.icon }} </v-icon>
-                          </template>
-                          Preview
-                        </v-tooltip>
-                      </template>
-                    </v-text-field>
-                  </v-col>
-                  <v-col cols="11">
-                    <v-btn color="primary" @click="checkStep1"> Continue </v-btn>
-                  </v-col>
-                </v-row>
+              <v-row align="center" justify="center" class="my-2">
+                <v-col cols="11" sm="6">
+                  <v-select
+                    v-model="newIcon.type"
+                    :items="typeSelection"
+                    label="Type"
+                    required
+                  ></v-select>
+                </v-col>
+                <v-col cols="11" sm="6">
+                  <v-text-field
+                    v-model="newIcon.category"
+                    label="category"
+                    :rules="rulesCategory"
+                    required
+                  ></v-text-field>
+                </v-col>
+                <v-col cols="11" v-if="newIcon.type === 'Point'">
+                  <v-text-field
+                    v-model="newIcon.icon"
+                    label="Icon's name ex: plus-circle"
+                    hint="Only copy the name of the icon ex: help-circle-outline"
+                    persistent-hint
+                    prefix="mdi-"
+                    required
+                  >
+                    <template v-slot:append>
+                      <v-tooltip bottom>
+                        <template v-slot:activator="{ on }">
+                          <v-icon v-on="on" @click="linkToIcon">
+                            mdi-help-circle-outline
+                          </v-icon>
+                        </template>
+                        Click to get the name of all icons available
+                      </v-tooltip>
+                    </template>
+                    <template v-slot:append-outer>
+                      <v-tooltip bottom>
+                        <template v-slot:activator="{ on }">
+                          <v-icon v-on="on"> mdi-{{ newIcon.icon }} </v-icon>
+                        </template>
+                        Preview
+                      </v-tooltip>
+                    </template>
+                  </v-text-field>
+                </v-col>
+                <v-col cols="11">
+                  <v-btn color="primary" @click="checkStep1"> Continue </v-btn>
+                </v-col>
+              </v-row>
             </v-stepper-content>
 
-            <v-stepper-content step="2"> 
-                <v-row align="center" justify="center" class="my-2">
-                  <v-col cols="11">
-                    <span>Add subcategories (Optionnal)</span>
-                  </v-col>
-                  <v-col cols="8">
-                    <v-text-field
-                      v-model="subCategorySelected"
-                      :disabled="disableInputs"
-                      label="Subcategories"
-                    ></v-text-field>
-                  </v-col>
-                  <v-col cols="3" class="text-center">
-                    <v-icon
-                      color="teal"
-                      :style="{border: `2px solid ${disableInputs ? 'grey' : 'teal'}`, padding: `5px`}"
-                      :disabled="disableInputs"
-                      @click="addToArraySubCat"
-                    >mdi-plus-circle</v-icon>
-                  </v-col>
+            <v-stepper-content step="2">
+              <v-row align="center" justify="center" class="my-2">
+                <v-col cols="11">
+                  <span>Add subcategories (Optionnal)</span>
+                </v-col>
+                <v-col cols="8">
+                  <v-text-field
+                    v-model="subCategorySelected"
+                    :disabled="disableInputs"
+                    label="Subcategories"
+                  ></v-text-field>
+                </v-col>
+                <v-col cols="3" class="text-center">
+                  <v-icon
+                    color="teal"
+                    :style="{
+                      border: `2px solid ${disableInputs ? 'grey' : 'teal'}`,
+                      padding: `5px`,
+                    }"
+                    :disabled="disableInputs"
+                    @click="addToArraySubCat"
+                    >mdi-plus-circle</v-icon
+                  >
+                </v-col>
 
-                  <v-col cols="11" class="divider__block">
-                    <span>Pick the color</span>
-                  </v-col>
+                <v-col cols="11" class="divider__block">
+                  <span>Pick the color</span>
+                </v-col>
 
-                  <v-row>
-                    <v-col 
-                      cols="1"
-                      class="mx-3" 
-                      v-for="(i, l) in swatches" 
-                      :key="l" 
-                    >
-                        <v-chip 
-                        :color="i"
-                        label
-                        @click="colorSelected = i"
-                      >
-                      </v-chip>
-                    </v-col>
-                  </v-row>
-
-                  <v-col cols="5" sm="3" class="text-center">
-                    <v-icon
-                      color="teal"
-                      :class="{ animationShake: disableInputs}"
-                      :style="{border: `2px solid ${disableColor ? 'grey' : 'teal'}`, padding: `5px`}"
-                      @click="addToArrayMarker"
-                      :disabled="disableColor"
-                    >mdi-plus-circle</v-icon>
-                  </v-col>
-                  <v-col cols="5" sm="3" class="text-center">
-                    <v-icon
-                      v-if="newIcon.type === 'Point'"
-                      :color="colorSelected"
-                      size="36px"
-                      >mdi-{{ newIcon.icon }}</v-icon
-                    >
-                    <span v-else class="chips__area" :style="{background: colorSelected, border: `2px solid ${colorSelected}`}"
-                      >{{newIcon.category}}
-                    </span>
-                  </v-col>
-                  <v-col cols="11">
-                    <v-btn
-                      color="primary"
-                      @click="e1 = 3"
-                      v-if="newIcon.color.length > 0"
-                      :disabled="disableInputs"
-                    >
-                      Continue
-                    </v-btn>
-                    <v-btn text @click="e1 = 1" :disabled="disableInputs" outlined color="info">
-                      back
-                    </v-btn>
+                <v-row class="px-5">
+                  <v-col
+                    cols="1"
+                    class="mx-1"
+                    v-for="(i, l) in swatches"
+                    :key="l"
+                  >
+                    <v-chip :color="i" label @click="colorSelected = i">
+                    </v-chip>
                   </v-col>
                 </v-row>
+
+                <v-col cols="4" sm="3" class="text-center">
+                  <v-icon
+                    color="teal"
+                    :class="{ animationShake: disableInputs }"
+                    :style="{
+                      border: `2px solid ${disableColor ? 'grey' : 'teal'}`,
+                      padding: `5px`,
+                    }"
+                    @click="addToArrayMarker"
+                    :disabled="disableColor"
+                    >mdi-plus-circle</v-icon
+                  >
+                </v-col>
+                <v-col cols="7" sm="3" class="text-center">
+                  <span class="float-left">Preview :</span>
+                  <v-icon
+                    v-if="newIcon.type === 'Point'"
+                    :color="colorSelected"
+                    size="28px"
+                    >mdi-{{ newIcon.icon }}</v-icon
+                  >
+                  <v-icon
+                    v-else-if="newIcon.type === 'MultiLineString'"
+                    :color="colorSelected"
+                    size="28px"
+                  >
+                    mdi-vector-polyline
+                  </v-icon>
+                  <v-icon
+                    v-else-if="newIcon.type === 'Polygon'"
+                    :color="colorSelected"
+                    size="28px"
+                  >
+                    mdi-triangle
+                  </v-icon>
+                </v-col>
+                <v-col cols="11">
+                  <v-btn
+                    color="primary"
+                    @click="e1 = 3"
+                    v-if="newIcon.color.length > 0"
+                    :disabled="disableInputs"
+                  >
+                    Continue
+                  </v-btn>
+                  <v-btn
+                    text
+                    @click="e1 = 1"
+                    :disabled="disableInputs"
+                    outlined
+                    color="secondary"
+                  >
+                    back
+                  </v-btn>
+                </v-col>
+              </v-row>
             </v-stepper-content>
 
             <v-stepper-content step="3">
               <!-- Fait apparaitre le résumé de la sélection -->
-              <v-row v-if="newIcon.color.length > 0" justify="center" class="my-2">
+              <v-row
+                v-if="newIcon.color.length > 0"
+                justify="center"
+                class="my-2"
+              >
                 <v-col cols="11">
-                  <h4>My markers selected</h4>
+                  <h4>My markers selected : {{ newIcon.category }}</h4>
                 </v-col>
-                <v-col cols="5" sm="4" v-for="(item, l) in newIcon.color" :key="l">
-                  <span v-if="newIcon.type === 'Point'">{{
+                <v-col
+                  cols="5"
+                  sm="4"
+                  v-for="(item, l) in newIcon.color"
+                  :key="l"
+                >
+                  <span>{{
                     newIcon.subCategory[l]
                       ? newIcon.subCategory[l]
                       : newIcon.category
@@ -167,18 +198,33 @@
                     size="36px"
                     >mdi-{{ newIcon.icon }}</v-icon
                   >
-                  <v-chip v-else :color="newIcon.color[l]" label x-large>{{
-                    newIcon.subCategory[l]
-                      ? newIcon.subCategory[l]
-                      : newIcon.category
-                  }}</v-chip>
-                </v-col>
-                <v-col cols="11">
-                  <v-btn color="primary" @click="addNewMarker"
-                    >Confirm</v-btn
+                  <v-icon
+                    v-else-if="newIcon.type === 'MultiLineString'"
+                    :color="newIcon.color[l]"
+                    size="28px"
                   >
+                    mdi-vector-polyline
+                  </v-icon>
+                  <v-icon
+                    v-else-if="newIcon.type === 'Polygon'"
+                    :color="newIcon.color[l]"
+                    size="28px"
+                  >
+                    mdi-triangle
+                  </v-icon>
+                </v-col>
+                <v-col cols="11" sm="7">
+                  <v-btn color="primary" @click="addNewMarker">Confirm</v-btn>
                   <v-btn color="warning" @click="resetMarker">Reset</v-btn>
-                  <v-btn text @click="e1 = 2" :disabled="disableInputs" outlined color="info">
+                </v-col>
+                <v-col cols="11" sm="4">
+                  <v-btn
+                    text
+                    @click="e1 = 2"
+                    :disabled="disableInputs"
+                    outlined
+                    color="secondary"
+                  >
                     back
                   </v-btn>
                 </v-col>
@@ -225,11 +271,21 @@ export default {
       disableColor: false,
       colorSelected: '',
       swatches: [
-        '#FF0000', '#AA0000', '#550000',
-        '#FFFF00', '#AAAA00', '#555500',
-        '#00FF00', '#00AA00', '#005500',
-        '#00FFFF', '#00AAAA', '#005555',
-        '#0000FF', '#0000AA', '#000055',
+        '#FF0000',
+        '#AA0000',
+        '#550000',
+        '#FFFF00',
+        '#AAAA00',
+        '#555500',
+        '#00FF00',
+        '#00AA00',
+        '#005500',
+        '#00FFFF',
+        '#00AAAA',
+        '#005555',
+        '#0000FF',
+        '#0000AA',
+        '#000055',
       ],
       // item for text fields
       subCategorySelected: undefined,
@@ -285,22 +341,35 @@ export default {
     addToArraySubCat() {
       this.newIcon.subCategory.push(this.subCategorySelected)
 
-      if(countArray(this.newIcon.color.length, this.newIcon.subCategory.length) === -1) {
+      if (
+        countArray(
+          this.newIcon.color.length,
+          this.newIcon.subCategory.length
+        ) === -1
+      ) {
         this.disableColor = false // active icon add color de toute facon
         this.disableInputs = true // desactive tous les autres
-      } else if (countArray(this.newIcon.color.length, this.newIcon.subCategory.length) === 0) {
+      } else if (
+        countArray(
+          this.newIcon.color.length,
+          this.newIcon.subCategory.length
+        ) === 0
+      ) {
         this.disableInputs = false
       }
-
     },
     addToArrayMarker() {
       this.newIcon.color.push(this.colorSelected)
       this.disableInputs = false
       let countSubCategory = this.newIcon.subCategory.length
 
-      if (countSubCategory > 0 || countArray(this.newIcon.color.length, this.newIcon.subCategory.length) > 0) {
+      if (
+        countSubCategory > 0 ||
+        countArray(this.newIcon.color.length, this.newIcon.subCategory.length) >
+          0
+      ) {
         // if already add one subcategory, disabled it after executing code above
-        console.log('fct here');
+        console.log('fct here')
         this.disableColor = true
       }
     },
@@ -357,7 +426,7 @@ export default {
           this.DBmessage = event
         }
       } catch (error) {
-        console.log(error);
+        console.log(error)
       }
     },
     showCursorDB() {
@@ -465,7 +534,7 @@ export default {
 .divider__block {
   border-top: 2px solid white;
 }
-.chips__area{
+.chips__area {
   padding: 5px;
 }
 </style>
