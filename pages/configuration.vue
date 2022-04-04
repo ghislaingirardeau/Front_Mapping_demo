@@ -27,6 +27,7 @@
                     :items="typeSelection"
                     label="Type"
                     required
+                    @focus="resetMarker"
                   ></v-select>
                 </v-col>
                 <v-col cols="11" sm="6">
@@ -57,14 +58,6 @@
                         Click to get the name of all icons available
                       </v-tooltip>
                     </template>
-                    <template v-slot:append-outer>
-                      <v-tooltip bottom>
-                        <template v-slot:activator="{ on }">
-                          <v-icon v-on="on"> mdi-{{ newIcon.icon }} </v-icon>
-                        </template>
-                        Preview
-                      </v-tooltip>
-                    </template>
                   </v-text-field>
                   <v-select
                     v-model="newIcon.icon"
@@ -77,6 +70,7 @@
                 </v-col>
                 <v-col cols="11" class="mt-n-5">
                   <v-btn color="primary" :disabled="!nameExist" @click="e1 = 2"> Continue </v-btn>
+                  <v-icon class="ml-3" large v-if="newIcon.icon"> mdi-{{ newIcon.icon }} </v-icon>
                 </v-col>
               </v-row>
             </v-stepper-content>
