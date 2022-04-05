@@ -51,7 +51,6 @@ export const actions = {
                     }
                     cursor.continue()
                 } else {
-                    console.log(results);
                     context.commit('SAVE_MARKERS', results);
                     console.log('No more entries!')
                     

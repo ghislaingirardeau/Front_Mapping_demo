@@ -144,7 +144,6 @@ export default {
     messageModal: undefined,
     //modal Markers
     showModalMarker: false,
-    /* markers: [], */
     // print
     showPrintOption: false,
     showPrintMap: false,
@@ -290,7 +289,7 @@ export default {
 
       // FUNCTION RETURN ICON HOUSE SVG DEPENDING ON COLOR PARAMS
       const createIcon = (type, color, size, name) => {
-        let showHtml = `<i aria-hidden="true" class="v-icon notranslate mdi mdi-${type} theme--dark" style="font-size: ${size}; color:${color};"></i>`
+        let showHtml = `<i aria-hidden="true" class="v-icon notranslate mdi mdi-${type} theme--dark icon__layer--update--size" style="font-size: ${size}px; color:${color};"></i>`
         return L.divIcon({
           className: `${type}-icon`,
           html: showHtml,
@@ -306,7 +305,7 @@ export default {
             icon: createIcon(
               feature.icon.type,
               feature.icon.color,
-              'small',
+              20,
               feature.properties.name
             ),
           })
