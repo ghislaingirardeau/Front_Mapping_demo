@@ -86,7 +86,7 @@ import { deleteIndexedDB } from '@/static/functions/indexedDb'
                     {
                     id: '3',
                     icon: 'mdi-eraser',
-                    title: 'remove temporaly',
+                    title: 'Reset Options',
                     },
                 ],                
             }
