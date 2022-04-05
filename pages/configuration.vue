@@ -1,6 +1,7 @@
 <template>
   <v-row>
-    <createMarker :markers="markers" :showCursorDB="showCursorDB" :showModal="showModal" @send-marker="modalMarkerResponse" />
+    <createMarker :markers="markers" :showModal="showModal" @send-marker="modalMarkerResponse" />
+
     <v-col cols="12" class="text-center">
       <h1>My Markers</h1>
       <p v-if="DBmessage">{{ DBmessage }}</p>
@@ -11,7 +12,7 @@
       <v-btn @click="showModal = true">Add marker</v-btn>
     </v-col>
 
-    <tableMarkers :markers="markers" :showCursorDB="showCursorDB" />
+    <tableMarkers :markers="markers" />
   </v-row>
 </template>
 
@@ -19,13 +20,13 @@
 import createMarker from '@/components/leaflet/createMarker.vue'
 import tableMarkers from '@/components/leaflet/tableMarkers.vue'
 import { createIndexedDB, deleteIndexedDB } from '@/static/functions/indexedDb'
+import { mapState } from 'vuex'
 
 export default {
   layout: 'datasLayout',
   data() {
     return {
       showModal: false,
-      markers: [],
       showBtnDBExist: false,
       DBmessage: undefined,
     }
@@ -33,6 +34,9 @@ export default {
   components: {
     tableMarkers,
     createMarker
+  },
+  computed: {
+    ...mapState(['markers'])
   },
   methods: {
     modalMarkerResponse(payload) {
@@ -64,57 +68,6 @@ export default {
         }
       }
     },
-    showCursorDB() {
-      this.markers = [] // reinitialise le tableau sinon doublon on show
-      const requestIndexedDB = window.indexedDB.open('Map_Database', 1)
-      requestIndexedDB.onerror = (event) => {
-        console.log(event)
-      }
-
-      // la requete
-      requestIndexedDB.onsuccess = (event) => {
-        let db = event.target.result
-
-        let transaction = db.transaction('markers', 'readwrite')
-        let store = transaction.objectStore('markers') // store = table in sql
-        let idQuery = store.openCursor() // recherche sur l'id
-        idQuery.onsuccess = (event) => {
-          var cursor = event.target.result
-
-          if (cursor) {
-            // if a get an array of sub category, i create a new object to send in this.markers array
-            if (cursor.value.subCategory.length > 0) {
-              for (
-                let index = 0;
-                index < cursor.value.subCategory.length;
-                index++
-              ) {
-                let multiMarker = {
-                  type: cursor.value.type,
-                  category: cursor.value.category,
-                  subCategory: [],
-                  icon: cursor.value.icon,
-                  color: [],
-                }
-                multiMarker.subCategory.push(cursor.value.subCategory[index])
-                multiMarker.color.push(cursor.value.color[index])
-                this.markers.push(multiMarker)
-              }
-            } else {
-              this.markers.push(cursor.value)
-            }
-            cursor.continue()
-          } else {
-            console.log('No more entries!')
-          }
-        }
-
-        // close db at the end of transaction
-        transaction.oncomplete = () => {
-          db.close()
-        }
-      }
-    },
   },
   mounted() {
     // check if the database exist
@@ -125,7 +78,7 @@ export default {
         .includes(dbName)
       if (isExisting) {
         this.showBtnDBExist = true
-        this.showCursorDB() // faire apparaitre les datas dans le tableau
+        this.$store.dispatch('loadMarkers')
         this.DBmessage = 'the db is existing'
       } else {
         this.showBtnDBExist = false

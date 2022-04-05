@@ -64,7 +64,6 @@ export default {
   },
   props: {
     markers: Array,
-    showCursorDB: Function,
   },
   methods: {
     removeDB(e) {
@@ -97,13 +96,13 @@ export default {
                   const request = cursor.update(cursor.value)
                   request.onsuccess = () => {
                     console.log('Data updated')
-                    this.showCursorDB()
+                    this.$store.dispatch('loadMarkers')
                   }
                 } else {
                   // si array sucategory is empty or have '' == remove item
                   let idQuery = store.delete(cursor.key)
                   idQuery.onsuccess = (event) => {
-                    this.showCursorDB()
+                    this.$store.dispatch('loadMarkers')
                     alert('this marker has been removed')
                   }
                 }

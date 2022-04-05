@@ -15,19 +15,18 @@
 </template>
 
 <script>
-import exportCSV from "@/components/leaflet/exportCSV.vue";
+import { mapState } from 'vuex'
 
 export default {
   data: () => ({
     showContent: false,
-    markers: [],
   }),
   props: {
     showLegend: Boolean,
     themeDarkColor: Boolean
   },
-  components: {
-    exportCSV,
+  computed: {
+    ...mapState(['markers'])
   },
   methods: {
     legend() {
@@ -35,54 +34,7 @@ export default {
     },
   },
   mounted () {
-      this.markers = [] // reinitialise le tableau sinon doublon on show
-      const requestIndexedDB = window.indexedDB.open('Map_Database', 1)
-      requestIndexedDB.onerror = (event) => {
-        console.log(event)
-      }
-
-      // la requete
-      requestIndexedDB.onsuccess = (event) => {
-        let db = event.target.result
-
-        let transaction = db.transaction('markers', 'readwrite')
-        let store = transaction.objectStore('markers') // store = table in sql
-        let idQuery = store.openCursor() // recherche sur l'id
-        idQuery.onsuccess = (event) => {
-          var cursor = event.target.result
-
-          if (cursor) {
-            // if a get an array of sub category, i create a new object to send in this.markers array
-            if (cursor.value.subCategory.length > 0) {
-              for (
-                let index = 0;
-                index < cursor.value.subCategory.length;
-                index++
-              ) {
-                let multiMarker = {
-                  type: cursor.value.type,
-                  category: cursor.value.category,
-                  subCategory: [],
-                  icon: cursor.value.icon,
-                  color: []
-                }
-                multiMarker.subCategory.push(cursor.value.subCategory[index])
-                multiMarker.color.push(cursor.value.color[index])
-                this.markers.push(multiMarker)              }
-            } else {
-              this.markers.push(cursor.value)
-            }
-            cursor.continue()
-          } else {
-            console.log('No more entries!')
-          }
-        }
-
-        // close db at the end of transaction
-        transaction.oncomplete = () => {
-          db.close()
-        }
-      }
+    this.$store.dispatch('loadMarkers')
   }
 };
 </script>

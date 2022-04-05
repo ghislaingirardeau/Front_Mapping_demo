@@ -88,7 +88,8 @@ import modalCustom from '@/components/leaflet/modalCustom.vue'
 import printOptions from '@/components/leaflet/printOptions.vue'
 import manageDatas from '@/components/manageDatas.vue'
 import createMarker from '@/components/leaflet/createMarker.vue'
-import { createIndexedDB, showCursorDB } from '@/static/functions/indexedDb'
+import { createIndexedDB } from '@/static/functions/indexedDb'
+import { mapState } from 'vuex'
 
 export default {
   data: () => ({
@@ -123,7 +124,7 @@ export default {
     messageModal: undefined,
     //modal Markers
     showModalMarker: false,
-    markers: [],
+    /* markers: [], */
     // print
     showPrintOption: false,
     showPrintMap: false,
@@ -138,6 +139,7 @@ export default {
     controlLayers: undefined,
   }),
   computed: {
+    ...mapState(['markers']),
     hubCoordinate() {
       let crd = this.coordinates[this.coordinates.length - 1]
       if (this.coordinates.length > 0) {
@@ -458,57 +460,6 @@ export default {
       }
       localStorage.setItem('APIGeoMap', JSON.stringify(jsonToSave))
     },
-    showCursorDB() {
-      this.markers = [] // reinitialise le tableau sinon doublon on show
-      const requestIndexedDB = window.indexedDB.open('Map_Database', 1)
-      requestIndexedDB.onerror = (event) => {
-        console.log(event)
-      }
-
-      // la requete
-      requestIndexedDB.onsuccess = (event) => {
-        let db = event.target.result
-
-        let transaction = db.transaction('markers', 'readwrite')
-        let store = transaction.objectStore('markers') // store = table in sql
-        let idQuery = store.openCursor() // recherche sur l'id
-        idQuery.onsuccess = (event) => {
-          var cursor = event.target.result
-
-          if (cursor) {
-            // if a get an array of sub category, i create a new object to send in this.markers array
-            if (cursor.value.subCategory.length > 0) {
-              for (
-                let index = 0;
-                index < cursor.value.subCategory.length;
-                index++
-              ) {
-                let multiMarker = {
-                  type: cursor.value.type,
-                  category: cursor.value.category,
-                  subCategory: [],
-                  icon: cursor.value.icon,
-                  color: [],
-                }
-                multiMarker.subCategory.push(cursor.value.subCategory[index])
-                multiMarker.color.push(cursor.value.color[index])
-                this.markers.push(multiMarker)
-              }
-            } else {
-              this.markers.push(cursor.value)
-            }
-            cursor.continue()
-          } else {
-            console.log('No more entries!')
-          }
-        }
-
-        // close db at the end of transaction
-        transaction.oncomplete = () => {
-          db.close()
-        }
-      }
-    },
   },
   mounted() {
     // config mapbox
@@ -763,7 +714,7 @@ export default {
         .map((db) => db.name)
         .includes(dbName)
       if (isExisting) {
-        this.showCursorDB()
+        this.$store.dispatch('loadMarkers')
       } else {
         let response = await createIndexedDB()
         if(response) {

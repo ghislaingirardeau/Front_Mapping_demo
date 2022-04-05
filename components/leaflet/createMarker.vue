@@ -1,6 +1,6 @@
 <template>
     <modalCustom :showModal="showModal" @send-modal="modalResponse">
-      <template v-slot:title> Build your marker</template>
+      <template v-slot:title> Build your marker </template>
       <template v-slot:content>
         <v-stepper v-model="e1">
           <v-stepper-header>
@@ -294,7 +294,6 @@ export default {
   },
   props: {
     markers: Array,
-    showCursorDB: Function,
     showModal: Boolean,
   },
   computed: {
@@ -396,7 +395,7 @@ export default {
           const store = transaction.objectStore('markers') // store = table in sql
           // insert data  in the store
           store.add(this.newIcon)
-          this.showCursorDB()
+          this.$store.dispatch('loadMarkers')
 
           console.log('markers added to the store')
           transaction.oncomplete = () => {
