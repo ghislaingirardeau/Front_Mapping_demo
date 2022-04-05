@@ -43,8 +43,8 @@
           class="modal_tuto-data"
           v-if="this.$vuetify.breakpoint.width > 600 || tutoPage"
         >
-          <p v-for="item in tutorialsData" :key="item">
-            {{ item }}
+          <p v-for="item in tutorialsData" :key="item.message" :style="{'margin-bottom': item.margin}">
+            {{ item.message }}
           </p>
         </div>
       </div>
@@ -110,10 +110,30 @@ export default {
       'Add or draw on map -->',
     ],
     tutorialsData: [
-      '<-- Show tutorial',
-      '<-- Settings and add markers',
-      '<-- Show legend',
-      '<-- Show area measure',
+      {
+        message: '<-- Show tutorial',
+        margin: '26px'
+      },
+      {
+        message: '<-- Settings and add markers',
+        margin: '26px'
+      },
+      {
+        message: '<-- Show legend',
+        margin: '26px'
+      },
+      {
+        message: '<-- Show area measure',
+        margin: '26px'
+      },
+      {
+        message: '<-- Print or save as PDF',
+        margin: '40px'
+      },
+      {
+        message: '<-- Create custom marker/layer',
+        margin: '26px'
+      }
     ],
     tutoPage: false,
     // modal
@@ -610,8 +630,8 @@ export default {
         '<button type="button" class="btn-map btn-map--action">' +
         '<i id="btn-printer" aria-hidden="true" class="v-icon notranslate mdi mdi-printer theme--dark" style="color:rgb(33, 150, 243);"></i>' +
         '</button>' +
-        '<button type="button" class="btn-map btn-map--action">' +
-        '<i id="btn-map-marker" aria-hidden="true" class="v-icon notranslate mdi mdi-map-marker theme--dark" style="color:rgb(33, 150, 243);"></i>' +
+        '<button type="button" class="btn-map btn-map--location btn-map--location--border">' +
+        '<i id="btn-map-marker" aria-hidden="true" class="v-icon notranslate mdi mdi-map-marker theme--dark" style="color:#e6e20b;"></i>' +
         '</button>',
       classes: 'btn-group-icon-map',
       style: styleControl,
@@ -834,6 +854,10 @@ export default {
   &--location {
     padding: 15px;
     border-radius: 30px 30px;
+    &--border {
+      margin-top: 10px;
+      border: 2px solid #e6e20b;
+    }
   }
   &::after {
     content: '';
@@ -887,9 +911,6 @@ export default {
     top: 20px;
     color: rgb(255, 255, 255);
     width: 70%; /* Could be more or less, depending on screen size */
-    & > p {
-      margin-bottom: 25px;
-    }
   }
 }
 
@@ -897,7 +918,7 @@ export default {
 .modal_action {
   position: absolute;
   left: 5%;
-  top: 250px;
+  top: 300px;
   width: 90%;
 
   &-close {
@@ -934,7 +955,7 @@ export default {
       right: 160px;
     }
     &-data {
-      left: 160px;
+      left: 170px;
     }
   }
   .modal_action {
