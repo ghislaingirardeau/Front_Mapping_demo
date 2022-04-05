@@ -23,7 +23,7 @@
         <span class="modal_action-close">&times;</span>
         <button
           class="modal_action-btn"
-          @click="showTuto"
+          @click="tutoPage = !tutoPage"
           v-if="this.$vuetify.breakpoint.width < 600"
         >
           {{ tutoPage ? 'Previous' : 'Next' }}
@@ -152,9 +152,6 @@ export default {
     printOptions
   },
   methods: {
-    showTuto() {
-      this.tutoPage = !this.tutoPage
-    },
     helpModal() {
       // affiche un message lors du click
       var modal = document.getElementById('helpModal')
