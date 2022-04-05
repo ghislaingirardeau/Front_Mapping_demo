@@ -1,5 +1,6 @@
 <template>
   <div class="container">
+    <createMarker :markers="markers" :showModal="showModalMarker" @send-marker="modalMarkerResponse" />
     <!-- MODAL SETTING -->
     <modalCustom :showModal="showModal" @send-modal="modalResponse">
       <template v-slot:title>
@@ -86,7 +87,8 @@ import legendModal from '~/components/leaflet/legendModal.vue'
 import modalCustom from '@/components/leaflet/modalCustom.vue'
 import printOptions from '@/components/leaflet/printOptions.vue'
 import manageDatas from '@/components/manageDatas.vue'
-import { createIndexedDB } from '@/static/functions/indexedDb'
+import createMarker from '@/components/leaflet/createMarker.vue'
+import { createIndexedDB, showCursorDB } from '@/static/functions/indexedDb'
 
 export default {
   data: () => ({
@@ -119,6 +121,9 @@ export default {
     showSetting: false,
     modalTitle: undefined,
     messageModal: undefined,
+    //modal Markers
+    showModalMarker: false,
+    markers: [],
     // print
     showPrintOption: false,
     showPrintMap: false,
@@ -149,9 +154,13 @@ export default {
     legendModal,
     modalCustom,
     manageDatas,
-    printOptions
+    printOptions,
+    createMarker
   },
   methods: {
+    modalMarkerResponse(payload) {
+      this.showModalMarker = payload.message
+    },
     helpModal() {
       // affiche un message lors du click
       var modal = document.getElementById('helpModal')
@@ -449,6 +458,57 @@ export default {
       }
       localStorage.setItem('APIGeoMap', JSON.stringify(jsonToSave))
     },
+    showCursorDB() {
+      this.markers = [] // reinitialise le tableau sinon doublon on show
+      const requestIndexedDB = window.indexedDB.open('Map_Database', 1)
+      requestIndexedDB.onerror = (event) => {
+        console.log(event)
+      }
+
+      // la requete
+      requestIndexedDB.onsuccess = (event) => {
+        let db = event.target.result
+
+        let transaction = db.transaction('markers', 'readwrite')
+        let store = transaction.objectStore('markers') // store = table in sql
+        let idQuery = store.openCursor() // recherche sur l'id
+        idQuery.onsuccess = (event) => {
+          var cursor = event.target.result
+
+          if (cursor) {
+            // if a get an array of sub category, i create a new object to send in this.markers array
+            if (cursor.value.subCategory.length > 0) {
+              for (
+                let index = 0;
+                index < cursor.value.subCategory.length;
+                index++
+              ) {
+                let multiMarker = {
+                  type: cursor.value.type,
+                  category: cursor.value.category,
+                  subCategory: [],
+                  icon: cursor.value.icon,
+                  color: [],
+                }
+                multiMarker.subCategory.push(cursor.value.subCategory[index])
+                multiMarker.color.push(cursor.value.color[index])
+                this.markers.push(multiMarker)
+              }
+            } else {
+              this.markers.push(cursor.value)
+            }
+            cursor.continue()
+          } else {
+            console.log('No more entries!')
+          }
+        }
+
+        // close db at the end of transaction
+        transaction.oncomplete = () => {
+          db.close()
+        }
+      }
+    },
   },
   mounted() {
     // config mapbox
@@ -598,6 +658,9 @@ export default {
         '</button>' +
         '<button type="button" class="btn-map btn-map--action">' +
         '<i id="btn-printer" aria-hidden="true" class="v-icon notranslate mdi mdi-printer theme--dark" style="color:rgb(33, 150, 243);"></i>' +
+        '</button>' +
+        '<button type="button" class="btn-map btn-map--action">' +
+        '<i id="btn-map-marker" aria-hidden="true" class="v-icon notranslate mdi mdi-map-marker theme--dark" style="color:rgb(33, 150, 243);"></i>' +
         '</button>',
       classes: 'btn-group-icon-map',
       style: styleControl,
@@ -636,6 +699,8 @@ export default {
               this.showPrintMap = false
               this.printMap.remove() // debug error, remove the map built
             };
+          } else if (data.target.querySelector('#btn-map-marker')) {
+            this.showModalMarker = !this.showModalMarker
           }
         },
       },
@@ -698,6 +763,7 @@ export default {
         .map((db) => db.name)
         .includes(dbName)
       if (isExisting) {
+        this.showCursorDB()
       } else {
         let response = await createIndexedDB()
         if(response) {
