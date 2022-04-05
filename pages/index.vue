@@ -205,11 +205,15 @@ export default {
             newGeoJson,
             this.dynamicLayerGroup[groupLayer]
           )
+          // add the new layer inside the control overlay
           this.controlLayers.addOverlay(
             this.dynamicLayerGroup[groupLayer],
             groupLayer
           )
+          // show automaticly the new layer group marker on map
+          this.map.addLayer(this.dynamicLayerGroup[groupLayer]) 
         } else {
+          // if category already exist, i just create the new geojson marker
           this.createGeoJsonLayer(
             newGeoJson,
             this.dynamicLayerGroup[groupLayer]
@@ -286,7 +290,8 @@ export default {
       })
 
       // GROUPE DE LAYER DANS LEQUEL J'ENREGISTRE LE JSON
-      groupLayer.addLayer(this.layerGeoJson)
+      groupLayer.addLayer(this.layerGeoJson)      
+
     },
     showMeasure() {
       // show measure on click
@@ -527,13 +532,14 @@ export default {
       } catch (error) {
         console.log(error)
       }
-    } else {
+    } else { // if no data in local storage, no overlay and open the tutorials
       this.propertiesNames = []
       this.helpModal()
     }
 
     const layersToShow = () => {
-      let array = [streets, outdoors, this.markerTarget] // layer by default
+      let array = [streets, outdoors, this.markerTarget] // layer by default + the layer for the target selection
+      // add to the array the futur otherlays, depending on the object dynamicLayerGroup properties
       this.propertiesNames.forEach((element) => {
         array.push(this.dynamicLayerGroup[element])
       })
@@ -545,25 +551,22 @@ export default {
 
     // build the container with switch layer
     this.map = L.map('map', {
-      layers: layersToShow(),
+      layers: layersToShow(), // return the dynamical array of overlays
       center: setMapView.center,
-      zoomSnap: 0.25,
+      zoomSnap: 0.25, // to control the snap of the zoom
       zoomDelta: 0.25,
       zoom: setMapView.zoom,
       zoomControl: false,
-      wheelPxPerZoomLevel: 300
+      wheelPxPerZoomLevel: 300 // to control the snap of the zoom
     })
 
-/*     this.map.on('zoom', () => {
-      console.log(this.map.getZoom());
-    })
- */    
 
     // control layer choice
     this.controlLayers = L.control.layers(baseMaps, this.dynamicLayerGroup)
     this.controlLayers.addTo(this.map)
     // ADD scale control
     L.control.scale().addTo(this.map)
+
 
     // CUSTOMIZE AN ICON MENU ACTIONS ON THE MAP
     let styleControl = {
