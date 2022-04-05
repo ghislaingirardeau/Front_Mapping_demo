@@ -5,6 +5,10 @@
             <v-btn @click="removeGeoJson" color="warning">
                 Confirm remove data 
             </v-btn>
+            <p>Coordinates and Markers will be delete</p>
+            <v-btn @click="resetApp" color="error">
+                Reset All
+            </v-btn>
         </div>
         <p v-else>{{message}}</p>
         <exportCSV v-if="modalExport" />
@@ -46,6 +50,8 @@
 <script>
 import exportCSV from '@/components/leaflet/exportCSV.vue';
 import importCSV from '@/components/leaflet/importCSV.vue';
+import { deleteIndexedDB } from '@/static/functions/indexedDb'
+
     export default {
         data() {
             return {
@@ -90,6 +96,13 @@ import importCSV from '@/components/leaflet/importCSV.vue';
             importCSV
         },
         methods: {
+            async resetApp() {
+                let response = await deleteIndexedDB()
+                if (response) {
+                    localStorage.removeItem("APIGeoMap");
+                    location.reload();
+                }
+            },
             removeGeoJson() {
                 localStorage.removeItem("APIGeoMap");
                 this.message = 'datas have been removed successfully'
