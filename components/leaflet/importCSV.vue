@@ -25,6 +25,7 @@ export default {
   }),
   methods: {
     async readFileTest() {
+      
       // convert the coordinates
       const convertCoordinate = (coordinates, data) => {
         let indexLng = data.indexOf("'")
@@ -96,6 +97,9 @@ export default {
           }
           let JsonFromCsv = result
           let countCategories = []
+          // reinitialize datas marker & geojson => to prevent adding when change files
+          this.newMarker = [] 
+          this.objetData = {}
 
           await JsonFromCsv.forEach((element) => {
             // recupere le nombre de category differentes créées
@@ -165,8 +169,7 @@ export default {
             var db = event.target.result
 
             var transaction = db.transaction('markers', 'readwrite')
-            const store = transaction.objectStore('markers') // store = table in sql
-            // insert data  in the store
+            const store = transaction.objectStore('markers')
             this.newMarker.forEach((element) => {
               store.add(element)
             })
