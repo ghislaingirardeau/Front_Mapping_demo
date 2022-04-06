@@ -787,6 +787,7 @@ export default {
   width: 100vw;
   padding: 0px;
   position: relative;
+  margin-top: 20px;
 }
 #map {
   height: 100%;
@@ -1012,11 +1013,13 @@ export default {
   .container {
     height: 100%;
     width: 100%;
+    margin-top: 0px;
   }
   #map {
     height: 400px !important;
     width: 740px !important;
     border: 2px solid grey;
+    margin-top: 10px;
   }
   #mapPrint {
     position: absolute;
