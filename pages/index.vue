@@ -670,7 +670,7 @@ export default {
             // hide the container after the printing: cancel or save
             window.onafterprint = (event) => {
               this.showPrintMap = false
-              this.printMap.remove() // debug error, remove the map built
+              /* this.printMap.remove() */ // debug error, remove the map built
             };
           } else if (data.target.querySelector('#btn-map-marker')) {
             this.showModalMarker = !this.showModalMarker
