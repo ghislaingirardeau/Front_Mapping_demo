@@ -867,24 +867,15 @@ export default {
     border-radius: 10px 10px;
     width: 40px;
     margin-left: 7px;
-    &:hover{
-      border: 2px solid rgb(33, 150, 243);
-    }
   }
   &--location {
     padding: 15px;
     border-radius: 30px 30px;
-    &:hover{
-      border: 2px solid rgb(33, 150, 243);
-    }
     &--border {
       padding: 14px;
       margin-top: 10px;
       border-radius: 20px 2px;
       border: 2px solid #e6e20b;
-      &:hover{
-        border: 2px solid white;
-      }
     }
   }
   &::after { /* extend the click to all the button */
@@ -988,6 +979,23 @@ export default {
   }
   .modal_action {
     padding-left: 100px;
+  }
+  .btn-map {
+    &--action{
+      &:hover{
+        border: 2px solid rgb(33, 150, 243);
+      }
+    }
+    &--location {
+      &:hover{
+        border: 2px solid rgb(33, 150, 243);
+      }
+      &--border {
+        &:hover{
+          border: 2px solid white;
+        }
+      }
+    }
   }
 }
 
