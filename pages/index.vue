@@ -112,19 +112,19 @@ export default {
     tutorialsData: [
       {
         message: '<-- Show tutorial',
-        margin: '26px'
+        margin: '22px'
       },
       {
-        message: '<-- Settings and add markers',
-        margin: '26px'
+        message: '<-- Settings and options',
+        margin: '22px'
       },
       {
         message: '<-- Show legend',
-        margin: '26px'
+        margin: '22px'
       },
       {
         message: '<-- Show area measure',
-        margin: '26px'
+        margin: '22px'
       },
       {
         message: '<-- Print or save as PDF',
@@ -132,7 +132,7 @@ export default {
       },
       {
         message: '<-- Create custom marker/layer',
-        margin: '26px'
+        margin: '22px'
       }
     ],
     tutoPage: false,
@@ -845,11 +845,15 @@ export default {
 }
 .btn-map {
   border: 2px solid black;
-  border-radius: 10px 10px;
   background-color: black;
   position: relative;
-  margin-bottom: 6px;
-  padding: 8px;
+  margin: 3px 0px;
+  &--action{
+    padding: 6px;
+    border-radius: 10px 10px;
+    width: 40px;
+    margin-left: 7px;
+  }
   &--location {
     padding: 15px;
     border-radius: 30px 30px;
@@ -858,7 +862,7 @@ export default {
       border: 2px solid #e6e20b;
     }
   }
-  &::after {
+  &::after { /* extend the click to all the button */
     content: '';
     position: absolute;
     top: 0px;
