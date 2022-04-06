@@ -7,7 +7,7 @@
         {{ modalTitle ? modalTitle : messageModal }}
       </template>
       <template v-slot:content>
-        <legendModal v-if="showLegend" />
+        <legendModal v-if="showLegend"  :showPrintMap="showPrintMap"/>
         <dataGeoJson
           v-if="showInputGeoDetail"
           @send-data="getData"
@@ -74,7 +74,7 @@
 
     <!-- DISPLAY FOR PRINTING -->
     <div class="print__block">
-      <legendModal class="print__block--legend" v-if="showPrintMap"/>
+      <legendModal class="print__block--legend" v-if="showPrintMap" :showPrintMap="showPrintMap"/>
     </div>
     <div id="mapPrint" v-show="showPrintMap"></div>
   </div>
@@ -985,10 +985,9 @@ export default {
     width: 100%;
   }
   #map {
-    height: 400px;
-    width: 580px;
+    height: 400px !important;
+    width: 740px !important;
     border: 2px solid grey;
-    width: 740px;
   }
   #mapPrint {
     position: absolute;
@@ -999,7 +998,7 @@ export default {
     display: none;
   }
   .print__block {
-    display: block;
+    display: block !important;
     &--legend {
       width: 48%;
       border: 2px solid grey;

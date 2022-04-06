@@ -22,8 +22,8 @@
         <br />
         <span v-if="i.subCategory.length > 0">{{ i.subCategory[0] }}</span>
       </v-col>
-      <v-col cols="11">
-        <v-slider v-model="size" max="42" min="10" step="4" label="Size markers" @change="newSize"></v-slider>
+      <v-col cols="12" v-show="!showPrintMap">
+        <v-slider v-model="size" max="42" min="10" step="4" label="Size" @change="newSize"></v-slider>
       </v-col>
     </v-row>
   </v-col>
@@ -40,6 +40,7 @@ export default {
   props: {
     showLegend: Boolean,
     themeDarkColor: Boolean,
+    showPrintMap: Boolean
   },
   computed: {
     ...mapState(['markers']),
