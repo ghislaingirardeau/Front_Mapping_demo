@@ -853,13 +853,22 @@ export default {
     border-radius: 10px 10px;
     width: 40px;
     margin-left: 7px;
+    &:hover{
+      border: 2px solid rgb(33, 150, 243);
+    }
   }
   &--location {
     padding: 15px;
     border-radius: 30px 30px;
+    &:hover{
+      border: 2px solid rgb(33, 150, 243);
+    }
     &--border {
       margin-top: 10px;
       border: 2px solid #e6e20b;
+      &:hover{
+        border: 2px solid white;
+      }
     }
   }
   &::after { /* extend the click to all the button */
