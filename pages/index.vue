@@ -657,20 +657,10 @@ export default {
               this.showModal = !this.showModal // open common modal
               this.showPrintMap = !this.showPrintMap // build map print container
               this.modalTitle = 'Print option' 
-              console.log('modal create');
             }
             
             await openPrintOptions() 
-            let actualMapCenter = [this.map.getCenter().lat, this.map.getCenter().lng] // get center of the map dynamicaly
             
-            // mount the map after
-            this.printMap = await L.map('mapPrint').setView(actualMapCenter, 6);
-            console.log('map create');
-            await print.addTo(this.printMap);
-            console.log('map added');
-            await L.marker(actualMapCenter).addTo(this.printMap)
-            console.log('marker added');
-
             
             // hide the container after the printing: cancel or save
             window.onafterprint = (event) => {
@@ -683,6 +673,13 @@ export default {
         },
       },
     })
+
+    let actualMapCenter = [this.map.getCenter().lat, this.map.getCenter().lng] // get center of the map dynamicaly
+            
+            // mount the map after
+            this.printMap =  L.map('mapPrint').setView(actualMapCenter, 6);
+             print.addTo(this.printMap);
+             L.marker(actualMapCenter).addTo(this.printMap)
 
     let locationsControl = L.control.custom({
       position: 'topright',
