@@ -22,7 +22,7 @@
                     message : false,
                     titleDocPrint: this.titleDocPrint
                 })
-                setTimeout(() => {
+                setTimeout(() => { // delay to close the modal
                     window.print()
                 }, 500);
             }
