@@ -70,7 +70,7 @@
 
     <!-- MAP -->
     <span class="print__block--title">{{titleDocPrint}}</span>
-    <div id="map" class="mt-5"></div>
+    <div id="map" ></div>
 
     <!-- DISPLAY FOR PRINTING -->
     <div class="print__block">
