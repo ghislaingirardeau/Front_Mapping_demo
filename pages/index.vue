@@ -70,7 +70,7 @@
 
     <!-- MAP -->
     <span class="print__block--title">{{titleDocPrint}}</span>
-    <div id="map" ></div>
+    <div id="map" class="mt-5"></div>
 
     <!-- DISPLAY FOR PRINTING -->
     <div class="print__block">
@@ -405,7 +405,7 @@ export default {
       let style = {
         color: 'red',
         fillColor: 'red',
-        radius: 3,
+        radius: 2,
       }
 
       let target = L.circleMarker()
@@ -711,8 +711,8 @@ export default {
             this.activateOrNotBtn('btn-trace')
             this.activateOrNotBtn('btn-target')
             // LOAD THE HUB FOR TARGET
-            let x = this.map.getSize().x / 2 - 24.3
-            let y = this.map.getSize().y / 2 - 30
+            let x = this.map.getSize().x / 2 - 24
+            let y = this.map.getSize().y / 2 - 29.5
 
             this.hubTargetDisplay = true
 
@@ -787,7 +787,6 @@ export default {
   width: 100vw;
   padding: 0px;
   position: relative;
-  margin-top: 20px;
 }
 #map {
   height: 100%;
@@ -1013,7 +1012,6 @@ export default {
   .container {
     height: 100%;
     width: 100%;
-    margin-top: 0px;
   }
   #map {
     height: 400px !important;
