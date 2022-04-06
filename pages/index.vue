@@ -7,7 +7,7 @@
         {{ modalTitle ? modalTitle : messageModal }}
       </template>
       <template v-slot:content>
-        <legendModal v-if="showLegend"  :showPrintMap="showPrintMap"/>
+        <legendModal v-if="showLegend"  />
         <dataGeoJson
           v-if="showInputGeoDetail"
           @send-data="getData"
@@ -74,7 +74,7 @@
 
     <!-- DISPLAY FOR PRINTING -->
     <div class="print__block">
-      <legendModal class="print__block--legend" :showPrintMap="showPrintMap"/>
+      <legendModal class="print__block--legend" :showPrintMap="showPrintOption"/>
     </div>
     <div id="mapPrint"></div>
   </div>
@@ -211,7 +211,6 @@ export default {
     printResponse(payload) {
       this.modalTitle = undefined
       this.showModal = payload.message
-      this.showPrintOption = payload.message
       this.titleDocPrint = payload.titleDocPrint
     },
     getData(payload) {
@@ -655,16 +654,17 @@ export default {
             let openPrintOptions = () => {
               this.showPrintOption = !this.showPrintOption // modal for options ex: add a title
               this.showModal = !this.showModal // open common modal
-              /* this.showPrintMap = !this.showPrintMap */ // build map print container
               this.modalTitle = 'Print option' 
             }
             
             await openPrintOptions() 
-            
-            
+            // set the view dynamicly
+            let actualMapCenter = [this.map.getCenter().lat, this.map.getCenter().lng]
+            this.printMap.setView(actualMapCenter, 6);
+            L.marker(actualMapCenter).addTo(this.printMap)
             // hide the container after the printing: cancel or save
             window.onafterprint = (event) => {
-              this.showPrintMap = false
+              this.showPrintOption = false
               /* this.printMap.remove() */ // debug error, remove the map built
             };
           } else if (data.target.querySelector('#btn-map-marker')) {
@@ -673,12 +673,6 @@ export default {
         },
       },
     })
-
-    // for the print map
-    let actualMapCenter = [this.map.getCenter().lat, this.map.getCenter().lng] // get center of the map dynamicaly
-    this.printMap = L.map('mapPrint').setView(actualMapCenter, 6);
-    print.addTo(this.printMap);
-    L.marker(actualMapCenter).addTo(this.printMap)
 
     let locationsControl = L.control.custom({
       position: 'topright',
@@ -729,6 +723,12 @@ export default {
 
     this.map.addControl(actionsControl)
     this.map.addControl(locationsControl)
+
+    // MOUNT THE PRINTING MAP = DEBBUG MOBILE PRINT
+    let actualMapCenter = [this.map.getCenter().lat, this.map.getCenter().lng] // get center of the map dynamicaly
+    this.printMap = L.map('mapPrint').setView(actualMapCenter, 6);
+    print.addTo(this.printMap); // print = tilelayer create. Can't use the same tilelayer for 2 maps
+    L.marker(actualMapCenter).addTo(this.printMap)
 
     // CREATE A THE DB FOR THE FIRST CONNECTION AND TO TEST THE APP
     const checkDB = async () => {
