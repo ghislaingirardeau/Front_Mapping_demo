@@ -978,6 +978,10 @@ export default {
 }
 
 @media print {
+  @page {
+    size: 210mm 297mm;
+    margin: 14mm;
+  }
   body {
     -webkit-print-color-adjust: exact !important;
   }
