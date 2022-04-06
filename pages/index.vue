@@ -74,9 +74,9 @@
 
     <!-- DISPLAY FOR PRINTING -->
     <div class="print__block">
-      <legendModal class="print__block--legend" :showPrintMap="showPrintMap"/>
+      <legendModal class="print__block--legend" v-if="showPrintMap" :showPrintMap="showPrintMap"/>
     </div>
-    <div id="mapPrint"></div>
+    <div id="mapPrint" v-show="showPrintMap"></div>
   </div>
 
 </template>
@@ -660,23 +660,24 @@ export default {
             }
             
             await openPrintOptions() 
+            let actualMapCenter = [this.map.getCenter().lat, this.map.getCenter().lng] // get center of the map dynamicaly
             
+            // mount the map after
+            this.printMap = await L.map('mapPrint').setView(actualMapCenter, 6);
+            await print.addTo(this.printMap);
+            await L.marker(actualMapCenter).addTo(this.printMap)
             
             // hide the container after the printing: cancel or save
-            
+            window.onafterprint = (event) => {
+              this.showPrintMap = false
+              this.printMap.remove() // debug error, remove the map built
+            };
           } else if (data.target.querySelector('#btn-map-marker')) {
             this.showModalMarker = !this.showModalMarker
           }
         },
       },
     })
-
-    let actualMapCenter = [this.map.getCenter().lat, this.map.getCenter().lng] // get center of the map dynamicaly
-            
-            // mount the map after
-            this.printMap =  L.map('mapPrint').setView(actualMapCenter, 6);
-             print.addTo(this.printMap);
-             L.marker(actualMapCenter).addTo(this.printMap)
 
     let locationsControl = L.control.custom({
       position: 'topright',
@@ -782,7 +783,7 @@ export default {
 @import url('https://fonts.googleapis.com/css2?family=Architects+Daughter&display=swap');
 
 .container {
-  height: 90%;
+  height: 100%;
   width: 100vw;
   padding: 0px;
   position: relative;
