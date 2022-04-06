@@ -655,7 +655,7 @@ export default {
             let openPrintOptions = () => {
               this.showPrintOption = !this.showPrintOption // modal for options ex: add a title
               this.showModal = !this.showModal // open common modal
-              this.showPrintMap = !this.showPrintMap // build map print container
+              /* this.showPrintMap = !this.showPrintMap */ // build map print container
               this.modalTitle = 'Print option' 
             }
             
@@ -673,9 +673,9 @@ export default {
         },
       },
     })
-
+    
     let actualMapCenter = [this.map.getCenter().lat, this.map.getCenter().lng] // get center of the map dynamicaly
-            
+          this.showPrintMap = !this.showPrintMap  
             // mount the map after
             this.printMap =  L.map('mapPrint').setView(actualMapCenter, 6);
              print.addTo(this.printMap);
