@@ -76,7 +76,7 @@
     <div class="print__block">
       <legendModal class="print__block--legend" :showPrintMap="showPrintMap"/>
     </div>
-    <div id="mapPrint" v-show="showPrintMap"></div>
+    <div id="mapPrint"></div>
   </div>
 
 </template>
@@ -655,17 +655,12 @@ export default {
             let openPrintOptions = () => {
               this.showPrintOption = !this.showPrintOption // modal for options ex: add a title
               this.showModal = !this.showModal // open common modal
-              this.showPrintMap = !this.showPrintMap // build map print container
+              /* this.showPrintMap = !this.showPrintMap */ // build map print container
               this.modalTitle = 'Print option' 
             }
             
             await openPrintOptions() 
-            let actualMapCenter = [this.map.getCenter().lat, this.map.getCenter().lng] // get center of the map dynamicaly
             
-            // mount the map after
-            this.printMap = await L.map('mapPrint').setView(actualMapCenter, 6);
-            await print.addTo(this.printMap);
-            await L.marker(actualMapCenter).addTo(this.printMap)
             
             // hide the container after the printing: cancel or save
             window.onafterprint = (event) => {
@@ -678,6 +673,12 @@ export default {
         },
       },
     })
+
+    // for the print map
+    let actualMapCenter = [this.map.getCenter().lat, this.map.getCenter().lng] // get center of the map dynamicaly
+    this.printMap = L.map('mapPrint').setView(actualMapCenter, 6);
+    print.addTo(this.printMap);
+    L.marker(actualMapCenter).addTo(this.printMap)
 
     let locationsControl = L.control.custom({
       position: 'topright',
