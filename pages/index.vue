@@ -657,13 +657,21 @@ export default {
               this.showModal = !this.showModal // open common modal
               this.showPrintMap = !this.showPrintMap // build map print container
               this.modalTitle = 'Print option' 
+              console.log('modal create');
             }
-            await openPrintOptions() // display components first
+            
+            await openPrintOptions() 
             let actualMapCenter = [this.map.getCenter().lat, this.map.getCenter().lng] // get center of the map dynamicaly
+            
             // mount the map after
             this.printMap = await L.map('mapPrint').setView(actualMapCenter, 6);
+            console.log('map create');
             await print.addTo(this.printMap);
+            console.log('map added');
             await L.marker(actualMapCenter).addTo(this.printMap)
+            console.log('marker added');
+
+            
             // hide the container after the printing: cancel or save
             window.onafterprint = (event) => {
               this.showPrintMap = false
@@ -796,9 +804,20 @@ export default {
   z-index: 1;
   border: 2px solid grey;
 }
-.leaflet-touch .leaflet-control-layers-toggle {
+.leaflet-touch .leaflet-control-layers {
   background-color: black;
+  border: 2px solid #e6e20b;
   color: white;
+  padding: 4px;
+  border-radius: 20px 2px;
+  margin-right: 15px;
+  color: white;
+}
+.leaflet-control-layers-expanded{
+  background-color: black;
+  
+}
+.leaflet-control-layers-toggle{
 }
 .hub__target {
   &--icon {
@@ -864,7 +883,9 @@ export default {
       border: 2px solid rgb(33, 150, 243);
     }
     &--border {
+      padding: 14px;
       margin-top: 10px;
+      border-radius: 20px 2px;
       border: 2px solid #e6e20b;
       &:hover{
         border: 2px solid white;
