@@ -13,7 +13,7 @@
           @send-data="getData"
           :coordinates="coordinates"
         />
-        <manageDatas v-if="showSetting" />
+        <manageDatas v-if="showSetting" :map="map" />
         <printOptions v-if="showPrintOption" @send-modal="printResponse"/>
       </template>
     </modalCustom>
@@ -97,7 +97,6 @@ export default {
     coordinates: [],
     myLocationMark: undefined,
     showInputGeoDetail: false,
-    btnMeasure: true,
     watchMe: undefined,
     accuracyLocation: undefined,
     hubPosition: undefined,
@@ -120,10 +119,6 @@ export default {
       },
       {
         message: '<-- Show legend',
-        margin: '22px'
-      },
-      {
-        message: '<-- Show area measure',
         margin: '22px'
       },
       {
@@ -318,33 +313,6 @@ export default {
       // GROUPE DE LAYER DANS LEQUEL J'ENREGISTRE LE JSON
       groupLayer.addLayer(this.layerGeoJson)      
 
-    },
-    showMeasure() {
-      // show measure on click
-      // HIDE MEASURE ON SECOND CLICK + BUTTON DYNAMIC
-      // DEBUG ON PRINT = NOT SHOWING MEASURE
-
-      if (this.btnMeasure === true) {
-        this.map.eachLayer((layer) => {
-          if (
-            layer instanceof L.Polygon ||
-            (layer instanceof L.Path && layer.feature)
-          ) {
-            // layer feature not undefined ex: L.circleMarker is a layer = show an error. but layer L.circleMarker doesn't have a feature
-            layer.showMeasurements()
-          }
-        })
-      } else {
-        this.map.eachLayer((layer) => {
-          if (
-            layer instanceof L.Polygon ||
-            (layer instanceof L.Path && layer.feature)
-          ) {
-            layer.hideMeasurements()
-          }
-        })
-      }
-      this.btnMeasure = !this.btnMeasure
     },
     coordinatesOnLocation(element) {
       if (this.watchMe) {
@@ -623,9 +591,6 @@ export default {
         '<i id="btn-legend" aria-hidden="true" class="v-icon notranslate mdi mdi-map-legend theme--dark" style="color:rgb(33, 150, 243);"></i>' +
         '</button>' +
         '<button type="button" class="btn-map btn-map--action">' +
-        '<i id="btn-ruler" aria-hidden="true" class="v-icon notranslate mdi mdi-ruler theme--dark" style="color:rgb(33, 150, 243);"></i>' +
-        '</button>' +
-        '<button type="button" class="btn-map btn-map--action">' +
         '<i id="btn-printer" aria-hidden="true" class="v-icon notranslate mdi mdi-printer theme--dark" style="color:rgb(33, 150, 243);"></i>' +
         '</button>' +
         '<button type="button" class="btn-map btn-map--location btn-map--location--border">' +
@@ -642,9 +607,6 @@ export default {
             this.showModal = true
             this.messageModal = 'Manage my datas'
             this.showSetting = true
-          } else if (data.target.querySelector('#btn-ruler')) {
-            styleOnClick(data.target)
-            this.showMeasure()
           } else if (data.target.querySelector('#btn-legend')) {
             this.showLegend = !this.showLegend
             this.showModal = !this.showModal
@@ -661,10 +623,11 @@ export default {
             // set the view dynamicly
             let actualMapCenter = [this.map.getCenter().lat, this.map.getCenter().lng]
             this.printMap.setView(actualMapCenter, 6);
-            L.marker(actualMapCenter).addTo(this.printMap)
+            let mark = L.marker(actualMapCenter).addTo(this.printMap)
             // hide the container after the printing: cancel or save
             window.onafterprint = (event) => {
               this.showPrintOption = false
+              mark.removeFrom(this.printMap) // remove the marker for the next print
               /* this.printMap.remove() */ // debug error, remove the map built
             };
           } else if (data.target.querySelector('#btn-map-marker')) {
@@ -725,10 +688,8 @@ export default {
     this.map.addControl(locationsControl)
 
     // MOUNT THE PRINTING MAP = DEBBUG MOBILE PRINT
-    let actualMapCenter = [this.map.getCenter().lat, this.map.getCenter().lng] // get center of the map dynamicaly
-    this.printMap = L.map('mapPrint').setView(actualMapCenter, 6);
+    this.printMap = L.map('mapPrint')
     print.addTo(this.printMap); // print = tilelayer create. Can't use the same tilelayer for 2 maps
-    L.marker(actualMapCenter).addTo(this.printMap)
 
     // CREATE A THE DB FOR THE FIRST CONNECTION AND TO TEST THE APP
     const checkDB = async () => {
