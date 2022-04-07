@@ -417,20 +417,23 @@ export default {
     },
     activateOrNotBtn(elt) {
       let button = document.getElementById(elt)
+      console.log(button);
       let actionsBtn = document.getElementsByClassName('btn-map--action')
-      let attribut = button.parentElement.getAttribute('disabled')
+      let attribut = button.getAttribute('disabled')
+      console.log(attribut);
 
       if (attribut != null) {
         this.myLocationMark.removeFrom(this.map)
-        button.parentElement.removeAttribute('disabled', '')
-        button.style.color = 'white'
+        button.removeAttribute('disabled', '')
+        button.firstChild.style.color = 'white'
         for (let element of actionsBtn) {
           element.removeAttribute('disabled', '')
           element.firstChild.style.color = 'rgb(33, 150, 243)'
         }
       } else {
-        button.parentElement.setAttribute('disabled', '')
-        button.style.color = 'grey'
+        button.setAttribute('disabled', '')
+        button.firstChild.style.color = 'grey'
+        console.log(button);
         for (let element of actionsBtn) {
           element.setAttribute('disabled', '')
           element.firstChild.style.color = 'grey'
@@ -593,42 +596,42 @@ export default {
     let actionsControl = L.control.custom({
       position: 'topleft',
       content:
-        '<button type="button" class="btn-map btn-map--action">' +
-        '<i id="btn-tutorial" aria-hidden="true" class="v-icon notranslate mdi mdi-help-circle theme--dark" style="color:rgb(33, 150, 243);"></i>' +
+        '<button id="btn-tutorial" type="button" class="btn-map btn-map--action">' +
+        '<i aria-hidden="true" class="v-icon notranslate mdi mdi-help-circle theme--dark" style="color:rgb(33, 150, 243);"></i>' +
         '</button>' +
-        '<button type="button" class="btn-map btn-map--action">' +
-        '<i id="btn-menu" aria-hidden="true" class="v-icon notranslate mdi mdi-menu theme--dark" style="color:rgb(33, 150, 243);"></i>' +
+        '<button id="btn-menu" type="button" class="btn-map btn-map--action">' +
+        '<i aria-hidden="true" class="v-icon notranslate mdi mdi-menu theme--dark" style="color:rgb(33, 150, 243);"></i>' +
         '</button>' +
-        '<button type="button" class="btn-map btn-map--action">' +
-        '<i id="btn-legend" aria-hidden="true" class="v-icon notranslate mdi mdi-map-legend theme--dark" style="color:rgb(33, 150, 243);"></i>' +
+        '<button id="btn-legend" type="button" class="btn-map btn-map--action">' +
+        '<i aria-hidden="true" class="v-icon notranslate mdi mdi-map-legend theme--dark" style="color:rgb(33, 150, 243);"></i>' +
         '</button>' +
-        '<button type="button" class="btn-map btn-map--action">' +
-        '<i id="btn-printer" aria-hidden="true" class="v-icon notranslate mdi mdi-printer theme--dark" style="color:rgb(33, 150, 243);"></i>' +
+        '<button id="btn-printer" type="button" class="btn-map btn-map--action">' +
+        '<i aria-hidden="true" class="v-icon notranslate mdi mdi-printer theme--dark" style="color:rgb(33, 150, 243);"></i>' +
         '</button>' +
-        '<button type="button" class="btn-map btn-map--action">' +
-        '<i id="btn-save" aria-hidden="true" class="v-icon notranslate mdi mdi-content-save theme--dark" style="color:rgb(33, 150, 243);"></i>' +
+        '<button id="btn-save" type="button" class="btn-map btn-map--action">' +
+        '<i aria-hidden="true" class="v-icon notranslate mdi mdi-content-save theme--dark" style="color:rgb(33, 150, 243);"></i>' +
         '</button>' +
-        '<button type="button" class="btn-map btn-map--location btn-map--location--border">' +
-        '<i id="btn-map-marker" aria-hidden="true" class="v-icon notranslate mdi mdi-map-marker theme--dark" style="color:#e6e20b;"></i>' +
+        '<button id="btn-map-marker" type="button" class="btn-map btn-map--location btn-map--location--border">' +
+        '<i aria-hidden="true" class="v-icon notranslate mdi mdi-map-marker theme--dark" style="color:#e6e20b;"></i>' +
         '</button>',
       classes: 'btn-group-icon-map',
       style: styleControl,
       events: {
         click: async (data) => {
-          if (data.target.querySelector('#btn-tutorial')) {
+          if (data.target.getAttribute('id') === 'btn-tutorial') {
             this.helpModal()
-          } else if (data.target.querySelector('#btn-menu')) {
+          } else if (data.target.getAttribute('id') === 'btn-menu') {
             this.saveTemporaly()
             this.showModal = true
             this.messageModal = 'Settings and Options'
             this.showSetting = true
-          } else if (data.target.querySelector('#btn-legend')) {
+          } else if (data.target.getAttribute('id') === 'btn-legend') {
             this.showLegend = !this.showLegend
             this.showModal = !this.showModal
             this.modalTitle = 'Map Legend'
-          } else if (data.target.querySelector('#btn-save')) {
+          } else if (data.target.getAttribute('id') === 'btn-save') {
             this.saveTemporaly()
-          } else if (data.target.querySelector('#btn-printer')) {
+          } else if (data.target.getAttribute('id') === 'btn-printer') {
             let openPrintOptions = () => {
               this.showPrintOption = !this.showPrintOption // modal for options ex: add a title
               this.showModal = !this.showModal // open common modal
@@ -653,7 +656,7 @@ export default {
               mark.removeFrom(this.printMap) // remove the marker for the next print
               this.printMap.remove() // debug error, remove the map built
             }
-          } else if (data.target.querySelector('#btn-map-marker')) {
+          } else if (data.target.getAttribute('id') === 'btn-map-marker') {
             this.showModalMarker = !this.showModalMarker
           }
         },
@@ -663,31 +666,31 @@ export default {
     let locationsControl = L.control.custom({
       position: 'topright',
       content:
-        '<button type="button" class="btn-map btn-map--location">' +
-        '<i id="btn-add" aria-hidden="true" class="v-icon notranslate mdi mdi-map-marker-radius theme--dark" style="color:white;"></i>' +
+        '<button id="btn-add" type="button" class="btn-map btn-map--location">' +
+        '<i aria-hidden="true" class="v-icon notranslate mdi mdi-map-marker-radius theme--dark" style="color:white;"></i>' +
         '</button>' +
-        '<button type="button" class="btn-map btn-map--location">' +
-        '<i id="btn-trace" aria-hidden="true" class="v-icon notranslate mdi mdi-map-marker-path theme--dark" style="color:white;"></i>' +
+        '<button id="btn-trace" type="button" class="btn-map btn-map--location">' +
+        '<i aria-hidden="true" class="v-icon notranslate mdi mdi-map-marker-path theme--dark" style="color:white;"></i>' +
         '</button>' +
-        '<button type="button" class="btn-map btn-map--location">' +
-        '<i id="btn-target" aria-hidden="true" class="v-icon notranslate mdi mdi-map-marker-plus theme--dark" style="color:white;"></i>' +
+        '<button id="btn-target" type="button" class="btn-map btn-map--location">' +
+        '<i aria-hidden="true" class="v-icon notranslate mdi mdi-map-marker-plus theme--dark" style="color:white;"></i>' +
         '</button>',
       classes: 'btn-group-icon-map',
       style: styleControl,
       events: {
         click: (data) => {
           // function on click
-          if (data.target.querySelector('#btn-add')) {
+          if (data.target.getAttribute('id') === 'btn-add') {
             styleOnClick(data.target)
             this.activateOrNotBtn('btn-trace')
             this.activateOrNotBtn('btn-target')
             this.coordinatesOnLocation(true) // display differente type of coordinates one array
-          } else if (data.target.querySelector('#btn-trace')) {
+          } else if (data.target.getAttribute('id') === 'btn-trace') {
             styleOnClick(data.target)
             this.coordinatesOnLocation(false) // display differente type of coordinates multiple array
             this.activateOrNotBtn('btn-add')
             this.activateOrNotBtn('btn-target')
-          } else if (data.target.querySelector('#btn-target')) {
+          } else if (data.target.getAttribute('id') === 'btn-target') {
             this.activateOrNotBtn('btn-add')
             this.activateOrNotBtn('btn-trace')
             this.activateOrNotBtn('btn-target')
