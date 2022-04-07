@@ -86,9 +86,8 @@
         class="print__block--legend"
         :showPrintMap="showPrintOption"
       />
-      <div id="mapPrint" v-show="showPrintMap"></div>
     </div>
-    
+    <div id="mapPrint" v-show="showPrintMap"></div>
   </div>
 </template>
 
