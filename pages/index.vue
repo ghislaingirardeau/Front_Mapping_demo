@@ -133,6 +133,10 @@ export default {
       },
       {
         message: '<-- Print or save as PDF',
+        margin: '22px',
+      },
+      {
+        message: '<-- Save datas temporaly',
         margin: '40px',
       },
       {
@@ -601,6 +605,9 @@ export default {
         '<button type="button" class="btn-map btn-map--action">' +
         '<i id="btn-printer" aria-hidden="true" class="v-icon notranslate mdi mdi-printer theme--dark" style="color:rgb(33, 150, 243);"></i>' +
         '</button>' +
+        '<button type="button" class="btn-map btn-map--action">' +
+        '<i id="btn-save" aria-hidden="true" class="v-icon notranslate mdi mdi-content-save theme--dark" style="color:rgb(33, 150, 243);"></i>' +
+        '</button>' +
         '<button type="button" class="btn-map btn-map--location btn-map--location--border">' +
         '<i id="btn-map-marker" aria-hidden="true" class="v-icon notranslate mdi mdi-map-marker theme--dark" style="color:#e6e20b;"></i>' +
         '</button>',
@@ -611,7 +618,6 @@ export default {
           if (data.target.querySelector('#btn-tutorial')) {
             this.helpModal()
           } else if (data.target.querySelector('#btn-data')) {
-            this.saveTemporaly()
             this.showModal = true
             this.messageModal = 'Settings and Options'
             this.showSetting = true
@@ -619,6 +625,8 @@ export default {
             this.showLegend = !this.showLegend
             this.showModal = !this.showModal
             this.modalTitle = 'Map Legend'
+          } else if (data.target.querySelector('#btn-save')) {
+            this.saveTemporaly()
           } else if (data.target.querySelector('#btn-printer')) {
             let openPrintOptions = () => {
               this.showPrintOption = !this.showPrintOption // modal for options ex: add a title
