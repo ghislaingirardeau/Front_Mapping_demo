@@ -633,7 +633,7 @@ export default {
             this.printMap.setView(actualMapCenter, 6)
             let mark = L.marker(actualMapCenter).addTo(this.printMap)
             setTimeout(() => {openPrintOptions()}, 1000);
-            // hide the container after the printing: cancel or save
+            
             window.onafterprint = (event) => {
               this.showPrintOption = false
               mark.removeFrom(this.printMap) // remove the marker for the next print
