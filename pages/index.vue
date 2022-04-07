@@ -57,10 +57,16 @@
         </div>
       </div>
     </div>
-    <!-- MODAL COORDINATES -->
-    <div class="hub__accuracy" v-if="hubPosition">
+    <!-- MODAL INFORMATIONS -->
+    <div class="hub__informations" v-if="hubPosition">
       {{ hubCoordinate }}
     </div>
+
+    <!-- FOR DISTANCE: BUG DIFFERENTE MEASURE BETWEEN POINTS & LINES -->
+    <!-- <div class="hub__informations" v-if="distance.length === 2">
+      {{ hubDistance }} meters
+    </div> -->
+    
     <!-- MODAL HUB POINT LOCATION -->
     <div class="hub__target--btn" v-if="hubTargetDisplay">
       <v-btn color="black" class="mx-3" @click="saveTarget(false)">
@@ -165,6 +171,7 @@ export default {
     dynamicLayerGroup: {},
     propertiesNames: [],
     controlLayers: undefined,
+    distance: []
   }),
   computed: {
     ...mapState(['markers']),
@@ -178,6 +185,10 @@ export default {
         return 'Searching position...'
       }
     },
+    hubDistance() {
+      let meters = this.map.distance(this.distance[0], this.distance[1])
+      return meters
+    }
   },
   components: {
     dataGeoJson,
@@ -283,8 +294,12 @@ export default {
       let testClick = (e) => {
         // TEST TO MODIFY DIRECTLY HERE !!!!!!!!!
         var layer = e.target
-        let test = document.getElementById('helpModal')
-        console.log(layer)
+        if(this.distance.length < 2) {
+          this.distance.push(layer.feature.geometry.coordinates)
+        } else {
+          this.distance = []
+          this.distance.push(layer.feature.geometry.coordinates)
+        }
       }
 
       function onEachFeature(feature, layer) {
@@ -760,7 +775,7 @@ export default {
     })
     window.addEventListener('online', function (e) {
       console.log('online')
-    })
+    })    
   },
 }
 </script>
@@ -820,7 +835,7 @@ export default {
     z-index: 3;
   }
 }
-.hub__accuracy {
+.hub__informations {
   display: block;
   position: absolute;
   bottom: 13%;
