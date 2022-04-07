@@ -411,32 +411,34 @@ export default {
       }
       this.hubTargetDisplay = false
       this.markerTarget.clearLayers()
-      this.activateOrNotBtn('btn-add')
-      this.activateOrNotBtn('btn-trace')
-      this.activateOrNotBtn('btn-target')
+      this.activateOrNotBtn(['btn-add', 'btn-trace', 'btn-target'])
     },
-    activateOrNotBtn(elt) {
-      let button = document.getElementById(elt)
-      console.log(button);
+    activateOrNotBtn(arrayId) {
+      
+      let firstButton = document.getElementById(arrayId[0])
       let actionsBtn = document.getElementsByClassName('btn-map--action')
-      let attribut = button.getAttribute('disabled')
-      console.log(attribut);
-
+      let attribut = firstButton.getAttribute('disabled')
+      let btn
       if (attribut != null) {
         this.myLocationMark.removeFrom(this.map)
-        button.removeAttribute('disabled', '')
-        button.firstChild.style.color = 'white'
-        for (let element of actionsBtn) {
-          element.removeAttribute('disabled', '')
-          element.firstChild.style.color = 'rgb(33, 150, 243)'
+        arrayId.forEach(btnId => {
+          btn = document.getElementById(btnId)
+          btn.removeAttribute('disabled', '')
+          btn.firstChild.style.color = 'white'
+        });
+        for (let btnAction of actionsBtn) {
+          btnAction.removeAttribute('disabled', '')
+          btnAction.firstChild.style.color = 'rgb(33, 150, 243)'
         }
       } else {
-        button.setAttribute('disabled', '')
-        button.firstChild.style.color = 'grey'
-        console.log(button);
-        for (let element of actionsBtn) {
-          element.setAttribute('disabled', '')
-          element.firstChild.style.color = 'grey'
+        arrayId.forEach(btnId => {
+          btn = document.getElementById(btnId)
+          btn.setAttribute('disabled', '')
+          btn.firstChild.style.color = 'grey'
+        });
+        for (let btnAction of actionsBtn) {
+          btnAction.setAttribute('disabled', '')
+          btnAction.firstChild.style.color = 'grey'
         }
       }
     },
@@ -682,18 +684,14 @@ export default {
           // function on click
           if (data.target.getAttribute('id') === 'btn-add') {
             styleOnClick(data.target)
-            this.activateOrNotBtn('btn-trace')
-            this.activateOrNotBtn('btn-target')
+            this.activateOrNotBtn(['btn-trace', 'btn-target'])
             this.coordinatesOnLocation(true) // display differente type of coordinates one array
           } else if (data.target.getAttribute('id') === 'btn-trace') {
             styleOnClick(data.target)
             this.coordinatesOnLocation(false) // display differente type of coordinates multiple array
-            this.activateOrNotBtn('btn-add')
-            this.activateOrNotBtn('btn-target')
+            this.activateOrNotBtn(['btn-add', 'btn-target'])
           } else if (data.target.getAttribute('id') === 'btn-target') {
-            this.activateOrNotBtn('btn-add')
-            this.activateOrNotBtn('btn-trace')
-            this.activateOrNotBtn('btn-target')
+            this.activateOrNotBtn(['btn-add', 'btn-trace', 'btn-target'])
             // LOAD THE HUB FOR TARGET
             let x = this.map.getSize().x / 2 - 24
             let y = this.map.getSize().y / 2 - 29.5
