@@ -87,7 +87,7 @@
         :showPrintMap="showPrintOption"
       />
     </div>
-    <div id="mapPrint"></div>
+    <div id="mapPrint" v-show="showPrintMap"></div>
   </div>
 </template>
 
@@ -621,23 +621,28 @@ export default {
             this.modalTitle = 'Map Legend'
           } else if (data.target.querySelector('#btn-printer')) {
             let openPrintOptions = () => {
+              this.showPrintOption = !this.showPrintOption // modal for options ex: add a title
               this.showModal = !this.showModal // open common modal
+              this.showPrintMap = !this.showPrintMap // build map print container
               this.modalTitle = 'Print option'
             }
-            this.showPrintOption = !this.showPrintOption
+          
+            await openPrintOptions()
             // set the view dynamicly
             let actualMapCenter = [
               this.map.getCenter().lat,
               this.map.getCenter().lng,
             ]
-            this.printMap.setView(actualMapCenter, 6)
+            // mount the map after
+            this.printMap = await L.map('mapPrint').setView(actualMapCenter, 6)
+            await print.addTo(this.printMap)
             let mark = L.marker(actualMapCenter).addTo(this.printMap)
-            setTimeout(() => {openPrintOptions()}, 1000);
-            
+            // hide the container after the printing: cancel or save
             window.onafterprint = (event) => {
               this.showPrintOption = false
+              this.showPrintMap = false
               mark.removeFrom(this.printMap) // remove the marker for the next print
-              /* this.printMap.remove() */ // debug error, remove the map built
+              this.printMap.remove() // debug error, remove the map built
             }
           } else if (data.target.querySelector('#btn-map-marker')) {
             this.showModalMarker = !this.showModalMarker
@@ -695,10 +700,6 @@ export default {
 
     this.map.addControl(actionsControl)
     this.map.addControl(locationsControl)
-
-    // MOUNT THE PRINTING MAP = DEBBUG MOBILE PRINT
-    this.printMap = L.map('mapPrint')
-    print.addTo(this.printMap) // print = tilelayer create. Can't use the same tilelayer for 2 maps
 
     // CREATE A THE DB FOR THE FIRST CONNECTION AND TO TEST THE APP
     const checkDB = async () => {
