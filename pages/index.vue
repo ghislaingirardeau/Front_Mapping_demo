@@ -618,6 +618,7 @@ export default {
           if (data.target.querySelector('#btn-tutorial')) {
             this.helpModal()
           } else if (data.target.querySelector('#btn-data')) {
+            this.saveTemporaly()
             this.showModal = true
             this.messageModal = 'Settings and Options'
             this.showSetting = true
