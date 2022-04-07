@@ -216,6 +216,10 @@ export default {
       this.messageModal = undefined
       this.modalTitle = undefined
       this.showPrintOption = false
+      if(this.showPrintMap) {
+        this.showPrintMap = false
+        this.printMap.remove()
+      }
     },
     printResponse(payload) {
       this.modalTitle = undefined
