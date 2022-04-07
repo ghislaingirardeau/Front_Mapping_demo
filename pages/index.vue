@@ -621,12 +621,10 @@ export default {
             this.modalTitle = 'Map Legend'
           } else if (data.target.querySelector('#btn-printer')) {
             let openPrintOptions = () => {
-              this.showPrintOption = !this.showPrintOption // modal for options ex: add a title
               this.showModal = !this.showModal // open common modal
               this.modalTitle = 'Print option'
             }
-
-            await openPrintOptions()
+            this.showPrintOption = !this.showPrintOption
             // set the view dynamicly
             let actualMapCenter = [
               this.map.getCenter().lat,
@@ -634,6 +632,7 @@ export default {
             ]
             this.printMap.setView(actualMapCenter, 6)
             let mark = L.marker(actualMapCenter).addTo(this.printMap)
+            setTimeout(() => {openPrintOptions()}, 1000);
             // hide the container after the printing: cancel or save
             window.onafterprint = (event) => {
               this.showPrintOption = false
