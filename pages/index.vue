@@ -597,7 +597,7 @@ export default {
         '<i id="btn-tutorial" aria-hidden="true" class="v-icon notranslate mdi mdi-help-circle theme--dark" style="color:rgb(33, 150, 243);"></i>' +
         '</button>' +
         '<button type="button" class="btn-map btn-map--action">' +
-        '<i id="btn-data" aria-hidden="true" class="v-icon notranslate mdi mdi-sitemap theme--dark" style="color:rgb(33, 150, 243);"></i>' +
+        '<i id="btn-menu" aria-hidden="true" class="v-icon notranslate mdi mdi-menu theme--dark" style="color:rgb(33, 150, 243);"></i>' +
         '</button>' +
         '<button type="button" class="btn-map btn-map--action">' +
         '<i id="btn-legend" aria-hidden="true" class="v-icon notranslate mdi mdi-map-legend theme--dark" style="color:rgb(33, 150, 243);"></i>' +
@@ -617,7 +617,7 @@ export default {
         click: async (data) => {
           if (data.target.querySelector('#btn-tutorial')) {
             this.helpModal()
-          } else if (data.target.querySelector('#btn-data')) {
+          } else if (data.target.querySelector('#btn-menu')) {
             this.saveTemporaly()
             this.showModal = true
             this.messageModal = 'Settings and Options'
