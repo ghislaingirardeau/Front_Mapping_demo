@@ -620,13 +620,10 @@ export default {
             this.showModal = !this.showModal
             this.modalTitle = 'Map Legend'
           } else if (data.target.querySelector('#btn-printer')) {
-            let openPrintOptions = () => {
-              this.showPrintOption = !this.showPrintOption // modal for options ex: add a title
-              this.showModal = !this.showModal // open common modal
-              this.modalTitle = 'Print option'
-            }
-
-            await openPrintOptions()
+            this.showPrintOption = !this.showPrintOption // modal for options ex: add a title
+            this.showModal = !this.showModal // open common modal
+            this.modalTitle = 'Print option'
+            
             // set the view dynamicly
             let actualMapCenter = [
               this.map.getCenter().lat,
