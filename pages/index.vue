@@ -66,17 +66,19 @@
     <!-- <div class="hub__informations" v-if="distance.length === 2">
       {{ hubDistance }} meters
     </div> -->
-    
+
     <!-- MODAL HUB POINT LOCATION -->
-    <div class="hub__target--btn" v-if="hubTargetDisplay">
+    <div id="hub" class="hub__target--btn">
       <v-btn color="black" class="mx-3" @click="saveTarget(false)">
         Cancel
       </v-btn>
       <v-btn color="black" class="mx-3" @click="saveTarget(true)"> OK </v-btn>
     </div>
 
+    <p id="hubTuto" class="hub__target--tuto">Click inside</p>
+
     <i
-      id="targetIconLocate"
+      id="hubTarget"
       @click="locationTarget"
       aria-hidden="true"
       class="hub__target--icon mdi mdi-target"
@@ -166,7 +168,6 @@ export default {
     printMap: undefined,
     // hub display
     markerTarget: undefined,
-    hubTargetDisplay: false,
     // layers & layer group
     dynamicLayerGroup: {},
     propertiesNames: [],
@@ -417,8 +418,12 @@ export default {
       addMarker()
     },
     saveTarget(e) {
-      let iconTarget = document.getElementById('targetIconLocate')
+      let iconTarget = document.getElementById('hubTarget')
       iconTarget.style.display = 'none'
+      let tuto = document.getElementById('hubTuto')
+      tuto.style.display = 'none'
+      let hub = document.getElementById('hub')
+      hub.style.display = 'none'
       if (e) {
         // if click on save marker true
         this.showInputGeoDetail = true
@@ -428,7 +433,6 @@ export default {
         // if false, reset all
         this.coordinates = []
       }
-      this.hubTargetDisplay = false
       this.markerTarget.clearLayers()
       this.activateOrNotBtn(['btn-add', 'btn-trace', 'btn-target'])
     },
@@ -715,13 +719,19 @@ export default {
             let x = this.map.getSize().x / 2 - 24
             let y = this.map.getSize().y / 2 - 29.5
 
-            this.hubTargetDisplay = true
-
-            let icon = document.getElementById('targetIconLocate')
+            let icon = document.getElementById('hubTarget')
             icon.style.display = 'block'
+            let tuto = document.getElementById('hubTuto')
+            tuto.style.display = 'block'
+            let hub = document.getElementById('hub')
+            hub.style.display = 'flex'
 
             icon.style.top = `${y}px`
             icon.style.left = `${x}px`
+            tuto.style.top = `${y - 10}px`
+            tuto.style.left = `${x - 10}px`
+            hub.style.top = `${y + 100}px`
+            hub.style.left = `${x + 20}px`
           }
         },
       },
@@ -822,12 +832,18 @@ export default {
     color: black;
     font-size: 50px;
   }
+  &--tuto {
+    display: none;
+    position: absolute;
+    z-index: 3;
+    color: black;
+    font-size: 15px;
+    font-weight: bold;
+  }
   &--btn {
-    display: flex;
+    display: none;
     justify-content: space-between;
     position: absolute;
-    bottom: 10%;
-    left: 50%;
     transform: translate(-50%, -50%);
     width: 270px;
     height: 50px;
