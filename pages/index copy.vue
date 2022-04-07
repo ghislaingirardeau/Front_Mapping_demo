@@ -11,13 +11,13 @@
         {{ modalTitle ? modalTitle : messageModal }}
       </template>
       <template v-slot:content>
-        <legendModal v-if="showLegend" />
+        <legendModal v-if="showLegend" :showPrintMap="showPrintMap" />
         <dataGeoJson
           v-if="showInputGeoDetail"
           @send-data="getData"
           :coordinates="coordinates"
         />
-        <optionsMenu v-if="showSetting" :map="map" />
+        <optionsMenu v-if="showSetting" />
         <printOptions v-if="showPrintOption" @send-modal="printResponse" />
       </template>
     </modalCustom>
@@ -82,12 +82,9 @@
 
     <!-- DISPLAY FOR PRINTING -->
     <div class="print__block">
-      <legendModal
-        class="print__block--legend"
-        :showPrintMap="showPrintOption"
-      />
+      <legendModal class="print__block--legend" :showPrintMap="showPrintMap" />
     </div>
-    <div id="mapPrint"></div>
+    <div id="mapPrint" v-show="showPrintMap"></div>
   </div>
 </template>
 
@@ -107,6 +104,7 @@ export default {
     coordinates: [],
     myLocationMark: undefined,
     showInputGeoDetail: false,
+    btnMeasure: true,
     watchMe: undefined,
     accuracyLocation: undefined,
     hubPosition: undefined,
@@ -129,6 +127,10 @@ export default {
       },
       {
         message: '<-- Show legend',
+        margin: '22px',
+      },
+      {
+        message: '<-- Show area measure',
         margin: '22px',
       },
       {
@@ -216,6 +218,7 @@ export default {
     printResponse(payload) {
       this.modalTitle = undefined
       this.showModal = payload.message
+      this.showPrintOption = payload.message
       this.titleDocPrint = payload.titleDocPrint
     },
     getData(payload) {
@@ -322,6 +325,33 @@ export default {
 
       // GROUPE DE LAYER DANS LEQUEL J'ENREGISTRE LE JSON
       groupLayer.addLayer(this.layerGeoJson)
+    },
+    showMeasure() {
+      // show measure on click
+      // HIDE MEASURE ON SECOND CLICK + BUTTON DYNAMIC
+      // DEBUG ON PRINT = NOT SHOWING MEASURE
+
+      if (this.btnMeasure === true) {
+        this.map.eachLayer((layer) => {
+          if (
+            layer instanceof L.Polygon ||
+            (layer instanceof L.Path && layer.feature)
+          ) {
+            // layer feature not undefined ex: L.circleMarker is a layer = show an error. but layer L.circleMarker doesn't have a feature
+            layer.showMeasurements()
+          }
+        })
+      } else {
+        this.map.eachLayer((layer) => {
+          if (
+            layer instanceof L.Polygon ||
+            (layer instanceof L.Path && layer.feature)
+          ) {
+            layer.hideMeasurements()
+          }
+        })
+      }
+      this.btnMeasure = !this.btnMeasure
     },
     coordinatesOnLocation(element) {
       if (this.watchMe) {
@@ -599,6 +629,9 @@ export default {
         '<i id="btn-legend" aria-hidden="true" class="v-icon notranslate mdi mdi-map-legend theme--dark" style="color:rgb(33, 150, 243);"></i>' +
         '</button>' +
         '<button type="button" class="btn-map btn-map--action">' +
+        '<i id="btn-ruler" aria-hidden="true" class="v-icon notranslate mdi mdi-ruler theme--dark" style="color:rgb(33, 150, 243);"></i>' +
+        '</button>' +
+        '<button type="button" class="btn-map btn-map--action">' +
         '<i id="btn-printer" aria-hidden="true" class="v-icon notranslate mdi mdi-printer theme--dark" style="color:rgb(33, 150, 243);"></i>' +
         '</button>' +
         '<button type="button" class="btn-map btn-map--location btn-map--location--border">' +
@@ -613,8 +646,11 @@ export default {
           } else if (data.target.querySelector('#btn-data')) {
             this.saveTemporaly()
             this.showModal = true
-            this.messageModal = 'Settings and Options'
+            this.messageModal = 'Manage my datas'
             this.showSetting = true
+          } else if (data.target.querySelector('#btn-ruler')) {
+            styleOnClick(data.target)
+            this.showMeasure()
           } else if (data.target.querySelector('#btn-legend')) {
             this.showLegend = !this.showLegend
             this.showModal = !this.showModal
@@ -623,21 +659,24 @@ export default {
             let openPrintOptions = () => {
               this.showPrintOption = !this.showPrintOption // modal for options ex: add a title
               this.showModal = !this.showModal // open common modal
+              this.showPrintMap = !this.showPrintMap // build map print container
               this.modalTitle = 'Print option'
             }
 
             await openPrintOptions()
-            // set the view dynamicly
             let actualMapCenter = [
               this.map.getCenter().lat,
               this.map.getCenter().lng,
-            ]
-            this.printMap.setView(actualMapCenter, 6)
-            let mark = L.marker(actualMapCenter).addTo(this.printMap)
+            ] // get center of the map dynamicaly
+
+            // mount the map after
+            this.printMap = await L.map('mapPrint').setView(actualMapCenter, 6)
+            await print.addTo(this.printMap)
+            await L.marker(actualMapCenter).addTo(this.printMap)
+
             // hide the container after the printing: cancel or save
             window.onafterprint = (event) => {
-              this.showPrintOption = false
-              mark.removeFrom(this.printMap) // remove the marker for the next print
+              this.showPrintMap = false
               /* this.printMap.remove() */ // debug error, remove the map built
             }
           } else if (data.target.querySelector('#btn-map-marker')) {
@@ -696,10 +735,6 @@ export default {
 
     this.map.addControl(actionsControl)
     this.map.addControl(locationsControl)
-
-    // MOUNT THE PRINTING MAP = DEBBUG MOBILE PRINT
-    this.printMap = L.map('mapPrint')
-    print.addTo(this.printMap) // print = tilelayer create. Can't use the same tilelayer for 2 maps
 
     // CREATE A THE DB FOR THE FIRST CONNECTION AND TO TEST THE APP
     const checkDB = async () => {
