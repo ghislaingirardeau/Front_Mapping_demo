@@ -1,6 +1,6 @@
 <template>
     <modalCustom :showModal="showModal" @send-modal="modalResponse">
-      <template v-slot:title> Build your marker {{newIcon}} </template>
+      <template v-slot:title> Build your marker </template>
       <template v-slot:content>
         <v-stepper v-model="e1">
           <v-stepper-header>
@@ -91,8 +91,8 @@
                     color="teal"
                     :style="{
                       border: `2px solid ${disableInputs ? 'grey' : 'teal'}`,
-                      padding: `5px`,
                     }"
+                    class="iconAddColor"
                     :disabled="disableInputs"
                     @click="addToArraySubCat"
                     >mdi-plus-circle</v-icon
@@ -118,10 +118,9 @@
                 <v-col cols="4" sm="3" class="text-center">
                   <v-icon
                     color="teal"
-                    :class="{ animationShake: disableInputs }"
+                    :class="{ animationShake: disableInputs, 'iconAddColor' : true }"
                     :style="{
                       border: `2px solid ${disableColor ? 'grey' : 'teal'}`,
-                      padding: `5px`,
                     }"
                     @click="addToArrayMarker"
                     :disabled="disableColor"
@@ -257,7 +256,7 @@ export default {
       // control inside modal
       disableInputs: false,
       disableColor: false,
-      colorSelected: '',
+      colorSelected: '#ffffff',
       swatches: [
         '#FF0000',
         '#AA0000',
@@ -435,4 +434,56 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.iconAddColor{
+  padding: 5px;
+  transition: transform 200ms;
+  &::after {
+    content: '';
+    position: absolute;
+    top: 10%;
+    left: 10%;
+    height: 80%;
+    width: 80%;
+    opacity: 0;
+    transition: opacity 300;
+  }
+  &:hover::after{
+    opacity: 0.3;
+  }
+}
+.v-icon::after{
+  border-radius: 0px;
+}
+.divider__block {
+  border-top: 2px solid white;
+}
+@keyframes shake {
+  10%,
+  90% {
+    transform: translate3d(-1px, 0, 0);
+  }
+
+  20%,
+  80% {
+    transform: translate3d(2px, 0, 0);
+  }
+
+  30%,
+  50%,
+  70% {
+    transform: translate3d(-4px, 0, 0);
+  }
+
+  40%,
+  60% {
+    transform: translate3d(4px, 0, 0);
+  }
+}
+
+.animationShake {
+  /* transform: scale(1.1);
+  transition: transform 400ms; */
+  animation: shake 0.82s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+}
+
 </style>
