@@ -3,7 +3,7 @@
     <createMarker :markers="markers" :showModal="showModal" @send-marker="modalMarkerResponse" />
 
     <v-col cols="12" class="text-center">
-      <h1>My Markers</h1>
+      <h1 class="mb-2">My Markers</h1>
       <p v-if="DBmessage">{{ DBmessage }}</p>
       <v-btn @click="showBtnDBExist ? deleteDB() : activateIndexedDB()">{{
         showBtnDBExist ? 'Delete database' : 'Create database'
@@ -79,10 +79,8 @@ export default {
       if (isExisting) {
         this.showBtnDBExist = true
         this.$store.dispatch('loadMarkers')
-        this.DBmessage = 'the db is existing'
       } else {
         this.showBtnDBExist = false
-        this.DBmessage = 'the db not exist'
       }
     }
     checkDB()

@@ -798,6 +798,7 @@ export default {
   width: 100vw;
   padding: 0px;
   position: relative;
+  font-family: 'Architects Daughter', cursive;
 }
 #map {
   height: 100%;
