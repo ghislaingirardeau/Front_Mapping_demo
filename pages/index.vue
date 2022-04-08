@@ -8,7 +8,7 @@
     <!-- MODAL SETTING -->
     <modalCustom :showModal="showModal" @send-modal="modalResponse">
       <template v-slot:title>
-        {{ modalTitle ? modalTitle : messageModal }}
+        {{ modalTitle }}
       </template>
       <template v-slot:content>
         <legendModal v-if="showLegend" :markers="markers"/>
@@ -19,6 +19,7 @@
         />
         <optionsMenu v-if="showSetting" :map="map" />
         <printOptions v-if="showPrintOption" @send-modal="printResponse" />
+        <p v-if="modalMessage">{{modalMessage}}</p>
       </template>
     </modalCustom>
 
@@ -160,7 +161,7 @@ export default {
     showLegend: false,
     showSetting: false,
     modalTitle: undefined,
-    messageModal: undefined,
+    modalMessage: undefined,
     //modal Markers
     showModalMarker: false,
     // print
@@ -227,7 +228,7 @@ export default {
       this.showLegend = payload.message
       this.showInputGeoDetail = payload.message
       this.showSetting = payload.message
-      this.messageModal = undefined
+      this.modalMessage = undefined
       this.modalTitle = undefined
       this.showPrintOption = false
       if(this.showPrintMap) {
@@ -387,7 +388,7 @@ export default {
         }
 
         let error = () => {
-          this.messageModal = 'Unable to retrieve your location'
+          this.modalTitle = 'Unable to retrieve your location'
           this.showModal = true
         }
 
@@ -398,7 +399,7 @@ export default {
             maximumAge: 0,
           })
         } else {
-          this.messageModal = 'Geolocation is not supported by your browser'
+          this.modalTitle = 'Geolocation is not supported by your browser'
           this.showModal = true
         }
       }
@@ -650,7 +651,7 @@ export default {
           } else if (data.target.getAttribute('id') === 'btn-menu') {
             this.saveTemporaly()
             this.showModal = true
-            this.messageModal = 'Settings and Options'
+            this.modalTitle = 'Settings and Options'
             this.showSetting = true
           } else if (data.target.getAttribute('id') === 'btn-legend') {
             this.showLegend = !this.showLegend
@@ -658,6 +659,9 @@ export default {
             this.modalTitle = 'Map Legend'
           } else if (data.target.getAttribute('id') === 'btn-save') {
             this.saveTemporaly()
+            this.showModal = !this.showModal
+            this.modalTitle = 'Data save TEMPORALY'
+            this.modalMessage = 'For a safely save, consider to export your datas to CSV in settings'
           } else if (data.target.getAttribute('id') === 'btn-printer') {
             let openPrintOptions = () => {
               this.showPrintOption = !this.showPrintOption // modal for options ex: add a title
