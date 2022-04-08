@@ -11,7 +11,7 @@
         {{ modalTitle ? modalTitle : messageModal }}
       </template>
       <template v-slot:content>
-        <legendModal v-if="showLegend" />
+        <legendModal v-if="showLegend" :markers="markers"/>
         <dataGeoJson
           v-if="showInputGeoDetail"
           @send-data="getData"
@@ -94,6 +94,7 @@
         class="print__block--legend"
         v-if="showPrintMap"
         :showPrintMap="showPrintOption"
+        :markers="markers"
       />
     </div>
     <div id="mapPrint" v-show="showPrintMap"></div>
@@ -748,7 +749,7 @@ export default {
         .map((db) => db.name)
         .includes(dbName)
       if (isExisting) {
-        this.$store.dispatch('loadMarkers')
+        
       } else {
         let response = await createIndexedDB()
         if (response) {
@@ -777,6 +778,7 @@ export default {
           }
         }
       }
+      this.$store.dispatch('loadMarkers')
     }
     checkDB()
 

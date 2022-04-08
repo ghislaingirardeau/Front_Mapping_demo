@@ -30,7 +30,6 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
 
 export default {
   data: () => ({
@@ -40,10 +39,10 @@ export default {
   props: {
     showLegend: Boolean,
     themeDarkColor: Boolean,
-    showPrintMap: Boolean
+    showPrintMap: Boolean,
+    markers: Array
   },
   computed: {
-    ...mapState(['markers']),
   },
   methods: {
     newSize() {
@@ -57,7 +56,6 @@ export default {
     },
   },
   mounted() {
-    this.$store.dispatch('loadMarkers')
   },
 }
 </script>
