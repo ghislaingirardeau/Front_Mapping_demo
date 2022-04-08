@@ -92,6 +92,7 @@
     <div class="print__block">
       <legendModal
         class="print__block--legend"
+        v-if="showPrintMap"
         :showPrintMap="showPrintOption"
       />
     </div>
@@ -822,8 +823,6 @@ export default {
 }
 .leaflet-control-layers-expanded {
   background-color: black;
-}
-.leaflet-control-layers-toggle {
 }
 .hub__target {
   &--icon {
