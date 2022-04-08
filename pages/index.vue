@@ -517,25 +517,25 @@ export default {
         attribution: mapboxAttribution,
         accessToken: tokenMapbox,
       }),
-      satellite = L.tileLayer(mapBoxUrl, {
-        id: mapboxSatellite,
-        tileSize: 512,
-        zoomOffset: -1,
-        attribution: mapboxAttribution,
-        accessToken: tokenMapbox,
-      }),
       print = L.tileLayer(mapBoxUrl, {
         id: mapboxOutdoors,
         tileSize: 512,
         zoomOffset: -1,
         attribution: mapboxAttribution,
         accessToken: tokenMapbox,
-      })
+      }),
+      google = L.tileLayer('http://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}', {
+        maxZoom: 20,
+        subdomains:['mt0','mt1','mt2','mt3']
+      }),
+      lanscape = L.tileLayer('https://tile.thunderforest.com/landscape/{z}/{x}/{y}.png?apikey=05002ac7d7034aec81f8963fa723e851')
+
     // bouton pour le switch
     var baseMaps = {
       Streets: streets,
-      /* "Satellite": satellite, */
       Outdoors: outdoors,
+      Google: google,
+      Lanscape: lanscape
     }
 
     /* RECUPERE LES DONNEES SI PRESENT DANS LE LOCALSTORAGE */
@@ -577,7 +577,7 @@ export default {
     }
 
     const layersToShow = () => {
-      let array = [streets, outdoors, this.markerTarget] // layer by default + the layer for the target selection
+      let array = [lanscape, google, streets, outdoors, this.markerTarget] // layer by default + the layer for the target selection
       // add to the array the futur otherlays, depending on the object dynamicLayerGroup properties
       this.propertiesNames.forEach((element) => {
         array.push(this.dynamicLayerGroup[element])
