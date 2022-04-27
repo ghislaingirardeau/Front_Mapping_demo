@@ -763,14 +763,32 @@ export default {
 
             var transaction = db.transaction('markers', 'readwrite')
             const store = transaction.objectStore('markers')
-            let newIcon = {
+            let newIcons = [
+              {
               type: 'Point',
               category: 'home',
               subCategory: [],
               icon: 'home',
               color: ['red'],
-            }
-            store.add(newIcon)
+              },
+              {
+              type: 'Polygon',
+              category: 'area',
+              subCategory: [],
+              icon: '',
+              color: ['green'],
+              },
+              {
+              type: 'MultiLineString',
+              category: 'line',
+              subCategory: [],
+              icon: '',
+              color: ['blue'],
+              },
+            ]
+            newIcons.forEach(element => {
+              store.add(element)
+            });
 
             console.log('markers added to the store')
             transaction.oncomplete = () => {
