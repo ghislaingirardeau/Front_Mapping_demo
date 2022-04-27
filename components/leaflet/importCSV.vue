@@ -15,7 +15,6 @@
 </template>
 
 <script>
-import { createIndexedDB, deleteIndexedDB } from '@/static/functions/indexedDb'
 
 export default {
   data: () => ({

@@ -32,16 +32,3 @@ export function createIndexedDB() {
         resolve({ response: true, message: 'database created' });
     });
 }
-
-export function deleteIndexedDB() {
-    var DBDeleteReq = window.indexedDB.deleteDatabase("Map_Database");
-    DBDeleteReq.onsuccess = function (event) {
-        console.log("Database deleted successfully");
-        console.log(DBDeleteReq);
-        console.log(window.indexedDB.databases());
-    }
-    DBDeleteReq.onerror = (event) => {
-        console.log(event)
-    }
-    return { response: true, message: "Database deleted successfully" }
-}
