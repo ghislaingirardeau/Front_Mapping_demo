@@ -741,8 +741,9 @@ export default {
       if (isExisting) {
         
       } else {
-        let response = await createIndexedDB()
-        if (response) {
+        let result = await createIndexedDB()
+        
+        if (result) {
           const requestIndexedDB = window.indexedDB.open('Map_Database', 1)
           requestIndexedDB.onsuccess = (event) => {
             var db = event.target.result
