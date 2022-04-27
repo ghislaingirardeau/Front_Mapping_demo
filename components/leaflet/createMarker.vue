@@ -239,16 +239,12 @@
 </template>
 
 <script>
-import modalCustom from '@/components/leaflet/modalCustom.vue'
 
 let countArray = (a, b) => {
   return a - b
 }
 
 export default {
-  components: {
-    modalCustom,
-  },
   data() {
     return {
       // stepper

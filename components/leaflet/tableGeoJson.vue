@@ -61,7 +61,6 @@
 </template>
 
 <script>
-import modalCustom from '@/components/leaflet/modalCustom.vue';
   export default {
     data () {
       return {
@@ -82,9 +81,6 @@ import modalCustom from '@/components/leaflet/modalCustom.vue';
         editItem: {},
         rulesName: [(v) => v.length >= 2 || 'Mininum 2 characters']
       }
-    },
-    components: {
-      modalCustom,
     },
     props: {
         allDatas: Array
