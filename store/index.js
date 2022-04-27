@@ -68,4 +68,7 @@ export const mutations = {
     SAVE_MARKERS(state, data) {
         state.markers = data;
     },
+    RESET_MARKERS(state) {
+        state.markers = [];
+    },
 }
