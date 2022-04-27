@@ -3,7 +3,7 @@
     :cols="themeDarkColor ? '6' : undefined"
     :class="themeDarkColor ? 'legend__bloc' : ''"
   >
-    <v-row class="text-center">
+    <v-row class="text-center" v-if="markers.length > 0">
       <v-col v-for="(i, l) in markers" :key="l" order="first">
         <span>{{ i.category }}</span>
         <br />
@@ -24,6 +24,11 @@
       </v-col>
       <v-col cols="12" v-show="!showPrintMap">
         <v-slider v-model="size" max="42" min="10" step="4" label="Size" @change="newSize"></v-slider>
+      </v-col>
+    </v-row>
+    <v-row v-else>
+      <v-col>
+        <p>You have to create a marker first !</p>
       </v-col>
     </v-row>
   </v-col>
