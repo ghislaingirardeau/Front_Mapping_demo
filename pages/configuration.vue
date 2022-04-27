@@ -1,26 +1,25 @@
 <template>
   <v-row>
-    <createMarker :markers="markers" :showModal="showModal" @send-marker="modalMarkerResponse" />
+    <createMarker
+      :markers="markers"
+      :showModal="showModal"
+      @send-marker="modalMarkerResponse"
+    />
 
     <v-col cols="12" class="text-center">
       <h1 class="mb-2">My Markers</h1>
       <p v-if="DBmessage">{{ DBmessage }}</p>
-      <v-btn @click="showBtnDBExist ? deleteDB() : activateIndexedDB()">{{
-        showBtnDBExist ? 'Delete database' : 'Create database'
-      }}</v-btn>
+      <v-btn @click="deleteDB">Delete All Markers</v-btn>
 
       <v-btn @click="showModal = true">Add marker</v-btn>
     </v-col>
 
-    <tableMarkers :markers="markers" />
+    <tableMarkers :markers="markers" :key="markers.length" />
   </v-row>
 </template>
 
 <script>
-import createMarker from '@/components/leaflet/createMarker.vue'
-import tableMarkers from '@/components/leaflet/tableMarkers.vue'
-import { createIndexedDB, deleteIndexedDB } from '@/static/functions/indexedDb'
-import { mapState } from 'vuex'
+import { mapState, mapMutations } from 'vuex'
 
 export default {
   layout: 'datasLayout',
@@ -31,63 +30,35 @@ export default {
       DBmessage: undefined,
     }
   },
-  components: {
-    tableMarkers,
-    createMarker
-  },
   computed: {
-    ...mapState(['markers'])
+    ...mapState(['markers']),
   },
   methods: {
+    ...mapMutations(['RESET_MARKERS']),
     modalMarkerResponse(payload) {
       this.showModal = payload.message
     },
-    async activateIndexedDB() {
-      let response = await createIndexedDB()
-      console.log(response)
-      if (response) {
-        this.showBtnDBExist = true
-        this.DBmessage = response.message
-      } else {
-        this.DBmessage = 'an error is occured'
-      }
-    },
-    async deleteDB() {
+    deleteDB() {
       let confirm = window.confirm(
         'Are you sure you want to delete all the markers ?'
       )
       if (confirm) {
-        let response = await deleteIndexedDB()
-        console.log(response)
-        if (response) {
-          this.markers = []
-          this.showBtnDBExist = false
-          this.DBmessage = response.message
-        } else {
-          this.DBmessage = 'an error is occured'
+        var requestIndexedDB = window.indexedDB.open('Map_Database', 1)
+        requestIndexedDB.onsuccess = (event) => {
+          var db = event.target.result
+          var transaction = db.transaction('markers', 'readwrite')
+          const store = transaction.objectStore('markers')
+          store.clear()
+          this.$store.commit('RESET_MARKERS')
         }
       }
     },
   },
   mounted() {
-    // check if the database exist
-    const checkDB = async () => {
-      const dbName = 'Map_Database'
-      const isExisting = (await window.indexedDB.databases())
-        .map((db) => db.name)
-        .includes(dbName)
-      if (isExisting) {
-        this.showBtnDBExist = true
-        this.$store.dispatch('loadMarkers')
-      } else {
-        this.showBtnDBExist = false
-      }
-    }
-    checkDB()
+    this.$store.dispatch('loadMarkers')
   },
 }
 </script>
 
 <style lang="scss" scoped>
-
 </style>
