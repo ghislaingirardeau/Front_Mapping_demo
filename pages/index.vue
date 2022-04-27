@@ -680,6 +680,15 @@ export default {
       },
     })
 
+    const checkIfMarkerEmpty = (doThis) => {
+      if(this.markers.length === 0) {
+        this.showModal = !this.showModal
+        this.modalTitle = 'Create a marker first !'
+      } else {
+        doThis()
+      }
+    }
+
     let locationsControl = L.control.custom({
       position: 'topright',
       content:
@@ -696,34 +705,47 @@ export default {
       style: styleControl,
       events: {
         click: (data) => {
-          // function on click
+          // ADD MY POSTION
           if (data.target.getAttribute('id') === 'btn-add') {
-            styleOnClick(data.target)
-            this.activateOrNotBtn(['btn-trace', 'btn-target'])
-            this.coordinatesOnLocation(true) // display differente type of coordinates one array
+            const functionsLocate = () => {
+              styleOnClick(data.target)
+              this.activateOrNotBtn(['btn-trace', 'btn-target'])
+              this.coordinatesOnLocation(true) // display differente type of coordinates one array
+            }
+            checkIfMarkerEmpty(functionsLocate)
+
+            // TRACK ME
           } else if (data.target.getAttribute('id') === 'btn-trace') {
-            styleOnClick(data.target)
-            this.coordinatesOnLocation(false) // display differente type of coordinates multiple array
-            this.activateOrNotBtn(['btn-add', 'btn-target'])
+            const functionsTrack = () => {
+              styleOnClick(data.target)
+              this.coordinatesOnLocation(false) // display differente type of coordinates multiple array
+              this.activateOrNotBtn(['btn-add', 'btn-target'])
+            }
+            checkIfMarkerEmpty(functionsTrack)
+
+            // POINT A COORDINATE
           } else if (data.target.getAttribute('id') === 'btn-target') {
-            this.activateOrNotBtn(['btn-add', 'btn-trace', 'btn-target'])
-            // LOAD THE HUB FOR TARGET
-            let x = this.map.getSize().x / 2 - 24
-            let y = this.map.getSize().y / 2 - 29.5
+            const functionsAdd = () => {
+              this.activateOrNotBtn(['btn-add', 'btn-trace', 'btn-target'])
+              // LOAD THE HUB FOR TARGET
+              let x = this.map.getSize().x / 2 - 24
+              let y = this.map.getSize().y / 2 - 29.5
 
-            let icon = document.getElementById('hubTarget')
-            icon.style.display = 'block'
-            let tuto = document.getElementById('hubTuto')
-            tuto.style.display = 'block'
-            let hub = document.getElementById('hub')
-            hub.style.display = 'flex'
+              let icon = document.getElementById('hubTarget')
+              icon.style.display = 'block'
+              let tuto = document.getElementById('hubTuto')
+              tuto.style.display = 'block'
+              let hub = document.getElementById('hub')
+              hub.style.display = 'flex'
 
-            icon.style.top = `${y}px`
-            icon.style.left = `${x}px`
-            tuto.style.top = `${y - 10}px`
-            tuto.style.left = `${x - 10}px`
-            hub.style.top = `${y + 100}px`
-            hub.style.left = `${x + 20}px`
+              icon.style.top = `${y}px`
+              icon.style.left = `${x}px`
+              tuto.style.top = `${y - 10}px`
+              tuto.style.left = `${x - 10}px`
+              hub.style.top = `${y + 100}px`
+              hub.style.left = `${x + 20}px`
+            }
+            checkIfMarkerEmpty(functionsAdd)
           }
         },
       },
