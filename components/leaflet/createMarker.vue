@@ -41,7 +41,7 @@
                 <v-col cols="11" v-if="newIcon.type === 'Point'">
                   <v-text-field
                     v-model="newIcon.icon"
-                    label="Search Icons"
+                    label="Type the name of icon"
                     persistent-hint
                     prefix="mdi-"
                     required
@@ -58,14 +58,45 @@
                       </v-tooltip>
                     </template>
                   </v-text-field>
-                  <v-select
-                    v-model="newIcon.icon"
-                    :items="iconsSuggest"
-                    label="List suggest icons"
-                    outlined
-                    class="mt-4"
+                  
+                  <v-dialog
+                    v-model="dialog"
+                    fullscreen
+                    hide-overlay
                   >
-                  </v-select>
+                    <template v-slot:activator="{ on, attrs }">
+                      <v-btn
+                        color="red lighten-2"
+                        dark
+                        v-bind="attrs"
+                        v-on="on"
+                        v-show="newIcon.icon.length > 0"
+                      >
+                        Show Icons
+                      </v-btn>
+                      <span v-show="newIcon.icon.length > 0">{{iconTest.length}} icons found</span>
+                    </template>
+                    <v-card>
+                      <v-card-title class="text-h5 grey lighten-2">
+                        Click to select icon
+                      </v-card-title>
+                      <v-card-text class="mx-2">
+                        <v-icon v-for="(icon, i) in iconTest" :key="i" large @click="pickIcon(icon)">mdi-{{icon}}</v-icon>  
+                      </v-card-text>
+                      <v-divider></v-divider>
+                      <v-card-actions>
+                        <v-spacer></v-spacer>
+                        <v-btn
+                          color="primary"
+                          text
+                          @click="dialog = false"
+                        >
+                          Close
+                        </v-btn>
+                      </v-card-actions>
+                    </v-card>
+                  </v-dialog>
+
                 </v-col>
                 <v-col cols="11" class="mt-n-5">
                   <v-btn color="primary" :disabled="!nameExist" @click="e1 = 2"> Continue </v-btn>
@@ -285,6 +316,7 @@ export default {
       // manage datas
       iconsListing: [],
       iconsSuggest: [],
+      dialog: false,
     }
   },
   props: {
@@ -312,6 +344,16 @@ export default {
         (v) => this.nameExist || 'this category already exist',
       ]
     },
+    iconTest: {
+      // getter
+      get: function () {
+        return this.iconsSuggest
+      },
+      // setter
+      set: function (newValue) {
+        this.iconsSuggest = newValue
+      }
+    },
   },
   methods: {
     modalResponse(payload) {
@@ -320,16 +362,23 @@ export default {
         })
         this.resetMarker()
     },
-    showIconsList(e) {
-      this.iconsSuggest = []
-      this.iconsListing.forEach((element) => {
-        if (element.startsWith(e)) {
-          this.iconsSuggest.push(element)
-        }
-      })
+    showIconsList(e) { // show icon inside the list
+      if(e.length > 0) {
+        let array = []
+        this.iconsListing.forEach((element) => {
+          if (element.startsWith(e)) {
+            array.push(element)
+          }
+        })
+        this.iconTest = array
+      }
     },
     linkToIcon() {
       window.open('https://pictogrammers.github.io/@mdi/font/6.5.95/', '_blank')
+    },
+    pickIcon(elt) {
+      this.newIcon.icon = elt
+      this.dialog = false
     },
     // RESET THE FORM AND ENABLE ALL BUTTON
     resetMarker() {
