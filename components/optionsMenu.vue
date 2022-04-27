@@ -48,9 +48,6 @@
 </template>
 
 <script>
-import exportCSV from '@/components/leaflet/exportCSV.vue'
-import importCSV from '@/components/leaflet/importCSV.vue'
-import { deleteIndexedDB } from '@/static/functions/indexedDb'
 
 export default {
   data() {
@@ -95,10 +92,6 @@ export default {
         },
       ],
     }
-  },
-  components: {
-    exportCSV,
-    importCSV,
   },
   props: {
     map: Object,
