@@ -25,7 +25,6 @@ export default {
   }),
   methods: {
     async readFileTest() {
-      
       // convert the coordinates
       const convertCoordinate = (coordinates, data) => {
         let indexLng = data.indexOf("'")
@@ -98,7 +97,7 @@ export default {
           let JsonFromCsv = result
           let countCategories = []
           // reinitialize datas marker & geojson => to prevent adding when change files
-          this.newMarker = [] 
+          this.newMarker = []
           this.objetData = {}
 
           await JsonFromCsv.forEach((element) => {
@@ -112,7 +111,6 @@ export default {
                 icon: element.icon,
                 color: [],
               })
-              
             }
           })
 
@@ -142,48 +140,29 @@ export default {
       fileInput.addEventListener('change', readFile)
     },
     async validImport() {
+      try {
+        // reinitialise la base de donnée marker
+        this.resetDB()
 
-      let confirm = window.confirm(
-        'Import a file will remove all the data actually displayed'
-      )
-      if (confirm) {
-        try {
+        const requestIndexedDB = window.indexedDB.open('Map_Database', 1)
+        requestIndexedDB.onsuccess = (event) => {
+          var db = event.target.result
 
-          // reinitialise la base de donnée marker si presente ou non
-          let response = await window.indexedDB.databases()
-          let DBname = []
-          response.forEach((element) => {
-            DBname.push(element.name)
+          var transaction = db.transaction('markers', 'readwrite')
+          const store = transaction.objectStore('markers')
+          this.newMarker.forEach((element) => {
+            store.add(element)
           })
-          if (DBname.indexOf('Map_Database') === -1) {
-            console.log('create')
-            await createIndexedDB()
-          } else {
-            console.log('delete and create')
-            await deleteIndexedDB()
-            await createIndexedDB()
-          }
-          
-          const requestIndexedDB = window.indexedDB.open('Map_Database', 1)
-          requestIndexedDB.onsuccess = (event) => {
-            var db = event.target.result
 
-            var transaction = db.transaction('markers', 'readwrite')
-            const store = transaction.objectStore('markers')
-            this.newMarker.forEach((element) => {
-              store.add(element)
-            })
-
-            console.log('markers added to the store')
-            transaction.oncomplete = () => {
-              db.close()
-            }
+          console.log('markers added to the store')
+          transaction.oncomplete = () => {
+            db.close()
           }
-          localStorage.setItem('APIGeoMap', JSON.stringify(this.objetData))
-          this.$router.push('/myData')
-        } catch (error) {
-          console.log(error)
         }
+        localStorage.setItem('APIGeoMap', JSON.stringify(this.objetData))
+        this.$router.push('/myData')
+      } catch (error) {
+        console.log(error)
       }
     },
   },

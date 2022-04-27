@@ -7,7 +7,7 @@ export default {
     methods: {
         resetDB() {
             let confirm = window.confirm(
-                'Are you sure you want to delete all the markers ?'
+                'This action will delete all markers previously created'
             )
             if (confirm) {
                 var requestIndexedDB = window.indexedDB.open('Map_Database', 1)
