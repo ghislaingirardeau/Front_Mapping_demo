@@ -20,7 +20,6 @@
 </template>
 
 <script>
-import tableGeoJson from '@/components/leaflet/tableGeoJson.vue'
 
 export default {
   layout: 'datasLayout',
@@ -30,9 +29,6 @@ export default {
       isActive: false,
       objetData: {}
     }
-  },
-  components: {
-    tableGeoJson,
   },
   methods: {
     linkMap() {

@@ -103,12 +103,6 @@
 </template>
 
 <script>
-import dataGeoJson from '@/components/leaflet/dataGeoJson.vue'
-import legendModal from '~/components/leaflet/legendModal.vue'
-import modalCustom from '@/components/leaflet/modalCustom.vue'
-import printOptions from '@/components/leaflet/printOptions.vue'
-import optionsMenu from '~/components/optionsMenu.vue'
-import createMarker from '@/components/leaflet/createMarker.vue'
 import { createIndexedDB } from '@/static/functions/indexedDb'
 import { mapState } from 'vuex'
 
@@ -193,14 +187,6 @@ export default {
       let meters = this.map.distance(this.distance[0], this.distance[1])
       return meters
     }
-  },
-  components: {
-    dataGeoJson,
-    legendModal,
-    modalCustom,
-    optionsMenu,
-    printOptions,
-    createMarker,
   },
   methods: {
     modalMarkerResponse(payload) {
