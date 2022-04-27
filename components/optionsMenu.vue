@@ -105,11 +105,9 @@ export default {
   },
   methods: {
     async resetApp() {
-      let response = await deleteIndexedDB()
-      if (response) {
-        localStorage.removeItem('APIGeoMap')
-        location.reload()
-      }
+      this.resetDB()
+      localStorage.removeItem('APIGeoMap')
+      location.reload()
     },
     removeGeoJson() {
       localStorage.removeItem('APIGeoMap')

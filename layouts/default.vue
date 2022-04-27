@@ -45,7 +45,12 @@
 </template>
 
 <script>
+import Vue from 'vue'
+import resetDB from '@/mixins/resetDB.js';
+Vue.mixin(resetDB)
+
 export default {
+  mixins: [resetDB],
   data () {
     return {
       clipped: false,
