@@ -329,17 +329,11 @@ export default {
   },
   computed: {
     checkCatExist() {
-      let array = []
       let control
-      this.markers.forEach((element) => {
-        if (array.indexOf(element.category) === -1) {
-          array.push(element.category)
-        }
-      })
-      /* let mySet = new Set(this.markers.category)
-      console.log(mySet); */
+      let result = this.markers.map(a => a.category);
+      let mySet = new Set(result)
       if (
-        array.indexOf(this.newIcon.category) != -1 ||
+        [...mySet].indexOf(this.newIcon.category) != -1 ||
         this.newIcon.category.length < 2
       ) {
         control = false
