@@ -1,280 +1,269 @@
 <template>
-    <modalCustom :showModal="showModal" @send-modal="modalResponse">
-      <template v-slot:title> Build your marker </template>
-      <template v-slot:content>
-        <v-stepper v-model="e1">
-          <v-stepper-header>
-            <v-stepper-step :complete="e1 > 1" step="1">
-              Marker
-            </v-stepper-step>
+  <modalCustom :showModal="showModal" @send-modal="modalResponse">
+    <template v-slot:title> Build your marker </template>
+    <template v-slot:content>
+      <v-stepper v-model="e1">
+        <v-stepper-header>
+          <v-stepper-step :complete="e1 > 1" step="1"> Marker </v-stepper-step>
 
-            <v-divider></v-divider>
+          <v-divider></v-divider>
 
-            <v-stepper-step :complete="e1 > 2" step="2"> Color </v-stepper-step>
+          <v-stepper-step :complete="e1 > 2" step="2"> Color </v-stepper-step>
 
-            <v-divider></v-divider>
+          <v-divider></v-divider>
 
-            <v-stepper-step step="3"> Summary </v-stepper-step>
-          </v-stepper-header>
+          <v-stepper-step step="3"> Summary </v-stepper-step>
+        </v-stepper-header>
 
-          <v-stepper-items>
-            <v-stepper-content step="1">
-              <v-form
-                  ref="form"
-                  v-model="valid"
-                  lazy-validation
-                >
-                <v-row align="center" justify="center" class="my-2">
-                  
-                  <v-col cols="11" sm="5">
-                    <v-select
-                      v-model="newIcon.type"
-                      :items="typeSelection"
-                      label="Type"
-                      required
-                      @focus="resetMarker"
-                    ></v-select>
-                  </v-col>
-                  <v-col cols="11" sm="6">
-                    <v-text-field
-                      v-model="newIcon.category"
-                      label="Category name"
-                      :rules="checkCatExist"
-                      @keyup="checkCatExist"
-                      required
-                    ></v-text-field>
-                  </v-col>
-                  <v-col cols="11" v-if="newIcon.type === 'Point'">
-                    <v-text-field
-                      v-model="newIcon.icon"
-                      label="Icon name"
-                      hint="Type the first letter to see the icon's list"
-                      persistent-hint
-                      prefix="mdi-"
-                      class="mb-3"
-                      :rules="checkIcon"
-                      required
-                      @keyup="showIconsList(newIcon.icon)"
-                    >
-                    </v-text-field>
-                    
-                    <v-dialog
-                      v-model="dialog"
-                      fullscreen
-                      hide-overlay
-                    >
-                      <template v-slot:activator="{ on, attrs }">
-                        <span v-show="newIcon.icon.length > 0">{{iconSuggestList.length}} icons found</span>
-                        <v-btn
-                          color="teal"
-                          v-bind="attrs"
-                          v-on="on"
-                          v-show="newIcon.icon.length > 0"
-                          class="ml-3"
-                        >
-                          Show
-                        </v-btn>
-                      </template>
-                      <v-card>
-                        <v-card-title>
-                          Click to select icon
-                        </v-card-title>
-                        <v-card-text class="ma-2">
-                          <v-icon class="ma-2" v-for="(icon, i) in iconSuggestList" :key="i" x-large @click="pickIcon(icon)">mdi-{{icon}}</v-icon>  
-                        </v-card-text>
-                        <v-divider></v-divider>
-                        <v-card-actions>
-                          <v-spacer></v-spacer>
-                          <v-btn
-                            color="primary"
-                            outlined
-                            @click="dialog = false"
-                          >
-                            Close
-                          </v-btn>
-                        </v-card-actions>
-                      </v-card>
-                    </v-dialog>
-
-                  </v-col>
-                  <v-col cols="11" class="mt-n-5">
-                    <v-btn color="primary" @click="validate"> Continue </v-btn>
-                    <v-icon class="ml-3" large v-if="newIcon.icon"> mdi-{{ newIcon.icon }} </v-icon>
-                  </v-col>
-                  
-                </v-row>
-              </v-form>
-            </v-stepper-content>
-
-            <v-stepper-content step="2">
+        <v-stepper-items>
+          <v-stepper-content step="1">
+            <v-form ref="form" v-model="valid" lazy-validation>
               <v-row align="center" justify="center" class="my-2">
-                <v-col cols="11">
-                  <span>Add subcategories (Optionnal)</span>
+                <v-col cols="11" sm="5">
+                  <v-select
+                    v-model="newIcon.type"
+                    :items="typeSelection"
+                    label="Type"
+                    required
+                    @focus="resetMarker"
+                  ></v-select>
                 </v-col>
-                <v-col cols="6">
+                <v-col cols="11" sm="6">
                   <v-text-field
-                    v-model="subCategorySelected"
-                    :disabled="disableInputs"
-                    label="Subcategories"
+                    v-model="newIcon.category"
+                    label="Category name"
+                    :rules="checkCatExist"
+                    @keyup="checkCatExist"
+                    required
                   ></v-text-field>
                 </v-col>
-                <v-col cols="5" class="text-center">
-                  <span class="mr-2">Add</span>
-                  <v-icon
-                    color="teal"
-                    :style="{
-                      border: `2px solid ${disableInputs ? 'grey' : 'teal'}`,
-                    }"
-                    class="iconAddColor"
-                    :disabled="disableInputs"
-                    @click="addToArraySubCat"
-                    >mdi-plus-circle</v-icon
+                <v-col cols="11" v-if="newIcon.type === 'Point'">
+                  <v-text-field
+                    v-model="newIcon.icon"
+                    label="Icon name"
+                    hint="Type the first letter to see the icon's list"
+                    persistent-hint
+                    prefix="mdi-"
+                    class="mb-3"
+                    :rules="checkIcon"
+                    required
+                    @keyup="showIconsList(newIcon.icon)"
                   >
-                </v-col>
+                  </v-text-field>
 
-                <v-col cols="11" class="divider__block">
-                  <span>Pick the color</span>
+                  <v-dialog v-model="dialog" fullscreen hide-overlay>
+                    <template v-slot:activator="{ on, attrs }">
+                      <span v-show="newIcon.icon.length > 0"
+                        >{{ iconSuggestList.length }} icons found</span
+                      >
+                      <v-btn
+                        color="teal"
+                        v-bind="attrs"
+                        v-on="on"
+                        v-show="newIcon.icon.length > 0"
+                        class="ml-3"
+                      >
+                        Show
+                      </v-btn>
+                    </template>
+                    <v-card>
+                      <v-card-title> Click to select icon </v-card-title>
+                      <v-card-text class="ma-2">
+                        <v-icon
+                          class="ma-2"
+                          v-for="(icon, i) in iconSuggestList"
+                          :key="i"
+                          x-large
+                          @click="pickIcon(icon)"
+                          >mdi-{{ icon }}</v-icon
+                        >
+                      </v-card-text>
+                      <v-divider></v-divider>
+                      <v-card-actions>
+                        <v-spacer></v-spacer>
+                        <v-btn color="primary" outlined @click="dialog = false">
+                          Close
+                        </v-btn>
+                      </v-card-actions>
+                    </v-card>
+                  </v-dialog>
                 </v-col>
-
-                <v-row class="px-5">
-                  <v-col
-                    cols="1"
-                    class="mx-1"
-                    v-for="(i, l) in swatches"
-                    :key="l"
-                  >
-                    <v-chip :color="i" label @click="colorSelected = i">
-                    </v-chip>
-                  </v-col>
-                </v-row>
-
-                <v-col cols="5" class="mt-3">
-                  <span class="mr-2">Add</span>
-                  <v-icon
-                    color="teal"
-                    :class="{ animationShake: disableInputs }"
-                    class="iconAddColor"
-                    :style="{
-                      border: `2px solid ${disableColor ? 'grey' : 'teal'}`,
-                    }"
-                    @click="addToArrayMarker"
-                    :disabled="disableColor"
-                    >mdi-plus-circle</v-icon
-                  >
-                </v-col>
-                <v-col cols="6" class="text-center">
-                  <span>Preview :</span>
-                  <v-icon
-                    v-if="newIcon.type === 'Point'"
-                    :color="colorSelected"
-                    size="28px"
-                    >mdi-{{ newIcon.icon }}</v-icon
-                  >
-                  <v-icon
-                    v-else-if="newIcon.type === 'MultiLineString'"
-                    :color="colorSelected"
-                    size="28px"
-                  >
-                    mdi-vector-polyline
+                <v-col cols="11" class="mt-n-5">
+                  <v-btn color="primary" @click="validate"> Continue </v-btn>
+                  <v-icon class="ml-3" large v-if="newIcon.icon">
+                    mdi-{{ newIcon.icon }}
                   </v-icon>
-                  <v-icon
-                    v-else-if="newIcon.type === 'Polygon'"
-                    :color="colorSelected"
-                    size="28px"
-                  >
-                    mdi-triangle
-                  </v-icon>
-                </v-col>
-                <v-col cols="11">
-                  <v-btn
-                    color="primary"
-                    @click="e1 = 3"
-                    v-if="newIcon.color.length > 0"
-                    :disabled="disableInputs"
-                  >
-                    Continue
-                  </v-btn>
-                  <v-btn
-                    text
-                    @click="e1 = 1"
-                    :disabled="disableInputs"
-                    outlined
-                    color="secondary"
-                  >
-                    back
-                  </v-btn>
                 </v-col>
               </v-row>
-            </v-stepper-content>
+            </v-form>
+          </v-stepper-content>
 
-            <v-stepper-content step="3">
-              <!-- Fait apparaitre le résumé de la sélection -->
-              <v-row
-                v-if="newIcon.color.length > 0"
-                justify="center"
-                class="my-2"
-              >
-                <v-col cols="11">
-                  <h4>My markers selected : {{ newIcon.category }}</h4>
-                </v-col>
+          <v-stepper-content step="2">
+            <v-row align="center" justify="center" class="my-2">
+              <v-col cols="11">
+                <span>Add subcategories (Optionnal)</span>
+              </v-col>
+              <v-col cols="6">
+                <v-text-field
+                  v-model="subCategorySelected"
+                  :disabled="disableInputs"
+                  label="Subcategories"
+                ></v-text-field>
+              </v-col>
+              <v-col cols="5" class="text-center">
+                <span class="mr-2">Add</span>
+                <v-icon
+                  color="teal"
+                  :style="{
+                    border: `2px solid ${disableInputs ? 'grey' : 'teal'}`,
+                  }"
+                  class="iconAddColor"
+                  :disabled="disableInputs"
+                  @click="addToArraySubCat"
+                  >mdi-plus-circle</v-icon
+                >
+              </v-col>
+
+              <v-col cols="11" class="divider__block">
+                <span>Pick the color</span>
+              </v-col>
+
+              <v-row class="px-5">
                 <v-col
-                  cols="5"
-                  sm="4"
-                  v-for="(item, l) in newIcon.color"
+                  cols="1"
+                  class="mx-1"
+                  v-for="(i, l) in swatches"
                   :key="l"
                 >
-                  <span>{{
-                    newIcon.subCategory[l]
-                      ? newIcon.subCategory[l]
-                      : newIcon.category
-                  }}</span>
-                  <v-icon
-                    v-if="newIcon.type === 'Point'"
-                    :color="newIcon.color[l]"
-                    size="36px"
-                    >mdi-{{ newIcon.icon }}</v-icon
-                  >
-                  <v-icon
-                    v-else-if="newIcon.type === 'MultiLineString'"
-                    :color="newIcon.color[l]"
-                    size="28px"
-                  >
-                    mdi-vector-polyline
-                  </v-icon>
-                  <v-icon
-                    v-else-if="newIcon.type === 'Polygon'"
-                    :color="newIcon.color[l]"
-                    size="28px"
-                  >
-                    mdi-triangle
-                  </v-icon>
-                </v-col>
-                <v-col cols="11" sm="7">
-                  <v-btn color="primary" @click="addNewMarker">Confirm</v-btn>
-                  <v-btn color="warning" @click="resetMarker">Reset</v-btn>
-                </v-col>
-                <v-col cols="11" sm="4">
-                  <v-btn
-                    text
-                    @click="e1 = 2"
-                    :disabled="disableInputs"
-                    outlined
-                    color="secondary"
-                  >
-                    back
-                  </v-btn>
+                  <v-chip :color="i" label @click="colorSelected = i"> </v-chip>
                 </v-col>
               </v-row>
-            </v-stepper-content>
-          </v-stepper-items>
-        </v-stepper>
-      </template>
-    </modalCustom>
-  
+
+              <v-col cols="5" class="mt-3">
+                <span class="mr-2">Add</span>
+                <v-icon
+                  color="teal"
+                  :class="{ animationShake: disableInputs }"
+                  class="iconAddColor"
+                  :style="{
+                    border: `2px solid ${disableColor ? 'grey' : 'teal'}`,
+                  }"
+                  @click="addToArrayMarker"
+                  :disabled="disableColor"
+                  >mdi-plus-circle</v-icon
+                >
+              </v-col>
+              <v-col cols="6" class="text-center">
+                <span>Preview :</span>
+                <v-icon
+                  v-if="newIcon.type === 'Point'"
+                  :color="colorSelected"
+                  size="28px"
+                  >mdi-{{ newIcon.icon }}</v-icon
+                >
+                <v-icon
+                  v-else-if="newIcon.type === 'MultiLineString'"
+                  :color="colorSelected"
+                  size="28px"
+                >
+                  mdi-vector-polyline
+                </v-icon>
+                <v-icon
+                  v-else-if="newIcon.type === 'Polygon'"
+                  :color="colorSelected"
+                  size="28px"
+                >
+                  mdi-triangle
+                </v-icon>
+              </v-col>
+              <v-col cols="11">
+                <v-btn
+                  color="primary"
+                  @click="e1 = 3"
+                  v-if="newIcon.color.length > 0"
+                  :disabled="disableInputs"
+                >
+                  Continue
+                </v-btn>
+                <v-btn
+                  text
+                  @click="e1 = 1"
+                  :disabled="disableInputs"
+                  outlined
+                  color="secondary"
+                >
+                  back
+                </v-btn>
+              </v-col>
+            </v-row>
+          </v-stepper-content>
+
+          <v-stepper-content step="3">
+            <!-- Fait apparaitre le résumé de la sélection -->
+            <v-row
+              v-if="newIcon.color.length > 0"
+              justify="center"
+              class="my-2"
+            >
+              <v-col cols="11">
+                <h4>My markers selected : {{ newIcon.category }}</h4>
+              </v-col>
+              <v-col
+                cols="5"
+                sm="4"
+                v-for="(item, l) in newIcon.color"
+                :key="l"
+              >
+                <span>{{
+                  newIcon.subCategory[l]
+                    ? newIcon.subCategory[l]
+                    : newIcon.category
+                }}</span>
+                <v-icon
+                  v-if="newIcon.type === 'Point'"
+                  :color="newIcon.color[l]"
+                  size="36px"
+                  >mdi-{{ newIcon.icon }}</v-icon
+                >
+                <v-icon
+                  v-else-if="newIcon.type === 'MultiLineString'"
+                  :color="newIcon.color[l]"
+                  size="28px"
+                >
+                  mdi-vector-polyline
+                </v-icon>
+                <v-icon
+                  v-else-if="newIcon.type === 'Polygon'"
+                  :color="newIcon.color[l]"
+                  size="28px"
+                >
+                  mdi-triangle
+                </v-icon>
+              </v-col>
+              <v-col cols="11" sm="7">
+                <v-btn color="primary" @click="addNewMarker">Confirm</v-btn>
+                <v-btn color="warning" @click="resetMarker">Reset</v-btn>
+              </v-col>
+              <v-col cols="11" sm="4">
+                <v-btn
+                  text
+                  @click="e1 = 2"
+                  :disabled="disableInputs"
+                  outlined
+                  color="secondary"
+                >
+                  back
+                </v-btn>
+              </v-col>
+            </v-row>
+          </v-stepper-content>
+        </v-stepper-items>
+      </v-stepper>
+    </template>
+  </modalCustom>
 </template>
 
 <script>
-
 let countArray = (a, b) => {
   return a - b
 }
@@ -330,7 +319,7 @@ export default {
   computed: {
     checkCatExist() {
       let control
-      let result = this.markers.map(a => a.category);
+      let result = this.markers.map((a) => a.category)
       let mySet = new Set(result)
       if (
         [...mySet].indexOf(this.newIcon.category) != -1 ||
@@ -347,15 +336,15 @@ export default {
     },
     checkIcon() {
       let control
-      if((this.iconsListing.find(element => element === this.newIcon.icon)) != undefined){
+      if (
+        this.iconsListing.find((element) => element === this.newIcon.icon) !=
+        undefined
+      ) {
         control = true
       } else {
         control = false
       }
-      return [
-        (v) => control || 'this icon does not exist',
-      ]
-
+      return [(v) => control || 'this icon does not exist']
     },
     iconSuggestList: {
       // getter
@@ -365,27 +354,30 @@ export default {
       // setter
       set: function (newValue) {
         this.iconsSuggest = newValue
-      }
+      },
     },
   },
   methods: {
     modalResponse(payload) {
-        this.$emit('send-marker', {
-            message: false,
-        })
-        this.resetMarker()
+      this.$emit('send-marker', {
+        message: false,
+      })
+      this.resetMarker()
     },
-    showIconsList(e) { // show icon inside the list
+    showIconsList(e) {
+      // show icon inside the list
       let value = e.toLowerCase()
-      if(value.length > 0) {
-        const result = this.iconsListing.filter(word => word.startsWith(value));
-        console.log(result);
+      if (value.length > 0) {
+        const result = this.iconsListing.filter((word) =>
+          word.startsWith(value)
+        )
+        console.log(result)
         this.iconSuggestList = result
       }
     },
     validate() {
-      console.log(this.$refs.form.validate());
-      this.$refs.form.validate() ? this.e1 = 2 : ''
+      console.log(this.$refs.form.validate())
+      this.$refs.form.validate() ? (this.e1 = 2) : ''
     },
     pickIcon(elt) {
       this.newIcon.icon = elt
@@ -490,7 +482,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.iconAddColor{
+.iconAddColor {
   padding: 8px;
   transition: transform 200ms;
   &::after {
@@ -503,11 +495,11 @@ export default {
     opacity: 0;
     transition: opacity 300;
   }
-  &:hover::after{
+  &:hover::after {
     opacity: 0.3;
   }
 }
-.v-icon::after{
+.v-icon::after {
   border-radius: 0px;
 }
 .divider__block {
@@ -541,5 +533,4 @@ export default {
   transition: transform 400ms; */
   animation: shake 0.82s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
 }
-
 </style>
