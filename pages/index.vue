@@ -407,12 +407,14 @@ export default {
       addMarker()
     },
     saveTarget(e) {
-      let iconTarget = document.getElementById('hubTarget')
-      iconTarget.style.display = 'none'
-      let tuto = document.getElementById('hubTuto')
-      tuto.style.display = 'none'
-      let hub = document.getElementById('hub')
-      hub.style.display = 'none'
+      const disabledDisplay = (id) => {
+        let elt = document.getElementById(id)
+        elt.style.display = 'none'
+      }
+      disabledDisplay('hubTarget')
+      disabledDisplay('hubTuto')
+      disabledDisplay('hub')
+      
       if (e) {
         // if click on save marker true
         this.showInputGeoDetail = true
@@ -432,23 +434,23 @@ export default {
       let btnMarker = document.getElementById('btn-map-marker')
       let attribut = firstButton.getAttribute('disabled')
       let btn
-      
+
       const btnAttribut = (booleen, color = 'grey') => {
         let typeColor = typeof(color) === 'string'
         arrayId.forEach(btnId => {
           btn = document.getElementById(btnId)
-          name(btn, booleen)
+          attributMethod(btn, booleen)
           btn.firstChild.style.color = typeColor ? color : color[0]
         });
         for (let btnAction of actionsBtn) {
-          name(btnAction, booleen)
+          attributMethod(btnAction, booleen)
           btnAction.firstChild.style.color = typeColor ? color : color[1]
         }
-        name(btnMarker, booleen)
+        attributMethod(btnMarker, booleen)
         btnMarker.firstChild.style.color = typeColor ? color : color[2]
         btnMarker.style.border = `2px solid ${typeColor ? color : color[2]}`
       }
-      const name = (a, booleen) => {
+      const attributMethod = (a, booleen) => {
         booleen ? a.removeAttribute('disabled', '') : a.setAttribute('disabled', '')
       }
 
