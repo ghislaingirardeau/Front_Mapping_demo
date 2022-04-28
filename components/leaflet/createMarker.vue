@@ -19,81 +19,91 @@
 
           <v-stepper-items>
             <v-stepper-content step="1">
-              <v-row align="center" justify="center" class="my-2">
-                <v-col cols="11" sm="5">
-                  <v-select
-                    v-model="newIcon.type"
-                    :items="typeSelection"
-                    label="Type"
-                    required
-                    @focus="resetMarker"
-                  ></v-select>
-                </v-col>
-                <v-col cols="11" sm="6">
-                  <v-text-field
-                    v-model="newIcon.category"
-                    label="category"
-                    :rules="checkCatExist"
-                    @keyup="checkCatExist"
-                    required
-                  ></v-text-field>
-                </v-col>
-                <v-col cols="11" v-if="newIcon.type === 'Point'">
-                  <v-text-field
-                    v-model="newIcon.icon"
-                    label="Icon name"
-                    hint="Type the first letter to see the icon's list"
-                    persistent-hint
-                    prefix="mdi-"
-                    class="mb-3"
-                    @keyup="showIconsList(newIcon.icon)"
-                  >
-                  </v-text-field>
+              <v-form
+                  ref="form"
+                  v-model="valid"
+                  lazy-validation
+                >
+                <v-row align="center" justify="center" class="my-2">
                   
-                  <v-dialog
-                    v-model="dialog"
-                    fullscreen
-                    hide-overlay
-                  >
-                    <template v-slot:activator="{ on, attrs }">
-                      <v-btn
-                        color="teal"
-                        v-bind="attrs"
-                        v-on="on"
-                        v-show="newIcon.icon.length > 0"
-                        class="ml-3"
-                      >
-                        Show
-                      </v-btn>
-                      <span v-show="newIcon.icon.length > 0">{{iconTest.length}} icons found</span>
-                    </template>
-                    <v-card>
-                      <v-card-title>
-                        Click to select icon
-                      </v-card-title>
-                      <v-card-text class="ma-2">
-                        <v-icon class="ma-2" v-for="(icon, i) in iconTest" :key="i" x-large @click="pickIcon(icon)">mdi-{{icon}}</v-icon>  
-                      </v-card-text>
-                      <v-divider></v-divider>
-                      <v-card-actions>
-                        <v-spacer></v-spacer>
+                  <v-col cols="11" sm="5">
+                    <v-select
+                      v-model="newIcon.type"
+                      :items="typeSelection"
+                      label="Type"
+                      required
+                      @focus="resetMarker"
+                    ></v-select>
+                  </v-col>
+                  <v-col cols="11" sm="6">
+                    <v-text-field
+                      v-model="newIcon.category"
+                      label="Category name"
+                      :rules="checkCatExist"
+                      @keyup="checkCatExist"
+                      required
+                    ></v-text-field>
+                  </v-col>
+                  <v-col cols="11" v-if="newIcon.type === 'Point'">
+                    <v-text-field
+                      v-model="newIcon.icon"
+                      label="Icon name"
+                      hint="Type the first letter to see the icon's list"
+                      persistent-hint
+                      prefix="mdi-"
+                      class="mb-3"
+                      :rules="checkIcon"
+                      required
+                      @keyup="showIconsList(newIcon.icon)"
+                    >
+                    </v-text-field>
+                    
+                    <v-dialog
+                      v-model="dialog"
+                      fullscreen
+                      hide-overlay
+                    >
+                      <template v-slot:activator="{ on, attrs }">
+                        <span v-show="newIcon.icon.length > 0">{{iconSuggestList.length}} icons found</span>
                         <v-btn
-                          color="primary"
-                          outlined
-                          @click="dialog = false"
+                          color="teal"
+                          v-bind="attrs"
+                          v-on="on"
+                          v-show="newIcon.icon.length > 0"
+                          class="ml-3"
                         >
-                          Close
+                          Show
                         </v-btn>
-                      </v-card-actions>
-                    </v-card>
-                  </v-dialog>
+                      </template>
+                      <v-card>
+                        <v-card-title>
+                          Click to select icon
+                        </v-card-title>
+                        <v-card-text class="ma-2">
+                          <v-icon class="ma-2" v-for="(icon, i) in iconSuggestList" :key="i" x-large @click="pickIcon(icon)">mdi-{{icon}}</v-icon>  
+                        </v-card-text>
+                        <v-divider></v-divider>
+                        <v-card-actions>
+                          <v-spacer></v-spacer>
+                          <v-btn
+                            color="primary"
+                            outlined
+                            @click="dialog = false"
+                          >
+                            Close
+                          </v-btn>
+                        </v-card-actions>
+                      </v-card>
+                    </v-dialog>
 
-                </v-col>
-                <v-col cols="11" class="mt-n-5">
-                  <v-btn color="primary" :disabled="!nameExist" @click="e1 = 2"> Continue </v-btn>
-                  <v-icon class="ml-3" large v-if="newIcon.icon"> mdi-{{ newIcon.icon }} </v-icon>
-                </v-col>
-              </v-row>
+                  </v-col>
+                  <v-col cols="11" class="mt-n-5">
+                    <v-btn color="primary" @click="validate"> Continue </v-btn>
+                    <v-icon class="ml-3" large v-if="newIcon.icon"> mdi-{{ newIcon.icon }} </v-icon>
+                  </v-col>
+                  
+                </v-row>
+              </v-form>
             </v-stepper-content>
 
             <v-stepper-content step="2">
@@ -275,6 +285,7 @@ export default {
       // stepper
       e1: 1,
       // control inside modal
+      valid: true,
       disableInputs: false,
       disableColor: false,
       colorSelected: '#ffffff',
@@ -296,13 +307,12 @@ export default {
         '#000055',
       ],
       // item for text fields
-      nameExist: true,
       subCategorySelected: undefined,
       rulesCategory: [(v) => v.length >= 2 || 'Mininum 2 characters'],
       typeSelection: ['Point', 'Polygon', 'MultiLineString'],
       newIcon: {
         type: 'Point',
-        category: 'test',
+        category: '',
         subCategory: [],
         icon: '',
         color: [],
@@ -320,25 +330,40 @@ export default {
   computed: {
     checkCatExist() {
       let array = []
+      let control
       this.markers.forEach((element) => {
         if (array.indexOf(element.category) === -1) {
           array.push(element.category)
         }
       })
+      /* let mySet = new Set(this.markers.category)
+      console.log(mySet); */
       if (
         array.indexOf(this.newIcon.category) != -1 ||
         this.newIcon.category.length < 2
       ) {
-        this.nameExist = false
+        control = false
       } else {
-        this.nameExist = true
+        control = true
       }
       return [
         (v) => v.length >= 2 || 'Mininum 2 characters',
-        (v) => this.nameExist || 'this category already exist',
+        (v) => control || 'this category already exist',
       ]
     },
-    iconTest: {
+    checkIcon() {
+      let control
+      if((this.iconsListing.find(element => element === this.newIcon.icon)) != undefined){
+        control = true
+      } else {
+        control = false
+      }
+      return [
+        (v) => control || 'this icon does not exist',
+      ]
+
+    },
+    iconSuggestList: {
       // getter
       get: function () {
         return this.iconsSuggest
@@ -359,14 +384,14 @@ export default {
     showIconsList(e) { // show icon inside the list
       let value = e.toLowerCase()
       if(value.length > 0) {
-        let array = []
-        this.iconsListing.forEach((element) => {
-          if (element.startsWith(value)) {
-            array.push(element)
-          }
-        })
-        this.iconTest = array
+        const result = this.iconsListing.filter(word => word.startsWith(value));
+        console.log(result);
+        this.iconSuggestList = result
       }
+    },
+    validate() {
+      console.log(this.$refs.form.validate());
+      this.$refs.form.validate() ? this.e1 = 2 : ''
     },
     pickIcon(elt) {
       this.newIcon.icon = elt
