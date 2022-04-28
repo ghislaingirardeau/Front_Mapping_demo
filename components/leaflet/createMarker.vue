@@ -41,22 +41,13 @@
                 <v-col cols="11" v-if="newIcon.type === 'Point'">
                   <v-text-field
                     v-model="newIcon.icon"
-                    label="Type the name of icon"
+                    label="Icon name"
+                    hint="Type the first letter to see the icon's list"
                     persistent-hint
                     prefix="mdi-"
-                    required
+                    class="mb-3"
                     @keyup="showIconsList(newIcon.icon)"
                   >
-                    <template v-slot:append>
-                      <v-tooltip bottom>
-                        <template v-slot:activator="{ on }">
-                          <v-icon v-on="on" @click="linkToIcon">
-                            mdi-help-circle-outline
-                          </v-icon>
-                        </template>
-                        Click to get the name of all icons available
-                      </v-tooltip>
-                    </template>
                   </v-text-field>
                   
                   <v-dialog
@@ -66,29 +57,29 @@
                   >
                     <template v-slot:activator="{ on, attrs }">
                       <v-btn
-                        color="red lighten-2"
-                        dark
+                        color="teal"
                         v-bind="attrs"
                         v-on="on"
                         v-show="newIcon.icon.length > 0"
+                        class="ml-3"
                       >
-                        Show Icons
+                        Show
                       </v-btn>
                       <span v-show="newIcon.icon.length > 0">{{iconTest.length}} icons found</span>
                     </template>
                     <v-card>
-                      <v-card-title class="text-h5 grey lighten-2">
+                      <v-card-title>
                         Click to select icon
                       </v-card-title>
-                      <v-card-text class="mx-2">
-                        <v-icon v-for="(icon, i) in iconTest" :key="i" large @click="pickIcon(icon)">mdi-{{icon}}</v-icon>  
+                      <v-card-text class="ma-2">
+                        <v-icon class="ma-2" v-for="(icon, i) in iconTest" :key="i" x-large @click="pickIcon(icon)">mdi-{{icon}}</v-icon>  
                       </v-card-text>
                       <v-divider></v-divider>
                       <v-card-actions>
                         <v-spacer></v-spacer>
                         <v-btn
                           color="primary"
-                          text
+                          outlined
                           @click="dialog = false"
                         >
                           Close
@@ -363,18 +354,16 @@ export default {
         this.resetMarker()
     },
     showIconsList(e) { // show icon inside the list
-      if(e.length > 0) {
+      let value = e.toLowerCase()
+      if(value.length > 0) {
         let array = []
         this.iconsListing.forEach((element) => {
-          if (element.startsWith(e)) {
+          if (element.startsWith(value)) {
             array.push(element)
           }
         })
         this.iconTest = array
       }
-    },
-    linkToIcon() {
-      window.open('https://pictogrammers.github.io/@mdi/font/6.5.95/', '_blank')
     },
     pickIcon(elt) {
       this.newIcon.icon = elt
