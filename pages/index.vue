@@ -11,7 +11,7 @@
         {{ modalDatas.modalTitle }}
       </template>
       <template v-slot:content>
-        <legendModal v-show="modalDatas.showLegend" :markers="markers"/>
+        <legendModal v-show="modalDatas.showLegend" :markers="markers" />
         <dataGeoJson
           v-show="showInputGeoDetail"
           @send-data="getData"
@@ -19,7 +19,7 @@
         />
         <optionsMenu v-show="modalDatas.showSetting" :map="map" />
         <printOptions v-show="showPrintOption" @send-modal="printResponse" />
-        <p v-show="modalDatas.modalMessage">{{modalDatas.modalMessage}}</p>
+        <p v-show="modalDatas.modalMessage">{{ modalDatas.modalMessage }}</p>
       </template>
     </modalCustom>
 
@@ -171,7 +171,7 @@ export default {
     dynamicLayerGroup: {},
     propertiesNames: [],
     controlLayers: undefined,
-    distance: []
+    distance: [],
   }),
   computed: {
     ...mapState(['markers']),
@@ -188,7 +188,7 @@ export default {
     hubDistance() {
       let meters = this.map.distance(this.distance[0], this.distance[1])
       return meters
-    }
+    },
   },
   methods: {
     modalMarkerResponse(payload) {
@@ -212,12 +212,12 @@ export default {
       }
     },
     modalResponse(payload) {
-      Object.keys(this.modalDatas).forEach(element => {
+      Object.keys(this.modalDatas).forEach((element) => {
         this.modalDatas[element] = payload.message
-      });
+      })
       this.showInputGeoDetail = payload.message
       this.showPrintOption = false
-      if(this.showPrintMap) {
+      if (this.showPrintMap) {
         this.showPrintMap = false
         this.printMap.remove()
       }
@@ -284,7 +284,7 @@ export default {
       let testClick = (e) => {
         // TEST TO MODIFY DIRECTLY HERE !!!!!!!!!
         var layer = e.target
-        if(this.distance.length < 2) {
+        if (this.distance.length < 2) {
           this.distance.push(layer.feature.geometry.coordinates)
         } else {
           this.distance = []
@@ -385,7 +385,8 @@ export default {
             maximumAge: 0,
           })
         } else {
-          this.modalDatas.modalTitle = 'Geolocation is not supported by your browser'
+          this.modalDatas.modalTitle =
+            'Geolocation is not supported by your browser'
           this.modalDatas.showModal = true
         }
       }
@@ -428,7 +429,6 @@ export default {
       this.activateOrNotBtn(['btn-add', 'btn-trace', 'btn-target'])
     },
     activateOrNotBtn(arrayId) {
-      
       let firstButton = document.getElementById(arrayId[0])
       let actionsBtn = document.getElementsByClassName('btn-map--action')
       let btnMarker = document.getElementById('btn-map-marker')
@@ -436,12 +436,12 @@ export default {
       let btn
 
       const btnAttribut = (booleen, color = 'grey') => {
-        let typeColor = typeof(color) === 'string'
-        arrayId.forEach(btnId => {
+        let typeColor = typeof color === 'string'
+        arrayId.forEach((btnId) => {
           btn = document.getElementById(btnId)
           attributMethod(btn, booleen)
           btn.firstChild.style.color = typeColor ? color : color[0]
-        });
+        })
         for (let btnAction of actionsBtn) {
           attributMethod(btnAction, booleen)
           btnAction.firstChild.style.color = typeColor ? color : color[1]
@@ -451,7 +451,9 @@ export default {
         btnMarker.style.border = `2px solid ${typeColor ? color : color[2]}`
       }
       const attributMethod = (a, booleen) => {
-        booleen ? a.removeAttribute('disabled', '') : a.setAttribute('disabled', '')
+        booleen
+          ? a.removeAttribute('disabled', '')
+          : a.setAttribute('disabled', '')
       }
 
       if (attribut != null) {
@@ -517,18 +519,23 @@ export default {
         attribution: mapboxAttribution,
         accessToken: tokenMapbox,
       }),
-      google = L.tileLayer('http://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}', {
-        maxZoom: 20,
-        subdomains:['mt0','mt1','mt2','mt3']
-      }),
-      lanscape = L.tileLayer('https://tile.thunderforest.com/landscape/{z}/{x}/{y}.png?apikey=05002ac7d7034aec81f8963fa723e851')
+      google = L.tileLayer(
+        'http://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}',
+        {
+          maxZoom: 20,
+          subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
+        }
+      ),
+      lanscape = L.tileLayer(
+        'https://tile.thunderforest.com/landscape/{z}/{x}/{y}.png?apikey=05002ac7d7034aec81f8963fa723e851'
+      )
 
     // bouton pour le switch
     var baseMaps = {
       Streets: streets,
       Outdoors: outdoors,
       Google: google,
-      Lanscape: lanscape
+      Lanscape: lanscape,
     }
 
     /* RECUPERE LES DONNEES SI PRESENT DANS LE LOCALSTORAGE */
@@ -606,7 +613,9 @@ export default {
     }
 
     const styleOnClick = (e) => {
-      e.classList.contains('click') ? e.classList.remove('click') : e.classList.add('click')
+      e.classList.contains('click')
+        ? e.classList.remove('click')
+        : e.classList.add('click')
     }
 
     let actionsControl = L.control.custom({
@@ -649,7 +658,8 @@ export default {
             this.saveTemporaly()
             this.modalDatas.showModal = !this.modalDatas.showModal
             this.modalDatas.modalTitle = 'Data save TEMPORALY'
-            this.modalDatas.modalMessage = 'For a safely save, consider to export your datas to CSV in settings'
+            this.modalDatas.modalMessage =
+              'For a safely save, consider to export your datas to CSV in settings'
           } else if (data.target.getAttribute('id') === 'btn-printer') {
             let openPrintOptions = () => {
               this.showPrintOption = !this.showPrintOption // modal for options ex: add a title
@@ -657,7 +667,7 @@ export default {
               this.showPrintMap = !this.showPrintMap // build map print container
               this.modalDatas.modalTitle = 'Print option'
             }
-          
+
             await openPrintOptions()
             // set the view dynamicly
             let actualMapCenter = [
@@ -683,7 +693,7 @@ export default {
     })
 
     const checkIfMarkerEmpty = (doThis) => {
-      if(this.markers.length === 0) {
+      if (this.markers.length === 0) {
         this.modalDatas.showModal = !this.modalDatas.showModal
         this.modalDatas.modalTitle = 'Create a marker first !'
       } else {
@@ -763,10 +773,9 @@ export default {
         .map((db) => db.name)
         .includes(dbName)
       if (isExisting) {
-        
       } else {
         let result = await createIndexedDB()
-        
+
         if (result) {
           const requestIndexedDB = window.indexedDB.open('Map_Database', 1)
           requestIndexedDB.onsuccess = (event) => {
@@ -776,30 +785,30 @@ export default {
             const store = transaction.objectStore('markers')
             let newIcons = [
               {
-              type: 'Point',
-              category: 'home',
-              subCategory: [],
-              icon: 'home',
-              color: ['red'],
+                type: 'Point',
+                category: 'home',
+                subCategory: [],
+                icon: 'home',
+                color: ['red'],
               },
               {
-              type: 'Polygon',
-              category: 'area',
-              subCategory: [],
-              icon: '',
-              color: ['green'],
+                type: 'Polygon',
+                category: 'area',
+                subCategory: [],
+                icon: '',
+                color: ['green'],
               },
               {
-              type: 'MultiLineString',
-              category: 'line',
-              subCategory: [],
-              icon: '',
-              color: ['blue'],
+                type: 'MultiLineString',
+                category: 'line',
+                subCategory: [],
+                icon: '',
+                color: ['blue'],
               },
             ]
-            newIcons.forEach(element => {
+            newIcons.forEach((element) => {
               store.add(element)
-            });
+            })
 
             console.log('markers added to the store')
             transaction.oncomplete = () => {
@@ -814,7 +823,6 @@ export default {
       this.$store.dispatch('loadMarkers')
     }
     checkDB()
-
   },
 }
 </script>
@@ -918,9 +926,9 @@ export default {
   }
   &--marker {
     padding: 15px;
-      margin-top: 10px;
-      border-radius: 20px 2px;
-      border: 2px solid #e6e20b;
+    margin-top: 10px;
+    border-radius: 20px 2px;
+    border: 2px solid #e6e20b;
   }
   &::after {
     /* extend the click to all the button */
@@ -935,7 +943,7 @@ export default {
 /* style button on map on click */
 .click {
   border: 2px solid rgb(33, 150, 243);
-  &::before{
+  &::before {
     content: 'Click to save =>';
     font-family: 'Architects Daughter', cursive;
     position: absolute;
