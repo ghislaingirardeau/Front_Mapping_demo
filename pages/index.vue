@@ -180,7 +180,7 @@ export default {
           crd[0]
         }`
       } else {
-        return 'Searching position...'
+        return 'Waiting for position...'
       }
     },
     hubDistance() {
@@ -599,12 +599,7 @@ export default {
     }
 
     const styleOnClick = (e) => {
-      let element = e.classList.contains('click')
-      if (element) {
-        e.classList.remove('click')
-      } else {
-        e.classList.add('click')
-      }
+      e.classList.contains('click') ? e.classList.remove('click') : e.classList.add('click')
     }
 
     let actionsControl = L.control.custom({
@@ -813,13 +808,6 @@ export default {
     }
     checkDB()
 
-    // ecoute si online ou non automatiquement
-    window.addEventListener('offline', function (e) {
-      console.log('offline')
-    })
-    window.addEventListener('online', function (e) {
-      console.log('online')
-    })    
   },
 }
 </script>
@@ -887,8 +875,8 @@ export default {
 .hub__informations {
   display: block;
   position: absolute;
-  bottom: 13%;
-  left: 2%;
+  bottom: 8%;
+  left: 20%;
   padding: 5px;
   z-index: 2;
   background-color: black;
@@ -940,6 +928,18 @@ export default {
 /* style button on map on click */
 .click {
   border: 2px solid rgb(33, 150, 243);
+  &::before{
+    content: 'Click to save =>';
+    font-family: 'Architects Daughter', cursive;
+    position: absolute;
+    top: 15px;
+    left: -130px;
+    height: 20px;
+    width: 130px;
+    color: rgb(46, 46, 46);
+    font-size: 15px;
+    font-weight: bold;
+  }
 }
 
 // STYLE THE MODAL
