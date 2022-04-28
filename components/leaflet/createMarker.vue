@@ -318,9 +318,9 @@ export default {
   },
   computed: {
     checkCatExist() {
-      let control
       let result = this.markers.map((a) => a.category)
       let mySet = new Set(result)
+      let control
       if (
         [...mySet].indexOf(this.newIcon.category) != -1 ||
         this.newIcon.category.length < 2
@@ -335,15 +335,8 @@ export default {
       ]
     },
     checkIcon() {
-      let control
-      if (
-        this.iconsListing.find((element) => element === this.newIcon.icon) !=
-        undefined
-      ) {
-        control = true
-      } else {
-        control = false
-      }
+      let control = this.iconsListing.find((element) => element === this.newIcon.icon) ? true : false
+      console.log(control);
       return [(v) => control || 'this icon does not exist']
     },
     iconSuggestList: {
