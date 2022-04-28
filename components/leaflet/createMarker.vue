@@ -101,14 +101,15 @@
                 <v-col cols="11">
                   <span>Add subcategories (Optionnal)</span>
                 </v-col>
-                <v-col cols="8">
+                <v-col cols="6">
                   <v-text-field
                     v-model="subCategorySelected"
                     :disabled="disableInputs"
                     label="Subcategories"
                   ></v-text-field>
                 </v-col>
-                <v-col cols="3" class="text-center">
+                <v-col cols="5" class="text-center">
+                  <span class="mr-2">Add</span>
                   <v-icon
                     color="teal"
                     :style="{
@@ -137,10 +138,12 @@
                   </v-col>
                 </v-row>
 
-                <v-col cols="4" sm="3" class="text-center">
+                <v-col cols="5" class="mt-3">
+                  <span class="mr-2">Add</span>
                   <v-icon
                     color="teal"
-                    :class="{ animationShake: disableInputs, 'iconAddColor' : true }"
+                    :class="{ animationShake: disableInputs }"
+                    class="iconAddColor"
                     :style="{
                       border: `2px solid ${disableColor ? 'grey' : 'teal'}`,
                     }"
@@ -149,8 +152,8 @@
                     >mdi-plus-circle</v-icon
                   >
                 </v-col>
-                <v-col cols="7" sm="3" class="text-center">
-                  <span class="float-left">Preview :</span>
+                <v-col cols="6" class="text-center">
+                  <span>Preview :</span>
                   <v-icon
                     v-if="newIcon.type === 'Point'"
                     :color="colorSelected"
@@ -469,7 +472,7 @@ export default {
 
 <style lang="scss" scoped>
 .iconAddColor{
-  padding: 5px;
+  padding: 8px;
   transition: transform 200ms;
   &::after {
     content: '';
