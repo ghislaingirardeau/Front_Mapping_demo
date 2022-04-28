@@ -429,29 +429,34 @@ export default {
       
       let firstButton = document.getElementById(arrayId[0])
       let actionsBtn = document.getElementsByClassName('btn-map--action')
+      let btnMarker = document.getElementById('btn-map-marker')
       let attribut = firstButton.getAttribute('disabled')
       let btn
+      
+      const btnAttribut = (booleen, color = 'grey') => {
+        let typeColor = typeof(color) === 'string'
+        arrayId.forEach(btnId => {
+          btn = document.getElementById(btnId)
+          name(btn, booleen)
+          btn.firstChild.style.color = typeColor ? color : color[0]
+        });
+        for (let btnAction of actionsBtn) {
+          name(btnAction, booleen)
+          btnAction.firstChild.style.color = typeColor ? color : color[1]
+        }
+        name(btnMarker, booleen)
+        btnMarker.firstChild.style.color = typeColor ? color : color[2]
+        btnMarker.style.border = `2px solid ${typeColor ? color : color[2]}`
+      }
+      const name = (a, booleen) => {
+        booleen ? a.removeAttribute('disabled', '') : a.setAttribute('disabled', '')
+      }
+
       if (attribut != null) {
         this.myLocationMark.removeFrom(this.map)
-        arrayId.forEach(btnId => {
-          btn = document.getElementById(btnId)
-          btn.removeAttribute('disabled', '')
-          btn.firstChild.style.color = 'white'
-        });
-        for (let btnAction of actionsBtn) {
-          btnAction.removeAttribute('disabled', '')
-          btnAction.firstChild.style.color = 'rgb(33, 150, 243)'
-        }
+        btnAttribut(true, ['white', 'rgb(33, 150, 243)', '#e6e20b'])
       } else {
-        arrayId.forEach(btnId => {
-          btn = document.getElementById(btnId)
-          btn.setAttribute('disabled', '')
-          btn.firstChild.style.color = 'grey'
-        });
-        for (let btnAction of actionsBtn) {
-          btnAction.setAttribute('disabled', '')
-          btnAction.firstChild.style.color = 'grey'
-        }
+        btnAttribut(false)
       }
     },
     saveTemporaly() {
@@ -620,7 +625,7 @@ export default {
         '<button id="btn-save" type="button" class="btn-map btn-map--action">' +
         '<i aria-hidden="true" class="v-icon notranslate mdi mdi-content-save theme--dark" style="color:rgb(33, 150, 243);"></i>' +
         '</button>' +
-        '<button id="btn-map-marker" type="button" class="btn-map btn-map--location btn-map--location--border">' +
+        '<button id="btn-map-marker" type="button" class="btn-map btn-map--marker">' +
         '<i aria-hidden="true" class="v-icon notranslate mdi mdi-map-marker theme--dark" style="color:#e6e20b;"></i>' +
         '</button>',
       classes: 'btn-group-icon-map',
@@ -908,12 +913,12 @@ export default {
   &--location {
     padding: 15px;
     border-radius: 30px 30px;
-    &--border {
-      padding: 14px;
+  }
+  &--marker {
+    padding: 15px;
       margin-top: 10px;
       border-radius: 20px 2px;
       border: 2px solid #e6e20b;
-    }
   }
   &::after {
     /* extend the click to all the button */
@@ -1040,10 +1045,10 @@ export default {
       &:hover {
         border: 2px solid rgb(33, 150, 243);
       }
-      &--border {
-        &:hover {
-          border: 2px solid white;
-        }
+    }
+    &--marker {
+      &:hover {
+        border: 2px solid white;
       }
     }
   }
