@@ -89,7 +89,7 @@
                   </v-dialog>
                 </v-col>
                 <v-col cols="11" class="mt-n-5">
-                  <v-btn color="primary" @click="validate"> Continue </v-btn>
+                  <v-btn color="primary" @click="validate"> Next </v-btn>
                   <v-icon class="ml-3" large v-if="newIcon.icon">
                     mdi-{{ newIcon.icon }}
                   </v-icon>
@@ -162,14 +162,14 @@
                   >mdi-{{ newIcon.icon }}</v-icon
                 >
                 <v-icon
-                  v-else-if="newIcon.type === 'MultiLineString'"
+                  v-else-if="newIcon.type === 'Line'"
                   :color="colorSelected"
                   size="28px"
                 >
                   mdi-vector-polyline
                 </v-icon>
                 <v-icon
-                  v-else-if="newIcon.type === 'Polygon'"
+                  v-else-if="newIcon.type === 'Area'"
                   :color="colorSelected"
                   size="28px"
                 >
@@ -183,7 +183,7 @@
                   v-if="newIcon.color.length > 0"
                   :disabled="disableInputs"
                 >
-                  Continue
+                  Next
                 </v-btn>
                 <v-btn
                   text
@@ -226,14 +226,14 @@
                   >mdi-{{ newIcon.icon }}</v-icon
                 >
                 <v-icon
-                  v-else-if="newIcon.type === 'MultiLineString'"
+                  v-else-if="newIcon.type === 'Line'"
                   :color="newIcon.color[l]"
                   size="28px"
                 >
                   mdi-vector-polyline
                 </v-icon>
                 <v-icon
-                  v-else-if="newIcon.type === 'Polygon'"
+                  v-else-if="newIcon.type === 'Area'"
                   :color="newIcon.color[l]"
                   size="28px"
                 >
@@ -241,7 +241,7 @@
                 </v-icon>
               </v-col>
               <v-col cols="11" sm="7">
-                <v-btn color="primary" @click="addNewMarker">Confirm</v-btn>
+                <v-btn color="primary" @click="addNewMarker">Valid</v-btn>
                 <v-btn color="warning" @click="resetMarker">Reset</v-btn>
               </v-col>
               <v-col cols="11" sm="4">
@@ -298,7 +298,7 @@ export default {
       // item for text fields
       subCategorySelected: undefined,
       rulesCategory: [(v) => v.length >= 2 || 'Mininum 2 characters'],
-      typeSelection: ['Point', 'Polygon', 'MultiLineString'],
+      typeSelection: ['Point', 'Area', 'Line'],
       newIcon: {
         type: 'Point',
         category: '',
@@ -320,15 +320,7 @@ export default {
     checkCatExist() {
       let result = this.markers.map((a) => a.category)
       let mySet = new Set(result)
-      let control
-      if (
-        [...mySet].indexOf(this.newIcon.category) != -1 ||
-        this.newIcon.category.length < 2
-      ) {
-        control = false
-      } else {
-        control = true
-      }
+      let control = ([...mySet].find((element) => element === this.newIcon.category)) ? false : true
       return [
         (v) => v.length >= 2 || 'Mininum 2 characters',
         (v) => control || 'this category already exist',
@@ -336,7 +328,6 @@ export default {
     },
     checkIcon() {
       let control = this.iconsListing.find((element) => element === this.newIcon.icon) ? true : false
-      console.log(control);
       return [(v) => control || 'this icon does not exist']
     },
     iconSuggestList: {
@@ -364,12 +355,10 @@ export default {
         const result = this.iconsListing.filter((word) =>
           word.startsWith(value)
         )
-        console.log(result)
         this.iconSuggestList = result
       }
     },
     validate() {
-      console.log(this.$refs.form.validate())
       this.$refs.form.validate() ? (this.e1 = 2) : ''
     },
     pickIcon(elt) {
@@ -380,7 +369,7 @@ export default {
     resetMarker() {
       this.newIcon = {
         type: 'Point',
-        category: 'test',
+        category: '',
         subCategory: [],
         icon: '',
         color: [],
@@ -427,13 +416,20 @@ export default {
     },
     addNewMarker() {
       try {
+        switch (this.newIcon.type) {
+          case 'Area':
+            this.newIcon.type = 'Polygon'
+            break;
+          case 'Line':
+            this.newIcon.type = 'MultiLineString'
+            break;
+        }
         const requestIndexedDB = window.indexedDB.open('Map_Database', 1)
         requestIndexedDB.onsuccess = (event) => {
           var db = event.target.result
 
           var transaction = db.transaction('markers', 'readwrite')
-          const store = transaction.objectStore('markers') // store = table in sql
-          // insert data  in the store
+          const store = transaction.objectStore('markers')
           store.add(this.newIcon)
           this.$store.dispatch('loadMarkers')
 
