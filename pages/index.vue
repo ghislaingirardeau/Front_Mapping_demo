@@ -11,15 +11,15 @@
         {{ modalTitle }}
       </template>
       <template v-slot:content>
-        <legendModal v-if="showLegend" :markers="markers"/>
+        <legendModal v-show="showLegend" :markers="markers"/>
         <dataGeoJson
-          v-if="showInputGeoDetail"
+          v-show="showInputGeoDetail"
           @send-data="getData"
           :coordinates="coordinates"
         />
-        <optionsMenu v-if="showSetting" :map="map" />
-        <printOptions v-if="showPrintOption" @send-modal="printResponse" />
-        <p v-if="modalMessage">{{modalMessage}}</p>
+        <optionsMenu v-show="showSetting" :map="map" />
+        <printOptions v-show="showPrintOption" @send-modal="printResponse" />
+        <p v-show="modalMessage">{{modalMessage}}</p>
       </template>
     </modalCustom>
 
