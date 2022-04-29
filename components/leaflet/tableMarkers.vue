@@ -39,6 +39,9 @@
         <template v-slot:[`item.remove`]="{ item }">
           <v-icon @click="removeDB(item)"> mdi-delete </v-icon>
         </template>
+        <template v-slot:[`item.edit`]="{ item }">
+          <v-icon @click="updateDB(item)"> mdi-brush </v-icon>
+        </template>
       </v-data-table>
     </v-card>
   </v-col>
@@ -59,6 +62,7 @@ export default {
         { text: 'Sub Category', value: 'subCategory' },
         { text: 'Icon', value: 'icon' },
         { text: 'Remove', value: 'remove' },
+        { text: 'Edit', value: 'edit' },
       ],
     }
   },
@@ -66,6 +70,61 @@ export default {
     markers: Array,
   },
   methods: {
+    updateDB(e) {
+      const updateCursor = (cursor, indexColor = 0, indexSubCategory = 0) => {
+        cursor.value.color.splice(indexColor, 1, 'red')
+        cursor.value.subCategory.splice(indexSubCategory, 1, 'sub update')
+        const request = cursor.update(cursor.value)
+        request.onsuccess = () => {
+          console.log('Data updated')
+          this.$store.dispatch('loadMarkers')
+        }
+      }
+      const updateItem = (e) => {
+        const requestIndexedDB = window.indexedDB.open('Map_Database', 1)
+        requestIndexedDB.onerror = (event) => {
+          console.log(event)
+        }
+
+        // la requete
+        requestIndexedDB.onsuccess = (event) => {
+          let db = event.target.result
+
+          let transaction = db.transaction('markers', 'readwrite')
+          let store = transaction.objectStore('markers') // store = table in sql
+          store.openCursor().onsuccess = (event) => {
+            const cursor = event.target.result
+
+            if (cursor) {
+              if (cursor.value.category === e.category) {
+                if (cursor.value.subCategory.length > 1) {
+                  // si multi sub category, update color and subcat en supprimant l'item du tableau
+                  let indexColor = cursor.value.color.indexOf(e.color[0])
+                  let indexSubCategory = cursor.value.subCategory.indexOf(
+                    e.subCategory[0]
+                  )
+                  // faire une fonction + change dynamic sub and color
+                  updateCursor(cursor, indexColor, indexSubCategory)
+                } else {
+                  updateCursor(cursor, )
+                }
+              }
+              cursor.continue()
+            } else {
+              console.log('Entries displayed.')
+            }
+          }
+
+          transaction.oncomplete = () => {
+            db.close()
+          }
+          transaction.onerror = (event) => {
+            console.log(event)
+          }
+        }
+      }
+      updateItem(e)
+    },
     removeDB(e) {
       const removeItem = (e) => {
         const requestIndexedDB = window.indexedDB.open('Map_Database', 1)
