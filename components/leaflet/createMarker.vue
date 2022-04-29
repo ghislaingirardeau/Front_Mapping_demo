@@ -108,6 +108,7 @@
                     v-model="subCategory.selected"
                     :rules="checkSubCatExist"
                     @keyup="checkSubCatExist"
+                    @keydown.enter.prevent="addToArraySubCat"
                     label="Subcategories"
                   ></v-text-field>
                   <span class="mr-2">Add</span>
