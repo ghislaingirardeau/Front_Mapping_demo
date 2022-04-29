@@ -1,6 +1,6 @@
 <template>
   <modalCustom :showModal="showModal" @send-modal="modalResponse">
-    <template v-slot:title> Build your marker {{newIcon}} </template>
+    <template v-slot:title> Build your marker {{ newIcon }} </template>
     <template v-slot:content>
       <v-stepper v-model="e1">
         <v-stepper-header>
@@ -101,13 +101,12 @@
           <v-stepper-content step="2">
             <v-row align="center" justify="center" class="my-2">
               <v-col cols="11">
-                <span>Add subcategories (Optionnal)</span>
+                <span>Add subcategories (Optionnal) ?</span>
               </v-col>
               <v-col cols="11">
                 <v-form ref="formSub" v-model="validSub" lazy-validation>
                   <v-text-field
-                    v-model="subCategorySelected"
-                    :disabled="disableInputs"
+                    v-model="subCategory.selected"
                     :rules="checkSubCatExist"
                     @keyup="checkSubCatExist"
                     label="Subcategories"
@@ -115,20 +114,86 @@
                   <span class="mr-2">Add</span>
                   <v-icon
                     color="teal"
-                    :style="{
-                      border: `2px solid ${disableInputs ? 'grey' : 'teal'}`,
-                    }"
                     class="iconAddColor"
-                    :disabled="disableInputs"
                     @click="addToArraySubCat"
                     >mdi-plus-circle</v-icon
                   >
-                  <span class="mr-2" v-if="disableInputs"
-                    >Then pick the color</span
-                  >
                 </v-form>
               </v-col>
+              <v-col cols="6" v-if="newIcon.subCategory.length > 0">
+                <span>My sub categories:</span>
+              </v-col>
+              <v-col
+                cols="5"
+                sm="4"
+                v-for="(item, l) in newIcon.subCategory"
+                :key="l"
+              >
+                <v-icon color="white" size="28px">
+                  mdi-{{
+                    newIcon.icon.length > 0 ? newIcon.icon : 'vector-polyline'
+                  }}
+                </v-icon>
+                <span>{{
+                  newIcon.subCategory[l]
+                    ? newIcon.subCategory[l]
+                    : newIcon.category
+                }}</span>
+                <v-icon color="white" size="28px" @click="removeSubCategory(l)">
+                  mdi-delete-forever
+                </v-icon>
+              </v-col>
 
+              <v-col cols="11">
+                <v-btn color="primary" @click="e1 = 3"> Pick colors </v-btn>
+                <v-btn text @click="e1 = 1" outlined color="secondary">
+                  back
+                </v-btn>
+              </v-col>
+            </v-row>
+          </v-stepper-content>
+
+          <v-stepper-content step="3">
+            <span>Edit color</span>
+            <!-- Fait apparaitre le résumé de la sélection -->
+              <v-row class="px-5" v-if="newIcon.subCategory.length > 0">
+                <v-col
+                  cols="5"
+                  v-for="(item, l) in newIcon.subCategory"
+                  :key="l"
+                >
+                  <v-icon
+                    :color="newIcon.color[l]"
+                    size="28px"
+                    @click="iterateOfColorArray = l"
+                  >
+                    mdi-{{
+                      newIcon.icon.length > 0 ? newIcon.icon : 'vector-polyline'
+                    }}
+                  </v-icon>
+                  <span>{{
+                    newIcon.subCategory[l]
+                      ? newIcon.subCategory[l]
+                      : newIcon.category
+                  }}</span>
+                  <v-icon color="white" size="28px" @click="iterateOfColorArray = l">
+                    mdi-pencil-box-outline
+                  </v-icon>
+                </v-col>
+              </v-row>
+              
+              <v-row class="px-5" v-else>
+                <v-col cols="3" sm="3">
+                  <v-icon :color="newIcon.color[0]" size="28px">
+                    mdi-{{
+                      newIcon.icon.length > 0 ? newIcon.icon : 'vector-polyline'
+                    }}
+                  </v-icon>
+                  <span>{{ newIcon.category }}</span>
+                </v-col>
+              </v-row>
+            
+            <v-row justify="center" class="my-2">
               <v-col cols="11" class="divider__block">
                 <span>Pick the color</span>
               </v-col>
@@ -140,123 +205,16 @@
                   v-for="(i, l) in swatches"
                   :key="l"
                 >
-                  <v-chip :color="i" label @click="colorSelected = i"> </v-chip>
+                  <v-chip :color="i" label @click="applyColor(i)"> </v-chip>
                 </v-col>
               </v-row>
 
-              <v-col cols="5" class="mt-3">
-                <span class="mr-2">Add</span>
-                <v-icon
-                  color="teal"
-                  :class="{ animationShake: disableInputs }"
-                  class="iconAddColor"
-                  :style="{
-                    border: `2px solid ${disableColor ? 'grey' : 'teal'}`,
-                  }"
-                  @click="addToArrayMarker"
-                  :disabled="disableColor"
-                  >mdi-plus-circle</v-icon
-                >
-              </v-col>
-              <v-col cols="6" class="text-center">
-                <span>Preview :</span>
-                <v-icon
-                  v-if="newIcon.type === 'Point'"
-                  :color="colorSelected"
-                  size="28px"
-                  >mdi-{{ newIcon.icon }}</v-icon
-                >
-                <v-icon
-                  v-else-if="newIcon.type === 'Line'"
-                  :color="colorSelected"
-                  size="28px"
-                >
-                  mdi-vector-polyline
-                </v-icon>
-                <v-icon
-                  v-else-if="newIcon.type === 'Area'"
-                  :color="colorSelected"
-                  size="28px"
-                >
-                  mdi-triangle
-                </v-icon>
-              </v-col>
-              <v-col cols="11">
-                <v-btn
-                  color="primary"
-                  @click="e1 = 3"
-                  v-if="newIcon.color.length > 0"
-                  :disabled="disableInputs"
-                >
-                  Next
-                </v-btn>
-                <v-btn
-                  text
-                  @click="e1 = 1"
-                  :disabled="disableInputs"
-                  outlined
-                  color="secondary"
-                >
-                  back
-                </v-btn>
-              </v-col>
-            </v-row>
-          </v-stepper-content>
-
-          <v-stepper-content step="3">
-            <!-- Fait apparaitre le résumé de la sélection -->
-            <v-row
-              v-if="newIcon.color.length > 0"
-              justify="center"
-              class="my-2"
-            >
-              <v-col cols="11">
-                <h4>My markers selected : {{ newIcon.category }}</h4>
-              </v-col>
-              <v-col
-                cols="5"
-                sm="4"
-                v-for="(item, l) in newIcon.color"
-                :key="l"
-              >
-                <span>{{
-                  newIcon.subCategory[l]
-                    ? newIcon.subCategory[l]
-                    : newIcon.category
-                }}</span>
-                <v-icon
-                  v-if="newIcon.type === 'Point'"
-                  :color="newIcon.color[l]"
-                  size="36px"
-                  >mdi-{{ newIcon.icon }}</v-icon
-                >
-                <v-icon
-                  v-else-if="newIcon.type === 'Line'"
-                  :color="newIcon.color[l]"
-                  size="28px"
-                >
-                  mdi-vector-polyline
-                </v-icon>
-                <v-icon
-                  v-else-if="newIcon.type === 'Area'"
-                  :color="newIcon.color[l]"
-                  size="28px"
-                >
-                  mdi-triangle
-                </v-icon>
-              </v-col>
               <v-col cols="11" sm="7">
                 <v-btn color="primary" @click="addNewMarker">Valid</v-btn>
                 <v-btn color="warning" @click="resetMarker">Reset</v-btn>
               </v-col>
               <v-col cols="11" sm="4">
-                <v-btn
-                  text
-                  @click="e1 = 2"
-                  :disabled="disableInputs"
-                  outlined
-                  color="secondary"
-                >
+                <v-btn text @click="e1 = 2" outlined color="secondary">
                   back
                 </v-btn>
               </v-col>
@@ -277,9 +235,7 @@ export default {
       // control inside modal
       valid: true,
       validSub: true,
-      disableInputs: false,
-      disableColor: false,
-      colorSelected: '#ffffff',
+      iterateOfColorArray: 0,
       swatches: [
         '#FF0000',
         '#AA0000',
@@ -298,14 +254,16 @@ export default {
         '#000055',
       ],
       // item for text fields
-      subCategorySelected: '',
+      subCategory: {
+        selected: '',
+      },
       rulesCategory: [(v) => v.length >= 2 || 'Mininum 2 characters'],
       typeSelection: ['Point', 'Area', 'Line'],
       newIcon: {
         type: 'Point',
-        category: '',
+        category: 'sac',
         subCategory: [],
-        icon: '',
+        icon: 'home',
         color: [],
       },
       // manage datas
@@ -334,7 +292,7 @@ export default {
     },
     checkSubCatExist() {
       let control = this.newIcon.subCategory.find(
-        (element) => element === this.subCategorySelected
+        (element) => element === this.subCategory.selected
       )
         ? false
         : true
@@ -395,38 +353,23 @@ export default {
         icon: '',
         color: [],
       }
-      this.subCategorySelected = ''
-      this.disableInputs = false
-      this.disableColor = false
+      this.subCategory.selected = ''
       this.e1 = 1
       this.rulesCategory = [(v) => v.length >= 2 || 'Mininum 2 characters']
     },
     addToArraySubCat() {
       if (this.$refs.formSub.validate()) {
-        this.newIcon.subCategory.push(this.subCategorySelected)
-        this.subCategorySelected = 'An other one ?'
-        if (
-          (this.newIcon.color.length - this.newIcon.subCategory.length) === -1
-        ) {
-          this.disableColor = false // active icon add color de toute facon
-          this.disableInputs = true // desactive tous les autres
-        } else if (
-          (this.newIcon.color.length - this.newIcon.subCategory.length) === 0
-        ) {
-          this.disableInputs = false
-        }
+        this.newIcon.subCategory.push(this.subCategory.selected)
+        this.subCategory.selected = 'One more ?'
+        this.newIcon.color.push('white')
       }
     },
-    addToArrayMarker() {
-      this.disableInputs = false
-      let diffArray = this.newIcon.color.length - this.newIcon.subCategory.length
-
-      if (diffArray === 0 || diffArray === 1) {
-        this.newIcon.color.pop()
-        this.newIcon.color.push(this.colorSelected)
-      } else if (diffArray === -1) {
-        this.newIcon.color.push(this.colorSelected)
-      }
+    removeSubCategory (i) {
+      this.newIcon.subCategory.splice(i, 1)
+      this.newIcon.color.splice(i, 1)
+    },
+    applyColor(c) {
+      this.newIcon.color.splice(this.iterateOfColorArray, 1, c)
     },
     addNewMarker() {
       try {
@@ -488,6 +431,7 @@ export default {
 .iconAddColor {
   padding: 8px;
   transition: transform 200ms;
+  border: 2px solid teal;
   &::after {
     content: '';
     position: absolute;
@@ -529,11 +473,5 @@ export default {
   60% {
     transform: translate3d(4px, 0, 0);
   }
-}
-
-.animationShake {
-  /* transform: scale(1.1);
-  transition: transform 400ms; */
-  animation: shake 0.82s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
 }
 </style>
