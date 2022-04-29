@@ -1,6 +1,6 @@
 <template>
   <modalCustom :showModal="showModal" @send-modal="modalResponse">
-    <template v-slot:title> Build your marker</template>
+    <template v-slot:title> Build your marker {{newIcon}} </template>
     <template v-slot:content>
       <v-stepper v-model="e1">
         <v-stepper-header>
@@ -338,7 +338,6 @@ export default {
       )
         ? false
         : true
-      console.log(control)
       return [
         (v) => v.length >= 2 || 'Mininum 2 characters',
         (v) => control || 'this category already exist',
@@ -402,45 +401,31 @@ export default {
       this.e1 = 1
       this.rulesCategory = [(v) => v.length >= 2 || 'Mininum 2 characters']
     },
-    countArray(a, b) {
-      return a - b
-    },
     addToArraySubCat() {
       if (this.$refs.formSub.validate()) {
         this.newIcon.subCategory.push(this.subCategorySelected)
-        this.subCategorySelected = 'Add a new sub category ?'
+        this.subCategorySelected = 'An other one ?'
         if (
-          this.countArray(
-            this.newIcon.color.length,
-            this.newIcon.subCategory.length
-          ) === -1
+          (this.newIcon.color.length - this.newIcon.subCategory.length) === -1
         ) {
           this.disableColor = false // active icon add color de toute facon
           this.disableInputs = true // desactive tous les autres
         } else if (
-          this.countArray(
-            this.newIcon.color.length,
-            this.newIcon.subCategory.length
-          ) === 0
+          (this.newIcon.color.length - this.newIcon.subCategory.length) === 0
         ) {
           this.disableInputs = false
         }
       }
     },
     addToArrayMarker() {
-      this.newIcon.color.push(this.colorSelected)
       this.disableInputs = false
-      let countSubCategory = this.newIcon.subCategory.length
+      let diffArray = this.newIcon.color.length - this.newIcon.subCategory.length
 
-      if (
-        countSubCategory > 0 ||
-        this.countArray(
-          this.newIcon.color.length,
-          this.newIcon.subCategory.length
-        ) > 0
-      ) {
-        // if already add one subcategory, disabled it after executing code above
-        this.disableColor = true
+      if (diffArray === 0 || diffArray === 1) {
+        this.newIcon.color.pop()
+        this.newIcon.color.push(this.colorSelected)
+      } else if (diffArray === -1) {
+        this.newIcon.color.push(this.colorSelected)
       }
     },
     addNewMarker() {
