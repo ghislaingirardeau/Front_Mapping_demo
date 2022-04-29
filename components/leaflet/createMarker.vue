@@ -1,6 +1,6 @@
 <template>
   <modalCustom :showModal="showModal" @send-modal="modalResponse">
-    <template v-slot:title> Build your marker {{ newIcon }} </template>
+    <template v-slot:title> Build your marker</template>
     <template v-slot:content>
       <v-stepper v-model="e1">
         <v-stepper-header>
@@ -56,15 +56,14 @@
                       <span v-show="newIcon.icon.length > 0"
                         >{{ iconSuggestList.length }} icons found</span
                       >
-                      <v-btn
+                      <v-icon 
                         color="teal"
                         v-bind="attrs"
                         v-on="on"
                         v-show="newIcon.icon.length > 0"
-                        class="ml-3"
-                      >
-                        Show
-                      </v-btn>
+                        class="mr-3 iconAddColor"
+                        size="24px"
+                      >mdi-eye-settings-outline</v-icon>
                     </template>
                     <v-card>
                       <v-card-title> Click to select icon </v-card-title>
@@ -120,16 +119,16 @@
                   >
                 </v-form>
               </v-col>
-              <v-col cols="6" v-if="newIcon.subCategory.length > 0">
+              <v-col cols="11" v-if="newIcon.subCategory.length > 0">
                 <span>My sub categories:</span>
               </v-col>
               <v-col
-                cols="5"
-                sm="4"
                 v-for="(item, l) in newIcon.subCategory"
                 :key="l"
+                cols="6"
+                class="text-center"
               >
-                <v-icon color="white" size="28px">
+                <v-icon color="white" size="16px">
                   mdi-{{
                     newIcon.icon.length > 0 ? newIcon.icon : 'vector-polyline'
                   }}
@@ -139,10 +138,11 @@
                     ? newIcon.subCategory[l]
                     : newIcon.category
                 }}</span>
-                <v-icon color="white" size="28px" @click="removeSubCategory(l)">
+                <v-icon color="teal" size="22px" @click="removeSubCategory(l)">
                   mdi-delete-forever
                 </v-icon>
               </v-col>
+              
 
               <v-col cols="11">
                 <v-btn color="primary" @click="e1 = 3"> Pick colors </v-btn>
@@ -154,17 +154,16 @@
           </v-stepper-content>
 
           <v-stepper-content step="3">
-            <span>Edit color</span>
-            <!-- Fait apparaitre le résumé de la sélection -->
-              <v-row class="px-5" v-if="newIcon.subCategory.length > 0">
+              <v-row class="my-1" v-if="newIcon.subCategory.length > 0">
                 <v-col
-                  cols="5"
+                  cols="6"
+                  class="text-center"
                   v-for="(item, l) in newIcon.subCategory"
                   :key="l"
                 >
                   <v-icon
                     :color="newIcon.color[l]"
-                    size="28px"
+                    size="20px"
                     @click="iterateOfColorArray = l"
                   >
                     mdi-{{
@@ -176,13 +175,19 @@
                       ? newIcon.subCategory[l]
                       : newIcon.category
                   }}</span>
-                  <v-icon color="white" size="28px" @click="iterateOfColorArray = l">
-                    mdi-pencil-box-outline
+                  <v-icon 
+                    color="teal" 
+                    class="iconAddColor iconAnimation" 
+                    size="25px" 
+                    style="padding: 4px;"
+                    @click="editColor(l, $event)"
+                  >
+                    mdi-brush
                   </v-icon>
                 </v-col>
               </v-row>
               
-              <v-row class="px-5" v-else>
+              <v-row class="px-5 mt-2 text-center" v-else>
                 <v-col cols="3" sm="3">
                   <v-icon :color="newIcon.color[0]" size="28px">
                     mdi-{{
@@ -209,7 +214,7 @@
                 </v-col>
               </v-row>
 
-              <v-col cols="11" sm="7">
+              <v-col cols="11" sm="7" class="mt-2">
                 <v-btn color="primary" @click="addNewMarker">Valid</v-btn>
                 <v-btn color="warning" @click="resetMarker">Reset</v-btn>
               </v-col>
@@ -298,6 +303,7 @@ export default {
         : true
       return [
         (v) => v.length >= 2 || 'Mininum 2 characters',
+        (v) => v.length <= 10 || 'Max 10 characters',
         (v) => control || 'this category already exist',
       ]
     },
@@ -367,6 +373,14 @@ export default {
     removeSubCategory (i) {
       this.newIcon.subCategory.splice(i, 1)
       this.newIcon.color.splice(i, 1)
+    },
+    editColor(l, $event) {
+      let elt = document.getElementsByClassName('iconAnimation')
+      for (let index of elt) {
+        index.classList.contains('animationRotate') ? index.classList.remove('animationRotate') : console.log('no')
+      }
+      $event.target.classList.add('animationRotate')      
+      this.iterateOfColorArray = l
     },
     applyColor(c) {
       this.newIcon.color.splice(this.iterateOfColorArray, 1, c)
@@ -452,26 +466,17 @@ export default {
 .divider__block {
   border-top: 2px solid white;
 }
-@keyframes shake {
-  10%,
-  90% {
-    transform: translate3d(-1px, 0, 0);
-  }
 
-  20%,
-  80% {
-    transform: translate3d(2px, 0, 0);
+@keyframes rotate {
+  0% {
+    transform: rotateZ(0);
   }
-
-  30%,
-  50%,
-  70% {
-    transform: translate3d(-4px, 0, 0);
-  }
-
-  40%,
-  60% {
-    transform: translate3d(4px, 0, 0);
+  100% {
+    transform: rotateZ(180deg);
   }
 }
+.animationRotate {
+animation: rotate 0.5s ease both;
+}
+
 </style>
