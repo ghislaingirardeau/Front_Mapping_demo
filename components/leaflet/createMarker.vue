@@ -1,6 +1,6 @@
 <template>
   <modalCustom :showModal="showModal" @send-modal="modalResponse">
-    <template v-slot:title> Build your marker </template>
+    <template v-slot:title> Build your marker</template>
     <template v-slot:content>
       <v-stepper v-model="e1">
         <v-stepper-header>
@@ -103,25 +103,30 @@
               <v-col cols="11">
                 <span>Add subcategories (Optionnal)</span>
               </v-col>
-              <v-col cols="6">
-                <v-text-field
-                  v-model="subCategorySelected"
-                  :disabled="disableInputs"
-                  label="Subcategories"
-                ></v-text-field>
-              </v-col>
-              <v-col cols="5" class="text-center">
-                <span class="mr-2">Add</span>
-                <v-icon
-                  color="teal"
-                  :style="{
-                    border: `2px solid ${disableInputs ? 'grey' : 'teal'}`,
-                  }"
-                  class="iconAddColor"
-                  :disabled="disableInputs"
-                  @click="addToArraySubCat"
-                  >mdi-plus-circle</v-icon
-                >
+              <v-col cols="11">
+                <v-form ref="formSub" v-model="validSub" lazy-validation>
+                  <v-text-field
+                    v-model="subCategorySelected"
+                    :disabled="disableInputs"
+                    :rules="checkSubCatExist"
+                    @keyup="checkSubCatExist"
+                    label="Subcategories"
+                  ></v-text-field>
+                  <span class="mr-2">Add</span>
+                  <v-icon
+                    color="teal"
+                    :style="{
+                      border: `2px solid ${disableInputs ? 'grey' : 'teal'}`,
+                    }"
+                    class="iconAddColor"
+                    :disabled="disableInputs"
+                    @click="addToArraySubCat"
+                    >mdi-plus-circle</v-icon
+                  >
+                  <span class="mr-2" v-if="disableInputs"
+                    >Then pick the color</span
+                  >
+                </v-form>
               </v-col>
 
               <v-col cols="11" class="divider__block">
@@ -264,10 +269,6 @@
 </template>
 
 <script>
-let countArray = (a, b) => {
-  return a - b
-}
-
 export default {
   data() {
     return {
@@ -275,6 +276,7 @@ export default {
       e1: 1,
       // control inside modal
       valid: true,
+      validSub: true,
       disableInputs: false,
       disableColor: false,
       colorSelected: '#ffffff',
@@ -296,7 +298,7 @@ export default {
         '#000055',
       ],
       // item for text fields
-      subCategorySelected: undefined,
+      subCategorySelected: '',
       rulesCategory: [(v) => v.length >= 2 || 'Mininum 2 characters'],
       typeSelection: ['Point', 'Area', 'Line'],
       newIcon: {
@@ -320,14 +322,34 @@ export default {
     checkCatExist() {
       let result = this.markers.map((a) => a.category)
       let mySet = new Set(result)
-      let control = ([...mySet].find((element) => element === this.newIcon.category)) ? false : true
+      let control = [...mySet].find(
+        (element) => element === this.newIcon.category
+      )
+        ? false
+        : true
+      return [
+        (v) => v.length >= 2 || 'Mininum 2 characters',
+        (v) => control || 'this category already exist',
+      ]
+    },
+    checkSubCatExist() {
+      let control = this.newIcon.subCategory.find(
+        (element) => element === this.subCategorySelected
+      )
+        ? false
+        : true
+      console.log(control)
       return [
         (v) => v.length >= 2 || 'Mininum 2 characters',
         (v) => control || 'this category already exist',
       ]
     },
     checkIcon() {
-      let control = this.iconsListing.find((element) => element === this.newIcon.icon) ? true : false
+      let control = this.iconsListing.find(
+        (element) => element === this.newIcon.icon
+      )
+        ? true
+        : false
       return [(v) => control || 'this icon does not exist']
     },
     iconSuggestList: {
@@ -374,30 +396,35 @@ export default {
         icon: '',
         color: [],
       }
-      this.subCategorySelected = undefined
+      this.subCategorySelected = ''
       this.disableInputs = false
       this.disableColor = false
       this.e1 = 1
       this.rulesCategory = [(v) => v.length >= 2 || 'Mininum 2 characters']
     },
+    countArray(a, b) {
+      return a - b
+    },
     addToArraySubCat() {
-      this.newIcon.subCategory.push(this.subCategorySelected)
-
-      if (
-        countArray(
-          this.newIcon.color.length,
-          this.newIcon.subCategory.length
-        ) === -1
-      ) {
-        this.disableColor = false // active icon add color de toute facon
-        this.disableInputs = true // desactive tous les autres
-      } else if (
-        countArray(
-          this.newIcon.color.length,
-          this.newIcon.subCategory.length
-        ) === 0
-      ) {
-        this.disableInputs = false
+      if (this.$refs.formSub.validate()) {
+        this.newIcon.subCategory.push(this.subCategorySelected)
+        this.subCategorySelected = 'Add a new sub category ?'
+        if (
+          this.countArray(
+            this.newIcon.color.length,
+            this.newIcon.subCategory.length
+          ) === -1
+        ) {
+          this.disableColor = false // active icon add color de toute facon
+          this.disableInputs = true // desactive tous les autres
+        } else if (
+          this.countArray(
+            this.newIcon.color.length,
+            this.newIcon.subCategory.length
+          ) === 0
+        ) {
+          this.disableInputs = false
+        }
       }
     },
     addToArrayMarker() {
@@ -407,8 +434,10 @@ export default {
 
       if (
         countSubCategory > 0 ||
-        countArray(this.newIcon.color.length, this.newIcon.subCategory.length) >
-          0
+        this.countArray(
+          this.newIcon.color.length,
+          this.newIcon.subCategory.length
+        ) > 0
       ) {
         // if already add one subcategory, disabled it after executing code above
         this.disableColor = true
@@ -419,10 +448,10 @@ export default {
         switch (this.newIcon.type) {
           case 'Area':
             this.newIcon.type = 'Polygon'
-            break;
+            break
           case 'Line':
             this.newIcon.type = 'MultiLineString'
-            break;
+            break
         }
         const requestIndexedDB = window.indexedDB.open('Map_Database', 1)
         requestIndexedDB.onsuccess = (event) => {
