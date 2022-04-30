@@ -15,6 +15,7 @@ export function createIndexedDB() {
 
         requestIndexedDB.onerror = (event) => {
             console.log(event)
+            reject(new Error(event))
         }
         requestIndexedDB.onupgradeneeded = (event) => {
             // Save the IDBDatabase interface

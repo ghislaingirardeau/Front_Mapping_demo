@@ -1,14 +1,14 @@
 <template>
   <v-col cols="12">
     <!-- dialog for the data editing -->
-    <modalCustom :showModal="showModal" @send-modal="modalResponse"> 
-      <template v-slot:title>
-        Edit Item
-      </template>
+    <modalCustom :showModal="showModal" @send-modal="modalResponse">
+      <template v-slot:title> Edit Item {{editItem.subCategory}} </template>
       <template v-slot:content>
+        <v-form ref="form" v-model="valid" lazy-validation>
           <v-text-field
             v-model="editItem.subCategory"
             label="Change SubCategory"
+            :rules="rulesEditSub"
           >
           </v-text-field>
           <v-color-picker
@@ -16,10 +16,9 @@
             dot-size="25"
             hide-inputs
           ></v-color-picker>
-        <v-spacer></v-spacer>
-        <v-btn color="teal" outlined @click="updateItem">
-          Save
-        </v-btn>
+          <v-spacer></v-spacer>
+          <v-btn color="teal" outlined @click="updateItem"> Save </v-btn>
+        </v-form>
       </template>
     </modalCustom>
 
@@ -60,10 +59,22 @@
           <!-- <v-chip :color="item.color[0]" small v-else>area</v-chip> -->
         </template>
         <template v-slot:[`item.edit`]="{ item }">
-          <v-icon color="teal" style="border: 2px solid teal; padding: 3px;" @click="openEditor(item)"> mdi-brush </v-icon>
+          <v-icon
+            color="teal"
+            style="border: 2px solid teal; padding: 3px"
+            @click="openEditor(item)"
+          >
+            mdi-brush
+          </v-icon>
         </template>
         <template v-slot:[`item.remove`]="{ item }">
-          <v-icon color="teal" style="border: 2px solid teal; padding: 3px;" @click="removeDB(item)"> mdi-delete </v-icon>
+          <v-icon
+            color="teal"
+            style="border: 2px solid teal; padding: 3px"
+            @click="removeDB(item)"
+          >
+            mdi-delete
+          </v-icon>
         </template>
       </v-data-table>
     </v-card>
@@ -89,11 +100,12 @@ export default {
       ],
       showModal: false,
       valid: true,
+      rulesEditSub: [(v) => v.length > 2 || 'minimum 2 characters'],
       editItem: {
         id: '',
         subCategory: '',
-        color: { r: 255, g: 255, b: 255 }
-      }
+        color: { r: 255, g: 255, b: 255 },
+      },
     }
   },
   props: {
@@ -101,67 +113,81 @@ export default {
   },
   methods: {
     modalResponse(payload) {
-      this.showModal = payload.message;
+      this.showModal = payload.message
     },
     openEditor(e) {
-        this.editItem.id = e
-        this.showModal = !this.showModal
+      console.log(e.subCategory.length, e)
+      e.subCategory.length > 0
+        ? (this.rulesEditSub = [(v) => v.length > 2 || 'minimum 2 characters'])
+        : (this.rulesEditSub = [true])
+      this.editItem.id = e
+      this.showModal = !this.showModal
     },
-    updateItem() {
+    async updateItem() {
       let colorToRgb = `rgb(${this.editItem.color.r}, ${this.editItem.color.g}, ${this.editItem.color.b})`
-      const updateCursor = (cursor, indexColor = 0, indexSubCategory = 0) => {
+
+      const updateCursor = (cursor, indexColor = 0, indexSubCategory = undefined) => {
         cursor.value.color.splice(indexColor, 1, colorToRgb)
-        cursor.value.subCategory.splice(indexSubCategory, 1, this.editItem.subCategory)
+        // update sub only if not empty = can be empty if update a category
+        indexSubCategory != undefined ? cursor.value.subCategory.splice(indexSubCategory, 1, this.editItem.subCategory) : '' 
         const request = cursor.update(cursor.value)
         request.onsuccess = () => {
-          console.log('Data updated')
           this.$store.dispatch('loadMarkers')
         }
       }
       const updateDB = (e) => {
-        const requestIndexedDB = window.indexedDB.open('Map_Database', 1)
-        requestIndexedDB.onerror = (event) => {
-          console.log(event)
-        }
-
-        // la requete
-        requestIndexedDB.onsuccess = (event) => {
-          let db = event.target.result
-
-          let transaction = db.transaction('markers', 'readwrite')
-          let store = transaction.objectStore('markers') // store = table in sql
-          store.openCursor().onsuccess = (event) => {
-            const cursor = event.target.result
-
-            if (cursor) {
-              if (cursor.value.category === e.category) {
-                if (cursor.value.subCategory.length > 1) {
-                  // si multi sub category, update color and subcat en supprimant l'item du tableau
-                  let indexColor = cursor.value.color.indexOf(e.color[0])
-                  let indexSubCategory = cursor.value.subCategory.indexOf(
-                    e.subCategory[0]
-                  )
-                  updateCursor(cursor, indexColor, indexSubCategory)
-                } else {
-                  updateCursor(cursor, )
-                }
-              }
-              cursor.continue()
-            } else {
-              console.log('Entries displayed.')
-            }
-          }
-
-          transaction.oncomplete = () => {
-            db.close()
-          }
-          transaction.onerror = (event) => {
+        return new Promise((resolve, reject) => {
+          const requestIndexedDB = window.indexedDB.open('Map_Database', 1)
+          requestIndexedDB.onerror = (event) => {
             console.log(event)
           }
+
+          // la requete
+          requestIndexedDB.onsuccess = (event) => {
+            let db = event.target.result
+
+            let transaction = db.transaction('markers', 'readwrite')
+            let store = transaction.objectStore('markers') // store = table in sql
+            store.openCursor().onsuccess = (event) => {
+              const cursor = event.target.result
+
+              if (cursor) {
+                if (cursor.value.category === e.category) {
+                  if (cursor.value.subCategory.length > 1) {
+                    // si multi sub category, update color and subcat en supprimant l'item du tableau
+                    let indexColor = cursor.value.color.indexOf(e.color[0])
+                    let indexSubCategory = cursor.value.subCategory.indexOf(
+                      e.subCategory[0]
+                    )
+                    updateCursor(cursor, indexColor, indexSubCategory)
+                  } else {
+                    updateCursor(cursor)
+                  }
+                }
+                cursor.continue()
+              } else {
+              }
+            }
+
+            transaction.oncomplete = () => {
+              db.close()
+              resolve({res: true})
+            }
+            transaction.onerror = (event) => {
+              reject(new Error(event))
+              console.log(event)
+            }
+          }
+        });
+        
+      }
+      if (this.$refs.form.validate()) {
+        let result = await updateDB(this.editItem.id)
+        if (result) {
+          this.showModal = !this.showModal
+          this.editItem.subCategory = ''
         }
       }
-      updateDB(this.editItem.id)
-      this.showModal = !this.showModal
     },
     removeDB(e) {
       const removeItem = (e) => {
