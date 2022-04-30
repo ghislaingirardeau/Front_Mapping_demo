@@ -191,7 +191,7 @@ export default {
             let indexSubCategory = this.subCategory.indexOf(
               this.addGeoJson.properties.subCategory
             )
-            this.addGeoJson.icon.color = colorsAttribut[indexSubCategory] // charge directement dans json addgeojson
+            this.addGeoJson.icon.color = [colorsAttribut[indexSubCategory]] // charge directement dans json addgeojson
           } else {
             this.addGeoJson.icon.color = colorArray[indexCategory] // charge directement dans json addgeojson
           }
@@ -207,6 +207,7 @@ export default {
           diplayColors(this.itemsCategory.point, this.itemsColor.point.color)
           break
       }
+      console.log(this.addGeoJson.icon);
     },
     validate() {
       if (this.$refs.form.validate()) {

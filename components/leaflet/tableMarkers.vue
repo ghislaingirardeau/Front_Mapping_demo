@@ -133,6 +133,23 @@ export default {
         const request = cursor.update(cursor.value)
         request.onsuccess = () => {
           this.$store.dispatch('loadMarkers')
+          // update data local storage
+          let geoFromLocal = JSON.parse(localStorage.getItem('APIGeoMap'))
+          const updateGeoFromLocal = () => {
+            if (geoFromLocal[this.editItem.id.category]) {
+              geoFromLocal[this.editItem.id.category].forEach(element => {
+                if(element.properties.subCategory === '' || !element.properties.subCategory) { //if subcat do not exist
+                  element.icon.color[0] = colorToRgb
+                } else if(element.properties.subCategory === this.editItem.id.subCategory[0]) {
+                  element.icon.color = colorToRgb
+                  element.properties.subCategory = this.editItem.subCategory
+                }
+                
+              });
+            }
+          }
+          updateGeoFromLocal()
+          localStorage.setItem('APIGeoMap', JSON.stringify(geoFromLocal))
         }
       }
       const updateDB = (e) => {
@@ -182,6 +199,7 @@ export default {
         
       }
       if (this.$refs.form.validate()) {
+        
         let result = await updateDB(this.editItem.id)
         if (result) {
           this.showModal = !this.showModal

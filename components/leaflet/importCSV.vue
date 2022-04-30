@@ -57,7 +57,7 @@ export default {
             name: element.name,
             popupContent: element.popupContent,
             category: element.category,
-            subCategory: element.subcategory,
+            subCategory: [element.subCategory],
           },
           geometry: {
             type: element.type,
@@ -65,7 +65,7 @@ export default {
           },
           icon: {
             type: element.icon,
-            color: element.color,
+            color: [element.color],
           },
         }
         layer.push(newGeoJson)

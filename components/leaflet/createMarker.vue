@@ -1,6 +1,6 @@
 <template>
   <modalCustom :showModal="showModal" @send-modal="modalResponse">
-    <template v-slot:title> Build your marker</template>
+    <template v-slot:title> Build your marker</template> 
     <template v-slot:content>
       <v-stepper v-model="e1">
         <v-stepper-header>

@@ -543,7 +543,7 @@ export default {
     let geoFromLocal = JSON.parse(localStorage.getItem('APIGeoMap'))
     let setMapView = {
       center: [0, 0],
-      zoom: 3,
+      zoom: 6,
     }
     if (geoFromLocal) {
       // if there is data from a file, loaded
