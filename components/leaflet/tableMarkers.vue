@@ -1,5 +1,28 @@
 <template>
   <v-col cols="12">
+    <!-- dialog for the data editing -->
+    <modalCustom :showModal="showModal" @send-modal="modalResponse"> 
+      <template v-slot:title>
+        Edit Item
+      </template>
+      <template v-slot:content>
+          <v-text-field
+            v-model="editItem.subCategory"
+            label="Change SubCategory"
+          >
+          </v-text-field>
+          <v-color-picker
+            v-model="editItem.color"
+            dot-size="25"
+            hide-inputs
+          ></v-color-picker>
+        <v-spacer></v-spacer>
+        <v-btn color="teal" outlined @click="updateItem">
+          Save
+        </v-btn>
+      </template>
+    </modalCustom>
+
     <v-card>
       <v-card-title>
         <v-text-field
@@ -36,11 +59,11 @@
 
           <!-- <v-chip :color="item.color[0]" small v-else>area</v-chip> -->
         </template>
-        <template v-slot:[`item.remove`]="{ item }">
-          <v-icon @click="removeDB(item)"> mdi-delete </v-icon>
-        </template>
         <template v-slot:[`item.edit`]="{ item }">
-          <v-icon @click="updateDB(item)"> mdi-brush </v-icon>
+          <v-icon color="teal" style="border: 2px solid teal; padding: 3px;" @click="openEditor(item)"> mdi-brush </v-icon>
+        </template>
+        <template v-slot:[`item.remove`]="{ item }">
+          <v-icon color="teal" style="border: 2px solid teal; padding: 3px;" @click="removeDB(item)"> mdi-delete </v-icon>
         </template>
       </v-data-table>
     </v-card>
@@ -56,31 +79,46 @@ export default {
         {
           text: 'Category',
           align: 'start',
-          filterable: false,
+          filterable: true,
           value: 'category',
         },
         { text: 'Sub Category', value: 'subCategory' },
         { text: 'Icon', value: 'icon' },
-        { text: 'Remove', value: 'remove' },
         { text: 'Edit', value: 'edit' },
+        { text: 'Remove', value: 'remove' },
       ],
+      showModal: false,
+      valid: true,
+      editItem: {
+        id: '',
+        subCategory: '',
+        color: { r: 255, g: 255, b: 255 }
+      }
     }
   },
   props: {
     markers: Array,
   },
   methods: {
-    updateDB(e) {
+    modalResponse(payload) {
+      this.showModal = payload.message;
+    },
+    openEditor(e) {
+        this.editItem.id = e
+        this.showModal = !this.showModal
+    },
+    updateItem() {
+      let colorToRgb = `rgb(${this.editItem.color.r}, ${this.editItem.color.g}, ${this.editItem.color.b})`
       const updateCursor = (cursor, indexColor = 0, indexSubCategory = 0) => {
-        cursor.value.color.splice(indexColor, 1, 'red')
-        cursor.value.subCategory.splice(indexSubCategory, 1, 'sub update')
+        cursor.value.color.splice(indexColor, 1, colorToRgb)
+        cursor.value.subCategory.splice(indexSubCategory, 1, this.editItem.subCategory)
         const request = cursor.update(cursor.value)
         request.onsuccess = () => {
           console.log('Data updated')
           this.$store.dispatch('loadMarkers')
         }
       }
-      const updateItem = (e) => {
+      const updateDB = (e) => {
         const requestIndexedDB = window.indexedDB.open('Map_Database', 1)
         requestIndexedDB.onerror = (event) => {
           console.log(event)
@@ -103,7 +141,6 @@ export default {
                   let indexSubCategory = cursor.value.subCategory.indexOf(
                     e.subCategory[0]
                   )
-                  // faire une fonction + change dynamic sub and color
                   updateCursor(cursor, indexColor, indexSubCategory)
                 } else {
                   updateCursor(cursor, )
@@ -123,7 +160,8 @@ export default {
           }
         }
       }
-      updateItem(e)
+      updateDB(this.editItem.id)
+      this.showModal = !this.showModal
     },
     removeDB(e) {
       const removeItem = (e) => {

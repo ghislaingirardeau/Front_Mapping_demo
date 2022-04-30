@@ -44,12 +44,16 @@
       >
         <template v-slot:[`item.actions`]="{ item }">
               <v-icon
-                class="mr-15"
+                class="mr-10"
+                color="teal" 
+                style="border: 2px solid teal; padding: 3px;"
                 @click="itemAction(item, false)"
               >
                 mdi-pencil
               </v-icon>
               <v-icon
+                color="teal" 
+                style="border: 2px solid teal; padding: 3px;"
                 @click="itemAction(item, true)"
               >
                 mdi-delete
