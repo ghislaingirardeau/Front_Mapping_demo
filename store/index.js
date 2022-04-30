@@ -6,13 +6,6 @@ export const state = () => ({
 // contains your actions
 export const actions = {
     loadMarkers(context) {
-        /* return this.$axios
-            .get('/associations')
-            .then(result => {
-                context.commit('SAVE_MARKERS', result.data.results);
-            }).catch(error => {
-                throw new Error(`API ${error}`);
-        }) */
         let results = []
         const requestIndexedDB = window.indexedDB.open('Map_Database', 1)
         requestIndexedDB.onerror = (event) => {

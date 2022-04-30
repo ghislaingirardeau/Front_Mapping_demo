@@ -2,7 +2,7 @@
   <v-col cols="12">
     <!-- dialog for the data editing -->
     <modalCustom :showModal="showModal" @send-modal="modalResponse">
-      <template v-slot:title> Edit Item {{editItem.subCategory}} </template>
+      <template v-slot:title> Edit Item</template>
       <template v-slot:content>
         <v-form ref="form" v-model="valid" lazy-validation>
           <v-text-field

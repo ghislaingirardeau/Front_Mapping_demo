@@ -483,6 +483,7 @@ export default {
           }
         })
       }
+      console.log(jsonToSave);
       localStorage.setItem('APIGeoMap', JSON.stringify(jsonToSave))
     },
   },
