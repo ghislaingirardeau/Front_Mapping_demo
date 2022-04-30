@@ -7,7 +7,7 @@
     />
 
     <v-col cols="12" class="text-center">
-      <h1 class="mb-2">My Markers</h1> {{markers}}
+      <h1 class="mb-2">My Markers</h1>
       <p v-if="DBmessage">{{ DBmessage }}</p>
       <v-btn @click="deleteDB">Delete All Markers</v-btn>
 
