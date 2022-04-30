@@ -1,5 +1,6 @@
 <template>
   <div>
+    <!-- reset otions -->
     <div v-if="removeBtn">
       <p>
         All you coordinates added will be erase. The markers data will be remain
@@ -11,8 +12,11 @@
       <v-btn @click="resetApp" color="error"> Reset All </v-btn>
     </div>
     <p v-else>{{ message }}</p>
+    <!-- CSV options -->
     <exportCSV v-if="modalExport" />
+    <!-- CSV options -->
     <importCSV v-if="modalImport" />
+    <!-- Menu -->
     <v-list v-if="showMenu">
       <h2>Settings</h2>
       <v-list-item
