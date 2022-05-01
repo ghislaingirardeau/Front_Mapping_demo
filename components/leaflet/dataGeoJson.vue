@@ -1,5 +1,6 @@
 <template>
   <v-form ref="form" v-model="valid" lazy-validation>
+    {{markers}}
     <v-select
       v-if="coordinates.length > 1"
       v-model="addGeoJson.geometry.type"
@@ -76,28 +77,12 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
+
 export default {
   data: () => ({
     valid: true,
     geometryTypes: ['Polygon', 'MultiLineString'],
-    itemsCategory: {
-      point: [],
-      multiLineString: [],
-      polygon: [],
-    },
-    itemsSubcategory: {
-      point: [],
-      multiLineString: [],
-      polygon: [],
-    },
-    itemsColor: {
-      point: {
-        type: [],
-        color: [],     
-      },
-      multiLineString: [],
-      polygon: [],
-    },
     latitude: "13'44.4745",
     longitude: "106'58.6615",
     addGeoJson: {
@@ -114,7 +99,7 @@ export default {
       },
       icon: {
         type: '',
-        color: 'red',
+        color: '',
       },
     },
     name: '',
@@ -132,87 +117,54 @@ export default {
     coordinates: Array,
   },
   computed: {
+      ...mapState(['markers']),
       // return Array with category from DB depending on type GeoJson
     category() {
+      const arrayCategory = (geoJsonType) => {
+        let arrayCategory = new Set(this.markers.filter(elt => elt.type === geoJsonType).map(i => i.category)) 
+        return [...arrayCategory]
+      }
       if (this.coordinates.length === 1 || this.coordinates.length === 0) {
         this.addGeoJson.geometry.type = 'Point'
-        return this.itemsCategory.point
+        return arrayCategory(this.addGeoJson.geometry.type)
       } else {
         switch (this.addGeoJson.geometry.type) {
           case 'Polygon':
-            return this.itemsCategory.polygon
+            return arrayCategory(this.addGeoJson.geometry.type)
             break
           case 'MultiLineString':
-            return this.itemsCategory.multiLineString
+            return arrayCategory(this.addGeoJson.geometry.type)
             break
         }
       }
     },
     // return Array of subCategory depending on the category selected
     subCategory() {
-
-      const loadSubArray = (type, sub) => { // FONCTION POUR RECUP DU BON TABLEAU A ANALYSER
-        let index = type.indexOf(
-            this.addGeoJson.properties.category
-        )
-        this.addGeoJson.icon.type = this.itemsColor.point.type[index] // charge directement dans json addgeojson
-
-        if (index === -1) {
-          return undefined
-        } else if(sub[index] != '') { // Debug on import, the array is not empty, but with ''
-          return sub[index]
-        }
-      }
-
-      switch (this.addGeoJson.geometry.type) {
-        case 'Point':
-          return loadSubArray(this.itemsCategory.point, this.itemsSubcategory.point)
-          break;
-        case 'Polygon':
-          return loadSubArray(this.itemsCategory.polygon, this.itemsSubcategory.polygon)
-          break;
-        case 'MultiLineString':
-          return loadSubArray(this.itemsCategory.multiLineString, this.itemsSubcategory.multiLineString)
-          break;
-      }
-      
+      let arraySub = this.markers.filter(elt => elt.category === this.addGeoJson.properties.category)
+      arraySub.length > 0 ? this.addGeoJson.icon.type = arraySub[0].icon : '' // apply icon type here, no matter whoch sub cat selected
+      return arraySub.flatMap(i => i.subCategory)      
     },
   },
   methods: {
-    colorsPick() {
-      // recup de la couleur en fonction de l'index de la categorie. puisque quand je recupere les donnees de la db, les donnees sont renvoyé dans le meme ordre d'index
-      let indexCategory
-      const diplayColors = (cat, colorArray) => {
-        indexCategory = cat.indexOf(
-            this.addGeoJson.properties.category
-          )
-          if (this.addGeoJson.properties.subCategory) {
-            let colorsAttribut = colorArray[indexCategory]
-            let indexSubCategory = this.subCategory.indexOf(
-              this.addGeoJson.properties.subCategory
-            )
-            this.addGeoJson.icon.color = [colorsAttribut[indexSubCategory]] // charge directement dans json addgeojson
-          } else {
-            this.addGeoJson.icon.color = colorArray[indexCategory] // charge directement dans json addgeojson
-          }
-      }
-      switch (this.addGeoJson.geometry.type) {
-        case 'Polygon':
-          diplayColors(this.itemsCategory.polygon, this.itemsColor.polygon)
-          break
-        case 'MultiLineString':
-          diplayColors(this.itemsCategory.multiLineString, this.itemsColor.multiLineString)
-          break
-        default:
-          diplayColors(this.itemsCategory.point, this.itemsColor.point.color)
-          break
-      }
-      console.log(this.addGeoJson.icon);
-    },
     validate() {
       if (this.$refs.form.validate()) {
-        this.colorsPick()
-
+        const colorGeoJson = () => {
+              let category = this.markers.filter(elt => elt.category === this.addGeoJson.properties.category)
+          if (category.length > 1) {
+            let subCategory = category.find(elt => elt.subCategory[0] === this.addGeoJson.properties.subCategory)
+            this.addGeoJson.icon.color = subCategory.color
+          } else {
+            this.addGeoJson.icon.color = category[0].color // if no sub categories
+          }
+        }
+        const convertCoordinate = (data) => {
+          let indexLng = data.indexOf("'")
+          let degres = data.slice(0, indexLng)
+          let minute = data.slice(indexLng + 1) / 60
+          return parseFloat(degres) + parseFloat(minute)
+        }
+        colorGeoJson()
+        
         let getCoordinates = []
         if (this.coordinates.length === 1) {
           // si je n'ai qu'une coordonnée alors je ne veux enregistrer qu'un seul point
@@ -220,12 +172,6 @@ export default {
         } else if (this.coordinates.length === 0) {
           // je saisis manuellement les coordonnées
           // convertir les coordonnées en degres/minute en lng/lat
-          function convertCoordinate(data) {
-            let indexLng = data.indexOf("'")
-            let degres = data.slice(0, indexLng)
-            let minute = data.slice(indexLng + 1) / 60
-            return parseFloat(degres) + parseFloat(minute)
-          }
           getCoordinates.push(convertCoordinate(this.longitude))
           getCoordinates.push(convertCoordinate(this.latitude))
         } else {
@@ -252,54 +198,6 @@ export default {
         resetCoordinates: true,
       })
     },
-    /* addCoordinate() {
-        this.$emit('send-data', {
-            show: false,
-        })
-    } */
-  },
-  mounted() {
-    const requestIndexedDB = window.indexedDB.open('Map_Database', 1)
-    requestIndexedDB.onerror = (event) => {
-      console.log(event)
-    }
-
-    // la requete
-    requestIndexedDB.onsuccess = (event) => {
-      let db = event.target.result
-      let transaction = db.transaction('markers', 'readwrite')
-      let store = transaction.objectStore('markers') // store = table in sql
-      let idQuery = store.openCursor() // recherche sur l'id
-      idQuery.onsuccess = (event) => {
-        var cursor = event.target.result
-        if (cursor) {
-          switch (cursor.value.type) {
-            case 'Point':
-              this.itemsCategory.point.push(cursor.value.category)
-              this.itemsSubcategory.point.push(cursor.value.subCategory)
-              this.itemsColor.point.type.push(cursor.value.icon)
-              this.itemsColor.point.color.push(cursor.value.color)
-              break
-            case 'MultiLineString':
-              this.itemsCategory.multiLineString.push(cursor.value.category)
-              this.itemsSubcategory.multiLineString.push(cursor.value.subCategory)
-              this.itemsColor.multiLineString.push(cursor.value.color)
-              break
-            case 'Polygon':
-              this.itemsCategory.polygon.push(cursor.value.category)
-              this.itemsSubcategory.polygon.push(cursor.value.subCategory)
-              this.itemsColor.polygon.push(cursor.value.color)
-              break
-          }
-          cursor.continue()
-        }
-      }
-
-      // close db at the end of transaction
-      transaction.oncomplete = () => {
-        db.close()
-      }
-    }
   },
 }
 </script>
