@@ -80,7 +80,7 @@
                       <v-divider></v-divider>
                       <v-card-actions>
                         <v-spacer></v-spacer>
-                        <v-btn color="primary" outlined @click="dialog = false">
+                        <v-btn color="teal" outlined @click="dialog = false">
                           Close
                         </v-btn>
                       </v-card-actions>
@@ -88,7 +88,7 @@
                   </v-dialog>
                 </v-col>
                 <v-col cols="11" class="mt-n-5">
-                  <v-btn color="primary" @click="validate"> Next </v-btn>
+                  <v-btn color="teal" @click="validate"> Next </v-btn>
                   <v-icon class="ml-3" large v-if="newIcon.icon">
                     mdi-{{ newIcon.icon }}
                   </v-icon>
@@ -146,7 +146,7 @@
               
 
               <v-col cols="11">
-                <v-btn color="primary" @click="e1 = 3"> Pick colors </v-btn>
+                <v-btn color="teal" @click="e1 = 3"> Pick colors </v-btn>
                 <v-btn text @click="e1 = 1" outlined color="secondary">
                   back
                 </v-btn>
@@ -204,20 +204,19 @@
                 <span>Pick the color</span>
               </v-col>
 
-              <v-row class="px-5">
-                <v-col
-                  cols="1"
-                  class="mx-1"
-                  v-for="(i, l) in swatches"
-                  :key="l"
-                >
-                  <v-chip :color="i" label @click="applyColor(i)"> </v-chip>
-                </v-col>
-              </v-row>
+              <v-col cols="11">
+                <v-color-picker
+                  v-model="colorSelected"
+                  dot-size="25"
+                  hide-inputs
+                  @input="applyColor"
+                ></v-color-picker>
+              </v-col>
+
 
               <v-col cols="11" sm="7" class="mt-2">
-                <v-btn color="primary" @click="addNewMarker">Valid</v-btn>
-                <v-btn color="warning" @click="resetMarker">Reset</v-btn>
+                <v-btn color="teal" @click="addNewMarker">Valid</v-btn>
+                <v-btn color="warning" outlined @click="resetMarker">Reset</v-btn>
               </v-col>
               <v-col cols="11" sm="4">
                 <v-btn text @click="e1 = 2" outlined color="secondary">
@@ -265,6 +264,7 @@ export default {
       },
       rulesCategory: [(v) => v.length >= 2 || 'Mininum 2 characters'],
       typeSelection: ['Point', 'Area', 'Line'],
+      colorSelected: '',
       newIcon: {
         type: 'Point',
         category: 'sac',
@@ -383,8 +383,8 @@ export default {
       $event.target.classList.add('animationRotate')      
       this.iterateOfColorArray = l
     },
-    applyColor(c) {
-      this.newIcon.color.splice(this.iterateOfColorArray, 1, c)
+    applyColor() {
+      this.newIcon.color.splice(this.iterateOfColorArray, 1, this.colorSelected)
     },
     addNewMarker() {
       try {
