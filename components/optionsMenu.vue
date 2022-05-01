@@ -102,9 +102,13 @@ export default {
   },
   methods: {
     async resetApp() {
-      this.resetDB()
-      localStorage.removeItem('APIGeoMap')
-      location.reload()
+      let result = await this.resetDB() // mixin
+      if (result) {
+        localStorage.removeItem('APIGeoMap')
+        location.reload()
+      } else {
+        console.log('promise rejected');
+      }
     },
     removeGeoJson() {
       localStorage.removeItem('APIGeoMap')

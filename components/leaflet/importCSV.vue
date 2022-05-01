@@ -141,25 +141,26 @@ export default {
     async validImport() {
       try {
         // reinitialise la base de donnée marker
-        this.resetDB()
+        let result = await this.resetDB() // mixin
+        if (result) {
+          const requestIndexedDB = window.indexedDB.open('Map_Database', 1)
+          requestIndexedDB.onsuccess = (event) => {
+            var db = event.target.result
 
-        const requestIndexedDB = window.indexedDB.open('Map_Database', 1)
-        requestIndexedDB.onsuccess = (event) => {
-          var db = event.target.result
+            var transaction = db.transaction('markers', 'readwrite')
+            const store = transaction.objectStore('markers')
+            this.newMarker.forEach((element) => {
+              store.add(element)
+            })
 
-          var transaction = db.transaction('markers', 'readwrite')
-          const store = transaction.objectStore('markers')
-          this.newMarker.forEach((element) => {
-            store.add(element)
-          })
-
-          console.log('markers added to the store')
-          transaction.oncomplete = () => {
-            db.close()
+            console.log('markers added to the store')
+            transaction.oncomplete = () => {
+              db.close()
+            }
           }
+          localStorage.setItem('APIGeoMap', JSON.stringify(this.objetData))
+          this.$router.push('/myData')
         }
-        localStorage.setItem('APIGeoMap', JSON.stringify(this.objetData))
-        this.$router.push('/myData')
       } catch (error) {
         console.log(error)
       }

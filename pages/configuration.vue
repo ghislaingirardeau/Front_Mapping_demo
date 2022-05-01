@@ -38,8 +38,8 @@ export default {
     modalMarkerResponse(payload) {
       this.showModal = payload.message
     },
-    deleteDB() {
-      this.resetDB()
+    async deleteDB() {
+      await this.resetDB()
     },
   },
   mounted() {
