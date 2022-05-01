@@ -120,20 +120,20 @@ export default {
       ...mapState(['markers']),
       // return Array with category from DB depending on type GeoJson
     category() {
-      const arrayCategory = (geoJsonType) => {
-        let arrayCategory = new Set(this.markers.filter(elt => elt.type === geoJsonType).map(i => i.category)) 
-        return [...arrayCategory]
+      const markerCategories = (geoJsonType) => {
+        let markerCategories = new Set(this.markers.filter(elt => elt.type === geoJsonType).map(i => i.category)) 
+        return [...markerCategories]
       }
       if (this.coordinates.length === 1 || this.coordinates.length === 0) {
         this.addGeoJson.geometry.type = 'Point'
-        return arrayCategory(this.addGeoJson.geometry.type)
+        return markerCategories(this.addGeoJson.geometry.type)
       } else {
         switch (this.addGeoJson.geometry.type) {
           case 'Polygon':
-            return arrayCategory(this.addGeoJson.geometry.type)
+            return markerCategories(this.addGeoJson.geometry.type)
             break
           case 'MultiLineString':
-            return arrayCategory(this.addGeoJson.geometry.type)
+            return markerCategories(this.addGeoJson.geometry.type)
             break
         }
       }
@@ -149,7 +149,7 @@ export default {
     validate() {
       if (this.$refs.form.validate()) {
         const colorGeoJson = () => {
-              let category = this.markers.filter(elt => elt.category === this.addGeoJson.properties.category)
+          let category = this.markers.filter(elt => elt.category === this.addGeoJson.properties.category)
           if (category.length > 1) {
             let subCategory = category.find(elt => elt.subCategory[0] === this.addGeoJson.properties.subCategory)
             this.addGeoJson.icon.color = subCategory.color
