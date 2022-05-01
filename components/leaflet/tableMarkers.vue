@@ -104,7 +104,7 @@ export default {
       editItem: {
         id: '',
         subCategory: '',
-        color: { r: 255, g: 255, b: 255 },
+        color: '',
       },
     }
   },
@@ -126,10 +126,9 @@ export default {
       this.showModal = !this.showModal
     },
     async updateItem() {
-      let colorToRgb = `rgb(${this.editItem.color.r}, ${this.editItem.color.g}, ${this.editItem.color.b})`
 
       const updateCursor = (cursor, indexColor = 0, indexSubCategory = undefined) => {
-        cursor.value.color.splice(indexColor, 1, colorToRgb)
+        cursor.value.color.splice(indexColor, 1, this.editItem.color)
         // update sub only if not empty = can be empty if update a category
         indexSubCategory != undefined ? cursor.value.subCategory.splice(indexSubCategory, 1, this.editItem.subCategory) : '' 
         const request = cursor.update(cursor.value)
@@ -142,9 +141,9 @@ export default {
             if (geoFromLocal[this.editItem.id.category]) {
               geoFromLocal[this.editItem.id.category].forEach(element => {
                 if(element.properties.subCategory === '' || !element.properties.subCategory) {
-                  element.icon.color.splice(0, 1, colorToRgb)
+                  element.icon.color.splice(0, 1, this.editItem.color)
                 } else if(element.properties.subCategory === this.editItem.id.subCategory[0]) {
-                  element.icon.color.splice(0, 1, colorToRgb)
+                  element.icon.color.splice(0, 1, this.editItem.color)
                   element.properties.subCategory = this.editItem.subCategory
                 }
               });
