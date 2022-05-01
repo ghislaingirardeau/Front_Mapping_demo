@@ -57,7 +57,7 @@ export default {
             name: element.name,
             popupContent: element.popupContent,
             category: element.category,
-            subCategory: [element.subCategory],
+            subCategory: element.subCategory,
           },
           geometry: {
             type: element.type,

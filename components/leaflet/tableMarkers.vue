@@ -117,9 +117,11 @@ export default {
     },
     openEditor(e) {
       console.log(e.subCategory.length, e)
-      e.subCategory.length > 0
-        ? (this.rulesEditSub = [(v) => v.length > 2 || 'minimum 2 characters'])
-        : (this.rulesEditSub = [true])
+      if (e.subCategory.length > 0 && e.subCategory[0].length > 1) {
+        this.rulesEditSub = [(v) => v.length > 2 || 'minimum 2 characters']
+      } else {
+        this.rulesEditSub = [true]
+      }
       this.editItem.id = e
       this.showModal = !this.showModal
     },
@@ -133,18 +135,18 @@ export default {
         const request = cursor.update(cursor.value)
         request.onsuccess = () => {
           this.$store.dispatch('loadMarkers')
+
           // update data local storage
           let geoFromLocal = JSON.parse(localStorage.getItem('APIGeoMap'))
           const updateGeoFromLocal = () => {
             if (geoFromLocal[this.editItem.id.category]) {
               geoFromLocal[this.editItem.id.category].forEach(element => {
-                if(element.properties.subCategory === '' || !element.properties.subCategory) { //if subcat do not exist
-                  element.icon.color[0] = colorToRgb
+                if(element.properties.subCategory === '' || !element.properties.subCategory) {
+                  element.icon.color.splice(0, 1, colorToRgb)
                 } else if(element.properties.subCategory === this.editItem.id.subCategory[0]) {
-                  element.icon.color = colorToRgb
+                  element.icon.color.splice(0, 1, colorToRgb)
                   element.properties.subCategory = this.editItem.subCategory
                 }
-                
               });
             }
           }
