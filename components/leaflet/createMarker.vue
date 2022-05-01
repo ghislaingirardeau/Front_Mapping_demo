@@ -214,11 +214,11 @@
               </v-col>
 
 
-              <v-col cols="11" sm="7" class="mt-2">
+              <v-col cols="11" sm="7" class="mt-sm-2">
                 <v-btn color="teal" @click="addNewMarker">Valid</v-btn>
                 <v-btn color="warning" outlined @click="resetMarker">Reset</v-btn>
               </v-col>
-              <v-col cols="11" sm="4">
+              <v-col cols="11" sm="4" class="mt-sm-2">
                 <v-btn text @click="e1 = 2" outlined color="secondary">
                   back
                 </v-btn>
