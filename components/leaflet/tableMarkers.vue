@@ -116,7 +116,6 @@ export default {
       this.showModal = payload.message
     },
     openEditor(e) {
-      console.log(e.subCategory.length, e)
       if (e.subCategory.length > 0 && e.subCategory[0].length > 1) {
         this.rulesEditSub = [(v) => v.length > 2 || 'minimum 2 characters']
       } else {
@@ -135,22 +134,27 @@ export default {
         request.onsuccess = () => {
           this.$store.dispatch('loadMarkers')
 
-          // update data local storage
-          let geoFromLocal = JSON.parse(localStorage.getItem('APIGeoMap'))
-          const updateGeoFromLocal = () => {
-            if (geoFromLocal[this.editItem.id.category]) {
-              geoFromLocal[this.editItem.id.category].forEach(element => {
-                if(element.properties.subCategory === '' || !element.properties.subCategory) {
-                  element.icon.color.splice(0, 1, this.editItem.color)
-                } else if(element.properties.subCategory === this.editItem.id.subCategory[0]) {
-                  element.icon.color.splice(0, 1, this.editItem.color)
-                  element.properties.subCategory = this.editItem.subCategory
-                }
-              });
+          try {
+            // update data local storage
+            let geoFromLocal = JSON.parse(localStorage.getItem('APIGeoMap'))
+            const updateGeoFromLocal = () => {
+              if (geoFromLocal[this.editItem.id.category]) {
+                geoFromLocal[this.editItem.id.category].forEach(element => {
+                  if(element.properties.subCategory === '' || !element.properties.subCategory) {
+                    element.icon.color.splice(0, 1, this.editItem.color)
+                  } else if(element.properties.subCategory === this.editItem.id.subCategory[0]) {
+                    element.icon.color.splice(0, 1, this.editItem.color)
+                    element.properties.subCategory = this.editItem.subCategory
+                  }
+                });
+              }
             }
+            updateGeoFromLocal()
+            localStorage.setItem('APIGeoMap', JSON.stringify(geoFromLocal))
+          } catch (error) {
+            console.log(error, 'error on localstorage data update');
           }
-          updateGeoFromLocal()
-          localStorage.setItem('APIGeoMap', JSON.stringify(geoFromLocal))
+
         }
       }
       const updateDB = (e) => {

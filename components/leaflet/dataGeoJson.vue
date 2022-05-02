@@ -1,6 +1,5 @@
 <template>
   <v-form ref="form" v-model="valid" lazy-validation>
-    {{markers}}
     <v-select
       v-if="coordinates.length > 1"
       v-model="addGeoJson.geometry.type"
