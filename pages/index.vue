@@ -17,7 +17,7 @@
           @send-data="getData"
           :coordinates="coordinates"
         />
-        <optionsMenu v-if="modalDatas.showSetting" :map="map" />
+        <optionsMenu v-if="modalDatas.showSetting" :map="map" @send-measure="measureActivate" />
         <printOptions v-if="showPrintOption" @send-modal="printResponse" />
         <p v-if="modalDatas.modalMessage">{{ modalDatas.modalMessage }}</p>
       </template>
@@ -94,6 +94,7 @@ export default {
       modalTitle: false,
       modalMessage: false,
     },
+    measureActive: false,
     //modal Markers
     showModalMarker: false,
     // print
@@ -107,6 +108,7 @@ export default {
     dynamicLayerGroup: {},
     propertiesNames: [],
     controlLayers: undefined,
+    //test distance
     distance: [],
   }),
   computed: {
@@ -121,12 +123,16 @@ export default {
         return 'Waiting for position...'
       }
     },
-    hubDistance() {
+    /* hubDistance() {
       let meters = this.map.distance(this.distance[0], this.distance[1])
       return meters
-    },
+    }, */
   },
   methods: {
+    measureActivate(payload) {
+      this.measureActive = payload.measure
+      this.modalDatas.showModal = false
+    },
     closeTuto(payload) {
       this.showTutorial = payload.message
     },
@@ -206,24 +212,38 @@ export default {
       let testClick = (e) => {
         // TEST TO MODIFY DIRECTLY HERE !!!!!!!!!
         var layer = e.target
-        if (this.distance.length < 2) {
+        /* if (this.distance.length < 2) {
           this.distance.push(layer.feature.geometry.coordinates)
         } else {
           this.distance = []
           this.distance.push(layer.feature.geometry.coordinates)
-        }
+        } */
       }
 
-      function onEachFeature(feature, layer) {
+      const onEachFeature = async (feature, layer) => {
         // pour faire apparaitre le popup du marker si popupContent est defini
-        if (feature.properties && feature.properties.popupContent) {
-          layer.bindPopup(feature.properties.popupContent)
+        const createLayer = (params) => {
+          return new Promise((resolve, reject) => {
+            if (feature.properties && feature.properties.popupContent) {
+              layer.bindPopup(feature.properties.popupContent)
+            }
+            layer.on({
+              mouseover: showPopupMarker,
+              mouseout: hidePopupMarker,
+              dblclick: testClick,
+            })
+            resolve(true)
+          });
         }
-        layer.on({
-          mouseover: showPopupMarker,
-          mouseout: hidePopupMarker,
-          dblclick: testClick,
-        })
+        let response = await createLayer
+        if(response) { // dynamic show of layer if it's activated or not
+          if (
+            layer instanceof L.Polygon ||
+            (layer instanceof L.Path && layer.feature)
+          ) {
+            this.measureActive ? layer.showMeasurements() : layer.hideMeasurements()
+          }
+        }
       }
 
       // FUNCTION RETURN ICON HOUSE SVG DEPENDING ON COLOR PARAMS

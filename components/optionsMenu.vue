@@ -145,12 +145,19 @@ export default {
           if (layer._measurementLayer) {
             layer.hideMeasurements()
             this.actions[3].title = 'Show measure'
+            this.$emit('send-measure', {
+              measure : false
+            })
           } else {
             layer.showMeasurements()
             this.actions[3].title = 'Hide measure'
+            this.$emit('send-measure', {
+              measure : true
+            })
           }
         }
       })
+      
     },
   },
   mounted () {
