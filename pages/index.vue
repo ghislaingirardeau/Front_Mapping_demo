@@ -24,61 +24,8 @@
     </modalCustom>
 
     <!-- MODAL TUTORIAL -->
-    <div id="helpModal" class="modal_help">
-      <div class="modal_action">
-        <span class="modal_action-close">&times;</span>
-        <button
-          class="modal_action-btn"
-          @click="changeTuto"
-        >
-          {{ tutoPage === 4 ? 'End' : 'Next' }}
-        </button>
-      </div>
-      <div class="modal_tuto">
-        <h1 class="modal_tuto-title">Steps {{tutoPage}}</h1>
-        <div
-          class="modal_tuto-marker"
-          v-if="tutoPage === 1"
-        >
-        <h2>&#60-- Create a marker</h2>
-        <p>The marker will also be your layer name, you can add sub category to your layer</p>
-        </div>
-        <div
-          class="modal_tuto-options"
-          v-if="tutoPage === 2"
-        >
-        <h2>&#60-- Settings & Options</h2>
-        <p>Manage your datas, markers. Export/Import to CSV file. Options : Reset and show measure</p>
-        </div>
+    <theTutorial :showTutorial="showTutorial" @send-tuto="closeTuto"/>
 
-        <div
-          class="modal_tuto-actions"
-          v-if="tutoPage === 3"
-        >
-          <div v-for="(item, l) in tutorialsAction" :key="l">
-            <span class="modal_tuto-actions-title">
-              {{item.title}}
-            </span>
-            <p>
-              {{item.text}}
-            </p>
-
-          </div>
-        </div>
-        <div
-          class="modal_tuto-data"
-          v-if="tutoPage === 4"
-        >
-          <p
-            v-for="item in tutorialsData"
-            :key="item.message"
-            :style="{ 'margin-bottom': item.margin }"
-          >
-            {{ item.message }}
-          </p>
-        </div>
-      </div>
-    </div>
     <!-- MODAL INFORMATIONS -->
     <div class="hub__informations" v-if="hubPosition">
       {{ hubCoordinate }}
@@ -138,35 +85,7 @@ export default {
     hubPosition: undefined,
     layerGeoJson: undefined,
     // tutorial
-    tutorialsAction: [
-      {
-        title: 'My location -->',
-        text: 'Wait and find my position',
-      },
-      {
-        title: 'Track me -->',
-        text: 'Track my position',
-     },
-      {
-        title: 'Add manualy -->',
-        text: 'Add one or multiple point',
-      },
-    ],
-    tutorialsData: [
-      {
-        message: '<-- Show legend',
-        margin: '22px',
-      },
-      {
-        message: '<-- Print or save as PDF',
-        margin: '22px',
-      },
-      {
-        message: '<-- Save datas temporaly',
-        margin: '40px',
-      },
-    ],
-    tutoPage: 1,
+    showTutorial : false,
     // modal
     modalDatas: {
       showModal: false,
@@ -208,28 +127,11 @@ export default {
     },
   },
   methods: {
-    changeTuto() {
-      this.tutoPage === 4 ? (this.tutoPage = 1) : this.tutoPage++
+    closeTuto(payload) {
+      this.showTutorial = payload.message
     },
     modalMarkerResponse(payload) {
       this.showModalMarker = payload.message
-    },
-    helpModal() {
-      // affiche un message lors du click
-      var modal = document.getElementById('helpModal')
-      var span = document.getElementsByClassName('modal_action-close')[0]
-      modal.style.display = 'block'
-      const resetModal = (display) => {
-        display.style.display = 'none'
-      }
-      span.onclick = () => {
-        resetModal(modal)
-      }
-      window.onclick = (event) => {
-        if (event.target == modal) {
-          resetModal(modal)
-        }
-      }
     },
     modalResponse(payload) {
       Object.keys(this.modalDatas).forEach((element) => {
@@ -593,7 +495,7 @@ export default {
     } else {
       // if no data in local storage, no overlay and open the tutorials
       this.propertiesNames = []
-      this.helpModal()
+      this.showTutorial = !this.showTutorial
     }
 
     const layersToShow = () => {
@@ -664,7 +566,7 @@ export default {
       events: {
         click: async (data) => {
           if (data.target.getAttribute('id') === 'btn-tutorial') {
-            this.helpModal()
+            this.showTutorial = !this.showTutorial
           } else if (data.target.getAttribute('id') === 'btn-menu') {
             this.saveTemporaly()
             this.modalDatas.showModal = true
@@ -977,99 +879,6 @@ export default {
   }
 }
 
-// STYLE THE MODAL
-/* The Modal (background) */
-.modal_help {
-  display: none; /* Hidden by default */
-  position: fixed; /* Stay in place */
-  z-index: 2; /* Sit on top */
-  left: 0;
-  top: 0;
-  width: 100%; /* Full width */
-  height: 100%; /* Full height */
-  overflow: auto; /* Enable scroll if needed */
-  background-color: rgb(0, 0, 0); /* Fallback color */
-  background-color: rgba(0, 0, 0, 0.6); /* Black w/ opacity */
-  font-family: 'Architects Daughter', cursive;
-}
-
-/* Modal Content/Box */
-
-.modal_tuto {
-  position: relative;
-  &-title {
-    position: absolute;
-    text-align: left;
-    left: 80px;
-    top: 10px;
-    color: rgb(255, 255, 255);
-    width: 40%; /* Could be more or less, depending on screen size */
-  }
-  &-marker {
-    position: absolute;
-    text-align: left;
-    left: 80px;
-    top: 250px;
-    color: rgb(255, 255, 255);
-    width: 75%; /* Could be more or less, depending on screen size */
-  }
-  &-options {
-    position: absolute;
-    text-align: left;
-    left: 80px;
-    top: 65px;
-    color: rgb(255, 255, 255);
-    width: 75%; /* Could be more or less, depending on screen size */
-  }
-  &-actions {
-    position: absolute;
-    text-align: right;
-    right: 80px;
-    top: 85px;
-    color: rgb(255, 255, 255);
-    width: 60%; /* Could be more or less, depending on screen size */
-    &-title {
-      font-size: 20px;
-      font-weight: bold;
-    }
-  }
-  &-data {
-    position: absolute;
-    text-align: left;
-    left: 80px;
-    top: 110px;
-    color: rgb(255, 255, 255);
-    width: 60%; /* Could be more or less, depending on screen size */
-  }
-}
-
-/* The Close Button */
-.modal_action {
-  &-close {
-    position: absolute;
-    left: 20px;
-    top: -10px;
-    width: 90%;
-    color: rgb(255, 255, 255);
-    font-size: 62px;
-    font-weight: bold;
-    &:hover,
-    &:focus {
-      color: rgb(151, 151, 151);
-      text-decoration: none;
-      cursor: pointer;
-    }
-  }
-  &-btn {
-    position: absolute;
-    right: 5%;
-    top: 10px;
-    font-size: 24px;
-    padding: 8px 10px;
-    border: 2px white solid;
-    border-radius: 4px 4px;
-  }
-}
 .print__block {
   display: none;
   &--title {
@@ -1078,26 +887,6 @@ export default {
 }
 
 @media screen and (min-width: 990px) {
-  .modal_tuto {
-    &-actions {
-      right: 160px;
-    }
-    &-title {
-      left: 170px;
-    }
-    &-marker {
-      left: 170px;
-    }
-    &-options {
-      left: 170px;
-    }
-    &-data {
-      left: 170px;
-    }
-  }
-  .modal_action {
-    padding-left: 100px;
-  }
   .btn-map {
     &--action {
       &:hover {
@@ -1113,26 +902,6 @@ export default {
       &:hover {
         border: 2px solid white;
       }
-    }
-  }
-}
-
-@media screen and (min-width: 1400px) {
-  .modal_tuto {
-    &-actions {
-      right: 280px;
-    }
-    &-title {
-      left: 280px;
-    }
-    &-marker {
-      left: 280px;
-    }
-    &-options {
-      left: 280px;
-    }
-    &-data {
-      left: 280px;
     }
   }
 }
