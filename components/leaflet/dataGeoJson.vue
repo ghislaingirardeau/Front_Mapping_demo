@@ -2,7 +2,7 @@
   <v-form ref="form" v-model="valid" lazy-validation>
     <v-select
       v-if="coordinates.length > 1"
-      v-model="addGeoJson.geometry.type"
+      v-model="typeSelection"
       :items="geometryTypes"
       :rules="[(v) => !!v || 'Item is required']"
       label="Area type"
@@ -81,9 +81,10 @@ import { mapState } from 'vuex'
 export default {
   data: () => ({
     valid: true,
-    geometryTypes: ['Polygon', 'MultiLineString'],
+    geometryTypes: ['Area', 'Line'],
     latitude: "13'44.4745",
     longitude: "106'58.6615",
+    typeSelection: '',
     addGeoJson: {
       type: 'Feature',
       properties: {
@@ -125,13 +126,16 @@ export default {
       }
       if (this.coordinates.length === 1 || this.coordinates.length === 0) {
         this.addGeoJson.geometry.type = 'Point'
+        this.typeSelection = 'Point'
         return markerCategories(this.addGeoJson.geometry.type)
       } else {
-        switch (this.addGeoJson.geometry.type) {
-          case 'Polygon':
+        switch (this.typeSelection) {
+          case 'Area':
+            this.addGeoJson.geometry.type = 'Polygon'
             return markerCategories(this.addGeoJson.geometry.type)
             break
-          case 'MultiLineString':
+          case 'Line':
+            this.addGeoJson.geometry.type = 'MultiLineString'
             return markerCategories(this.addGeoJson.geometry.type)
             break
         }
