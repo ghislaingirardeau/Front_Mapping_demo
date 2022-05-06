@@ -9,48 +9,12 @@
 
     <h2 v-if="user">The user log : {{ user.displayName }}</h2>
 
-    <v-btn color="teal" @click="signType = !signType">{{signType ? 'Login' : 'Sign'}}</v-btn>
+    <v-btn color="teal" @click="signType = !signType">{{signType ? 'Sign' : 'Login'}}</v-btn>
 
     <authForm :login="signType" :doThis="signType ? loginUser : createUser"/>
+    <p v-if="errorMessage">{{errorMessage}}</p>
 
-    <!-- REGISTER BLOCK -->
-    <!-- <v-form ref="form" v-model="valid" lazy-validation>
-      <v-text-field
-        v-model="formData.displayName"
-        label="name"
-        required
-      ></v-text-field>
-      <v-text-field
-        v-model="formData.email"
-        label="email"
-        required
-      ></v-text-field>
-      <v-text-field
-        v-model="formData.password"
-        type="password"
-        label="email"
-        required
-      ></v-text-field>
-      <v-btn color="teal" @click="createUser">Register</v-btn>
-    </v-form> -->
-
-    <!-- LOGIN BLOCK -->
-    <!-- <v-form ref="form" v-model="valid" lazy-validation>
-      <v-text-field
-        v-model="formData.email"
-        label="email"
-        required
-      ></v-text-field>
-      <v-text-field
-        v-model="formData.password"
-        type="password"
-        label="email"
-        required
-      ></v-text-field>
-      <v-btn color="teal" @click="loginUser">Login</v-btn>
-    </v-form> -->
-
-    <div class="mt-3">
+    <div class="mt-3" v-if="user">
       <v-btn @click="logoutUser" color="teal">logout</v-btn>
     </div>
   </div>
@@ -67,17 +31,17 @@ export default {
     }
   },
   computed: {
-    ...mapState(['user']),
+    ...mapState(['user', 'errorMessage']),
   },
   methods: {
     ...mapActions(['currentUser', 'createNewUser']),
 
     // NUXT FIREBASE AUTH
-    async createUser() {
-      this.createNewUser(this.formData)
+    async createUser(data) {
+      this.createNewUser(data)
     },
-    async loginUser() {
-      this.currentUser(this.formData)
+    async loginUser(data) {
+      this.currentUser(data)
     },
     async logoutUser() {
       try {

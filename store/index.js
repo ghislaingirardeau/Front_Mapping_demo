@@ -1,7 +1,9 @@
 // holds your root state
 export const state = () => ({
     user: undefined,
+    errorMessage: undefined,
     markers: [],
+    test: 'je suis in the state'
 })
 
 // contains your actions
@@ -29,12 +31,12 @@ export const actions = {
                         console.log("Faile Profile updated ");
                     });
             }
-        } catch (e) {
-            console.log("Error on register");
+        } catch (error) {
+            context.commit('ERROR_REPONSE', error.message)
         }
 
     },
-    async currentUser(context, formData) {
+    async currentUser({ commit, state }, formData) {
         try {
             let userLog = await this.$fire.auth.signInWithEmailAndPassword(
                 formData.email,
@@ -47,7 +49,7 @@ export const actions = {
                     console.log(user, uid);
                 } else {
                     console.log("User is signed out");
-                    context.commit('USER_SIGNOUT')
+                    commit('USER_SIGNOUT')
                 }
             });
             console.log(
@@ -55,9 +57,10 @@ export const actions = {
                 "add the redirect log page when log",
                 userLog.user
             );
-            context.commit('USER_FECTH', userLog.user)
-        } catch (e) {
+            commit('USER_FECTH', userLog.user)
+        } catch (error) {
             console.log("This email or password doesn't exist");
+            commit('ERROR_REPONSE', error.message)
         }
     },
     loadMarkers(context) {
@@ -101,14 +104,14 @@ export const actions = {
                 } else {
                     context.commit('SAVE_MARKERS', results);
                     console.log('No more entries!')
-                    
+
                 }
             }
             transaction.oncomplete = () => {
                 db.close()
             }
         }
-        
+
     },
 }
 // contains your mutations
@@ -126,5 +129,8 @@ export const mutations = {
     },
     USER_SIGNOUT(state) {
         state.user = undefined
+    },
+    ERROR_REPONSE(state, message) {
+        state.errorMessage = message
     }
 }

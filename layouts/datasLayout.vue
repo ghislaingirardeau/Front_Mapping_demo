@@ -68,7 +68,13 @@ export default {
           icon: 'mdi-database-marker',
           title: 'Manage My Markers',
           to: '/configuration'
+        },
+        {
+          icon: 'mdi-database-marker',
+          title: 'Authentification',
+          to: '/firebase'
         }
+
       ],
       miniVariant: false,
       right: true,

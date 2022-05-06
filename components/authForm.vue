@@ -8,6 +8,7 @@
     ></v-text-field>
     <v-text-field
       v-model="formData.email"
+      :rules="ruleEmail"
       label="email"
       required
     ></v-text-field>
@@ -17,7 +18,7 @@
       label="email"
       required
     ></v-text-field>
-    <v-btn color="teal" @click="doThis">
+    <v-btn color="teal" @click="sendDataForm">
       {{ login ? 'Login' : 'Register' }}
     </v-btn>
   </v-form>
@@ -28,6 +29,7 @@ export default {
   data() {
     return {
       valid: true,
+      ruleEmail: [(v) => v.length > 4 || 'email too short'],
       formData: {
         email: 'ghislain@mail.com',
         password: 'qwerty1',
@@ -38,6 +40,11 @@ export default {
   props: {
     login: Boolean,
     doThis: Function,
+  },
+  methods: {
+      sendDataForm() {
+          this.$refs.form.validate() ? this.doThis(this.formData) : console.log('email too short');
+      }
   },
 }
 </script>
