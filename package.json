@@ -17,7 +17,6 @@
     "leaflet": "^1.7.1",
     "leaflet.browser.print": "^1.0.6",
     "nuxt": "^2.15.7",
-    "vuelayers": "^0.11.37",
     "vuetify": "^2.5.5"
   },
   "devDependencies": {
