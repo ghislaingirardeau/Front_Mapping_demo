@@ -120,7 +120,7 @@ export default {
           crd[0]
         }`
       } else {
-        return 'Waiting for position...'
+        return 'Waiting for position... Accuracy low'
       }
     },
     /* hubDistance() {
