@@ -9,55 +9,72 @@ export const state = () => ({
 // contains your actions
 export const actions = {
     // FIREBASE PAGE
-    async createNewUser(context, formData) {
+    async createNewUser({ commit, state }, formData) {
         try {
             const newUser = await this.$fire.auth.createUserWithEmailAndPassword(
                 formData.email,
                 formData.password,
             )
             if (newUser) {
-                console.log(
-                    "Register success",
-                );
+                console.log('add name');
                 await this.$fire.auth.currentUser
                     .updateProfile({
                         displayName: formData.displayName,
                     })
-                    .then(() => {
-                        console.log("Profile updated!");
-                        context.commit('USER_FECTH', newUser.user)
+                const authListener = await this.$fire.auth.onAuthStateChanged((user) => {
+                    if (user) {
+                        const uid = user.uid;
+                        console.log(user, uid);
+                    } else {
+                        console.log("User is signed out");
+                        commit('USER_SIGNOUT')
+                    }
+                });
+                if (authListener) {
+                    console.log('ecouteur ok');
+                    commit('USER_FECTH', newUser.user)
+
+                    const messageRef = this.$fire.database.ref('mapApp')
+                    const geoFromLocal = JSON.parse(localStorage.getItem("APIGeoMap"));
+                    await messageRef.child(newUser.user.uid).set({
+                        markers: state.markers,
+                        GeoJsonDatas: geoFromLocal ? geoFromLocal : ''
                     })
-                    .catch((error) => {
-                        console.log("Faile Profile updated ");
-                    });
+                    console.log('data ok')
+                }
             }
         } catch (error) {
-            context.commit('ERROR_REPONSE', error.message)
+            commit('ERROR_REPONSE', error.message)
         }
 
     },
     async currentUser({ commit, state }, formData) {
         try {
-            let userLog = await this.$fire.auth.signInWithEmailAndPassword(
+            const userLog = await this.$fire.auth.signInWithEmailAndPassword(
                 formData.email,
                 formData.password
             );
-            // LISTENER TO THE AUTH CHANGED IF STILL LOG OR NOT
-            this.$fire.auth.onAuthStateChanged((user) => {
-                if (user) {
-                    const uid = user.uid;
-                    console.log(user, uid);
-                } else {
-                    console.log("User is signed out");
-                    commit('USER_SIGNOUT')
+            if (userLog) {
+                console.log('log ok');
+                const authListener = await this.$fire.auth.onAuthStateChanged((user) => {
+                    if (user) {
+                        const uid = user.uid;
+                        console.log(user, uid);
+                    } else {
+                        console.log("User is signed out");
+                        commit('USER_SIGNOUT')
+                    }
+                });
+                if (authListener) {
+                    console.log('ecouteur ok');
+                    commit('USER_FECTH', userLog.user)
+
+                    const messageRef = this.$fire.database.ref('mapApp')
+                    // RETRIEVE DATA HERE WITH uid
+                    console.log('data ok')
                 }
-            });
-            console.log(
-                "Login success",
-                "add the redirect log page when log",
-                userLog.user
-            );
-            commit('USER_FECTH', userLog.user)
+            }
+            // LISTENER TO THE AUTH CHANGED IF STILL LOG OR NOT
         } catch (error) {
             console.log("This email or password doesn't exist");
             commit('ERROR_REPONSE', error.message)

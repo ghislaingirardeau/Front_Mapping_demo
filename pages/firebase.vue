@@ -28,6 +28,7 @@ export default {
     return {
       RLvalue: undefined,
       signType: true,
+      id: 'ID123444'
     }
   },
   computed: {
@@ -70,9 +71,9 @@ export default {
     },
     async postRealTimeDB() {
       // CREATE A NEW DATA
-      const messageRef = this.$fire.database.ref('object')
+      const messageRef = this.$fire.database.ref('markers')
       try {
-        await messageRef.set({
+        await messageRef.child(this.id).set({
           id: '1',
           name: 'my first object',
           content: 'object description',
@@ -83,14 +84,14 @@ export default {
       }
     },
     async updateRealTimeDB() {
-      const messageRef = this.$fire.database.ref('object')
+      const messageRef = this.$fire.database.ref('markers')
       try {
         // UPDATE ONLY ONE VALUE INSIDE THE OBJECT
         /* await messageRef.child('/update').update({
             name: 'i update only name',
           }) */
         // UPDATE A DATA / WILL CREATE ONE IF DOESN'T EXIST YET
-        await messageRef.child('/update').update({
+        await messageRef.child(this.id).update({
           id: '4',
           name: 'MY NEW UPDATE',
           content: 'update description',
