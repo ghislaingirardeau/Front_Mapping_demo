@@ -1,10 +1,65 @@
 // holds your root state
 export const state = () => ({
+    user: undefined,
     markers: [],
 })
 
 // contains your actions
 export const actions = {
+    // FIREBASE PAGE
+    async createNewUser(context, formData) {
+        try {
+            const newUser = await this.$fire.auth.createUserWithEmailAndPassword(
+                formData.email,
+                formData.password,
+            )
+            if (newUser) {
+                console.log(
+                    "Register success",
+                );
+                await this.$fire.auth.currentUser
+                    .updateProfile({
+                        displayName: formData.displayName,
+                    })
+                    .then(() => {
+                        console.log("Profile updated!");
+                        context.commit('USER_FECTH', newUser.user)
+                    })
+                    .catch((error) => {
+                        console.log("Faile Profile updated ");
+                    });
+            }
+        } catch (e) {
+            console.log("Error on register");
+        }
+
+    },
+    async currentUser(context, formData) {
+        try {
+            let userLog = await this.$fire.auth.signInWithEmailAndPassword(
+                formData.email,
+                formData.password
+            );
+            // LISTENER TO THE AUTH CHANGED IF STILL LOG OR NOT
+            this.$fire.auth.onAuthStateChanged((user) => {
+                if (user) {
+                    const uid = user.uid;
+                    console.log(user, uid);
+                } else {
+                    console.log("User is signed out");
+                    context.commit('USER_SIGNOUT')
+                }
+            });
+            console.log(
+                "Login success",
+                "add the redirect log page when log",
+                userLog.user
+            );
+            context.commit('USER_FECTH', userLog.user)
+        } catch (e) {
+            console.log("This email or password doesn't exist");
+        }
+    },
     loadMarkers(context) {
         let results = []
         const requestIndexedDB = window.indexedDB.open('Map_Database', 1)
@@ -64,4 +119,12 @@ export const mutations = {
     RESET_MARKERS(state) {
         state.markers = [];
     },
+    // FIREBASE PAGE
+    USER_FECTH(state, authUser) {
+        const { uid, email, emailVerified, displayName } = authUser
+        state.user = { uid, email, emailVerified, displayName }
+    },
+    USER_SIGNOUT(state) {
+        state.user = undefined
+    }
 }

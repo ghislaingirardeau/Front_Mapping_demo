@@ -55,8 +55,29 @@ export default {
   modules: [
     // https://go.nuxtjs.dev/axios
     '@nuxtjs/axios',
+    [
+      '@nuxtjs/firebase',
+      {
+        config: {
+          apiKey: "AIzaSyCAdzvIYwTXrf139FyQScXbBKrR5t4fkcY",
+          authDomain: "my-database-project-1f237.firebaseapp.com",
+          projectId: "my-database-project-1f237",
+          storageBucket: "my-database-project-1f237.appspot.com",
+          messagingSenderId: "86336628395",
+          databaseURL: "https://my-database-project-1f237-default-rtdb.europe-west1.firebasedatabase.app/",
+          appId: "1:86336628395:web:eea9b92f1eea075dcbb9ee"
+        },
+        services: {
+          auth: true,
+          firestore: true,
+          database: true
+        },
+        auth: {
+          persistence: 'local', // keep auth on reload & close browser
+        }
+      }
+    ]
     
-    /* '~/modules/vueLayers', */
   ],
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
