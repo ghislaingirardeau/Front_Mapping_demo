@@ -432,7 +432,7 @@ export default {
           }
         })
       }
-      localStorage.setItem('APIGeoMap', JSON.stringify(jsonToSave))
+      localStorage.setItem('APIGeoMap', JSON.stringify({GeoJsonDatas: jsonToSave}))
       // SAVE IN FIREBASE IF USER
       if(this.user) {
         const messageRef = this.$fire.database.ref('mapApp')
@@ -504,22 +504,22 @@ export default {
     if (geoFromLocal) {
       // if there is data from a file, loaded
       try {
-        this.propertiesNames = Object.keys(geoFromLocal) // recupere le nom de chaque propriete
+        this.propertiesNames = Object.keys(geoFromLocal.GeoJsonDatas) // recupere le nom de chaque propriete
 
         this.propertiesNames.forEach((element) => {
           this.dynamicLayerGroup[element] = L.layerGroup() // creer un nouveau groupe de layer pour chaque nom
           this.createGeoJsonLayer(
-            geoFromLocal[element],
+            geoFromLocal.GeoJsonDatas[element],
             this.dynamicLayerGroup[element]
           ) // charge le array de goejsons dans le layer
           // zoom the map on the last point added coordinates
-          if (geoFromLocal[element][0].geometry.type === 'Point') {
+          if (geoFromLocal.GeoJsonDatas[element][0].geometry.type === 'Point') {
             setMapView.center = []
             setMapView.center.push(
-              geoFromLocal[element][0].geometry.coordinates[1]
+              geoFromLocal.GeoJsonDatas[element][0].geometry.coordinates[1]
             )
             setMapView.center.push(
-              geoFromLocal[element][0].geometry.coordinates[0]
+              geoFromLocal.GeoJsonDatas[element][0].geometry.coordinates[0]
             )
             setMapView.zoom = 13
           }

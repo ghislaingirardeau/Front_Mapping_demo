@@ -37,7 +37,7 @@ export const actions = {
                     const geoFromLocal = JSON.parse(localStorage.getItem("APIGeoMap"));
                     await messageRef.child(newUser.user.uid).set({
                         markers: state.markers,
-                        GeoJsonDatas: geoFromLocal ? geoFromLocal : ''
+                        GeoJsonDatas: geoFromLocal.GeoJsonDatas ? geoFromLocal.GeoJsonDatas : ''
                     })
                     console.log('data ok')
                 }
@@ -76,7 +76,7 @@ export const actions = {
                             console.log('data retrieve')
                             console.log(snapshot.val().markers)
                             commit('SAVE_MARKERS', snapshot.val().markers);
-                            localStorage.setItem('APIGeoMap', JSON.stringify(snapshot.val().GeoJsonDatas))
+                            localStorage.setItem('APIGeoMap', JSON.stringify({ GeoJsonDatas: snapshot.val().GeoJsonDatas }))
                         })
                     } catch (e) {
                         alert(e)

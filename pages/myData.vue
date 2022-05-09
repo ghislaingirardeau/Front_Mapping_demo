@@ -64,7 +64,7 @@ export default {
           }
         })
       })
-      localStorage.setItem('APIGeoMap', JSON.stringify(this.objetData))
+      localStorage.setItem('APIGeoMap', JSON.stringify({GeoJsonDatas: this.objetData}))
     }
   },
   mounted() {
@@ -72,8 +72,8 @@ export default {
       /* RECUPERE LES DONNEES SI PRESENT DANS LE LOCALSTORAGE */
       let geoFromLocal = JSON.parse(localStorage.getItem('APIGeoMap'))
 
-      for (let property in geoFromLocal) {
-        this.allDatas.push(...geoFromLocal[property])
+      for (let property in geoFromLocal.GeoJsonDatas) {
+        this.allDatas.push(...geoFromLocal.GeoJsonDatas[property])
         this.allDatas.reverse()
       }
     } catch (error) {}

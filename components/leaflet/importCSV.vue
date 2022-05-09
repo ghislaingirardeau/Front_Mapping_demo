@@ -182,7 +182,7 @@ export default {
                 db.close()
               }
             }
-            localStorage.setItem('APIGeoMap', JSON.stringify(this.objetData))
+            localStorage.setItem('APIGeoMap', JSON.stringify({GeoJsonDatas: this.objetData}))
             this.$router.push('/myData')
           }
         } catch (error) {

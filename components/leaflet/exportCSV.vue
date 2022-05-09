@@ -1,30 +1,30 @@
 <template>
-    <div>
-      <p>Export to CSV file, type the new file name to download it</p>
-      <p v-if="errorMessage">
-        {{ errorMessage }}
-      </p>
-      
-      <v-form v-else ref="form" v-model="valid" lazy-validation>
-          <v-text-field
-            v-model="fileName"
-            :counter="20"
-            :rules="fileNameRules"
-            label="File name"
-            required
-          ></v-text-field>
-      </v-form>
-        <v-spacer></v-spacer>
-        <v-btn
-          :disabled="!valid"
-          color="success"
-          class="mr-4"
-          @click="convertMyJson"
-          v-if="!errorMessage"
-        >
-          Save
-        </v-btn>
-    </div>
+  <div>
+    <p>Export to CSV file, type the new file name to download it</p>
+    <p v-if="errorMessage">
+      {{ errorMessage }}
+    </p>
+
+    <v-form v-else ref="form" v-model="valid" lazy-validation>
+      <v-text-field
+        v-model="fileName"
+        :counter="20"
+        :rules="fileNameRules"
+        label="File name"
+        required
+      ></v-text-field>
+    </v-form>
+    <v-spacer></v-spacer>
+    <v-btn
+      :disabled="!valid"
+      color="success"
+      class="mr-4"
+      @click="convertMyJson"
+      v-if="!errorMessage"
+    >
+      Save
+    </v-btn>
+  </div>
 </template>
 
 <script>
@@ -137,8 +137,8 @@ export default {
         try {
           let allDatas = []
           let geoFromLocal = JSON.parse(localStorage.getItem("APIGeoMap"));
-          for (let property in geoFromLocal) {
-            allDatas.push(...geoFromLocal[property])
+          for (let property in geoFromLocal.GeoJsonDatas) {
+            allDatas.push(...geoFromLocal.GeoJsonDatas[property])
           }
           download(allDatas);
           this.errorMessage = "Your CSV file is downloaded";
