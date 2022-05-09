@@ -3,7 +3,6 @@ export const state = () => ({
     user: undefined,
     errorMessage: undefined,
     markers: [],
-    test: 'je suis in the state'
 })
 
 // contains your actions
@@ -70,8 +69,18 @@ export const actions = {
                     commit('USER_FECTH', userLog.user)
 
                     const messageRef = this.$fire.database.ref('mapApp')
-                    // RETRIEVE DATA HERE WITH uid
-                    console.log('data ok')
+                    console.log(messageRef)
+                    try {
+                        messageRef.child(userLog.user.uid).once('value', function (snapshot) {
+                            // RETRIEVE DATA HERE WITH uid
+                            console.log('data retrieve')
+                            console.log(snapshot.val().markers)
+                            commit('SAVE_MARKERS', snapshot.val().markers);
+                            localStorage.setItem('APIGeoMap', JSON.stringify(snapshot.val().GeoJsonDatas))
+                        })
+                    } catch (e) {
+                        alert(e)
+                    }
                 }
             }
             // LISTENER TO THE AUTH CHANGED IF STILL LOG OR NOT

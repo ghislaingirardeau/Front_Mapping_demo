@@ -2,6 +2,7 @@
   <div>
     <h1>Test realtime database</h1>
     <h2>value DB response : {{ RLvalue }}</h2>
+    <h2>the log markers is : {{markers}}</h2>
     <v-btn @click="postRealTimeDB"> write DB </v-btn>
     <v-btn @click="getRealTimeDB"> read DB </v-btn>
     <v-btn @click="updateRealTimeDB"> update DB </v-btn>
@@ -32,7 +33,7 @@ export default {
     }
   },
   computed: {
-    ...mapState(['user', 'errorMessage']),
+    ...mapState(['user', 'errorMessage', 'markers']),
   },
   methods: {
     ...mapActions(['currentUser', 'createNewUser']),
@@ -52,19 +53,12 @@ export default {
     },
     // NUXT FIREBASE REALTIME DB
     async getRealTimeDB() {
-      const messageRef = this.$fire.database.ref('object')
+      const messageRef = this.$fire.database.ref('mapApp')
       console.log(messageRef)
       try {
-        messageRef.once('value', function (snapshot) {
+        messageRef.child('IZQRWzhdJYaEBwWZTg9oBJrEMb82').once('value', function (snapshot) {
           console.log(snapshot.val())
-          snapshot.forEach(function (childSnapshot) {
-            var key = childSnapshot.key
-            var data = childSnapshot.val()
-            console.log(key, data)
-          })
         })
-        /* const snapshot = await messageRef.get('value')
-          this.RLvalue = snapshot.val() */
       } catch (e) {
         alert(e)
       }
