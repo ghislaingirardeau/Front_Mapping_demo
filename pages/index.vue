@@ -203,31 +203,31 @@ export default {
       // layerType = le geojson que je souhaite envoyer dans le layer
       // groupLayer = dans quel groupe de layer je charge celui-ci : village ou house
 
-      function showPopupMarker(e) {
-        var layer = e.target
-        layer.openPopup()
-      }
-
-      function hidePopupMarker(e) {
-        var layer = e.target
-        layer.closePopup()
-      }
-
-      let testClick = (e) => {
-        // TEST TO MODIFY DIRECTLY HERE !!!!!!!!!
-        var layer = e.target
-        /* if (this.distance.length < 2) {
-          this.distance.push(layer.feature.geometry.coordinates)
-        } else {
-          this.distance = []
-          this.distance.push(layer.feature.geometry.coordinates)
-        } */
-      }
-
       const onEachFeature = async (feature, layer) => {
-        // pour faire apparaitre le popup du marker si popupContent est defini
-        const createLayer = (params) => {
+        
+        const createLayer = () => {
           return new Promise((resolve, reject) => {
+            let testClick = (e) => {
+              // TEST TO MODIFY DIRECTLY HERE !!!!!!!!!
+              var layer = e.target
+              console.log(layer);
+              /* if (this.distance.length < 2) {
+                this.distance.push(layer.feature.geometry.coordinates)
+              } else {
+                this.distance = []
+                this.distance.push(layer.feature.geometry.coordinates)
+              } */
+            }
+            const showPopupMarker = (e) => {
+              var layer = e.target
+              layer.openPopup()
+            }
+
+            const hidePopupMarker = (e) => {
+              var layer = e.target
+              layer.closePopup()
+            }
+            // pour faire apparaitre le popup du marker si popupContent est defini
             if (feature.properties && feature.properties.popupContent) {
               layer.bindPopup(feature.properties.popupContent)
             }
@@ -239,7 +239,7 @@ export default {
             resolve(true)
           })
         }
-        let response = await createLayer
+        let response = await createLayer()
         if (response) {
           // dynamic show of layer if it's activated or not
           if (
