@@ -5,6 +5,7 @@
       <v-file-input
         label="Selelct CSV file"
         id="csv"
+        :rules="fileNameRules"
         @click="readFileTest"
         accept=".csv"
       ></v-file-input>
@@ -21,7 +22,16 @@ export default {
     valid: true,
     objetData: {},
     newMarker: [],
+    error: false,
   }),
+  computed: {
+    fileNameRules() {
+        return [
+        (v) => !!v || "A file is required",
+        (v) => this.error || "The CSV format is not correct",
+      ]
+    }
+  },
   methods: {
     async readFileTest() {
       // convert the coordinates
@@ -37,40 +47,47 @@ export default {
       }
       // function to create the layer for each category of json
       const createGeoJsons = (element, layer) => {
-        let coordinates = []
-        if (element.coordinates.indexOf('/') === -1) {
-          let coordinateNumber = element.coordinates.split(' ')
-          coordinateNumber.forEach((element) => {
-            convertCoordinate(coordinates, element)
-          })
-        } else {
-          let coordinateNumber = element.coordinates.split('/')
-          let array = []
-          coordinateNumber.forEach((element) => {
-            array.push(element.split(' '))
-          })
-          coordinates.push(array)
+        try {
+          let coordinates = []
+          if (element.coordinates.indexOf('/') === -1) {
+            let coordinateNumber = element.coordinates.split(' ')
+            coordinateNumber.forEach((element) => {
+              convertCoordinate(coordinates, element)
+            })
+          } else {
+            let coordinateNumber = element.coordinates.split('/')
+            let array = []
+            coordinateNumber.forEach((element) => {
+              array.push(element.split(' '))
+            })
+            coordinates.push(array)
+          }
+          let newGeoJson = {
+            type: 'Feature',
+            properties: {
+              name: element.name,
+              popupContent: element.popupContent,
+              category: element.category,
+              subCategory: element.subCategory,
+            },
+            geometry: {
+              type: element.type,
+              coordinates: coordinates,
+            },
+            icon: {
+              type: element.icon,
+              color: [element.color],
+            },
+          }
+          layer.push(newGeoJson)
+          this.error = true
+        } catch (error) {
+          console.log('wrong files', error);
+          this.error = false
         }
-        let newGeoJson = {
-          type: 'Feature',
-          properties: {
-            name: element.name,
-            popupContent: element.popupContent,
-            category: element.category,
-            subCategory: element.subCategory,
-          },
-          geometry: {
-            type: element.type,
-            coordinates: coordinates,
-          },
-          icon: {
-            type: element.icon,
-            color: [element.color],
-          },
-        }
-        layer.push(newGeoJson)
       }
-      // GET THE FILE IMPORTED AND APPLY THE FUNCTION
+      try {
+              // GET THE FILE IMPORTED AND APPLY THE FUNCTION
       var fileInput = document.getElementById('csv')
 
       let readFile = () => {
@@ -137,33 +154,41 @@ export default {
       }
 
       fileInput.addEventListener('change', readFile)
+      this.error = true
+        
+      } catch (error) {
+        console.log(error, 'file is not at the right format');
+        this.error = false
+      }
     },
     async validImport() {
-      try {
+      if (this.$refs.form.validate()) {
+        try {
         // reinitialise la base de donnée marker
-        let result = await this.resetDB() // mixin
-        if (result) {
-          const requestIndexedDB = window.indexedDB.open('Map_Database', 1)
-          requestIndexedDB.onsuccess = (event) => {
-            var db = event.target.result
+          let result = await this.resetDB() // mixin
+          if (result) {
+            const requestIndexedDB = window.indexedDB.open('Map_Database', 1)
+            requestIndexedDB.onsuccess = (event) => {
+              var db = event.target.result
 
-            var transaction = db.transaction('markers', 'readwrite')
-            const store = transaction.objectStore('markers')
-            this.newMarker.forEach((element) => {
-              store.add(element)
-            })
+              var transaction = db.transaction('markers', 'readwrite')
+              const store = transaction.objectStore('markers')
+              this.newMarker.forEach((element) => {
+                store.add(element)
+              })
 
-            console.log('markers added to the store')
-            transaction.oncomplete = () => {
-              db.close()
+              console.log('markers added to the store')
+              transaction.oncomplete = () => {
+                db.close()
+              }
             }
+            localStorage.setItem('APIGeoMap', JSON.stringify(this.objetData))
+            this.$router.push('/myData')
           }
-          localStorage.setItem('APIGeoMap', JSON.stringify(this.objetData))
-          this.$router.push('/myData')
+        } catch (error) {
+          console.log(error)
         }
-      } catch (error) {
-        console.log(error)
-      }
+      } 
     },
   },
 }
