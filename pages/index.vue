@@ -614,9 +614,11 @@ export default {
           } else if (data.target.getAttribute('id') === 'btn-save') {
             this.saveTemporaly()
             this.modalDatas.showModal = !this.modalDatas.showModal
-            this.modalDatas.modalTitle = 'Data save TEMPORALY'
+            this.modalDatas.modalTitle = this.user ? 'Data save' : 'Data save TEMPORALY'
             this.modalDatas.modalMessage =
-              'For a safely save, consider to export your datas to CSV in settings'
+              this.user ?
+              'Your data is saved in the database.' :
+              'For a safely save, consider to export your datas to CSV or Register for free'
           } else if (data.target.getAttribute('id') === 'btn-printer') {
             let openPrintOptions = () => {
               this.showPrintOption = !this.showPrintOption // modal for options ex: add a title
