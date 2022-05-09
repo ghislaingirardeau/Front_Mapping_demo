@@ -35,6 +35,7 @@ export default {
       this.$router.push('/')
     },
     async tableUpdate(playload) {
+
       if(playload.action) {
         this.allDatas.splice(playload.index, 1)
       } else {
@@ -44,27 +45,22 @@ export default {
         this.allDatas[index].properties.popupContent = popupContent
       }
       // FUNCTION TO UPDATE JSON IN LOCALSTORAGE
-      let countCategories = []
       this.allDatas.reverse()
+      let result = this.allDatas.map((a) => a.properties.category)
+      let mySet = [...new Set(result)]
 
-      await this.allDatas.forEach((element) => {
-        // recupere le nombre de category differentes créées
-        if (countCategories.indexOf(element.properties.category) === -1) {
-          countCategories.push(element.properties.category)
-        }
-      })   
-      await countCategories.forEach((element) => {
+      mySet.forEach((element) => {
         // pour chaque category, je lui crée un nouveau tableau
-        let name = element
         this.objetData[element] = new Array()
         this.allDatas.forEach((index) => {
           // j'envoie le tableau de geosjon dans la categorie correspondante
-          if (index.properties.category === name) {
+          if (index.properties.category === element) {
             this.objetData[element].push(index)
           }
         })
       })
       localStorage.setItem('APIGeoMap', JSON.stringify({GeoJsonDatas: this.objetData}))
+      this.objetData = {}
     }
   },
   mounted() {
