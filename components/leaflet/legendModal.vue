@@ -20,7 +20,7 @@
         >
         <v-icon v-else :color="i.color[0]"> mdi-vector-polyline </v-icon>
         <br />
-        <span v-if="i.subCategory.length > 0">{{ i.subCategory[0] }}</span>
+        <span v-if="i.subCategory && i.subCategory.length > 0">{{ i.subCategory[0] }}</span>
       </v-col>
       <v-col cols="12" v-show="!showPrintMap">
         <v-slider v-model="size" max="42" min="10" step="4" label="Size" @change="newSize"></v-slider>
