@@ -25,6 +25,7 @@
 import { mapState, mapActions } from 'vuex'
 
 export default {
+  layout: 'datasLayout',
   data() {
     return {
       RLvalue: undefined,

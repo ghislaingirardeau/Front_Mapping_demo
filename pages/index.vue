@@ -17,14 +17,18 @@
           @send-data="getData"
           :coordinates="coordinates"
         />
-        <optionsMenu v-if="modalDatas.showSetting" :map="map" @send-measure="measureActivate" />
+        <optionsMenu
+          v-if="modalDatas.showSetting"
+          :map="map"
+          @send-measure="measureActivate"
+        />
         <printOptions v-if="showPrintOption" @send-modal="printResponse" />
         <p v-if="modalDatas.modalMessage">{{ modalDatas.modalMessage }}</p>
       </template>
     </modalCustom>
 
     <!-- MODAL TUTORIAL -->
-    <theTutorial :showTutorial="showTutorial" @send-tuto="closeTuto"/>
+    <theTutorial :showTutorial="showTutorial" @send-tuto="closeTuto" />
 
     <!-- MODAL INFORMATIONS -->
     <div class="hub__informations" v-if="hubPosition">
@@ -85,7 +89,7 @@ export default {
     hubPosition: undefined,
     layerGeoJson: undefined,
     // tutorial
-    showTutorial : false,
+    showTutorial: false,
     // modal
     modalDatas: {
       showModal: false,
@@ -112,7 +116,7 @@ export default {
     distance: [],
   }),
   computed: {
-    ...mapState(['markers']),
+    ...mapState(['markers', 'user']),
     hubCoordinate() {
       let crd = this.coordinates[this.coordinates.length - 1]
       if (this.coordinates.length > 0) {
@@ -233,15 +237,18 @@ export default {
               dblclick: testClick,
             })
             resolve(true)
-          });
+          })
         }
         let response = await createLayer
-        if(response) { // dynamic show of layer if it's activated or not
+        if (response) {
+          // dynamic show of layer if it's activated or not
           if (
             layer instanceof L.Polygon ||
             (layer instanceof L.Path && layer.feature)
           ) {
-            this.measureActive ? layer.showMeasurements() : layer.hideMeasurements()
+            this.measureActive
+              ? layer.showMeasurements()
+              : layer.hideMeasurements()
           }
         }
       }
@@ -405,7 +412,7 @@ export default {
         btnAttribut(false)
       }
     },
-    saveTemporaly() {
+    async saveTemporaly() {
       let jsonToSave = {}
       for (let property in this.dynamicLayerGroup) {
         jsonToSave[property] = [] // create a property as an array empty
@@ -426,6 +433,14 @@ export default {
         })
       }
       localStorage.setItem('APIGeoMap', JSON.stringify(jsonToSave))
+      // SAVE IN FIREBASE IF USER
+      if(this.user) {
+        const messageRef = this.$fire.database.ref('mapApp')
+        await messageRef.child(this.user.uid).update({
+          markers: this.markers,
+          GeoJsonDatas: jsonToSave
+        })
+      }
     },
   },
   mounted() {
@@ -764,7 +779,9 @@ export default {
       }
       this.$store.dispatch('loadMarkers')
     }
-    checkDB()
+    if (this.user === undefined) {
+      checkDB()
+    }
   },
 }
 </script>
