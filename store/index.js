@@ -58,7 +58,6 @@ export const actions = {
                 const authListener = await this.$fire.auth.onAuthStateChanged((user) => {
                     if (user) {
                         const uid = user.uid;
-                        console.log(user, uid);
                     } else {
                         console.log("User is signed out");
                         commit('USER_SIGNOUT')
@@ -69,12 +68,10 @@ export const actions = {
                     commit('USER_FECTH', userLog.user)
 
                     const messageRef = this.$fire.database.ref('mapApp')
-                    console.log(messageRef)
                     try {
                         messageRef.child(userLog.user.uid).once('value', function (snapshot) {
                             // RETRIEVE DATA HERE WITH uid
                             console.log('data retrieve')
-                            console.log(snapshot.val().markers)
                             commit('SAVE_MARKERS', snapshot.val().markers);
                             localStorage.setItem('APIGeoMap', JSON.stringify({ GeoJsonDatas: snapshot.val().GeoJsonDatas }))
                         })
