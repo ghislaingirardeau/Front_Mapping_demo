@@ -63,6 +63,11 @@ export default {
       showMenu: true,
       settings: [
         {
+          icon: 'mdi-database-marker',
+          title: 'login / Sign-in',
+          to: '/authentification',
+        },
+        {
           icon: 'mdi-database-eye',
           title: 'Manage My Datas',
           to: '/myData',
@@ -71,7 +76,7 @@ export default {
           icon: 'mdi-database-marker',
           title: 'Manage My Markers',
           to: '/configuration',
-        },
+        }
       ],
       actions: [
         {

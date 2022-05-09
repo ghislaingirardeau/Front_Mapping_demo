@@ -1,24 +1,43 @@
 <template>
-  <div>
+  <v-container>
+    <v-row>
+      <v-col cols="11">
+        <span>
+          {{
+            signType
+              ? "If you don't have connection ID ? Please click 'Sign In'"
+              : 'Back to the login'
+          }}
+        </span>
+        <v-btn
+          class="mb-3 ml-2"
+          color="teal"
+          outlined
+          @click="signType = !signType"
+          >{{ signType ? 'Sign In' : 'Login' }}</v-btn
+        >
+
+        <authForm
+          :login="signType"
+          :doThis="signType ? loginUser : createUser"
+        />
+        <p v-if="errorMessage">{{ errorMessage }}</p>
+
+        <div class="mt-3" v-if="user">
+          <v-btn @click="logoutUser" color="teal">logout</v-btn>
+        </div>
+      </v-col>
+    </v-row>
     <h1>Test realtime database</h1>
     <h2>value DB response : {{ RLvalue }}</h2>
-    <h2>the log markers is : {{markers}}</h2>
+    <h2>the log markers is : {{ markers }}</h2>
     <v-btn @click="postRealTimeDB"> write DB </v-btn>
     <v-btn @click="getRealTimeDB"> read DB </v-btn>
     <v-btn @click="updateRealTimeDB"> update DB </v-btn>
     <v-btn @click="removeRealTimeDB"> remove DB </v-btn>
 
     <h2 v-if="user">The user log : {{ user.displayName }}</h2>
-
-    <v-btn color="teal" @click="signType = !signType">{{signType ? 'Sign' : 'Login'}}</v-btn>
-
-    <authForm :login="signType" :doThis="signType ? loginUser : createUser"/>
-    <p v-if="errorMessage">{{errorMessage}}</p>
-
-    <div class="mt-3" v-if="user">
-      <v-btn @click="logoutUser" color="teal">logout</v-btn>
-    </div>
-  </div>
+  </v-container>
 </template>
 
 <script>
@@ -30,7 +49,7 @@ export default {
     return {
       RLvalue: undefined,
       signType: true,
-      id: 'ID123444'
+      id: 'ID123444',
     }
   },
   computed: {
@@ -57,9 +76,11 @@ export default {
       const messageRef = this.$fire.database.ref('mapApp')
       console.log(messageRef)
       try {
-        messageRef.child('IZQRWzhdJYaEBwWZTg9oBJrEMb82').once('value', function (snapshot) {
-          console.log(snapshot.val())
-        })
+        messageRef
+          .child('IZQRWzhdJYaEBwWZTg9oBJrEMb82')
+          .once('value', function (snapshot) {
+            console.log(snapshot.val())
+          })
       } catch (e) {
         alert(e)
       }

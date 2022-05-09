@@ -72,7 +72,7 @@ export default {
         {
           icon: 'mdi-database-marker',
           title: 'Authentification',
-          to: '/firebase'
+          to: '/authentification'
         }
 
       ],
