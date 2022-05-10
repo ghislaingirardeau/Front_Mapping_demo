@@ -52,7 +52,7 @@
 </template>
 
 <script>
-import { mapState} from 'vuex'
+import { mapState } from 'vuex'
 
 export default {
   data() {
@@ -62,12 +62,15 @@ export default {
       removeBtn: false,
       message: undefined,
       showMenu: true,
-      settings: [
-        {
-          icon: 'mdi-database-marker',
-          title: 'login / Sign-in',
-          to: '/authentification',
-        },
+    }
+  },
+  props: {
+    map: Object,
+  },
+  computed: {
+    ...mapState(['userAuth']),
+    settings() {
+      let menu = [
         {
           icon: 'mdi-database-eye',
           title: 'Manage My Datas',
@@ -77,17 +80,19 @@ export default {
           icon: 'mdi-database-marker',
           title: 'Manage My Markers',
           to: '/configuration',
-        }
-      ],
-    }
-  },
-  props: {
-    map: Object,
-  },
-  computed: {
-    ...mapState(['userAuth']),
+        },
+      ]
+      this.userAuth
+        ? ''
+        : menu.splice(0, 0, {
+            icon: 'mdi-database-marker',
+            title: 'login / Sign-in',
+            to: '/authentification',
+          })
+      return menu
+    },
     actions() {
-      let list = [
+      let menu = [
         {
           id: '1',
           icon: 'mdi-export',
@@ -109,17 +114,15 @@ export default {
           title: 'Show measure',
         },
       ]
-      if(this.userAuth) {
-        list.push({
+      this.userAuth ?
+        menu.push({
           id: '5',
           icon: 'mdi-logout',
           title: 'Logout',
-        })
-      } else {
-        list.splice(4, 1)
-      }
-      return list
-    }
+        }) :
+        ''
+      return menu
+    },
   },
   methods: {
     async resetApp() {
@@ -128,7 +131,7 @@ export default {
         localStorage.removeItem('APIGeoMap')
         location.reload()
       } else {
-        console.log('promise rejected');
+        console.log('promise rejected')
       }
     },
     removeGeoJson() {
@@ -170,34 +173,33 @@ export default {
             layer.hideMeasurements()
             this.actions[3].title = 'Show measure'
             this.$emit('send-measure', {
-              measure : false
+              measure: false,
             })
           } else {
             layer.showMeasurements()
             this.actions[3].title = 'Hide measure'
             this.$emit('send-measure', {
-              measure : true
+              measure: true,
             })
           }
         }
       })
-      
     },
   },
-  mounted () {
-      this.map.eachLayer((layer) => {
-        if (
-          layer instanceof L.Polygon ||
-          (layer instanceof L.Path && layer.feature)
-        ) {
-          // layer feature not undefined ex: L.circleMarker is a layer = show an error. but layer L.circleMarker doesn't have a feature
-          if (layer._measurementLayer) {
-              this.actions[3].title = 'Hide measure'
-          } else {
-              this.actions[3].title = 'Show measure'
-          }
+  mounted() {
+    this.map.eachLayer((layer) => {
+      if (
+        layer instanceof L.Polygon ||
+        (layer instanceof L.Path && layer.feature)
+      ) {
+        // layer feature not undefined ex: L.circleMarker is a layer = show an error. but layer L.circleMarker doesn't have a feature
+        if (layer._measurementLayer) {
+          this.actions[3].title = 'Hide measure'
+        } else {
+          this.actions[3].title = 'Show measure'
         }
-      })
+      }
+    })
   },
 }
 </script>

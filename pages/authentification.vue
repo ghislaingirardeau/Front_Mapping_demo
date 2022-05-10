@@ -23,9 +23,6 @@
         />
         <p v-if="errorMessage">{{ errorMessage }}</p>
 
-        <div class="mt-3" v-if="userAuth">
-          <v-btn @click="logoutUser" color="teal">logout</v-btn>
-        </div>
       </v-col>
     </v-row>
     <h1>Test realtime database</h1>
@@ -64,12 +61,6 @@ export default {
     },
     async loginUser(data) {
       this.currentUser(data)
-    },
-    async logoutUser() {
-      try {
-        this.$fire.auth.signOut()
-        // action define inside the userAuth listener
-      } catch (error) {}
     },
     // NUXT FIREBASE REALTIME DB
     async getRealTimeDB() {
