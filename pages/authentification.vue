@@ -23,7 +23,7 @@
         />
         <p v-if="errorMessage">{{ errorMessage }}</p>
 
-        <div class="mt-3" v-if="user">
+        <div class="mt-3" v-if="userAuth">
           <v-btn @click="logoutUser" color="teal">logout</v-btn>
         </div>
       </v-col>
@@ -36,7 +36,7 @@
     <v-btn @click="updateRealTimeDB"> update DB </v-btn>
     <v-btn @click="removeRealTimeDB"> remove DB </v-btn>
 
-    <h2 v-if="user">The user log : {{ user.displayName }}</h2>
+    <h2 v-if="userAuth">The userAuth log : {{ userAuth.displayName }}</h2>
   </v-container>
 </template>
 
@@ -53,7 +53,7 @@ export default {
     }
   },
   computed: {
-    ...mapState(['user', 'errorMessage', 'markers']),
+    ...mapState(['userAuth', 'errorMessage', 'markers']),
   },
   methods: {
     ...mapActions(['currentUser', 'createNewUser']),
@@ -68,7 +68,7 @@ export default {
     async logoutUser() {
       try {
         this.$fire.auth.signOut()
-        // action define inside the user listener
+        // action define inside the userAuth listener
       } catch (error) {}
     },
     // NUXT FIREBASE REALTIME DB

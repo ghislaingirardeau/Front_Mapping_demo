@@ -116,7 +116,7 @@ export default {
     distance: [],
   }),
   computed: {
-    ...mapState(['markers', 'user']),
+    ...mapState(['markers', 'userAuth']),
     hubCoordinate() {
       let crd = this.coordinates[this.coordinates.length - 1]
       if (this.coordinates.length > 0) {
@@ -135,7 +135,9 @@ export default {
   methods: {
     measureActivate(payload) {
       this.measureActive = payload.measure
-      this.modalDatas.showModal = false
+      Object.keys(this.modalDatas).forEach((element) => {
+        this.modalDatas[element] = false
+      })
     },
     closeTuto(payload) {
       this.showTutorial = payload.message
@@ -204,13 +206,12 @@ export default {
       // groupLayer = dans quel groupe de layer je charge celui-ci : village ou house
 
       const onEachFeature = async (feature, layer) => {
-        
         const createLayer = () => {
           return new Promise((resolve, reject) => {
             let testClick = (e) => {
               // TEST TO MODIFY DIRECTLY HERE !!!!!!!!!
               var layer = e.target
-              console.log(layer);
+              console.log(layer)
               /* if (this.distance.length < 2) {
                 this.distance.push(layer.feature.geometry.coordinates)
               } else {
@@ -432,13 +433,16 @@ export default {
           }
         })
       }
-      localStorage.setItem('APIGeoMap', JSON.stringify({GeoJsonDatas: jsonToSave}))
+      localStorage.setItem(
+        'APIGeoMap',
+        JSON.stringify({ GeoJsonDatas: jsonToSave })
+      )
       // SAVE IN FIREBASE IF USER
-      if(this.user) {
+      if (this.userAuth) {
         const messageRef = this.$fire.database.ref('mapApp')
-        await messageRef.child(this.user.uid).update({
+        await messageRef.child(this.userAuth.uid).update({
           markers: this.markers,
-          GeoJsonDatas: jsonToSave
+          GeoJsonDatas: jsonToSave,
         })
       }
     },
@@ -603,7 +607,7 @@ export default {
           if (data.target.getAttribute('id') === 'btn-tutorial') {
             this.showTutorial = !this.showTutorial
           } else if (data.target.getAttribute('id') === 'btn-menu') {
-            this.saveTemporaly()
+            /* this.saveTemporaly() */
             this.modalDatas.showModal = true
             this.modalDatas.modalTitle = 'Settings and Options'
             this.modalDatas.showSetting = true
@@ -614,11 +618,12 @@ export default {
           } else if (data.target.getAttribute('id') === 'btn-save') {
             this.saveTemporaly()
             this.modalDatas.showModal = !this.modalDatas.showModal
-            this.modalDatas.modalTitle = this.user ? 'Data save' : 'Data save TEMPORALY'
-            this.modalDatas.modalMessage =
-              this.user ?
-              'Your data is saved in the database.' :
-              'For a safely save, consider to export your datas to CSV or Register for free'
+            this.modalDatas.modalTitle = this.userAuth
+              ? 'Data save'
+              : 'Data save TEMPORALY'
+            this.modalDatas.modalMessage = this.userAuth
+              ? 'Your data is saved in the database.'
+              : 'For a safely save, consider to export your datas to CSV or Register for free'
           } else if (data.target.getAttribute('id') === 'btn-printer') {
             let openPrintOptions = () => {
               this.showPrintOption = !this.showPrintOption // modal for options ex: add a title
@@ -781,7 +786,7 @@ export default {
       }
       this.$store.dispatch('loadMarkers')
     }
-    if (this.user === undefined) {
+    if (this.userAuth === undefined) {
       checkDB()
     }
   },
