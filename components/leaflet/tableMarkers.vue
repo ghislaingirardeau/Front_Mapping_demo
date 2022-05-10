@@ -6,13 +6,13 @@
       <template v-slot:content>
         <v-form ref="form" v-model="valid" lazy-validation>
           <v-text-field
-            v-model="editItem.subCategory"
+            v-model="editItem.newSubCategory"
             label="Change SubCategory"
             :rules="rulesEditSub"
           >
           </v-text-field>
           <v-color-picker
-            v-model="editItem.color"
+            v-model="editItem.newColor"
             dot-size="25"
             hide-inputs
           ></v-color-picker>
@@ -56,7 +56,6 @@
             mdi-triangle
           </v-icon>
 
-          <!-- <v-chip :color="item.color[0]" small v-else>area</v-chip> -->
         </template>
         <template v-slot:[`item.edit`]="{ item }">
           <v-icon
@@ -100,11 +99,11 @@ export default {
       ],
       showModal: false,
       valid: true,
-      rulesEditSub: [(v) => v.length > 2 || 'minimum 2 characters'],
+      rulesEditSub: [(v) => v.length > 0 || 'minimum 2 characters'],
       editItem: {
-        id: '',
-        subCategory: '',
-        color: '',
+        old: '',
+        newSubCategory: '',
+        newColor: '',
       },
     }
   },
@@ -116,101 +115,59 @@ export default {
       this.showModal = payload.message
     },
     openEditor(e) {
-      if (e.subCategory.length > 0 && e.subCategory[0].length > 1) {
+      if (e.subCategory.length > 0 && e.subCategory[0].length > 1) { // if there is subcat
         this.rulesEditSub = [(v) => v.length > 2 || 'minimum 2 characters']
+        this.editItem.newSubCategory = e.subCategory // load the actual subcat
       } else {
         this.rulesEditSub = [true]
       }
-      this.editItem.id = e
+      this.editItem.old = e
       this.showModal = !this.showModal
     },
     async updateItem() {
-      console.log(this.editItem.id );
-      /* const updateCursor = (cursor, indexColor = 0, indexSubCategory = undefined) => {
-        cursor.value.color.splice(indexColor, 1, this.editItem.color)
-        // update sub only if not empty = can be empty if update a category
-        indexSubCategory != undefined ? cursor.value.subCategory.splice(indexSubCategory, 1, this.editItem.subCategory) : '' 
-        const request = cursor.update(cursor.value)
-        request.onsuccess = () => {
-          this.$store.dispatch('loadMarkers')
+      let dataLs = JSON.parse(localStorage.getItem('APIGeoMap'))
+      let updateMarker = {...this.editItem.old}
 
-          try {
-            // update data local storage
-            let geoFromLocal = JSON.parse(localStorage.getItem('APIGeoMap'))
-            const updateGeoFromLocal = () => {
-              if (geoFromLocal.GeoJsonDatas[this.editItem.id.category]) {
-                geoFromLocal.GeoJsonDatas[this.editItem.id.category].forEach(element => {
-                  if(element.properties.subCategory === '' || !element.properties.subCategory) {
-                    element.icon.color.splice(0, 1, this.editItem.color)
-                  } else if(element.properties.subCategory === this.editItem.id.subCategory[0]) {
-                    element.icon.color.splice(0, 1, this.editItem.color)
-                    element.properties.subCategory = this.editItem.subCategory
-                  }
-                });
-              }
-            }
-            updateGeoFromLocal()
-            localStorage.setItem('APIGeoMap', JSON.stringify({GeoJsonDatas: geoFromLocal.GeoJsonDatas, markers: this.markers}))
-          } catch (error) {
-            console.log(error, 'error on localstorage data update');
-          }
-
-        }
-      } */
-      /* const updateDB = (e) => {
+      // UPDATE MARKER FROM LOCALSTORAGE
+      const setMarker = () => {
         return new Promise((resolve, reject) => {
-          const requestIndexedDB = window.indexedDB.open('Map_Database', 1)
-          requestIndexedDB.onerror = (event) => {
-            console.log(event)
-          }
-
-          // la requete
-          requestIndexedDB.onsuccess = (event) => {
-            let db = event.target.result
-
-            let transaction = db.transaction('markers', 'readwrite')
-            let store = transaction.objectStore('markers') // store = table in sql
-            store.openCursor().onsuccess = (event) => {
-              const cursor = event.target.result
-
-              if (cursor) {
-                if (cursor.value.category === e.category) {
-                  if (cursor.value.subCategory.length > 1) {
-                    // si multi sub category, update color and subcat en supprimant l'item du tableau
-                    let indexColor = cursor.value.color.indexOf(e.color[0])
-                    let indexSubCategory = cursor.value.subCategory.indexOf(
-                      e.subCategory[0]
-                    )
-                    updateCursor(cursor, indexColor, indexSubCategory)
-                  } else {
-                    updateCursor(cursor)
-                  }
-                }
-                cursor.continue()
-              } else {
-              }
-            }
-
-            transaction.oncomplete = () => {
-              db.close()
-              resolve({res: true})
-            }
-            transaction.onerror = (event) => {
-              reject(new Error(event))
-              console.log(event)
-            }
-          }
+          let index = dataLs.markers.findIndex(elt => (elt.category === this.editItem.old.category && elt.subCategory[0] === this.editItem.old.subCategory[0]))
+          updateMarker.color = [this.editItem.newColor]
+          updateMarker.subCategory = this.editItem.newSubCategory.length > 1 ? [this.editItem.newSubCategory] : []
+          dataLs.markers.splice(index, 1, updateMarker)
+          resolve(true)
         });
-        
-      } */
-      /* if (this.$refs.form.validate()) {
-        
-        let result = await updateDB(this.editItem.id)
-        if (result) {
-          this.showModal = !this.showModal
-          this.editItem.subCategory = ''
+      }
+      // UPDATE GEOJSON FROM LOCALSTORAGE
+      const setGeoJson = () => {
+        return new Promise((resolve, reject) => {
+          if(dataLs.GeoJsonDatas[updateMarker.category]) { // if undefined = there is no data with this marker yet
+            dataLs.GeoJsonDatas[updateMarker.category].forEach(element => {
+              if(element.properties.subCategory === this.editItem.old.subCategory[0]) {
+                element.icon.color = [this.editItem.newColor]
+                element.properties.subCategory = this.editItem.newSubCategory.length > 1 ? this.editItem.newSubCategory : ''
+              }
+              if(element.properties.subCategory.length === 0 || element.properties.subCategory[0].length === 0) {
+                element.icon.color = [this.editItem.newColor]
+              }
+            });
+          }
+          resolve(true)
+        });
+      }
+      
+      if (this.$refs.form.validate()) {
+        let resMarker = await setMarker()
+        if (resMarker) {
+          let resGeoJson = await setGeoJson()
+          if (resGeoJson) {
+            localStorage.setItem('APIGeoMap', JSON.stringify(dataLs)) // UPDATE LOCAL STORAGE
+            this.$store.dispatch('markersLoad') // RELOAD MARKERS
+            this.showModal = !this.showModal
+            this.editItem.subCategory = ''
+          }
         }
-      } */
+      }
     },
     async removeDB(e) {
 
