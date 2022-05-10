@@ -85,7 +85,7 @@ export default {
       this.userAuth
         ? ''
         : menu.splice(0, 0, {
-            icon: 'mdi-database-marker',
+            icon: 'mdi-login',
             title: 'login / Sign-in',
             to: '/authentification',
           })
@@ -95,12 +95,12 @@ export default {
       let menu = [
         {
           id: '1',
-          icon: 'mdi-export',
+          icon: 'mdi-file-send-outline',
           title: 'Export Datas to CSV',
         },
         {
           id: '2',
-          icon: 'mdi-import',
+          icon: 'mdi-file-table',
           title: 'Import CSV File',
         },
         {
