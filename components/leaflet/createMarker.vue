@@ -232,6 +232,8 @@
 </template>
 
 <script>
+import { mapState, mapActions } from 'vuex'
+
 export default {
   data() {
     return {
@@ -311,6 +313,8 @@ export default {
     },
   },
   methods: {
+    ...mapActions(['markersOnCreate']),
+
     modalResponse(payload) {
       this.$emit('send-marker', {
         message: false,
@@ -379,27 +383,12 @@ export default {
             this.newIcon.type = 'MultiLineString'
             break
         }
-        const requestIndexedDB = window.indexedDB.open('Map_Database', 1)
-        requestIndexedDB.onsuccess = (event) => {
-          var db = event.target.result
-
-          var transaction = db.transaction('markers', 'readwrite')
-          const store = transaction.objectStore('markers')
-          store.add(this.newIcon)
-          this.$store.dispatch('loadMarkers')
-
-          console.log('markers added to the store')
-          transaction.oncomplete = () => {
-            db.close()
-          }
-          this.$emit('send-marker', {
+        // STORE ACTIONS
+        this.markersOnCreate(this.newIcon)
+        this.$emit('send-marker', {
             message: false,
-          })
-          this.resetMarker()
-        }
-        requestIndexedDB.onerror = (event) => {
-          this.DBmessage = event
-        }
+        })
+        this.resetMarker()
       } catch (error) {
         console.log(error)
       }

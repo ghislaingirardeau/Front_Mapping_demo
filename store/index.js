@@ -3,6 +3,7 @@ export const state = () => ({
     userAuth: undefined,
     errorMessage: undefined,
     markers: [],
+    markersLS: []
 })
 
 // contains your actions
@@ -73,7 +74,7 @@ export const actions = {
                             // RETRIEVE DATA HERE WITH uid
                             console.log('data retrieve')
                             commit('SAVE_MARKERS', snapshot.val().markers);
-                            localStorage.setItem('APIGeoMap', JSON.stringify({ GeoJsonDatas: snapshot.val().GeoJsonDatas }))
+                            localStorage.setItem('APIGeoMap', JSON.stringify({ GeoJsonDatas: snapshot.val().GeoJsonDatas, markers: snapshot.val().markers }))
                         })
                     } catch (e) {
                         alert(e)
@@ -86,6 +87,7 @@ export const actions = {
             commit('ERROR_REPONSE', error.message)
         }
     },
+    // INDEXEDDB
     loadMarkers(context) {
         let results = []
         const requestIndexedDB = window.indexedDB.open('Map_Database', 1)
@@ -134,13 +136,57 @@ export const actions = {
                 db.close()
             }
         }
-
     },
+    markersOnCreate({ commit }, newMarker) {
+        let markersLocalStorage = JSON.parse(localStorage.getItem('APIGeoMap'))
+        let flatMarkers = []
+        if (newMarker.subCategory.length > 0) {
+            for (
+                let index = 0;
+                index < newMarker.subCategory.length;
+                index++
+            ) {
+                let multiMarker = {
+                    type: newMarker.type,
+                    category: newMarker.category,
+                    subCategory: [newMarker.subCategory[index]],
+                    icon: newMarker.icon,
+                    color: [newMarker.color[index]],
+                }
+                flatMarkers.push(multiMarker)
+            }
+        } else {
+            flatMarkers.push(newMarker)
+        }
+
+        if (markersLocalStorage) {
+            markersLocalStorage.markers.push(...flatMarkers)
+            localStorage.setItem('APIGeoMap', JSON.stringify({ GeoJsonDatas: markersLocalStorage.GeoJsonDatas, markers: markersLocalStorage.markers }))
+            commit('SAVE_MARKERS_LS', markersLocalStorage.markers);
+        } else {
+            let markers = [...flatMarkers]
+            localStorage.setItem('APIGeoMap', JSON.stringify({ markers: markers }))
+            commit('SAVE_MARKERS_LS', markers);
+        }
+    },
+    markersLoad({ commit }) {
+        let markersLocalStorage = JSON.parse(localStorage.getItem('APIGeoMap'))
+        if (markersLocalStorage && markersLocalStorage.markers) {
+            commit('SAVE_MARKERS_LS', markersLocalStorage.markers);
+        }
+    },
+    markersReset({ commit }) {
+        commit('RESET_MARKERS')
+        localStorage.setItem('APIGeoMap', JSON.stringify({ markers: [] }))
+    }
 }
 // contains your mutations
 export const mutations = {
-    SAVE_MARKERS(state, data) {
+    SAVE_MARKERS_LS(state, data) {
         state.markers = data;
+    },
+    SAVE_MARKERS(state, data) {
+        state.markersLS = data;
     },
     RESET_MARKERS(state) {
         state.markers = [];

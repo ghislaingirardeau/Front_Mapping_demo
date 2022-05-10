@@ -20,6 +20,7 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
 
 export default {
   layout: 'datasLayout',
@@ -29,6 +30,9 @@ export default {
       isActive: false,
       objetData: {}
     }
+  },
+    computed: {
+    ...mapState(['markers']),
   },
   methods: {
     linkMap() {
@@ -59,7 +63,7 @@ export default {
           }
         })
       })
-      localStorage.setItem('APIGeoMap', JSON.stringify({GeoJsonDatas: this.objetData}))
+      localStorage.setItem('APIGeoMap', JSON.stringify({GeoJsonDatas: this.objetData, markers: this.markers}))
       this.objetData = {}
     }
   },

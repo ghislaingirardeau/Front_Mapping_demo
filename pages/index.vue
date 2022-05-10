@@ -76,7 +76,6 @@
 </template>
 
 <script>
-import { createIndexedDB } from '@/static/functions/indexedDb'
 import { mapState } from 'vuex'
 
 export default {
@@ -436,7 +435,7 @@ export default {
       }
       localStorage.setItem(
         'APIGeoMap',
-        JSON.stringify({ GeoJsonDatas: jsonToSave })
+        JSON.stringify({ GeoJsonDatas: jsonToSave, markers: this.markers })
       )
       // SAVE IN FIREBASE IF USER
       if (this.userAuth) {
@@ -506,7 +505,7 @@ export default {
       center: [0, 0],
       zoom: 6,
     }
-    if (geoFromLocal) {
+    if (geoFromLocal && geoFromLocal.GeoJsonDatas) {
       // if there is data from a file, loaded
       try {
         this.propertiesNames = Object.keys(geoFromLocal.GeoJsonDatas) // recupere le nom de chaque propriete
@@ -731,64 +730,8 @@ export default {
     this.map.addControl(actionsControl)
     this.map.addControl(locationsControl)
 
-    // CREATE A THE DB FOR THE FIRST CONNECTION AND TO TEST THE APP
-    const checkDB = async () => {
-      const dbName = 'Map_Database'
-      const isExisting = (await window.indexedDB.databases())
-        .map((db) => db.name)
-        .includes(dbName)
-      if (isExisting) {
-      } else {
-        let result = await createIndexedDB()
-
-        if (result) {
-          const requestIndexedDB = window.indexedDB.open('Map_Database', 1)
-          requestIndexedDB.onsuccess = (event) => {
-            var db = event.target.result
-
-            var transaction = db.transaction('markers', 'readwrite')
-            const store = transaction.objectStore('markers')
-            let newIcons = [
-              {
-                type: 'Point',
-                category: 'home',
-                subCategory: [],
-                icon: 'home',
-                color: ['red'],
-              },
-              {
-                type: 'Polygon',
-                category: 'area',
-                subCategory: [],
-                icon: '',
-                color: ['green'],
-              },
-              {
-                type: 'MultiLineString',
-                category: 'line',
-                subCategory: [],
-                icon: '',
-                color: ['blue'],
-              },
-            ]
-            newIcons.forEach((element) => {
-              store.add(element)
-            })
-
-            console.log('markers added to the store')
-            transaction.oncomplete = () => {
-              db.close()
-            }
-          }
-          requestIndexedDB.onerror = (event) => {
-            console.log(event)
-          }
-        }
-      }
-      this.$store.dispatch('loadMarkers')
-    }
     if (this.userAuth === undefined) {
-      checkDB()
+      this.$store.dispatch('markersLoad')
     }
   },
 }

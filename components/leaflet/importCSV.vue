@@ -16,6 +16,7 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
 
 export default {
   data: () => ({
@@ -25,6 +26,8 @@ export default {
     error: false,
   }),
   computed: {
+    ...mapState(['markers']),
+
     fileNameRules() {
         return [
         (v) => !!v || "A file is required",
@@ -182,7 +185,7 @@ export default {
                 db.close()
               }
             }
-            localStorage.setItem('APIGeoMap', JSON.stringify({GeoJsonDatas: this.objetData}))
+            localStorage.setItem('APIGeoMap', JSON.stringify({GeoJsonDatas: this.objetData, markers: this.markers}))
             this.$router.push('/myData')
           }
         } catch (error) {

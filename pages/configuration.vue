@@ -9,7 +9,6 @@
     <v-col cols="12" class="text-center">
       <h1 class="mb-2">My Markers</h1>
       <p v-if="DBmessage">{{ DBmessage }}</p>
-      <v-btn @click="deleteDB">Delete All Markers</v-btn>
 
       <v-btn @click="showModal = true">Add marker</v-btn>
     </v-col>
@@ -19,7 +18,7 @@
 </template>
 
 <script>
-import { mapState, mapMutations } from 'vuex'
+import { mapState, mapActions } from 'vuex'
 
 export default {
   layout: 'datasLayout',
@@ -34,16 +33,13 @@ export default {
     ...mapState(['markers']),
   },
   methods: {
-    ...mapMutations(['RESET_MARKERS']),
+    ...mapActions(['markersLoad']),
     modalMarkerResponse(payload) {
       this.showModal = payload.message
     },
-    async deleteDB() {
-      await this.resetDB()
-    },
   },
   mounted() {
-    this.$store.dispatch('loadMarkers')
+    this.markersLoad()
   },
 }
 </script>

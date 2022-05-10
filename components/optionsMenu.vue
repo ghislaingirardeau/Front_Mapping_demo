@@ -52,7 +52,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapState, mapActions } from 'vuex'
 
 export default {
   data() {
@@ -68,7 +68,7 @@ export default {
     map: Object,
   },
   computed: {
-    ...mapState(['userAuth']),
+    ...mapState(['userAuth', 'markers']),
     settings() {
       let menu = [
         {
@@ -125,20 +125,31 @@ export default {
     },
   },
   methods: {
+    ...mapActions(['markersReset']),
+
     async resetApp() {
-      let result = await this.resetDB() // mixin
-      if (result) {
-        localStorage.removeItem('APIGeoMap')
+      let confirm = window.confirm(
+          'This action will reset the app'
+      )
+      if (confirm) {
+        this.markersReset()
         location.reload()
       } else {
-        console.log('promise rejected')
+        console.log('Cancel')
       }
     },
     removeGeoJson() {
-      localStorage.removeItem('APIGeoMap')
-      this.message = 'datas have been removed successfully'
-      this.showMenu = false
-      this.removeBtn = false
+      let confirm = window.confirm(
+          'This action will delete only your datas'
+      )
+      if (confirm) {
+        localStorage.setItem('APIGeoMap', JSON.stringify({markers: this.markers}))
+        this.message = 'datas have been removed successfully'
+        this.showMenu = false
+        this.removeBtn = false
+      } else {
+        console.log('Cancel')
+      }
     },
     doThisFunction(e) {
       switch (e) {

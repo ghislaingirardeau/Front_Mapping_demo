@@ -125,8 +125,8 @@ export default {
       this.showModal = !this.showModal
     },
     async updateItem() {
-
-      const updateCursor = (cursor, indexColor = 0, indexSubCategory = undefined) => {
+      console.log(this.editItem.id );
+      /* const updateCursor = (cursor, indexColor = 0, indexSubCategory = undefined) => {
         cursor.value.color.splice(indexColor, 1, this.editItem.color)
         // update sub only if not empty = can be empty if update a category
         indexSubCategory != undefined ? cursor.value.subCategory.splice(indexSubCategory, 1, this.editItem.subCategory) : '' 
@@ -150,14 +150,14 @@ export default {
               }
             }
             updateGeoFromLocal()
-            localStorage.setItem('APIGeoMap', JSON.stringify({GeoJsonDatas: geoFromLocal.GeoJsonDatas}))
+            localStorage.setItem('APIGeoMap', JSON.stringify({GeoJsonDatas: geoFromLocal.GeoJsonDatas, markers: this.markers}))
           } catch (error) {
             console.log(error, 'error on localstorage data update');
           }
 
         }
-      }
-      const updateDB = (e) => {
+      } */
+      /* const updateDB = (e) => {
         return new Promise((resolve, reject) => {
           const requestIndexedDB = window.indexedDB.open('Map_Database', 1)
           requestIndexedDB.onerror = (event) => {
@@ -202,74 +202,32 @@ export default {
           }
         });
         
-      }
-      if (this.$refs.form.validate()) {
+      } */
+      /* if (this.$refs.form.validate()) {
         
         let result = await updateDB(this.editItem.id)
         if (result) {
           this.showModal = !this.showModal
           this.editItem.subCategory = ''
         }
-      }
+      } */
     },
-    removeDB(e) {
-      const removeItem = (e) => {
-        const requestIndexedDB = window.indexedDB.open('Map_Database', 1)
-        requestIndexedDB.onerror = (event) => {
-          console.log(event)
-        }
+    async removeDB(e) {
 
-        // la requete
-        requestIndexedDB.onsuccess = (event) => {
-          let db = event.target.result
-
-          let transaction = db.transaction('markers', 'readwrite')
-          let store = transaction.objectStore('markers') // store = table in sql
-          store.openCursor().onsuccess = (event) => {
-            const cursor = event.target.result
-
-            if (cursor) {
-              if (cursor.value.category === e.category) {
-                if (cursor.value.subCategory.length > 1) {
-                  // si multi sub category, update color and subcat en supprimant l'item du tableau
-                  let indexColor = cursor.value.color.indexOf(e.color[0])
-                  let indexSubCategory = cursor.value.subCategory.indexOf(
-                    e.subCategory[0]
-                  )
-
-                  cursor.value.color.splice(indexColor, 1)
-                  cursor.value.subCategory.splice(indexSubCategory, 1)
-                  const request = cursor.update(cursor.value)
-                  request.onsuccess = () => {
-                    console.log('Data updated')
-                    this.$store.dispatch('loadMarkers')
-                  }
-                } else {
-                  // si array sucategory is empty or have '' == remove item
-                  let idQuery = store.delete(cursor.key)
-                  idQuery.onsuccess = (event) => {
-                    this.$store.dispatch('loadMarkers')
-                    alert('this marker has been removed')
-                  }
-                }
-              }
-              cursor.continue()
-            } else {
-              console.log('Entries displayed.')
-            }
-          }
-
-          transaction.oncomplete = () => {
-            db.close()
-          }
-          transaction.onerror = (event) => {
-            console.log(event)
-          }
-        }
+      const updateLs = () => {
+        return new Promise((resolve, reject) => {
+          let dataLs = JSON.parse(localStorage.getItem('APIGeoMap'))
+          let index = dataLs.markers.findIndex(elt => (elt.category === e.category && elt.subCategory[0] === e.subCategory[0]))
+          dataLs.markers.splice(index, 1)
+          localStorage.setItem('APIGeoMap', JSON.stringify(dataLs))
+          resolve(true)
+        });
       }
+      
       let confirm = window.confirm(`Remove the item ${e.category} ?`)
       if (confirm) {
-        removeItem(e)
+        let result = await updateLs()
+        result ? this.$store.dispatch('markersLoad') : alert('erreur lors de la suppression')
       }
     },
   },
