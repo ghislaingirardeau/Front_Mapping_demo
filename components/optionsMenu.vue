@@ -52,6 +52,7 @@
 </template>
 
 <script>
+import { mapState} from 'vuex'
 
 export default {
   data() {
@@ -78,7 +79,15 @@ export default {
           to: '/configuration',
         }
       ],
-      actions: [
+    }
+  },
+  props: {
+    map: Object,
+  },
+  computed: {
+    ...mapState(['userAuth']),
+    actions() {
+      let list = [
         {
           id: '1',
           icon: 'mdi-export',
@@ -99,11 +108,18 @@ export default {
           icon: 'mdi-ruler',
           title: 'Show measure',
         },
-      ],
+      ]
+      if(this.userAuth) {
+        list.push({
+          id: '5',
+          icon: 'mdi-logout',
+          title: 'Logout',
+        })
+      } else {
+        list.splice(4, 1)
+      }
+      return list
     }
-  },
-  props: {
-    map: Object,
   },
   methods: {
     async resetApp() {
@@ -137,6 +153,9 @@ export default {
           break
         case '4':
           this.showMeasure()
+          break
+        case '5':
+          this.$fire.auth.signOut()
           break
       }
     },
