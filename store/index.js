@@ -20,10 +20,10 @@ export const actions = {
                     .updateProfile({
                         displayName: formData.displayName,
                     })
-                const authListener = await this.$fire.auth.onAuthStateChanged((userAuth) => {
-                    if (userAuth) {
-                        const uid = userAuth.uid;
-                        console.log(userAuth, uid);
+                const authListener = await this.$fire.auth.onAuthStateChanged((user) => {
+                    if (user) {
+                        const uid = user.uid;
+                        console.log(user, uid);
                     } else {
                         console.log("User is signed out");
                         commit('USER_SIGNOUT')
@@ -55,9 +55,9 @@ export const actions = {
             );
             if (userLog) {
                 console.log('log ok');
-                const authListener = await this.$fire.auth.onAuthStateChanged((userAuth) => {
-                    if (userAuth) {
-                        const uid = userAuth.uid;
+                const authListener = await this.$fire.auth.onAuthStateChanged((user) => {
+                    if (user) {
+                        const uid = user.uid;
                     } else {
                         console.log("User is signed out");
                         commit('USER_SIGNOUT')
@@ -65,11 +65,11 @@ export const actions = {
                 });
                 if (authListener) {
                     console.log('ecouteur ok');
-                    commit('USER_FECTH', userLog.userAuth)
+                    commit('USER_FECTH', userLog.user)
 
                     const messageRef = this.$fire.database.ref('mapApp')
                     try {
-                        messageRef.child(userLog.userAuth.uid).once('value', function (snapshot) {
+                        messageRef.child(userLog.user.uid).once('value', function (snapshot) {
                             // RETRIEVE DATA HERE WITH uid
                             console.log('data retrieve')
                             commit('SAVE_MARKERS', snapshot.val().markers);
