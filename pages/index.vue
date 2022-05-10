@@ -8,6 +8,7 @@
     <!-- MODAL SETTING -->
     <modalCustom :showModal="modalDatas.showModal" @send-modal="modalResponse">
       <template v-slot:title>
+        <span v-if="userAuth" class="mr-3">Welcome {{userAuth.displayName}} : </span>
         {{ modalDatas.modalTitle }}
       </template>
       <template v-slot:content>
