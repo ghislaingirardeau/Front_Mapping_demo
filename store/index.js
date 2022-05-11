@@ -88,7 +88,7 @@ export const actions = {
         }
     },
     // INDEXEDDB
-    loadMarkers(context) {
+    /* loadMarkers(context) {
         let results = []
         const requestIndexedDB = window.indexedDB.open('Map_Database', 1)
         requestIndexedDB.onerror = (event) => {
@@ -136,7 +136,7 @@ export const actions = {
                 db.close()
             }
         }
-    },
+    }, */
     markersOnCreate({ commit }, newMarker) {
         let markersLocalStorage = JSON.parse(localStorage.getItem('APIGeoMap'))
         let flatMarkers = []
@@ -162,17 +162,17 @@ export const actions = {
         if (markersLocalStorage) {
             markersLocalStorage.markers.push(...flatMarkers)
             localStorage.setItem('APIGeoMap', JSON.stringify({ GeoJsonDatas: markersLocalStorage.GeoJsonDatas, markers: markersLocalStorage.markers }))
-            commit('SAVE_MARKERS_LS', markersLocalStorage.markers);
+            commit('SAVE_MARKERS', markersLocalStorage.markers);
         } else {
             let markers = [...flatMarkers]
             localStorage.setItem('APIGeoMap', JSON.stringify({ markers: markers }))
-            commit('SAVE_MARKERS_LS', markers);
+            commit('SAVE_MARKERS', markers);
         }
     },
     markersLoad({ commit }) {
         let markersLocalStorage = JSON.parse(localStorage.getItem('APIGeoMap'))
         if (markersLocalStorage && markersLocalStorage.markers) {
-            commit('SAVE_MARKERS_LS', markersLocalStorage.markers);
+            commit('SAVE_MARKERS', markersLocalStorage.markers);
         }
     },
     markersReset({ commit }) {
@@ -182,11 +182,8 @@ export const actions = {
 }
 // contains your mutations
 export const mutations = {
-    SAVE_MARKERS_LS(state, data) {
-        state.markers = data;
-    },
     SAVE_MARKERS(state, data) {
-        state.markersLS = data;
+        state.markers = data;
     },
     RESET_MARKERS(state) {
         state.markers = [];
@@ -201,5 +198,5 @@ export const mutations = {
     },
     ERROR_REPONSE(state, message) {
         state.errorMessage = message
-    }
+    },
 }
