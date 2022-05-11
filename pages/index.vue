@@ -1,5 +1,6 @@
 <template>
   <div class="container">
+    {{markers}} {{GeoJsonDatas}}
     <createMarker
       :markers="markers"
       :showModal="showModalMarker"
@@ -172,7 +173,6 @@ export default {
         // si je valide la creation
         let newGeoJson = payload.newGeoJson
         let groupLayer = newGeoJson.properties.category
-
         this.$store.dispatch('geoJsonOnCreate', newGeoJson)
 
         if (this.propertiesNames.indexOf(groupLayer) === -1) {
@@ -456,6 +456,10 @@ export default {
     },
   },
   mounted() {
+    if (this.userAuth === undefined) {
+      this.$store.dispatch('appLoad')
+    }
+
     // config mapbox
     const tokenMapbox =
       'pk.eyJ1IjoiZ2d3ZWJkZXYiLCJhIjoiY2t4OGVhemd5MXpyMzJvbzE4ZXpxajJzZCJ9.P2KXn7NQDyQ11BkYVkPEcQ'
@@ -508,6 +512,7 @@ export default {
     }
 
     /* RECUPERE LES DONNEES SI PRESENT DANS LE LOCALSTORAGE */
+    console.log(this.GeoJsonDatas);
     let setMapView = {
       center: [0, 0],
       zoom: 6,
@@ -737,9 +742,6 @@ export default {
     this.map.addControl(actionsControl)
     this.map.addControl(locationsControl)
 
-    if (this.userAuth === undefined) {
-      this.$store.dispatch('appLoad')
-    }
   },
 }
 </script>
