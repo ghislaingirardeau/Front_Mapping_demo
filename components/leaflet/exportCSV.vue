@@ -1,6 +1,6 @@
 <template>
   <div>
-    <p>Export to CSV file, type the new file name to download it</p>
+    <p v-if="!errorMessage">Export to CSV file, type the new file name to download it</p>
     <p v-if="errorMessage">
       {{ errorMessage }}
     </p>
@@ -28,6 +28,8 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
+
 export default {
   data: () => ({
     valid: true,
@@ -38,6 +40,9 @@ export default {
       (v) => (v && v.length <= 20) || "Name must be less than 20 characters",
     ],
   }),
+  computed: {
+    ...mapState(['GeoJsonDatas']),
+  },
   methods: {
     convertMyJson() {
       function convertToCSV(objArray) {
@@ -135,11 +140,7 @@ export default {
       };
       if (this.$refs.form.validate()) {
         try {
-          let allDatas = []
-          let geoFromLocal = JSON.parse(localStorage.getItem("APIGeoMap"));
-          for (let property in geoFromLocal.GeoJsonDatas) {
-            allDatas.push(...geoFromLocal.GeoJsonDatas[property])
-          }
+          let allDatas = Object.values(this.GeoJsonDatas).flat()
           download(allDatas);
           this.errorMessage = "Your CSV file is downloaded";
         } catch (error) {
