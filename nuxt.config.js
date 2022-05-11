@@ -74,6 +74,11 @@ export default {
         },
         auth: {
           persistence: 'local', // keep auth on reload & close browser
+          /* initialize: {
+            onAuthStateChangedMutation: 'ON_AUTH_STATE_CHANGED_MUTATION',
+            onAuthStateChangedAction: 'onAuthStateChangedAction',
+            subscribeManually: false
+          }, */
         }
       }
     ]

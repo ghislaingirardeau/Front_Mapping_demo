@@ -125,14 +125,14 @@ export default {
     },
   },
   methods: {
-    ...mapActions(['markersReset']),
+    ...mapActions(['appReset', 'geoJsonReset']),
 
     async resetApp() {
       let confirm = window.confirm(
           'This action will reset the app'
       )
       if (confirm) {
-        this.markersReset()
+        this.appReset()
         location.reload()
       } else {
         console.log('Cancel')
@@ -143,7 +143,7 @@ export default {
           'This action will delete only your datas'
       )
       if (confirm) {
-        localStorage.setItem('APIGeoMap', JSON.stringify({markers: this.markers}))
+        this.geoJsonReset()
         this.message = 'datas have been removed successfully'
         this.showMenu = false
         this.removeBtn = false

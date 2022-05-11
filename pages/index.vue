@@ -8,7 +8,9 @@
     <!-- MODAL SETTING -->
     <modalCustom :showModal="modalDatas.showModal" @send-modal="modalResponse">
       <template v-slot:title>
-        <span v-if="userAuth" class="mr-3">Welcome {{userAuth.displayName}} : </span>
+        <span v-if="userAuth" class="mr-3"
+          >Welcome {{ userAuth.displayName }} :
+        </span>
         {{ modalDatas.modalTitle }}
       </template>
       <template v-slot:content>
@@ -116,7 +118,7 @@ export default {
     distance: [],
   }),
   computed: {
-    ...mapState(['markers', 'userAuth']),
+    ...mapState(['markers', 'userAuth', 'GeoJsonDatas']),
     hubCoordinate() {
       let crd = this.coordinates[this.coordinates.length - 1]
       if (this.coordinates.length > 0) {
@@ -171,6 +173,8 @@ export default {
         let newGeoJson = payload.newGeoJson
         let groupLayer = newGeoJson.properties.category
 
+        this.$store.dispatch('geoJsonOnCreate', newGeoJson)
+
         if (this.propertiesNames.indexOf(groupLayer) === -1) {
           // if category is not inside the layer control, i add it
           this.propertiesNames.push(groupLayer)
@@ -188,6 +192,10 @@ export default {
           this.map.addLayer(this.dynamicLayerGroup[groupLayer])
         } else {
           // if category already exist, i just create the new geojson marker
+
+          // SAVE THE newGeoJson DIRECTLY INSIDE THE LOCALSTORAGE
+          // SO I CAN REMOVE ALL THE CONVERT JSON CODE INSIDE SAVETEMP METHODS
+
           this.createGeoJsonLayer(
             newGeoJson,
             this.dynamicLayerGroup[groupLayer]
@@ -500,30 +508,29 @@ export default {
     }
 
     /* RECUPERE LES DONNEES SI PRESENT DANS LE LOCALSTORAGE */
-    let geoFromLocal = JSON.parse(localStorage.getItem('APIGeoMap'))
     let setMapView = {
       center: [0, 0],
       zoom: 6,
     }
-    if (geoFromLocal && geoFromLocal.GeoJsonDatas) {
+    if (this.GeoJsonDatas) {
       // if there is data from a file, loaded
       try {
-        this.propertiesNames = Object.keys(geoFromLocal.GeoJsonDatas) // recupere le nom de chaque propriete
+        this.propertiesNames = Object.keys(this.GeoJsonDatas) // recupere le nom de chaque propriete
 
         this.propertiesNames.forEach((element) => {
           this.dynamicLayerGroup[element] = L.layerGroup() // creer un nouveau groupe de layer pour chaque nom
           this.createGeoJsonLayer(
-            geoFromLocal.GeoJsonDatas[element],
+            this.GeoJsonDatas[element],
             this.dynamicLayerGroup[element]
           ) // charge le array de goejsons dans le layer
           // zoom the map on the last point added coordinates
-          if (geoFromLocal.GeoJsonDatas[element][0].geometry.type === 'Point') {
+          if (this.GeoJsonDatas[element][0].geometry.type === 'Point') {
             setMapView.center = []
             setMapView.center.push(
-              geoFromLocal.GeoJsonDatas[element][0].geometry.coordinates[1]
+              this.GeoJsonDatas[element][0].geometry.coordinates[1]
             )
             setMapView.center.push(
-              geoFromLocal.GeoJsonDatas[element][0].geometry.coordinates[0]
+              this.GeoJsonDatas[element][0].geometry.coordinates[0]
             )
             setMapView.zoom = 13
           }
@@ -731,7 +738,7 @@ export default {
     this.map.addControl(locationsControl)
 
     if (this.userAuth === undefined) {
-      this.$store.dispatch('markersLoad')
+      this.$store.dispatch('appLoad')
     }
   },
 }

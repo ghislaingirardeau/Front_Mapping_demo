@@ -33,13 +33,13 @@ export default {
     ...mapState(['markers']),
   },
   methods: {
-    ...mapActions(['markersLoad']),
+    ...mapActions(['appLoad']),
     modalMarkerResponse(payload) {
       this.showModal = payload.message
     },
   },
   mounted() {
-    this.markersLoad()
+    this.appLoad()
   },
 }
 </script>

@@ -3,7 +3,7 @@ export const state = () => ({
     userAuth: undefined,
     errorMessage: undefined,
     markers: [],
-    markersLS: []
+    GeoJsonDatas: {}
 })
 
 // contains your actions
@@ -72,9 +72,12 @@ export const actions = {
                     try {
                         messageRef.child(userLog.user.uid).once('value', function (snapshot) {
                             // RETRIEVE DATA HERE WITH uid
-                            console.log('data retrieve')
-                            commit('SAVE_MARKERS', snapshot.val().markers);
-                            localStorage.setItem('APIGeoMap', JSON.stringify({ GeoJsonDatas: snapshot.val().GeoJsonDatas, markers: snapshot.val().markers }))
+                            let datas = {
+                                GeoJsonDatas: snapshot.val().GeoJsonDatas,
+                                markers: snapshot.val().markers
+                            }
+                            commit('SAVE_MARKERS', datas);
+                            localStorage.setItem('APIGeoMap', JSON.stringify(datas))
                         })
                     } catch (e) {
                         alert(e)
@@ -137,7 +140,7 @@ export const actions = {
             }
         }
     }, */
-    markersOnCreate({ commit }, newMarker) {
+    markersOnCreate({ commit, state }, newMarker) {
         let markersLocalStorage = JSON.parse(localStorage.getItem('APIGeoMap'))
         let flatMarkers = []
         if (newMarker.subCategory.length > 0) {
@@ -158,35 +161,56 @@ export const actions = {
         } else {
             flatMarkers.push(newMarker)
         }
-
+        /* let array = [...state.markers, ...flatMarkers]
+        console.log(array); */
         if (markersLocalStorage) {
             markersLocalStorage.markers.push(...flatMarkers)
             localStorage.setItem('APIGeoMap', JSON.stringify({ GeoJsonDatas: markersLocalStorage.GeoJsonDatas, markers: markersLocalStorage.markers }))
-            commit('SAVE_MARKERS', markersLocalStorage.markers);
+            commit('SAVE_MARKERS', markersLocalStorage);
         } else {
-            let markers = [...flatMarkers]
-            localStorage.setItem('APIGeoMap', JSON.stringify({ markers: markers }))
-            commit('SAVE_MARKERS', markers);
+            let data = {
+                markers: [...flatMarkers]
+            }
+            localStorage.setItem('APIGeoMap', JSON.stringify(data))
+            commit('SAVE_MARKERS', data);
         }
     },
-    markersLoad({ commit }) {
+    appLoad({ commit }) {
         let markersLocalStorage = JSON.parse(localStorage.getItem('APIGeoMap'))
-        if (markersLocalStorage && markersLocalStorage.markers) {
-            commit('SAVE_MARKERS', markersLocalStorage.markers);
+        if (markersLocalStorage) {
+            commit('SAVE_MARKERS', markersLocalStorage);
         }
     },
-    markersReset({ commit }) {
+    appReset({ commit }) {
         commit('RESET_MARKERS')
-        localStorage.setItem('APIGeoMap', JSON.stringify({ markers: [] }))
-    }
+        localStorage.removeItem('APIGeoMap')
+    },
+    geoJsonOnCreate({ commit }, newGeoJson) {
+        commit('SAVE_GEOJSON', newGeoJson)
+    },
+    geoJsonReset({ commit, state }) {
+        commit('RESET_GEOJSON')
+        localStorage.setItem('APIGeoMap', JSON.stringify({ markers: state.markers }))
+    },
 }
 // contains your mutations
 export const mutations = {
     SAVE_MARKERS(state, data) {
-        state.markers = data;
+        state.markers = data.markers;
+        data.GeoJsonDatas ? state.GeoJsonDatas = data.GeoJsonDatas : '';
     },
     RESET_MARKERS(state) {
         state.markers = [];
+        state.GeoJsonDatas = []
+    },
+    SAVE_GEOJSON(state, data) {
+        state.GeoJsonDatas[data.properties.category] ?
+            state.GeoJsonDatas[data.properties.category].push(data) :
+            state.GeoJsonDatas[data.properties.category] = [data]
+        localStorage.setItem('APIGeoMap', JSON.stringify({ GeoJsonDatas: state.GeoJsonDatas, markers: state.markers }))
+    },
+    RESET_GEOJSON(state) {
+        state.GeoJsonDatas = []
     },
     // FIREBASE PAGE
     USER_FECTH(state, authUser) {

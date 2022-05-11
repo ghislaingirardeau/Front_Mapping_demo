@@ -55,7 +55,6 @@
           >
             mdi-triangle
           </v-icon>
-
         </template>
         <template v-slot:[`item.edit`]="{ item }">
           <v-icon
@@ -115,7 +114,8 @@ export default {
       this.showModal = payload.message
     },
     openEditor(e) {
-      if (e.subCategory.length > 0 && e.subCategory[0].length > 1) { // if there is subcat
+      if (e.subCategory.length > 0 && e.subCategory[0].length > 1) {
+        // if there is subcat
         this.rulesEditSub = [(v) => v.length > 2 || 'minimum 2 characters']
         this.editItem.newSubCategory = e.subCategory // load the actual subcat
       } else {
@@ -126,43 +126,60 @@ export default {
     },
     async updateItem() {
       let dataLs = JSON.parse(localStorage.getItem('APIGeoMap'))
-      let updateMarker = {...this.editItem.old}
+      let updateMarker = { ...this.editItem.old }
 
       // UPDATE MARKER FROM LOCALSTORAGE
       const setMarker = () => {
         return new Promise((resolve, reject) => {
-          let index = dataLs.markers.findIndex(elt => (elt.category === this.editItem.old.category && elt.subCategory[0] === this.editItem.old.subCategory[0]))
+          let index = dataLs.markers.findIndex(
+            (elt) =>
+              elt.category === this.editItem.old.category &&
+              elt.subCategory[0] === this.editItem.old.subCategory[0]
+          )
           updateMarker.color = [this.editItem.newColor]
-          updateMarker.subCategory = this.editItem.newSubCategory.length > 1 ? [this.editItem.newSubCategory] : []
+          updateMarker.subCategory =
+            this.editItem.newSubCategory.length > 1
+              ? [this.editItem.newSubCategory]
+              : []
           dataLs.markers.splice(index, 1, updateMarker)
           resolve(true)
-        });
+        })
       }
       // UPDATE GEOJSON FROM LOCALSTORAGE
       const setGeoJson = () => {
         return new Promise((resolve, reject) => {
-          if(dataLs.GeoJsonDatas[updateMarker.category]) { // if undefined = there is no data with this marker yet
-            dataLs.GeoJsonDatas[updateMarker.category].forEach(element => {
-              if(element.properties.subCategory === this.editItem.old.subCategory[0]) {
+          if (dataLs.GeoJsonDatas[updateMarker.category]) {
+            // if undefined = there is no data with this marker yet
+            dataLs.GeoJsonDatas[updateMarker.category].forEach((element) => {
+              if (
+                element.properties.subCategory ===
+                this.editItem.old.subCategory[0]
+              ) {
                 element.icon.color = [this.editItem.newColor]
-                element.properties.subCategory = this.editItem.newSubCategory.length > 1 ? this.editItem.newSubCategory : ''
+                element.properties.subCategory =
+                  this.editItem.newSubCategory.length > 1
+                    ? this.editItem.newSubCategory
+                    : ''
               }
-              if(element.properties.subCategory.length === 0 || element.properties.subCategory[0].length === 0) {
+              if (
+                element.properties.subCategory.length === 0 ||
+                element.properties.subCategory[0].length === 0
+              ) {
                 element.icon.color = [this.editItem.newColor]
               }
-            });
+            })
           }
           resolve(true)
-        });
+        })
       }
-      
+
       if (this.$refs.form.validate()) {
         let resMarker = await setMarker()
         if (resMarker) {
           let resGeoJson = await setGeoJson()
           if (resGeoJson) {
             localStorage.setItem('APIGeoMap', JSON.stringify(dataLs)) // UPDATE LOCAL STORAGE
-            this.$store.dispatch('markersLoad') // RELOAD MARKERS
+            this.$store.dispatch('appLoad') // RELOAD MARKERS
             this.showModal = !this.showModal
             this.editItem.subCategory = ''
           }
@@ -170,21 +187,26 @@ export default {
       }
     },
     async removeDB(e) {
-
       const updateLs = () => {
         return new Promise((resolve, reject) => {
           let dataLs = JSON.parse(localStorage.getItem('APIGeoMap'))
-          let index = dataLs.markers.findIndex(elt => (elt.category === e.category && elt.subCategory[0] === e.subCategory[0]))
+          let index = dataLs.markers.findIndex(
+            (elt) =>
+              elt.category === e.category &&
+              elt.subCategory[0] === e.subCategory[0]
+          )
           dataLs.markers.splice(index, 1)
           localStorage.setItem('APIGeoMap', JSON.stringify(dataLs))
           resolve(true)
-        });
+        })
       }
-      
+
       let confirm = window.confirm(`Remove the item ${e.category} ?`)
       if (confirm) {
         let result = await updateLs()
-        result ? this.$store.dispatch('markersLoad') : alert('erreur lors de la suppression')
+        result
+          ? this.$store.dispatch('appLoad')
+          : alert('erreur lors de la suppression')
       }
     },
   },
