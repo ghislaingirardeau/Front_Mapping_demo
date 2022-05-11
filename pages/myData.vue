@@ -64,6 +64,7 @@ export default {
         })
       })
       localStorage.setItem('APIGeoMap', JSON.stringify({GeoJsonDatas: this.objetData, markers: this.markers}))
+      this.$store.dispatch('appLoad')
       this.objetData = {}
     }
   },

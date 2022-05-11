@@ -190,7 +190,6 @@ export const actions = {
 // contains your mutations
 export const mutations = {
     SAVE_MARKERS(state, data) {
-        console.log(data);
         state.markers = data.markers;
         data.GeoJsonDatas ? state.GeoJsonDatas = data.GeoJsonDatas : '';
     },

@@ -511,7 +511,6 @@ export default {
     }
 
     /* RECUPERE LES DONNEES SI PRESENT DANS LE LOCALSTORAGE */
-    console.log(this.GeoJsonDatas);
     let setMapView = {
       center: [0, 0],
       zoom: 6,
