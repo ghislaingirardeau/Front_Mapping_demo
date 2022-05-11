@@ -141,7 +141,6 @@ export const actions = {
         }
     }, */
     markersOnCreate({ commit, state }, newMarker) {
-        let markersLocalStorage = JSON.parse(localStorage.getItem('APIGeoMap'))
         let flatMarkers = []
         if (newMarker.subCategory.length > 0) {
             for (
@@ -161,19 +160,14 @@ export const actions = {
         } else {
             flatMarkers.push(newMarker)
         }
-        /* let array = [...state.markers, ...flatMarkers]
-        console.log(array); */
-        if (markersLocalStorage) {
-            markersLocalStorage.markers.push(...flatMarkers)
-            localStorage.setItem('APIGeoMap', JSON.stringify({ GeoJsonDatas: markersLocalStorage.GeoJsonDatas, markers: markersLocalStorage.markers }))
-            commit('SAVE_MARKERS', markersLocalStorage);
-        } else {
-            let data = {
-                markers: [...flatMarkers]
-            }
-            localStorage.setItem('APIGeoMap', JSON.stringify(data))
-            commit('SAVE_MARKERS', data);
+        let addedMarker = [...state.markers, ...flatMarkers]
+        console.log(addedMarker);
+        let datas = {
+            GeoJsonDatas: state.GeoJsonDatas,
+            markers: addedMarker
         }
+        localStorage.setItem('APIGeoMap', JSON.stringify(datas))
+        commit('SAVE_MARKERS', datas);
     },
     appLoad({ commit }) {
         let markersLocalStorage = JSON.parse(localStorage.getItem('APIGeoMap'))
@@ -196,6 +190,7 @@ export const actions = {
 // contains your mutations
 export const mutations = {
     SAVE_MARKERS(state, data) {
+        console.log(data);
         state.markers = data.markers;
         data.GeoJsonDatas ? state.GeoJsonDatas = data.GeoJsonDatas : '';
     },

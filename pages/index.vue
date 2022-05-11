@@ -1,6 +1,5 @@
 <template>
   <div class="container">
-    {{markers}} {{GeoJsonDatas}}
     <createMarker
       :markers="markers"
       :showModal="showModalMarker"

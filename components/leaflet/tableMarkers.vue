@@ -80,6 +80,8 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
+
 export default {
   data() {
     return {
@@ -106,8 +108,8 @@ export default {
       },
     }
   },
-  props: {
-    markers: Array,
+  computed: {
+    ...mapState(['markers', 'GeoJsonDatas']),
   },
   methods: {
     modalResponse(payload) {
@@ -125,13 +127,16 @@ export default {
       this.showModal = !this.showModal
     },
     async updateItem() {
-      let dataLs = JSON.parse(localStorage.getItem('APIGeoMap'))
+      let dataStore = {
+        markers: [...this.markers],
+        GeoJsonDatas: JSON.parse(JSON.stringify(this.GeoJsonDatas)) // to create a deep copy, otherwise change the state.GeoJsonDatas as well !
+      }
       let updateMarker = { ...this.editItem.old }
 
       // UPDATE MARKER FROM LOCALSTORAGE
       const setMarker = () => {
         return new Promise((resolve, reject) => {
-          let index = dataLs.markers.findIndex(
+          let index = dataStore.markers.findIndex(
             (elt) =>
               elt.category === this.editItem.old.category &&
               elt.subCategory[0] === this.editItem.old.subCategory[0]
@@ -141,16 +146,16 @@ export default {
             this.editItem.newSubCategory.length > 1
               ? [this.editItem.newSubCategory]
               : []
-          dataLs.markers.splice(index, 1, updateMarker)
+          dataStore.markers.splice(index, 1, updateMarker)
           resolve(true)
         })
       }
       // UPDATE GEOJSON FROM LOCALSTORAGE
       const setGeoJson = () => {
         return new Promise((resolve, reject) => {
-          if (dataLs.GeoJsonDatas[updateMarker.category]) {
+          if (dataStore.GeoJsonDatas && dataStore.GeoJsonDatas[updateMarker.category]) {
             // if undefined = there is no data with this marker yet
-            dataLs.GeoJsonDatas[updateMarker.category].forEach((element) => {
+            dataStore.GeoJsonDatas[updateMarker.category].forEach((element) => {
               if (
                 element.properties.subCategory ===
                 this.editItem.old.subCategory[0]
@@ -178,7 +183,7 @@ export default {
         if (resMarker) {
           let resGeoJson = await setGeoJson()
           if (resGeoJson) {
-            localStorage.setItem('APIGeoMap', JSON.stringify(dataLs)) // UPDATE LOCAL STORAGE
+            localStorage.setItem('APIGeoMap', JSON.stringify(dataStore)) // UPDATE LOCAL STORAGE
             this.$store.dispatch('appLoad') // RELOAD MARKERS
             this.showModal = !this.showModal
             this.editItem.subCategory = ''
@@ -189,14 +194,17 @@ export default {
     async removeDB(e) {
       const updateLs = () => {
         return new Promise((resolve, reject) => {
-          let dataLs = JSON.parse(localStorage.getItem('APIGeoMap'))
-          let index = dataLs.markers.findIndex(
+          let dataStore = {
+            markers: [...this.markers],
+            GeoJsonDatas: JSON.parse(JSON.stringify(this.GeoJsonDatas)) // to create a deep copy, otherwise change the state.GeoJsonDatas as well !
+          }
+          let index = dataStore.markers.findIndex(
             (elt) =>
               elt.category === e.category &&
               elt.subCategory[0] === e.subCategory[0]
           )
-          dataLs.markers.splice(index, 1)
-          localStorage.setItem('APIGeoMap', JSON.stringify(dataLs))
+          dataStore.markers.splice(index, 1)
+          localStorage.setItem('APIGeoMap', JSON.stringify(dataStore))
           resolve(true)
         })
       }

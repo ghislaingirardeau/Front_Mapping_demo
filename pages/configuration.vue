@@ -13,7 +13,7 @@
       <v-btn @click="showModal = true">Add marker</v-btn>
     </v-col>
 
-    <tableMarkers :markers="markers" :key="markers.length" />
+    <tableMarkers :key="markers.length" />
   </v-row>
 </template>
 
