@@ -421,35 +421,16 @@ export default {
       }
     },
     async saveTemporaly() {
-      let jsonToSave = {}
-      for (let property in this.dynamicLayerGroup) {
-        jsonToSave[property] = [] // create a property as an array empty
-        let arrayPerProperty = this.dynamicLayerGroup[property].getLayers()
-        arrayPerProperty.forEach((element) => {
-          let feature = element.getLayers()
-          if (feature.length > 1) {
-            // when it add a geojson to the grouplayer, it create an other array of what it's added
-            feature.forEach((element) => {
-              let item = element.feature
-              jsonToSave[item.properties.category].push(item)
-            })
-          } else {
-            // when it's mounted it create an array / layer => so we look only for the [0]
-            let item = feature[0].feature
-            jsonToSave[item.properties.category].push(item)
-          }
-        })
-      }
       localStorage.setItem(
         'APIGeoMap',
-        JSON.stringify({ GeoJsonDatas: jsonToSave, markers: this.markers })
+        JSON.stringify({ GeoJsonDatas: this.GeoJsonDatas, markers: this.markers })
       )
       // SAVE IN FIREBASE IF USER
       if (this.userAuth) {
         const messageRef = this.$fire.database.ref('mapApp')
         await messageRef.child(this.userAuth.uid).update({
           markers: this.markers,
-          GeoJsonDatas: jsonToSave,
+          GeoJsonDatas: this.GeoJsonDatas,
         })
       }
     },
