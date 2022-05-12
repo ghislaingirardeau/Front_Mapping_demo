@@ -133,14 +133,13 @@ export default {
             }
           })
 
-          await countCategories.forEach((element, i) => {
+          await countCategories.forEach((eltCategory, i) => {
             // pour chaque category, je lui crée un nouveau tableau
-            let name = element
-            this.objetData[element] = new Array()
+            this.objetData[eltCategory] = new Array()
             JsonFromCsv.forEach((index) => {
               // j'envoie le geojson dans le tableau correspondant
-              if (index.category === name) {
-                createGeoJsons(index, this.objetData[element])
+              if (index.category === eltCategory) {
+                createGeoJsons(index, this.objetData[eltCategory])
               }
               // enregistre la sous category et la couleur si category presente mais sous category n'existe pas
               if (
@@ -167,27 +166,14 @@ export default {
     async validImport() {
       if (this.$refs.form.validate()) {
         try {
-        // reinitialise la base de donnée marker
-          let result = await this.resetDB() // mixin
-          if (result) {
-            const requestIndexedDB = window.indexedDB.open('Map_Database', 1)
-            requestIndexedDB.onsuccess = (event) => {
-              var db = event.target.result
-
-              var transaction = db.transaction('markers', 'readwrite')
-              const store = transaction.objectStore('markers')
-              this.newMarker.forEach((element) => {
-                store.add(element)
-              })
-
-              console.log('markers added to the store')
-              transaction.oncomplete = () => {
-                db.close()
-              }
-            }
-            localStorage.setItem('APIGeoMap', JSON.stringify({GeoJsonDatas: this.objetData, markers: this.markers}))
-            this.$router.push('/myData')
+          console.log(this.newMarker, this.objetData); // DEBUG IF HAS SUB CATEGORY
+          let datas = {
+            markers: this.newMarker,
+            GeoJsonDatas: this.objetData
           }
+          /* localStorage.setItem('APIGeoMap', JSON.stringify(datas))
+          this.$router.push('/myData') */
+
         } catch (error) {
           console.log(error)
         }
