@@ -24,7 +24,6 @@ export const actions = {
                 const authListener = await this.$fire.auth.onAuthStateChanged((user) => {
                     if (user) {
                         const uid = user.uid;
-                        console.log(user, uid);
                     } else {
                         console.log("User is signed out");
                         commit('USER_SIGNOUT')
@@ -32,13 +31,18 @@ export const actions = {
                 });
                 if (authListener) {
                     console.log('ecouteur ok');
-                    commit('USER_FECTH', newUser.userAuth)
+                    commit('USER_FECTH', newUser.user)
 
                     const messageRef = this.$fire.database.ref('mapApp')
-                    const geoFromLocal = JSON.parse(localStorage.getItem("APIGeoMap"));
-                    await messageRef.child(newUser.userAuth.uid).set({
-                        markers: state.markers,
-                        GeoJsonDatas: geoFromLocal.GeoJsonDatas ? geoFromLocal.GeoJsonDatas : ''
+                    await messageRef.child(newUser.user.uid).set({
+                        markers: state.markers.length != 0 ? state.markers : [{
+                            type: 'Point',
+                            category: 'test',
+                            subCategory: [''],
+                            icon: 'home',
+                            color: ['blue'],
+                        }],
+                        GeoJsonDatas: state.GeoJsonDatas
                     })
                     console.log('data ok')
                 }
@@ -76,6 +80,7 @@ export const actions = {
                                 GeoJsonDatas: snapshot.val().GeoJsonDatas,
                                 markers: snapshot.val().markers
                             }
+                            console.log(datas);
                             commit('SAVE_MARKERS', datas);
                             localStorage.setItem('APIGeoMap', JSON.stringify(datas))
                         })
@@ -111,7 +116,6 @@ export const actions = {
             flatMarkers.push(newMarker)
         }
         let addedMarker = [...state.markers, ...flatMarkers]
-        console.log(addedMarker);
         let datas = {
             GeoJsonDatas: state.GeoJsonDatas,
             markers: addedMarker
@@ -162,6 +166,15 @@ export const mutations = {
     USER_FECTH(state, authUser) {
         const { uid, email, emailVerified, displayName } = authUser
         state.userAuth = { uid, email, emailVerified, displayName }
+        state.markers.length === 0 ?
+            state.markers = [{
+                type: 'Point',
+                category: 'test',
+                subCategory: [''],
+                icon: 'home',
+                color: ['blue'],
+            }]
+            : ""
     },
     USER_SIGNOUT(state) {
         state.userAuth = undefined
