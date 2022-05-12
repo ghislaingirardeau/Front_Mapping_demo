@@ -114,26 +114,26 @@ export default {
             result.push(obj)
           }
           let JsonFromCsv = result
-          let countCategories = []
           // reinitialize datas marker & geojson => to prevent adding when change files
+          let categories = [...new Set(JsonFromCsv.map(elt => elt.category))]
+          // CREATE THE MARKERS
           this.newMarker = []
+          // remove the object which as the same category and sub category
+          let res = JsonFromCsv.filter((value, index, self) =>
+            index === self.findIndex((t) => (
+              t.category === value.category && t.subCategory === value.subCategory
+            ))
+          )
+          this.newMarker = res.map(({type, category, subCategory, icon, color}) => ({
+            type: type,
+            category: category, 
+            subCategory: [subCategory],
+            icon: icon,
+            color: [color],
+            }))
           this.objetData = {}
-
-          await JsonFromCsv.forEach((element) => {
-            // recupere le nombre de category differentes créées
-            if (countCategories.indexOf(element.category) === -1) {
-              countCategories.push(element.category)
-              this.newMarker.push({
-                type: element.type,
-                category: element.category,
-                subCategory: [],
-                icon: element.icon,
-                color: [],
-              })
-            }
-          })
-
-          await countCategories.forEach((eltCategory, i) => {
+          // CREATE THE GEOJSON
+          await categories.forEach((eltCategory, i) => {
             // pour chaque category, je lui crée un nouveau tableau
             this.objetData[eltCategory] = new Array()
             JsonFromCsv.forEach((index) => {
@@ -141,16 +141,9 @@ export default {
               if (index.category === eltCategory) {
                 createGeoJsons(index, this.objetData[eltCategory])
               }
-              // enregistre la sous category et la couleur si category presente mais sous category n'existe pas
-              if (
-                this.newMarker[i].category === index.category &&
-                this.newMarker[i].subCategory.indexOf(index.subCategory) === -1
-              ) {
-                this.newMarker[i].subCategory.push(index.subCategory)
-                this.newMarker[i].color.push(index.color)
-              }
             })
           })
+          console.log(this.newMarker);
         }
         reader.readAsBinaryString(fileInput.files[0])
       }
