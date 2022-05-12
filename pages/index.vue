@@ -496,7 +496,7 @@ export default {
       center: [0, 0],
       zoom: 6,
     }
-    if (this.GeoJsonDatas) {
+    if (Object.keys(this.GeoJsonDatas).length > 0) {
       // if there is data from a file, loaded
       try {
         this.propertiesNames = Object.keys(this.GeoJsonDatas) // recupere le nom de chaque propriete

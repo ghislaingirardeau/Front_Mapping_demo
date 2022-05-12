@@ -158,12 +158,11 @@ export default {
     async validImport() {
       if (this.$refs.form.validate()) {
         try {
-          let datas = {
+          let dataStore = {
             markers: this.newMarker,
             GeoJsonDatas: this.objetData
           }
-          localStorage.setItem('APIGeoMap', JSON.stringify(datas))
-          this.$store.dispatch('appLoad')
+          this.$store.dispatch('appUpdate', dataStore)
           this.$router.push('/myData')
         } catch (error) {
           console.log(error)

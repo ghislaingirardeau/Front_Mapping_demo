@@ -183,8 +183,7 @@ export default {
         if (resMarker) {
           let resGeoJson = await setGeoJson()
           if (resGeoJson) {
-            localStorage.setItem('APIGeoMap', JSON.stringify(dataStore)) // UPDATE LOCAL STORAGE
-            this.$store.dispatch('appLoad') // RELOAD MARKERS
+            this.$store.dispatch('appUpdate', dataStore) // RELOAD MARKERS
             this.showModal = !this.showModal
             this.editItem.subCategory = ''
           }
@@ -204,16 +203,16 @@ export default {
               elt.subCategory[0] === e.subCategory[0]
           )
           dataStore.markers.splice(index, 1)
-          localStorage.setItem('APIGeoMap', JSON.stringify(dataStore))
-          resolve(true)
+          resolve(dataStore)
         })
       }
 
       let confirm = window.confirm(`Remove the item ${e.category} ?`)
       if (confirm) {
-        let result = await updateLs()
-        result
-          ? this.$store.dispatch('appLoad')
+        let dataStore = await updateLs()
+        console.log(dataStore);
+        dataStore
+          ? this.$store.dispatch('appUpdate', dataStore)
           : alert('erreur lors de la suppression')
       }
     },

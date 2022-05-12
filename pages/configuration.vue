@@ -33,13 +33,9 @@ export default {
     ...mapState(['markers']),
   },
   methods: {
-    ...mapActions(['appLoad']),
     modalMarkerResponse(payload) {
       this.showModal = payload.message
     },
-  },
-  mounted() {
-    this.appLoad()
   },
 }
 </script>

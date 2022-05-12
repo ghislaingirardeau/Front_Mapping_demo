@@ -32,7 +32,7 @@ export default {
     }
   },
     computed: {
-    ...mapState(['markers']),
+    ...mapState(['markers', 'GeoJsonDatas']),
   },
   methods: {
     linkMap() {
@@ -63,18 +63,19 @@ export default {
           }
         })
       })
-      localStorage.setItem('APIGeoMap', JSON.stringify({GeoJsonDatas: this.objetData, markers: this.markers}))
-      this.$store.dispatch('appLoad')
+      let dataStore = {
+        GeoJsonDatas: this.objetData, 
+        markers: this.markers
+      }
+      this.$store.dispatch('appUpdate', dataStore)
       this.objetData = {}
     }
   },
   mounted() {
     try {
       /* RECUPERE LES DONNEES SI PRESENT DANS LE LOCALSTORAGE */
-      let geoFromLocal = JSON.parse(localStorage.getItem('APIGeoMap'))
-
-      for (let property in geoFromLocal.GeoJsonDatas) {
-        this.allDatas.push(...geoFromLocal.GeoJsonDatas[property])
+      for (let property in this.GeoJsonDatas) {
+        this.allDatas.push(...this.GeoJsonDatas[property])
         this.allDatas.reverse()
       }
     } catch (error) {}

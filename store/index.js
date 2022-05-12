@@ -116,7 +116,6 @@ export const actions = {
             GeoJsonDatas: state.GeoJsonDatas,
             markers: addedMarker
         }
-        localStorage.setItem('APIGeoMap', JSON.stringify(datas))
         commit('SAVE_MARKERS', datas);
     },
     appLoad({ commit }) {
@@ -124,6 +123,9 @@ export const actions = {
         if (markersLocalStorage) {
             commit('SAVE_MARKERS', markersLocalStorage);
         }
+    },
+    appUpdate({ commit }, datas) {
+        commit('SAVE_MARKERS', datas);
     },
     appReset({ commit }) {
         commit('RESET_MARKERS')
@@ -151,7 +153,6 @@ export const mutations = {
         state.GeoJsonDatas[data.properties.category] ?
             state.GeoJsonDatas[data.properties.category].push(data) :
             state.GeoJsonDatas[data.properties.category] = [data]
-        localStorage.setItem('APIGeoMap', JSON.stringify({ GeoJsonDatas: state.GeoJsonDatas, markers: state.markers }))
     },
     RESET_GEOJSON(state) {
         state.GeoJsonDatas = []
