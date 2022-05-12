@@ -125,6 +125,7 @@ export const actions = {
         }
     },
     appUpdate({ commit }, datas) {
+        localStorage.setItem('APIGeoMap', JSON.stringify(datas))
         commit('SAVE_MARKERS', datas);
     },
     appReset({ commit }) {
