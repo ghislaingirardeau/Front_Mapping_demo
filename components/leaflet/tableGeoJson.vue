@@ -76,8 +76,8 @@
             filterable: false,
             value: 'name',
           },
-          { text: 'Details', value: 'popupContent' },
-          { text: 'Type', value: 'category' },
+          { text: 'Popup', value: 'popupContent' },
+          { text: 'Category', value: 'category' },
           { text: 'Actions', value: 'actions' },
         ],
         showModal: false,
@@ -92,14 +92,7 @@
     computed: {
         // RECUPERER LES DONNEES SOUS FORME ARRAY OBJET POUR LES ENVOYE DANS LE TABLEAU DE DATA
         geoItems() {
-          let dataArray = []
-          this.allDatas.forEach(element => {
-            dataArray.push({
-              ...element.properties,
-              ...element.geometry
-            })
-          });
-            return dataArray
+          return this.allDatas.map(({ properties}) => (properties));
         }
     },
     methods: {
