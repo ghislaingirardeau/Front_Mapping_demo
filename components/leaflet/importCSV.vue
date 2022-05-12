@@ -119,8 +119,8 @@ export default {
           // CREATE THE MARKERS
           this.newMarker = []
           // remove the object which as the same category and sub category
-          let res = JsonFromCsv.filter((value, index, self) =>
-            index === self.findIndex((t) => (
+          let res = JsonFromCsv.filter((value, index, array) =>
+              index === array.findIndex((t) => (
               t.category === value.category && t.subCategory === value.subCategory
             ))
           )
@@ -143,7 +143,6 @@ export default {
               }
             })
           })
-          console.log(this.newMarker);
         }
         reader.readAsBinaryString(fileInput.files[0])
       }
@@ -159,14 +158,13 @@ export default {
     async validImport() {
       if (this.$refs.form.validate()) {
         try {
-          console.log(this.newMarker, this.objetData); // DEBUG IF HAS SUB CATEGORY
           let datas = {
             markers: this.newMarker,
             GeoJsonDatas: this.objetData
           }
-          /* localStorage.setItem('APIGeoMap', JSON.stringify(datas))
-          this.$router.push('/myData') */
-
+          localStorage.setItem('APIGeoMap', JSON.stringify(datas))
+          this.$store.dispatch('appLoad')
+          this.$router.push('/myData')
         } catch (error) {
           console.log(error)
         }
