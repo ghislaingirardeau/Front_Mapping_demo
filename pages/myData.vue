@@ -26,13 +26,20 @@ export default {
   layout: 'datasLayout',
   data() {
     return {
-      allDatas: [],
       isActive: false,
       objetData: {}
     }
   },
     computed: {
     ...mapState(['markers', 'GeoJsonDatas']),
+    allDatas() {
+      let properties = []
+      for (let property in this.GeoJsonDatas) {
+        properties.push(...JSON.parse(JSON.stringify(this.GeoJsonDatas[property]))) 
+        // for a deep copy of GeoJsonDatas and avoid mutate error on update
+      }
+      return properties
+    }
   },
   methods: {
     linkMap() {
@@ -49,15 +56,12 @@ export default {
         this.allDatas[index].properties.popupContent = popupContent
       }
       // FUNCTION TO UPDATE JSON IN LOCALSTORAGE
-      this.allDatas.reverse()
       let result = this.allDatas.map((a) => a.properties.category)
       let mySet = [...new Set(result)]
 
       mySet.forEach((element) => {
-        // pour chaque category, je lui crée un nouveau tableau
         this.objetData[element] = new Array()
         this.allDatas.forEach((index) => {
-          // j'envoie le tableau de geosjon dans la categorie correspondante
           if (index.properties.category === element) {
             this.objetData[element].push(index)
           }
@@ -70,15 +74,6 @@ export default {
       this.$store.dispatch('appUpdate', dataStore)
       this.objetData = {}
     }
-  },
-  mounted() {
-    try {
-      /* RECUPERE LES DONNEES SI PRESENT DANS LE LOCALSTORAGE */
-      for (let property in this.GeoJsonDatas) {
-        this.allDatas.push(...this.GeoJsonDatas[property])
-        this.allDatas.reverse()
-      }
-    } catch (error) {}
   },
 }
 </script>
