@@ -29,11 +29,11 @@ export default {
     ...mapState(['markers']),
 
     fileNameRules() {
-        return [
-        (v) => !!v || "A file is required",
-        (v) => this.error || "The CSV format is not correct",
+      return [
+        (v) => !!v || 'A file is required',
+        (v) => this.error || 'The CSV format is not correct',
       ]
-    }
+    },
   },
   methods: {
     async readFileTest() {
@@ -86,73 +86,80 @@ export default {
           layer.push(newGeoJson)
           this.error = true
         } catch (error) {
-          console.log('wrong files', error);
+          console.log('wrong files', error)
           this.error = false
         }
       }
       try {
-              // GET THE FILE IMPORTED AND APPLY THE FUNCTION
-      var fileInput = document.getElementById('csv')
+        // GET THE FILE IMPORTED AND APPLY THE FUNCTION
+        var fileInput = document.getElementById('csv')
 
-      let readFile = () => {
-        var reader = new FileReader()
-        reader.onload = async () => {
-          // get the csv data here
-          let csv = reader.result
-          // CONVERT CSV TO JSON
-          var lines = csv.split('\n')
-          var result = []
-          var headers = lines[0].split(',')
+        let readFile = () => {
+          var reader = new FileReader()
+          reader.onload = async () => {
+            // get the csv data here
+            let csv = reader.result
+            // CONVERT CSV TO JSON
+            var lines = csv.split('\n')
+            var result = []
+            var headers = lines[0].split(',')
 
-          for (var i = 1; i < lines.length - 1; i++) {
-            var obj = {}
-            var currentline = lines[i].split(',')
+            for (var i = 1; i < lines.length - 1; i++) {
+              var obj = {}
+              var currentline = lines[i].split(',')
 
-            for (var j = 0; j < headers.length; j++) {
-              obj[headers[j]] = currentline[j]
-            }
-
-            result.push(obj)
-          }
-          let JsonFromCsv = result
-          // reinitialize datas marker & geojson => to prevent adding when change files
-          let categories = [...new Set(JsonFromCsv.map(elt => elt.category))]
-          // CREATE THE MARKERS
-          this.newMarker = []
-          // remove the object which as the same category and sub category
-          let res = JsonFromCsv.filter((value, index, array) =>
-              index === array.findIndex((t) => (
-              t.category === value.category && t.subCategory === value.subCategory
-            ))
-          )
-          this.newMarker = res.map(({type, category, subCategory, icon, color}) => ({
-            type: type,
-            category: category, 
-            subCategory: [subCategory],
-            icon: icon,
-            color: [color],
-            }))
-          this.objetData = {}
-          // CREATE THE GEOJSON
-          await categories.forEach((eltCategory, i) => {
-            // pour chaque category, je lui crée un nouveau tableau
-            this.objetData[eltCategory] = new Array()
-            JsonFromCsv.forEach((index) => {
-              // j'envoie le geojson dans le tableau correspondant
-              if (index.category === eltCategory) {
-                createGeoJsons(index, this.objetData[eltCategory])
+              for (var j = 0; j < headers.length; j++) {
+                obj[headers[j]] = currentline[j]
               }
-            })
-          })
-        }
-        reader.readAsBinaryString(fileInput.files[0])
-      }
 
-      fileInput.addEventListener('change', readFile)
-      this.error = true
-        
+              result.push(obj)
+            }
+            let JsonFromCsv = result
+            // reinitialize datas marker & geojson => to prevent adding when change files
+            let categories = [
+              ...new Set(JsonFromCsv.map((elt) => elt.category)),
+            ]
+            // CREATE THE MARKERS
+            this.newMarker = []
+            // remove the object which as the same category and sub category
+            let res = JsonFromCsv.filter(
+              (value, index, array) =>
+                index ===
+                array.findIndex(
+                  (t) =>
+                    t.category === value.category &&
+                    t.subCategory === value.subCategory
+                )
+            )
+            this.newMarker = res.map(
+              ({ type, category, subCategory, icon, color }) => ({
+                type: type,
+                category: category,
+                subCategory: [subCategory],
+                icon: icon,
+                color: [color],
+              })
+            )
+            this.objetData = {}
+            // CREATE THE GEOJSON
+            await categories.forEach((eltCategory, i) => {
+              // pour chaque category, je lui crée un nouveau tableau
+              this.objetData[eltCategory] = new Array()
+              JsonFromCsv.forEach((index) => {
+                // j'envoie le geojson dans le tableau correspondant
+                if (index.category === eltCategory) {
+                  createGeoJsons(index, this.objetData[eltCategory])
+                }
+              })
+            })
+          }
+          reader.readAsBinaryString(fileInput.files[0])
+        }
+
+        fileInput.addEventListener('change', readFile)
+        this.error = true
       } catch (error) {
-        console.log(error, 'file is not at the right format');
+        console.log(error, 'file is not at the right format')
         this.error = false
       }
     },
@@ -161,14 +168,14 @@ export default {
         try {
           let dataStore = {
             markers: this.newMarker,
-            GeoJsonDatas: this.objetData
+            GeoJsonDatas: this.objetData,
           }
-          this.$store.dispatch('appUpdate', dataStore)
+          this.$store.dispatch('appLoad', dataStore)
           this.$router.push('/myData')
         } catch (error) {
           console.log(error)
         }
-      } 
+      }
     },
   },
 }

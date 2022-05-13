@@ -423,7 +423,10 @@ export default {
     async saveTemporaly() {
       localStorage.setItem(
         'APIGeoMap',
-        JSON.stringify({ GeoJsonDatas: this.GeoJsonDatas, markers: this.markers })
+        JSON.stringify({
+          GeoJsonDatas: this.GeoJsonDatas,
+          markers: this.markers,
+        })
       )
       // SAVE IN FIREBASE IF USER
       if (this.userAuth) {
@@ -496,7 +499,8 @@ export default {
       center: [0, 0],
       zoom: 6,
     }
-    if (Object.keys(this.GeoJsonDatas).length > 0) { // CHECK IF OBJECT GeoJsonDatas IS EMPTY OR NOT
+    if (Object.keys(this.GeoJsonDatas).length > 0) {
+      // CHECK IF OBJECT GeoJsonDatas IS EMPTY OR NOT
       // if there is data from a file, loaded
       try {
         this.propertiesNames = Object.keys(this.GeoJsonDatas) // recupere le nom de chaque propriete
@@ -720,7 +724,6 @@ export default {
 
     this.map.addControl(actionsControl)
     this.map.addControl(locationsControl)
-
   },
 }
 </script>

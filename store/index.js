@@ -95,15 +95,16 @@ export const actions = {
             commit('ERROR_REPONSE', error.message)
         }
     },
-    appLoad({ commit }) {
-        let markersLocalStorage = JSON.parse(localStorage.getItem('APIGeoMap'))
-        if (markersLocalStorage) {
-            commit('SAVE_MARKERS', markersLocalStorage);
+    appLoad({ commit }, datas) {
+        if (datas) {
+            localStorage.setItem('APIGeoMap', JSON.stringify(datas))
+            commit('SAVE_MARKERS', datas);
+        } else {
+            let datasLocalStorage = JSON.parse(localStorage.getItem('APIGeoMap'))
+            if (datasLocalStorage) {
+                commit('SAVE_MARKERS', datasLocalStorage);
+            }
         }
-    },
-    appUpdate({ commit }, datas) {
-        localStorage.setItem('APIGeoMap', JSON.stringify(datas))
-        commit('SAVE_MARKERS', datas);
     },
     appReset({ commit }) {
         commit('RESET_MARKERS')
