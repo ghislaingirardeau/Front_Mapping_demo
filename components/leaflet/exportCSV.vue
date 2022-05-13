@@ -95,6 +95,7 @@ export default {
 
       let download = (jsonToConvert) => {
         var headers = {
+          id: "id",
           category: "category",
           subCategory: "subCategory",
           type: "type",
@@ -122,6 +123,7 @@ export default {
             coordinates = coordinatesToString.replace(/,/g, " ");
           }
           itemsFormatted.push({
+            id: item.properties.id,
             category: item.properties.category,
             subCategory: item.properties.subCategory ? item.properties.subCategory : '', // when parse JSON consider '' as undefined
             type: item.geometry.type,

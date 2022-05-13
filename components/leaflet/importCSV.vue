@@ -68,6 +68,7 @@ export default {
           let newGeoJson = {
             type: 'Feature',
             properties: {
+              id: element.id,
               name: element.name,
               popupContent: element.popupContent,
               category: element.category,
