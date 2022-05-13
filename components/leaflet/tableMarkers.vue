@@ -127,93 +127,43 @@ export default {
       this.showModal = !this.showModal
     },
     async updateItem() {
-      let dataStore = {
-        markers: [...this.markers],
-        GeoJsonDatas: JSON.parse(JSON.stringify(this.GeoJsonDatas)) // to create a deep copy, otherwise change the state.GeoJsonDatas as well !
+      // TO UPDATE GEOJSON
+      let indice = {
+        name: this.editItem.old.category,
+        index: [],
       }
-      let updateMarker = { ...this.editItem.old }
-
-      // UPDATE MARKER FROM LOCALSTORAGE
-      const setMarker = () => {
-        return new Promise((resolve, reject) => {
-          let index = dataStore.markers.findIndex(
-            (elt) =>
-              elt.category === this.editItem.old.category &&
-              elt.subCategory[0] === this.editItem.old.subCategory[0]
-          )
-          updateMarker.color = [this.editItem.newColor]
-          updateMarker.subCategory =
-            this.editItem.newSubCategory.length > 1
-              ? [this.editItem.newSubCategory]
-              : []
-          dataStore.markers.splice(index, 1, updateMarker)
-          resolve(true)
-        })
-      }
-      // UPDATE GEOJSON FROM LOCALSTORAGE
-      const setGeoJson = () => {
-        return new Promise((resolve, reject) => {
-          if (dataStore.GeoJsonDatas && dataStore.GeoJsonDatas[updateMarker.category]) {
-            // if undefined = there is no data with this marker yet
-            dataStore.GeoJsonDatas[updateMarker.category].forEach((element) => {
-              if (
-                element.properties.subCategory ===
-                this.editItem.old.subCategory[0]
-              ) {
-                element.icon.color = [this.editItem.newColor]
-                element.properties.subCategory =
-                  this.editItem.newSubCategory.length > 1
-                    ? this.editItem.newSubCategory
-                    : ''
-              }
-              if (
-                element.properties.subCategory.length === 0 ||
-                element.properties.subCategory[0].length === 0
-              ) {
-                element.icon.color = [this.editItem.newColor]
-              }
-            })
-          }
-          resolve(true)
+      if (this.GeoJsonDatas && this.GeoJsonDatas[this.editItem.old.category]) {
+        let array = this.GeoJsonDatas[this.editItem.old.category]
+        array.forEach((element, i) => {
+          element.properties.subCategory === this.editItem.old.subCategory[0]
+            ? indice.index.push(i)
+            : ''
         })
       }
 
       if (this.$refs.form.validate()) {
-        let resMarker = await setMarker()
-        if (resMarker) {
-          let resGeoJson = await setGeoJson()
-          if (resGeoJson) {
-            this.$store.dispatch('appUpdate', dataStore) // RELOAD MARKERS
-            this.showModal = !this.showModal
-            this.editItem.subCategory = ''
-          }
+        let dataStore = {
+          id: this.editItem.old,
+          update: {
+            color: this.editItem.newColor,
+            subCategory: this.editItem.newSubCategory,
+            GeoJson: indice,
+          },
         }
+        let res = await this.$store.dispatch('updateMarker', dataStore)
+        this.showModal = !this.showModal
+        this.editItem.subCategory = ''
       }
     },
     async removeDB(e) {
-      const updateLs = () => {
-        return new Promise((resolve, reject) => {
-          let dataStore = {
-            markers: [...this.markers],
-            GeoJsonDatas: JSON.parse(JSON.stringify(this.GeoJsonDatas)) // to create a deep copy, otherwise change the state.GeoJsonDatas as well !
-          }
-          let index = dataStore.markers.findIndex(
-            (elt) =>
-              elt.category === e.category &&
-              elt.subCategory[0] === e.subCategory[0]
-          )
-          dataStore.markers.splice(index, 1)
-          resolve(dataStore)
-        })
-      }
-
       let confirm = window.confirm(`Remove the item ${e.category} ?`)
       if (confirm) {
-        let dataStore = await updateLs()
-        console.log(dataStore);
-        dataStore
-          ? this.$store.dispatch('appUpdate', dataStore)
-          : alert('erreur lors de la suppression')
+        let dataStore = {
+          id: e,
+          update: false,
+        }
+        let res = await this.$store.dispatch('updateMarker', dataStore)
+        console.log(res)
       }
     },
   },

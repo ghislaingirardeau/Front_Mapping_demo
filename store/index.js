@@ -122,6 +122,30 @@ export const actions = {
         }
         commit('SAVE_MARKERS', datas);
     },
+    updateMarker({ commit, state }, markerToUpdate) {
+        return new Promise((resolve, reject) => {
+            const index = state.markers.findIndex(
+                elt =>
+                    elt.category === markerToUpdate.id.category &&
+                    elt.subCategory[0] === markerToUpdate.id.subCategory[0]
+            )
+            if (index > -1) {
+                if (markerToUpdate.update) {
+                    let update = {
+                        index: index,
+                        new: markerToUpdate.update,
+                    }
+                    commit('UPDATE_MARKER', update); // envoie objet avec new color et new sub
+                } else {
+                    commit('UPDATE_MARKER', index); // envoie juste index a supprimer
+                }
+                resolve(true)
+            } else {
+                reject(false)
+                alert('This marker is not find')
+            }
+        });        
+    },
     appLoad({ commit }) {
         let markersLocalStorage = JSON.parse(localStorage.getItem('APIGeoMap'))
         if (markersLocalStorage) {
@@ -153,6 +177,23 @@ export const mutations = {
     RESET_MARKERS(state) {
         state.markers = [];
         state.GeoJsonDatas = []
+    },
+    UPDATE_MARKER(state, update) {
+        if (typeof(update) === 'number') {
+            state.markers.splice(update, 1)
+        } else {
+            state.markers[update.index].color.splice(0, 1, update.new.color)
+            state.markers[update.index].subCategory.splice(0, 1, update.new.subCategory)
+            let geoJsonCategorie = state.GeoJsonDatas[update.new.GeoJson.name]
+            update.new.GeoJson.index.forEach(element => {
+                geoJsonCategorie[element].icon.color = update.new.color
+                geoJsonCategorie[element].properties.subCategory = update.new.subCategory
+            });
+        }
+        localStorage.setItem('APIGeoMap', JSON.stringify({
+            markers: state.markers,
+            GeoJsonDatas: state.GeoJsonDatas
+        }))
     },
     SAVE_GEOJSON(state, data) {
         state.GeoJsonDatas[data.properties.category] ?
