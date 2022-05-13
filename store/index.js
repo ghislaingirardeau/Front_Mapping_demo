@@ -97,7 +97,7 @@ export const actions = {
     },
     appLoad({ commit }, datas) {
         if (datas) {
-            localStorage.setItem('APIGeoMap', JSON.stringify(datas))
+            /* localStorage.setItem('APIGeoMap', JSON.stringify(datas)) */
             commit('SAVE_MARKERS', datas);
         } else {
             let datasLocalStorage = JSON.parse(localStorage.getItem('APIGeoMap'))
@@ -203,9 +203,10 @@ export const mutations = {
         const geoJsonCategorie = state.GeoJsonDatas[update.index.category]
         const index = geoJsonCategorie.findIndex(elt => elt.properties.id === update.index.id)
         if (update.action) {
-            geoJsonCategorie.splice(index, 1)
+            console.log(geoJsonCategorie);
+            geoJsonCategorie.length === 1 ? delete state.GeoJsonDatas[update.index.category] : geoJsonCategorie.splice(index, 1)
         } else {
-            geoJsonCategorie[index].properties = update.index
+            geoJsonCategorie[index].properties = update.index 
         }
     },
     SAVE_GEOJSON(state, data) {

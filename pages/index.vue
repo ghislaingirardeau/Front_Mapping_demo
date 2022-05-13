@@ -440,7 +440,7 @@ export default {
   },
   mounted() {
     if (this.userAuth === undefined) {
-      this.$store.dispatch('appLoad')
+      /* this.$store.dispatch('appLoad') */
     }
 
     // config mapbox
