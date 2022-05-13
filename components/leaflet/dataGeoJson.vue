@@ -88,6 +88,7 @@ export default {
     addGeoJson: {
       type: 'Feature',
       properties: {
+        id: `ID${Date.now()}`,
         name: 'Clean water',
         popupContent: ' ',
         category: '',
