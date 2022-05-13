@@ -95,6 +95,20 @@ export const actions = {
             commit('ERROR_REPONSE', error.message)
         }
     },
+    appLoad({ commit }) {
+        let markersLocalStorage = JSON.parse(localStorage.getItem('APIGeoMap'))
+        if (markersLocalStorage) {
+            commit('SAVE_MARKERS', markersLocalStorage);
+        }
+    },
+    appUpdate({ commit }, datas) {
+        localStorage.setItem('APIGeoMap', JSON.stringify(datas))
+        commit('SAVE_MARKERS', datas);
+    },
+    appReset({ commit }) {
+        commit('RESET_MARKERS')
+        localStorage.removeItem('APIGeoMap')
+    },
     markersOnCreate({ commit, state }, newMarker) {
         let flatMarkers = []
         if (newMarker.subCategory.length > 0) {
@@ -144,27 +158,13 @@ export const actions = {
                 reject(false)
                 alert('This marker is not find')
             }
-        });        
-    },
-    updateData({ commit, state }, dataToUpdate) {
-        commit('UPDATE_DATA', dataToUpdate);
-    },
-    appLoad({ commit }) {
-        let markersLocalStorage = JSON.parse(localStorage.getItem('APIGeoMap'))
-        if (markersLocalStorage) {
-            commit('SAVE_MARKERS', markersLocalStorage);
-        }
-    },
-    appUpdate({ commit }, datas) {
-        localStorage.setItem('APIGeoMap', JSON.stringify(datas))
-        commit('SAVE_MARKERS', datas);
-    },
-    appReset({ commit }) {
-        commit('RESET_MARKERS')
-        localStorage.removeItem('APIGeoMap')
+        });
     },
     geoJsonOnCreate({ commit }, newGeoJson) {
         commit('SAVE_GEOJSON', newGeoJson)
+    },
+    updateGeoJson({ commit, state }, dataToUpdate) {
+        commit('UPDATE_GEOJSON', dataToUpdate);
     },
     geoJsonReset({ commit, state }) {
         commit('RESET_GEOJSON')
@@ -182,7 +182,7 @@ export const mutations = {
         state.GeoJsonDatas = []
     },
     UPDATE_MARKER(state, update) {
-        if (typeof(update) === 'number') {
+        if (typeof (update) === 'number') {
             state.markers.splice(update, 1)
         } else {
             state.markers[update.index].color.splice(0, 1, update.new.color)
@@ -198,7 +198,7 @@ export const mutations = {
             GeoJsonDatas: state.GeoJsonDatas
         }))
     },
-    UPDATE_DATA(state, update) {
+    UPDATE_GEOJSON(state, update) {
         const geoJsonCategorie = state.GeoJsonDatas[update.index.category]
         const index = geoJsonCategorie.findIndex(elt => elt.properties.id === update.index.id)
         if (update.action) {
