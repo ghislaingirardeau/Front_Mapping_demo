@@ -78,6 +78,7 @@
           },
           { text: 'Popup', value: 'popupContent' },
           { text: 'Category', value: 'category' },
+          { text: 'ID', value: 'id' },
           { text: 'Actions', value: 'actions' },
         ],
         showModal: false,
@@ -97,22 +98,21 @@
     },
     methods: {
       itemAction(item, remove) {
-        let indexItem = this.geoItems.indexOf(item) // get the index same as alldatas props
         if(!remove) {
           this.showModal = true
-          this.editItem = {...item, index: indexItem}
+          this.editItem = {...item}
         } else {
-          this.$emit('data-update', {
+          this.$store.dispatch('updateData', {
             action: remove,
-            index: indexItem
+            index: item
           })
         }
       },
       updateItem() {
         if(this.$refs.form.validate()) {
-          this.$emit('data-update', {
+          this.$store.dispatch('updateData', {
             action: false,
-            itemToSave: this.editItem // send the change
+            index: this.editItem // send the change
           })
           this.showModal = false
         }

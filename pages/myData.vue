@@ -11,7 +11,6 @@
     <tableGeoJson
       v-if="allDatas"
       :allDatas="allDatas"
-      @data-update="tableUpdate"
     />
     <v-col v-else cols="12">
       <p>No data save yet</p>
@@ -45,35 +44,6 @@ export default {
     linkMap() {
       this.$router.push('/')
     },
-    async tableUpdate(playload) {
-
-      if(playload.action) {
-        this.allDatas.splice(playload.index, 1)
-      } else {
-        // get the update and refresh alldatas
-        let {name, index, popupContent} = playload.itemToSave
-        this.allDatas[index].properties.name = name
-        this.allDatas[index].properties.popupContent = popupContent
-      }
-      // FUNCTION TO UPDATE JSON IN LOCALSTORAGE
-      let result = this.allDatas.map((a) => a.properties.category)
-      let mySet = [...new Set(result)]
-
-      mySet.forEach((element) => {
-        this.objetData[element] = new Array()
-        this.allDatas.forEach((index) => {
-          if (index.properties.category === element) {
-            this.objetData[element].push(index)
-          }
-        })
-      })
-      let dataStore = {
-        GeoJsonDatas: this.objetData, 
-        markers: this.markers
-      }
-      this.$store.dispatch('appUpdate', dataStore)
-      this.objetData = {}
-    }
   },
 }
 </script>

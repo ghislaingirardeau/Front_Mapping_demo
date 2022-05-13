@@ -146,6 +146,9 @@ export const actions = {
             }
         });        
     },
+    updateData({ commit, state }, dataToUpdate) {
+        commit('UPDATE_DATA', dataToUpdate);
+    },
     appLoad({ commit }) {
         let markersLocalStorage = JSON.parse(localStorage.getItem('APIGeoMap'))
         if (markersLocalStorage) {
@@ -194,6 +197,15 @@ export const mutations = {
             markers: state.markers,
             GeoJsonDatas: state.GeoJsonDatas
         }))
+    },
+    UPDATE_DATA(state, update) {
+        const geoJsonCategorie = state.GeoJsonDatas[update.index.category]
+        const index = geoJsonCategorie.findIndex(elt => elt.properties.id === update.index.id)
+        if (update.action) {
+            geoJsonCategorie.splice(index, 1)
+        } else {
+            geoJsonCategorie[index].properties = update.index
+        }
     },
     SAVE_GEOJSON(state, data) {
         state.GeoJsonDatas[data.properties.category] ?
