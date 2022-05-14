@@ -1,21 +1,10 @@
 <template>
   <v-container>
     <v-row>
-      <v-col cols="11">
-        <span>
-          {{
-            signType
-              ? "If you don't have connection ID ? Please click 'Sign In'"
-              : 'Back to the login'
-          }}
-        </span>
-        <v-btn
-          class="mb-3 ml-2"
-          color="teal"
-          outlined
-          @click="signType = !signType"
-          >{{ signType ? 'Sign In' : 'Login' }}</v-btn
-        >
+      <v-col cols="11" sm="6">
+        <v-overlay :value="overlay">
+          <v-progress-circular indeterminate size="64"></v-progress-circular>
+        </v-overlay>
 
         <authForm
           :login="signType"
@@ -23,11 +12,22 @@
         />
         <p v-if="errorMessage">{{ errorMessage }}</p>
 
+        <p class="mt-3">
+          {{
+            signType
+              ? "If you don't have connection ID ? Please click 'Sign In'"
+              : 'Back to the login'
+          }}
+        </p>
+        <v-btn
+          class="mb-3"
+          color="teal"
+          outlined
+          @click="signType = !signType"
+          >{{ signType ? 'Sign In' : 'Login' }}</v-btn
+        >
       </v-col>
     </v-row>
-    <h1>Test realtime database</h1>
-    <h2>value DB response : {{ RLvalue }}</h2>
-    <h2>the log markers is : {{ markers }}</h2>
     <v-btn @click="postRealTimeDB"> write DB </v-btn>
     <v-btn @click="getRealTimeDB"> read DB </v-btn>
     <v-btn @click="updateRealTimeDB"> update DB </v-btn>
@@ -44,6 +44,7 @@ export default {
   layout: 'datasLayout',
   data() {
     return {
+      overlay: false,
       RLvalue: undefined,
       signType: true,
       id: 'ID123444',
@@ -60,15 +61,20 @@ export default {
       this.createNewUser(data)
     },
     async loginUser(data) {
-      this.currentUser(data)
+      this.overlay = true
+      await this.currentUser(data).then(() => {
+        this.overlay = false
+        this.$router.push('/myData')
+      })
     },
     // NUXT FIREBASE REALTIME DB
     async getRealTimeDB() {
-      const messageRef = this.$fire.database.ref('mapApp')
+      const messageRef = this.$fire.database.ref('object')
       console.log(messageRef)
       try {
         messageRef
-          .child('IZQRWzhdJYaEBwWZTg9oBJrEMb82')
+          .child('ID123444')
+          .child('new folder')
           .once('value', function (snapshot) {
             console.log(snapshot.val())
           })
@@ -91,27 +97,30 @@ export default {
       }
     },
     async updateRealTimeDB() {
-      const messageRef = this.$fire.database.ref('markers')
+      const messageRef = this.$fire.database.ref('object')
       try {
         // UPDATE ONLY ONE VALUE INSIDE THE OBJECT
         /* await messageRef.child('/update').update({
             name: 'i update only name',
           }) */
         // UPDATE A DATA / WILL CREATE ONE IF DOESN'T EXIST YET
-        await messageRef.child(this.id).update({
-          id: '4',
-          name: 'MY NEW UPDATE',
-          content: 'update description',
-          postID: ['a', 'b', 'c'],
-        })
+        await messageRef
+          .child(this.id)
+          .child('new folder')
+          .update({
+            id: '4',
+            name: 'MY NEW UPDATE',
+            content: 'update description',
+            postID: ['a', 'b', 'c'],
+          })
         // INSERT A NEW NODE WITH AUTO ID
         /* await messageRef.push({
             text: 'new text add'
           }) */
         console.log('success')
-        const snapshot = await messageRef.get('value')
+        /* const snapshot = await messageRef.get('value')
         console.log(snapshot.val())
-        this.RLvalue = snapshot.val()
+        this.RLvalue = snapshot.val() */
       } catch (e) {
         console.log(e)
         return

@@ -42,7 +42,8 @@ export const actions = {
 
                     const messageRef = this.$fire.database.ref('mapApp')
                     await messageRef.child(newUser.user.uid).set({
-                        markers: state.markers
+                        markers: state.markers,
+                        GeoJsonDatas: state.GeoJsonDatas
                     })
                     console.log('data ok')
                 }
