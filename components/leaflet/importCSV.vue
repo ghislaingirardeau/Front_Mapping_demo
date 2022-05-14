@@ -135,7 +135,7 @@ export default {
               ({ type, category, subCategory, icon, color }) => ({
                 type: type,
                 category: category,
-                subCategory: [subCategory],
+                subCategory: subCategory ? [subCategory] : [],
                 icon: icon,
                 color: [color],
               })
@@ -170,6 +170,7 @@ export default {
             markers: this.newMarker,
             GeoJsonDatas: this.objetData,
           }
+          console.log(dataStore);
           this.$store.dispatch('appLoad', dataStore)
           this.$router.push('/myData')
         } catch (error) {
