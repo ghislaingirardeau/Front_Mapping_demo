@@ -42,14 +42,7 @@ export const actions = {
 
                     const messageRef = this.$fire.database.ref('mapApp')
                     await messageRef.child(newUser.user.uid).set({
-                        markers: state.markers.length != 0 ? state.markers : [{
-                            type: 'Point',
-                            category: 'test',
-                            subCategory: [''],
-                            icon: 'home',
-                            color: ['blue'],
-                        }],
-                        GeoJsonDatas: state.GeoJsonDatas
+                        markers: state.markers
                     })
                     console.log('data ok')
                 }
@@ -87,7 +80,6 @@ export const actions = {
                                 GeoJsonDatas: snapshot.val().GeoJsonDatas,
                                 markers: snapshot.val().markers
                             }
-                            console.log(datas);
                             commit('SAVE_MARKERS', datas);
                             sessionStorage.setItem('APIGeoMap', JSON.stringify(datas))
                         })
@@ -231,9 +223,9 @@ export const mutations = {
             state.markers = [{
                 type: 'Point',
                 category: 'test',
-                subCategory: [''],
+                subCategory: [],
                 icon: 'home',
-                color: ['blue'],
+                color: ['red'],
             }]
             : ""
     },
