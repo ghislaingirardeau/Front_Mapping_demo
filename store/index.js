@@ -206,12 +206,12 @@ export const mutations = {
         const geoJsonCategorie = state.GeoJsonDatas[update.index.category]
         const index = geoJsonCategorie.findIndex(elt => elt.properties.id === update.index.id)
         if (update.action) {
+            geoJsonCategorie[index].properties = {} // to refresh the state.GeoJsonDatas
             geoJsonCategorie.length === 1 ? delete state.GeoJsonDatas[update.index.category] : geoJsonCategorie.splice(index, 1)
         } else {
             geoJsonCategorie[index].properties = update.index
         }
         setStorage(state.markers, state.GeoJsonDatas)
-
     },
     SAVE_GEOJSON(state, data) {
         state.GeoJsonDatas[data.properties.category] ?

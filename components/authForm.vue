@@ -31,7 +31,7 @@ export default {
       valid: true,
       ruleEmail: [(v) => v.length > 4 || 'email too short'],
       formData: {
-        email: 'ghislain@mail.com',
+        email: 'toto@mail.com',
         password: 'qwerty1',
         displayName: 'Ghislain',
       },

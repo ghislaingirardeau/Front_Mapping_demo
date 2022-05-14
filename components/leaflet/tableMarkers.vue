@@ -163,7 +163,6 @@ export default {
           update: false,
         }
         let res = await this.$store.dispatch('updateMarker', dataStore)
-        console.log(res)
       }
     },
   },

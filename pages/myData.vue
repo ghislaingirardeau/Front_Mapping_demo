@@ -28,12 +28,8 @@ export default {
   },
   computed: {
     ...mapState(['markers', 'GeoJsonDatas']),
-    /* ...mapGetters(['GeoJsonTable']), */
-    GeoJsonTable() {
-      let values = Object.values(state.GeoJsonDatas).flat()
-      let array = values.map(({ properties }) => properties)
-      return array
-    },
+    ...mapGetters(['GeoJsonTable']),
+    // BUG ON LOAD IMPORT, BECAUSE THE STATE KEY IS NOT CREATE YET
   },
   methods: {
     linkMap() {
