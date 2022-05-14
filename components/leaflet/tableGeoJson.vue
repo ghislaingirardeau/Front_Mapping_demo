@@ -30,7 +30,7 @@
           hide-details
         ></v-text-field>
       </v-card-title>
-      <v-data-table :headers="headers" :items="geoItems" :search="search">
+      <v-data-table :headers="headers" :items="allDatas" :search="search">
         <template v-slot:[`item.actions`]="{ item }">
           <v-icon
             class="mr-10"
@@ -78,12 +78,6 @@ export default {
   },
   props: {
     allDatas: Array,
-  },
-  computed: {
-    // RECUPERER LES DONNEES SOUS FORME ARRAY OBJET POUR LES ENVOYE DANS LE TABLEAU DE DATA
-    geoItems() {
-      return this.allDatas.map(({ properties }) => properties)
-    },
   },
   methods: {
     itemAction(item, remove) {

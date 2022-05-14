@@ -421,7 +421,7 @@ export default {
       }
     },
     async saveTemporaly() {
-      localStorage.setItem(
+      sessionStorage.setItem(
         'APIGeoMap',
         JSON.stringify({
           GeoJsonDatas: this.GeoJsonDatas,
@@ -440,7 +440,7 @@ export default {
   },
   mounted() {
     if (this.userAuth === undefined) {
-      /* this.$store.dispatch('appLoad') */
+      this.$store.dispatch('appLoad')
     }
 
     // config mapbox

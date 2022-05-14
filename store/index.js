@@ -6,6 +6,13 @@ export const state = () => ({
     GeoJsonDatas: {}
 })
 
+const setStorage = (markers, GeoJsonDatas) => {
+    sessionStorage.setItem('APIGeoMap', JSON.stringify({
+        markers: markers,
+        GeoJsonDatas: GeoJsonDatas
+    }))
+}
+
 // contains your actions
 export const actions = {
     // FIREBASE PAGE
@@ -82,7 +89,7 @@ export const actions = {
                             }
                             console.log(datas);
                             commit('SAVE_MARKERS', datas);
-                            localStorage.setItem('APIGeoMap', JSON.stringify(datas))
+                            sessionStorage.setItem('APIGeoMap', JSON.stringify(datas))
                         })
                     } catch (e) {
                         alert(e)
@@ -97,10 +104,10 @@ export const actions = {
     },
     appLoad({ commit }, datas) {
         if (datas) {
-            /* localStorage.setItem('APIGeoMap', JSON.stringify(datas)) */
+            setStorage(datas.markers, datas.GeoJsonDatas)
             commit('SAVE_MARKERS', datas);
         } else {
-            let datasLocalStorage = JSON.parse(localStorage.getItem('APIGeoMap'))
+            let datasLocalStorage = JSON.parse(sessionStorage.getItem('APIGeoMap'))
             if (datasLocalStorage) {
                 commit('SAVE_MARKERS', datasLocalStorage);
             }
@@ -108,7 +115,7 @@ export const actions = {
     },
     appReset({ commit }) {
         commit('RESET_MARKERS')
-        localStorage.removeItem('APIGeoMap')
+        sessionStorage.removeItem('APIGeoMap')
     },
     markersOnCreate({ commit, state }, newMarker) {
         let flatMarkers = []
@@ -169,7 +176,6 @@ export const actions = {
     },
     geoJsonReset({ commit, state }) {
         commit('RESET_GEOJSON')
-        localStorage.setItem('APIGeoMap', JSON.stringify({ markers: state.markers }))
     },
 }
 // contains your mutations
@@ -194,28 +200,28 @@ export const mutations = {
                 geoJsonCategorie[element].properties.subCategory = update.new.subCategory
             });
         }
-        localStorage.setItem('APIGeoMap', JSON.stringify({
-            markers: state.markers,
-            GeoJsonDatas: state.GeoJsonDatas
-        }))
+        setStorage(state.markers, state.GeoJsonDatas)
     },
     UPDATE_GEOJSON(state, update) {
         const geoJsonCategorie = state.GeoJsonDatas[update.index.category]
         const index = geoJsonCategorie.findIndex(elt => elt.properties.id === update.index.id)
         if (update.action) {
-            console.log(geoJsonCategorie);
             geoJsonCategorie.length === 1 ? delete state.GeoJsonDatas[update.index.category] : geoJsonCategorie.splice(index, 1)
         } else {
-            geoJsonCategorie[index].properties = update.index 
+            geoJsonCategorie[index].properties = update.index
         }
+        setStorage(state.markers, state.GeoJsonDatas)
+
     },
     SAVE_GEOJSON(state, data) {
         state.GeoJsonDatas[data.properties.category] ?
             state.GeoJsonDatas[data.properties.category].push(data) :
             state.GeoJsonDatas[data.properties.category] = [data]
+        setStorage(state.markers, state.GeoJsonDatas)
     },
     RESET_GEOJSON(state) {
         state.GeoJsonDatas = []
+        setStorage(state.markers)
     },
     // FIREBASE PAGE
     USER_FECTH(state, authUser) {
@@ -236,5 +242,12 @@ export const mutations = {
     },
     ERROR_REPONSE(state, message) {
         state.errorMessage = message
+    },
+}
+export const getters = {
+    GeoJsonTable(state) {
+        let values = Object.values(state.GeoJsonDatas).flat()
+        let array = values.map(({ properties }) => properties)
+        return array
     },
 }

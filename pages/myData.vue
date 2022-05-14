@@ -1,16 +1,16 @@
 <template>
   <v-row>
     <v-col cols="12" class="text-center">
-      <h1>My datas</h1>
+      <h1>My datas</h1> {{GeoJsonTable}}
     </v-col>
     <v-col cols="12" class="text-center">
       <p :class="{ active: isActive }">
-        You have collected {{ allDatas ? allDatas.length : '' }} datas
+        You have collected {{ GeoJsonTable ? GeoJsonTable.length : '' }} datas
       </p>
     </v-col>
     <tableGeoJson
-      v-if="allDatas"
-      :allDatas="allDatas"
+      v-if="GeoJsonTable"
+      :allDatas="GeoJsonTable"
     />
     <v-col v-else cols="12">
       <p>No data save yet</p>
@@ -19,26 +19,19 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapState, mapGetters } from 'vuex'
 
 export default {
   layout: 'datasLayout',
   data() {
     return {
       isActive: false,
-      objetData: {}
+      objetData: {},
     }
   },
     computed: {
     ...mapState(['markers', 'GeoJsonDatas']),
-    allDatas() {
-      let properties = []
-      for (let property in this.GeoJsonDatas) {
-        properties.push(...JSON.parse(JSON.stringify(this.GeoJsonDatas[property]))) 
-        // for a deep copy of GeoJsonDatas and avoid mutate error on update
-      }
-      return properties
-    }
+    ...mapGetters(['GeoJsonTable']),
   },
   methods: {
     linkMap() {
