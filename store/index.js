@@ -193,7 +193,7 @@ export const mutations = {
             state.markers.splice(update, 1)
         } else {
             state.markers[update.index].color.splice(0, 1, update.new.color)
-            state.markers[update.index].subCategory.splice(0, 1, update.new.subCategory)
+            state.markers[update.index].subCategory = update.new.subCategory.length > 0 ? [update.new.subCategory] : []
             let geoJsonCategorie = state.GeoJsonDatas[update.new.GeoJson.name]
             update.new.GeoJson.index.forEach(element => {
                 geoJsonCategorie[element].icon.color = update.new.color
