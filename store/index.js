@@ -112,7 +112,12 @@ export const actions = {
     },
     markersOnCreate({ commit, state }, newMarker) {
         let flatMarkers = []
-        if (newMarker.subCategory.length > 0) {
+        // converti array en string
+        if (newMarker.subCategory.length === 0) {
+            newMarker.subCategory = newMarker.subCategory[0]
+            newMarker.color = newMarker.color[0]
+            flatMarkers.push(newMarker)
+        } else {
             for (
                 let index = 0;
                 index < newMarker.subCategory.length;
@@ -121,14 +126,12 @@ export const actions = {
                 let multiMarker = {
                     type: newMarker.type,
                     category: newMarker.category,
-                    subCategory: [newMarker.subCategory[index]],
+                    subCategory: newMarker.subCategory[index],
                     icon: newMarker.icon,
-                    color: [newMarker.color[index]],
+                    color: newMarker.color[index],
                 }
                 flatMarkers.push(multiMarker)
             }
-        } else {
-            flatMarkers.push(newMarker)
         }
         let addedMarker = [...state.markers, ...flatMarkers]
         let datas = {
@@ -142,7 +145,7 @@ export const actions = {
             const index = state.markers.findIndex(
                 elt =>
                     elt.category === markerToUpdate.id.category &&
-                    elt.subCategory[0] === markerToUpdate.id.subCategory[0]
+                    elt.subCategory === markerToUpdate.id.subCategory
             )
             if (index > -1) {
                 if (markerToUpdate.update) {
@@ -185,8 +188,8 @@ export const mutations = {
         if (typeof (update) === 'number') {
             state.markers.splice(update, 1)
         } else {
-            state.markers[update.index].color.splice(0, 1, update.new.color)
-            state.markers[update.index].subCategory = update.new.subCategory.length > 0 ? [update.new.subCategory] : []
+            state.markers[update.index].color = update.new.color
+            state.markers[update.index].subCategory = update.new.subCategory.length > 0 ? update.new.subCategory : ''
             let geoJsonCategorie = state.GeoJsonDatas[update.new.GeoJson.name]
             update.new.GeoJson.index.forEach(element => {
                 geoJsonCategorie[element].icon.color = update.new.color
@@ -224,7 +227,7 @@ export const mutations = {
             state.markers = [{
                 type: 'Point',
                 category: 'test',
-                subCategory: [],
+                subCategory: ['subcat'],
                 icon: 'home',
                 color: ['red'],
             }]

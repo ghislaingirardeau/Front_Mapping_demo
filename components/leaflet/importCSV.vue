@@ -80,7 +80,7 @@ export default {
             },
             icon: {
               type: element.icon,
-              color: [element.color],
+              color: element.color,
             },
           }
           layer.push(newGeoJson)
@@ -135,9 +135,9 @@ export default {
               ({ type, category, subCategory, icon, color }) => ({
                 type: type,
                 category: category,
-                subCategory: subCategory ? [subCategory] : [],
+                subCategory: subCategory ? subCategory : '',
                 icon: icon,
-                color: [color],
+                color: color,
               })
             )
             this.objetData = {}

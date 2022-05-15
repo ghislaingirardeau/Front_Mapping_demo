@@ -6,11 +6,11 @@
       @send-marker="modalMarkerResponse"
     />
 
-    <v-col cols="12" class="text-center">
+    <v-col cols="12" class="mb-2 text-center">
       <h1 class="mb-2">My Markers</h1>
       <p v-if="DBmessage">{{ DBmessage }}</p>
 
-      <v-btn @click="showModal = true">Add marker</v-btn>
+      <v-btn color="teal" @click="showModal = true">Add marker</v-btn>
     </v-col>
 
     <tableMarkers :key="markers.length" />

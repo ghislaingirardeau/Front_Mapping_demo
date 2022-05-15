@@ -36,21 +36,21 @@
         <template v-slot:[`item.icon`]="{ item }">
           <v-icon
             v-if="item.type === 'Point'"
-            :color="item.color[0]"
+            :color="item.color"
             size="28px"
           >
             mdi-{{ item.icon }}</v-icon
           >
           <v-icon
             v-else-if="item.type === 'MultiLineString'"
-            :color="item.color[0]"
+            :color="item.color"
             size="28px"
           >
             mdi-vector-polyline
           </v-icon>
           <v-icon
             v-else-if="item.type === 'Polygon'"
-            :color="item.color[0]"
+            :color="item.color"
             size="28px"
           >
             mdi-triangle
@@ -116,7 +116,7 @@ export default {
       this.showModal = payload.message
     },
     openEditor(e) {
-      if (e.subCategory.length > 0 && e.subCategory[0].length > 1) {
+      if (e.subCategory.length > 0) {
         // if there is subcat
         this.rulesEditSub = [(v) => v.length > 2 || 'minimum 2 characters']
         this.editItem.newSubCategory = e.subCategory // load the actual subcat
@@ -135,7 +135,7 @@ export default {
       if (this.GeoJsonDatas && this.GeoJsonDatas[this.editItem.old.category]) {
         let array = this.GeoJsonDatas[this.editItem.old.category]
         array.forEach((element, i) => {
-          element.properties.subCategory === this.editItem.old.subCategory[0]
+          element.properties.subCategory === this.editItem.old.subCategory
             ? indice.index.push(i)
             : ''
         })

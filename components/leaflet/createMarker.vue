@@ -1,6 +1,6 @@
 <template>
   <modalCustom :showModal="showModal" @send-modal="modalResponse">
-    <template v-slot:title> Build your marker</template> 
+    <template v-slot:title> Build your marker </template> 
     <template v-slot:content>
       <v-stepper v-model="e1">
         <v-stepper-header>
@@ -120,29 +120,29 @@
                   >
                 </v-form>
               </v-col>
-              <v-col cols="11" v-if="newIcon.subCategory.length > 0">
+              <v-row v-if="newIcon.subCategory.length > 0 && newIcon.subCategory[0].length > 1">
                 <span>My sub categories:</span>
-              </v-col>
-              <v-col
-                v-for="(item, l) in newIcon.subCategory"
-                :key="l"
-                cols="6"
-                class="text-center"
-              >
-                <v-icon color="white" size="16px">
-                  mdi-{{
-                    newIcon.icon.length > 0 ? newIcon.icon : 'vector-polyline'
-                  }}
-                </v-icon>
-                <span>{{
-                  newIcon.subCategory[l]
-                    ? newIcon.subCategory[l]
-                    : newIcon.category
-                }}</span>
-                <v-icon color="teal" size="22px" @click="removeSubCategory(l)">
-                  mdi-delete-forever
-                </v-icon>
-              </v-col>
+                <v-col
+                  v-for="(item, l) in newIcon.subCategory"
+                  :key="l"
+                  cols="4"
+                  class="text-center"
+                >
+                  <v-icon color="white" size="16px">
+                    mdi-{{
+                      newIcon.icon.length > 0 ? newIcon.icon : 'vector-polyline'
+                    }}
+                  </v-icon>
+                  <span>{{
+                    newIcon.subCategory[l]
+                      ? newIcon.subCategory[l]
+                      : newIcon.category
+                  }}</span>
+                  <v-icon color="teal" size="22px" @click="removeSubCategory(l)">
+                    mdi-delete-forever
+                  </v-icon>
+                </v-col>
+              </v-row>
               
 
               <v-col cols="11">
@@ -253,7 +253,7 @@ export default {
       newIcon: {
         type: 'Point',
         category: 'home',
-        subCategory: [],
+        subCategory: [''],
         icon: 'home',
         color: [],
       },
@@ -343,7 +343,7 @@ export default {
       this.newIcon = {
         type: 'Point',
         category: '',
-        subCategory: [],
+        subCategory: [''],
         icon: '',
         color: [],
       }
@@ -353,9 +353,14 @@ export default {
     },
     addToArraySubCat() {
       if (this.$refs.formSub.validate()) {
-        this.newIcon.subCategory.push(this.subCategory.selected)
+        if (this.newIcon.subCategory[0].length < 1) {
+          this.newIcon.subCategory[0] = this.subCategory.selected
+          this.newIcon.color[0] = 'white'
+        } else {
+          this.newIcon.subCategory.push(this.subCategory.selected)
+          this.newIcon.color.push('white')
+        }
         this.subCategory.selected = 'One more ?'
-        this.newIcon.color.push('white')
       }
     },
     removeSubCategory (i) {
