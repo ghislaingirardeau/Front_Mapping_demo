@@ -172,7 +172,7 @@ export default {
           }
           console.log(dataStore);
           this.$store.dispatch('appLoad', dataStore)
-          this.$router.push('/myData')
+          
         } catch (error) {
           console.log(error)
         }

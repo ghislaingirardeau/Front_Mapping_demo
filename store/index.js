@@ -97,8 +97,9 @@ export const actions = {
     },
     appLoad({ commit }, datas) {
         if (datas) {
-            setStorage(datas.markers, datas.GeoJsonDatas)
             commit('SAVE_MARKERS', datas);
+            setStorage(datas.markers, datas.GeoJsonDatas)
+            this.$router.push('/myData')
         } else {
             let datasLocalStorage = JSON.parse(sessionStorage.getItem('APIGeoMap'))
             if (datasLocalStorage) {
