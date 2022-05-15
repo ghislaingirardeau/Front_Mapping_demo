@@ -32,6 +32,7 @@
     <v-btn @click="getRealTimeDB"> read DB </v-btn>
     <v-btn @click="updateRealTimeDB"> update DB </v-btn>
     <v-btn @click="removeRealTimeDB"> remove DB </v-btn>
+    <v-btn @click="forgotPassword"> reset password </v-btn>
 
     <h2 v-if="userAuth">The userAuth log : {{ userAuth.displayName }}</h2>
   </v-container>
@@ -64,7 +65,7 @@ export default {
       this.overlay = true
       await this.currentUser(data).then(() => {
         this.overlay = false
-        this.$router.push('/myData')
+        /* this.$router.push('/myData') */
       })
     },
     // NUXT FIREBASE REALTIME DB
@@ -139,6 +140,15 @@ export default {
         return
       }
     },
+    async forgotPassword() {
+      await this.$fire.auth.sendPasswordResetEmail(this.userAuth.email)
+      .then(() => {
+        console.log('Email to reset the password send');
+      })
+      .catch(error => {
+        console.log(error, 'fail to send the email');
+      })
+    }
   },
 }
 </script>

@@ -45,8 +45,15 @@ export const actions = {
                         markers: state.markers,
                         GeoJsonDatas: state.GeoJsonDatas
                     })
+                    // EMAIL VERIFICATION
+                    /* console.log('email')
+                    const userEmail = this.$fire.auth.currentUser
+                    console.log(userEmail);
+                    const sendEmail = userEmail.sendEmailVerification()
+                    console.log(sendEmail); */
                     console.log('data ok')
-                    this.$router.push('/myData')
+                    this.$router.push('/myData')                    
+                    
                 }
             }
         } catch (error) {
