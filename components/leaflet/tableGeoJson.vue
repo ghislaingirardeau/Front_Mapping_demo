@@ -30,7 +30,13 @@
           hide-details
         ></v-text-field>
       </v-card-title>
-      <v-data-table :headers="headers" :items="allDatas" :search="search">
+      <v-data-table
+        :headers="headers"
+        :items="allDatas"
+        :search="search"
+        :sort-by="['id']"
+        :sort-desc="[true]"
+      >
         <template v-slot:[`item.actions`]="{ item }">
           <v-icon
             class="mr-10"

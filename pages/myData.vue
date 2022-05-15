@@ -1,12 +1,13 @@
 <template>
   <v-row>
     <v-col cols="12" class="text-center">
-      <h1>My datas</h1>
+      <h1>{{ userAuth ? `Your datas ${userAuth.displayName}` :  'Your datas'}}</h1>
     </v-col>
     <v-col cols="12" class="text-center">
       <p :class="{ active: isActive }">
         You have collected {{ GeoJsonTable ? GeoJsonTable.length : '' }} datas
       </p>
+      <p v-if="!userAuth">Remember to login or register to save your data !</p>
     </v-col>
     <tableGeoJson v-if="GeoJsonTable" :allDatas="GeoJsonTable" />
     <v-col v-else cols="12">
@@ -27,7 +28,7 @@ export default {
     }
   },
   computed: {
-    ...mapState(['markers', 'GeoJsonDatas']),
+    ...mapState(['markers', 'GeoJsonDatas', 'userAuth']),
     ...mapGetters(['GeoJsonTable']),
     // BUG ON LOAD IMPORT, BECAUSE THE STATE KEY IS NOT CREATE YET
   },
@@ -36,6 +37,9 @@ export default {
       this.$router.push('/')
     },
   },
+  mounted() {
+    this.$store.dispatch('appLoad')
+  }
 }
 </script>
 

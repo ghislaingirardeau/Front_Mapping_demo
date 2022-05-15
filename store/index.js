@@ -46,6 +46,7 @@ export const actions = {
                         GeoJsonDatas: state.GeoJsonDatas
                     })
                     console.log('data ok')
+                    this.$router.push('/myData')
                 }
             }
         } catch (error) {
@@ -99,7 +100,6 @@ export const actions = {
         if (datas) {
             commit('SAVE_MARKERS', datas);
             setStorage(datas.markers, datas.GeoJsonDatas)
-            this.$router.push('/myData')
         } else {
             let datasLocalStorage = JSON.parse(sessionStorage.getItem('APIGeoMap'))
             if (datasLocalStorage) {
