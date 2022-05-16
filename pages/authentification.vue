@@ -11,11 +11,19 @@
           :doThis="signType ? loginUser : createUser"
         />
         <p v-if="errorMessage">{{ errorMessage }}</p>
+        <v-btn
+          v-if="userAuth"
+          class="mb-3"
+          color="teal"
+          outlined
+          @click="signOut"
+          >Log Out</v-btn
+        >
 
         <p class="mt-3">
           {{
             signType
-              ? "If you don't have connection ID ? Please click 'Sign In'"
+              ? "If you don't have connection ID ? Please click 'Sign Up'"
               : 'Back to the login'
           }}
         </p>
@@ -24,7 +32,7 @@
           color="teal"
           outlined
           @click="signType = !signType"
-          >{{ signType ? 'Sign In' : 'Login' }}</v-btn
+          >{{ signType ? 'Sign Up' : 'Login' }}</v-btn
         >
       </v-col>
     </v-row>
@@ -33,6 +41,7 @@
     <v-btn @click="updateRealTimeDB"> update DB </v-btn>
     <v-btn @click="removeRealTimeDB"> remove DB </v-btn>
     <v-btn @click="forgotPassword"> reset password </v-btn>
+    <v-btn @click="tokenLog"> log by token </v-btn>
 
     <h2 v-if="userAuth">The userAuth log : {{ userAuth.displayName }}</h2>
   </v-container>
@@ -43,6 +52,8 @@ import { mapState, mapActions } from 'vuex'
 
 export default {
   layout: 'datasLayout',
+  middleware: 'route-guards',
+
   data() {
     return {
       overlay: false,
@@ -55,27 +66,30 @@ export default {
     ...mapState(['userAuth', 'errorMessage', 'markers']),
   },
   methods: {
-    ...mapActions(['currentUser', 'createNewUser']),
+    ...mapActions(['login', 'signUp']),
 
     // NUXT FIREBASE AUTH
     async createUser(data) {
-      this.createNewUser(data)
+      this.signUp(data)
     },
     async loginUser(data) {
       this.overlay = true
-      await this.currentUser(data).then(() => {
+      await this.login(data).then(() => {
         this.overlay = false
         /* this.$router.push('/myData') */
       })
     },
+    signOut() {
+      this.$fire.auth.signOut()
+    },
     // NUXT FIREBASE REALTIME DB
     async getRealTimeDB() {
-      const messageRef = this.$fire.database.ref('object')
+      console.log(this.$fire.auth.currentUser)
+      const messageRef = this.$fire.database.ref('mapApp')
       console.log(messageRef)
       try {
         messageRef
-          .child('ID123444')
-          .child('new folder')
+          .child('HlmEVZJvEoPa7yianlEbhZ5OL0J2')
           .once('value', function (snapshot) {
             console.log(snapshot.val())
           })
@@ -141,14 +155,27 @@ export default {
       }
     },
     async forgotPassword() {
-      await this.$fire.auth.sendPasswordResetEmail(this.userAuth.email)
-      .then(() => {
-        console.log('Email to reset the password send');
+      await this.$fire.auth
+        .sendPasswordResetEmail(this.userAuth.email)
+        .then(() => {
+          console.log('Email to reset the password send')
+        })
+        .catch((error) => {
+          console.log(error, 'fail to send the email')
+        })
+    },
+    async tokenLog() {
+      /* const token = sessionStorage.getItem('TokenGeoMap')
+      console.log(token);
+      await this.$fire.auth.verifyIdToken(token)
+      .then((decodedToken) => {
+        console.log(decodedToken);
       })
       .catch(error => {
         console.log(error, 'fail to send the email');
-      })
-    }
+      }) */
+      console.log(this.$fire.auth)
+    },
   },
 }
 </script>
