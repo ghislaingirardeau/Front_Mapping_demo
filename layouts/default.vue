@@ -16,11 +16,11 @@
 
 <script>
 import Vue from 'vue'
-import resetDB from '@/mixins/resetDB.js';
-Vue.mixin(resetDB)
+import sign from '~/mixins/sign.js';
+Vue.mixin(sign)
 
 export default {
-  mixins: [resetDB],
+  mixins: [sign],
   data () {
     return {
       showMap: false,
