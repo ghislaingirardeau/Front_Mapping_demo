@@ -79,7 +79,7 @@ export default {
         {
           icon: 'mdi-database-marker',
           title: 'Manage My Markers',
-          to: '/configuration',
+          to: '/myConfig',
         },
       ]
       this.userAuth
@@ -87,7 +87,7 @@ export default {
         : menu.splice(0, 0, {
             icon: 'mdi-login',
             title: 'login / Sign-in',
-            to: '/authentification',
+            to: '/sign',
           })
       return menu
     },

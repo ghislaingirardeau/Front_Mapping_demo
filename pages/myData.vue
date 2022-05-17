@@ -3,7 +3,7 @@
     <theNavBar/>
     <v-col cols="11" class="text-center mt-3">
       <h1>
-        {{ userAuth ? `Your datas : ${userAuth.displayName}` : 'Your datas' }}
+        {{ userAuth ? `My datas : ${userAuth.displayName}` : 'My datas' }}
       </h1>
     </v-col>
     <v-col cols="11" class="text-center">

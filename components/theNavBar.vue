@@ -33,18 +33,17 @@ export default {
       {
         icon: 'mdi-database-marker',
         title: 'My Markers',
-        to: '/configuration',
+        to: '/myConfig',
       },
       {
         icon: 'mdi-account-box-outline',
         title: 'Log / sign Up',
-        to: '/authentification',
+        to: '/sign',
       },
     ],
   }),
   computed: {
     navItems() {
-      console.log(this.items.filter((elt) => elt.to != this.$route.path))
       return this.items.filter((elt) => elt.to != this.$route.path)
     },
   },
