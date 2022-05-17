@@ -14,16 +14,19 @@
       <span class="info__message">You forgot your password ? </span>
       <v-btn small text color="teal" @click="forgotPassword">reset here</v-btn>
       <p v-if="resetMessage" class="info__message--success">{{ resetMessage }}</p>
+
+    </v-col>
+    <v-col cols="11">
       <v-btn
         v-if="userAuth"
-        class="mb-3"
         color="teal"
         outlined
         @click="signOut(false)"
         >Log Out</v-btn
       >
-
-      <p class="mt-3">
+    </v-col>
+    <v-col cols="11" sm="6">
+      <p>
         {{
           signType
             ? "If you don't have connection ID ? Please click 'Sign Up'"

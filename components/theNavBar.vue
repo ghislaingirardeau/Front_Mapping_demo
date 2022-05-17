@@ -7,15 +7,20 @@
         </v-btn>
 
         <v-spacer></v-spacer>
-        <v-icon
-          v-for="(link, i) in navItems"
-          :key="i"
-          color="teal"
-          class="mx-5"
-          size="38px"
-          @click="$router.push(link.to)"
-          >{{ link.icon }}</v-icon
-        >
+        <v-tooltip bottom v-for="(link, i) in navItems" :key="i">
+          <template v-slot:activator="{ on, attrs }">
+            <v-icon
+              color="teal"
+              v-bind="attrs"
+              v-on="on"
+              class="mx-7"
+              size="38px"
+              @click="$router.push(link.to)"
+              >{{ link.icon }}</v-icon
+            >
+          </template>
+          <span>{{link.title}}</span>
+        </v-tooltip>
       </v-app-bar>
     </v-row>
   </v-container>
@@ -37,7 +42,7 @@ export default {
       },
       {
         icon: 'mdi-account-box-outline',
-        title: 'Log / sign Up',
+        title: 'Sign',
         to: '/sign',
       },
     ],
