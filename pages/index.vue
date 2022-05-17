@@ -729,14 +729,12 @@ export default {
 </script>
 
 <style lang="scss">
-@import url('https://fonts.googleapis.com/css2?family=Architects+Daughter&display=swap');
 
 .container {
   height: 100%;
   width: 100vw;
   padding: 0px;
   position: relative;
-  font-family: 'Architects Daughter', cursive;
 }
 #map {
   height: 100%;

@@ -39,8 +39,10 @@ export default {
 </script>
 
 <style lang="scss">
+@import url('https://fonts.googleapis.com/css2?family=Architects+Daughter&display=swap');
 main {
     height: 100%;
     width: 100vw;
+    font-family: 'Architects Daughter', cursive;
 }
 </style>
