@@ -1,6 +1,6 @@
 <template>
   <v-app dark>
-    <main v-if="showMap">
+    <main v-if="showMap" class="animOnShow">
         <Nuxt />
     </main>
     <main v-else>
@@ -45,4 +45,17 @@ main {
     width: 100vw;
     font-family: 'Architects Daughter', cursive;
 }
+@keyframes fadeIn {
+  0%{
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+.animOnShow{
+  animation: fadeIn 0.5s ease-in both;
+}
+.home-enter-active, .home-leave-active { transition: opacity .3s; }
+.home-enter, .home-leave-active { opacity: 0; }
 </style>

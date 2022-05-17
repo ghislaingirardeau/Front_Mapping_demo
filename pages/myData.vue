@@ -23,6 +23,7 @@
 import { mapState, mapGetters } from 'vuex'
 
 export default {
+  transition: 'home',
   data() {
     return {
       isActive: false,

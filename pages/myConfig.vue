@@ -22,6 +22,7 @@
 import { mapState, mapActions } from 'vuex'
 
 export default {
+  transition: 'home',
   data() {
     return {
       showModal: false,

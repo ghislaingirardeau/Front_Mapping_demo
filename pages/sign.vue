@@ -50,6 +50,7 @@ import { mapState, mapActions } from 'vuex'
 
 export default {
   /* middleware: 'route-guards', */
+  transition: 'home',
 
   data() {
     return {
