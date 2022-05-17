@@ -1,9 +1,12 @@
 <template>
   <v-row>
-    <v-col cols="12" class="text-center">
-      <h1>{{ userAuth ? `Your datas ${userAuth.displayName}` :  'Your datas'}}</h1>
+    <theNavBar/>
+    <v-col cols="11" class="text-center mt-3">
+      <h1>
+        {{ userAuth ? `Your datas : ${userAuth.displayName}` : 'Your datas' }}
+      </h1>
     </v-col>
-    <v-col cols="12" class="text-center">
+    <v-col cols="11" class="text-center">
       <p :class="{ active: isActive }">
         You have collected {{ GeoJsonTable ? GeoJsonTable.length : '' }} datas
       </p>
@@ -20,7 +23,6 @@
 import { mapState, mapGetters } from 'vuex'
 
 export default {
-  layout: 'datasLayout',
   data() {
     return {
       isActive: false,
@@ -39,7 +41,7 @@ export default {
   },
   mounted() {
     this.$store.dispatch('appLoad')
-  }
+  },
 }
 </script>
 

@@ -1,6 +1,7 @@
 <template>
   <v-container>
     <v-row>
+      <theNavBar/>
       <v-col cols="11" sm="6">
         <v-overlay :value="overlay">
           <v-progress-circular indeterminate size="64"></v-progress-circular>
@@ -16,7 +17,7 @@
           class="mb-3"
           color="teal"
           outlined
-          @click="signOut"
+          @click="signOut(false)"
           >Log Out</v-btn
         >
 
@@ -36,14 +37,14 @@
         >
       </v-col>
     </v-row>
-    <v-btn @click="postRealTimeDB"> write DB </v-btn>
+    <!-- <v-btn @click="postRealTimeDB"> write DB </v-btn>
     <v-btn @click="getRealTimeDB"> read DB </v-btn>
     <v-btn @click="updateRealTimeDB"> update DB </v-btn>
     <v-btn @click="removeRealTimeDB"> remove DB </v-btn>
     <v-btn @click="forgotPassword"> reset password </v-btn>
     <v-btn @click="tokenLog"> log by token </v-btn>
 
-    <h2 v-if="userAuth">The userAuth log : {{ userAuth.displayName }}</h2>
+    <h2 v-if="userAuth">The userAuth log : {{ userAuth.displayName }}</h2> -->
   </v-container>
 </template>
 
@@ -51,8 +52,7 @@
 import { mapState, mapActions } from 'vuex'
 
 export default {
-  layout: 'datasLayout',
-  middleware: 'route-guards',
+  /* middleware: 'route-guards', */
 
   data() {
     return {
@@ -79,9 +79,9 @@ export default {
         /* this.$router.push('/myData') */
       })
     },
-    signOut() {
+    /* signOut() {
       this.$fire.auth.signOut()
-    },
+    }, */
     // NUXT FIREBASE REALTIME DB
     async getRealTimeDB() {
       console.log(this.$fire.auth.currentUser)

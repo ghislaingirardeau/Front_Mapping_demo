@@ -1,5 +1,6 @@
 <template>
   <v-row>
+    <theNavBar/>
     <createMarker
       :markers="markers"
       :showModal="showModal"
@@ -21,7 +22,6 @@
 import { mapState, mapActions } from 'vuex'
 
 export default {
-  layout: 'datasLayout',
   data() {
     return {
       showModal: false,
