@@ -16,7 +16,7 @@ const setStorage = (markers, GeoJsonDatas) => {
 // contains your actions
 export const actions = {
     // FIREBASE PAGE
-    async createNewUser({ commit, state }, formData) {
+    async signUp({ commit, state }, formData) {
         try {
             const newUser = await this.$fire.auth.createUserWithEmailAndPassword(
                 formData.email,
@@ -52,8 +52,8 @@ export const actions = {
                     const sendEmail = userEmail.sendEmailVerification()
                     console.log(sendEmail); */
                     console.log('data ok')
-                    this.$router.push('/myData')                    
-                    
+                    this.$router.push('/myData')
+
                 }
             }
         } catch (error) {
@@ -61,7 +61,7 @@ export const actions = {
         }
 
     },
-    async currentUser({ commit, state }, formData) {
+    async login({ commit, dispatch }, formData) {
         try {
             const userLog = await this.$fire.auth.signInWithEmailAndPassword(
                 formData.email,
@@ -71,10 +71,12 @@ export const actions = {
                 console.log('log ok');
                 const authListener = await this.$fire.auth.onAuthStateChanged((user) => {
                     if (user) {
-                        const uid = user.uid;
+                        console.log(user);
                     } else {
                         console.log("User is signed out");
                         commit('USER_SIGNOUT')
+                        dispatch('appReset')
+                        this.$router.push('/authentification')
                     }
                 });
                 if (authListener) {
@@ -102,6 +104,35 @@ export const actions = {
             console.log("This email or password doesn't exist");
             commit('ERROR_REPONSE', error.message)
         }
+    },
+    async keepConnection({ commit, dispatch }) {
+        return new Promise((resolve, reject) => {
+            this.$fire.auth.onAuthStateChanged((user) => {
+                if (user) {
+                    const messageRef = this.$fire.database.ref('mapApp')
+                    try {
+                        messageRef.child(user.uid).once('value', function (snapshot) {
+                            // RETRIEVE DATA HERE WITH uid
+                            let datas = {
+                                GeoJsonDatas: snapshot.val().GeoJsonDatas,
+                                markers: snapshot.val().markers
+                            }
+                            commit('SAVE_MARKERS', datas);
+                            console.log(datas);
+                            sessionStorage.setItem('APIGeoMap', JSON.stringify(datas))
+                            commit('USER_FECTH', user)
+                            resolve(true)
+                        })
+                    } catch (e) {
+                        alert(e)
+                        reject(e)
+                    }
+                } else {
+                    dispatch('appLoad')
+                    resolve(true)
+                }
+            })
+        });
     },
     appLoad({ commit }, datas) {
         if (datas) {
