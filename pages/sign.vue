@@ -2,8 +2,7 @@
   <v-row class="text-center" justify="space-around">
     <theNavBar />
     <v-col cols="11">
-      <h1>My account</h1>
-      {{ userAuth }}
+      <h1>{{userAuth ? 'Edit my profile' : 'Sign to your account'}}</h1>
     </v-col>
     <authForm v-if="!userAuth"/>
     <p v-if="errorMessage" class="info__message--alert">{{ errorMessage }}</p>
@@ -24,7 +23,7 @@
 </template>
 
 <script>
-import { mapState, mapActions } from 'vuex'
+import { mapState } from 'vuex'
 
 export default {
   /* middleware: 'route-guards', */

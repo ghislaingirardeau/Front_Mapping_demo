@@ -84,7 +84,7 @@ export default {
           margin: '22px',
         },
         {
-          message: '<-- Save datas temporaly',
+          message: '<-- Save datas',
           margin: '40px',
         },
       ],

@@ -1,5 +1,5 @@
 <template>
-  <v-container class="mt-3">
+  <v-container>
     <v-row>
       <v-app-bar dark class="px-4 ma-3">
         <v-btn color="teal" @click="linkMap" class="mr-3">
