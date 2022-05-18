@@ -6,10 +6,14 @@ export default {
     },
     methods: {
         signOut() {
-            console.log('im from mixin');
-            this.$fire.auth.signOut()
-            this.$store.dispatch('appReset')
-            location.reload()
+            let confirm = window.confirm(
+                'Save your datas before log out !'
+            )
+            if (confirm) {
+                this.$fire.auth.signOut()
+                this.$store.dispatch('appReset')
+                location.reload()
+            }
         },
         changeMixin() {
             this.mixin = !this.mixin
