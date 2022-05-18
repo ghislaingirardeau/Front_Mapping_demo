@@ -170,7 +170,6 @@ export default {
             markers: this.newMarker,
             GeoJsonDatas: this.objetData,
           }
-          console.log(dataStore);
           this.$store.dispatch('appLoad', dataStore)
           this.$router.push('/myData')
         } catch (error) {

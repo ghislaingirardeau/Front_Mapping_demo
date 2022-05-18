@@ -169,7 +169,7 @@ export default {
           this.showMeasure()
           break
         case '5':
-          this.signOut(true)
+          this.signOut()
           break
       }
     },

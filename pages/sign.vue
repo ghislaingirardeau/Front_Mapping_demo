@@ -9,7 +9,7 @@
 
     <myProfile :userAuth="userAuth" v-if="userAuth"/>
     <v-col cols="11" v-if="userAuth">
-      <v-btn color="teal" outlined @click="signOut(false)">Log Out</v-btn>
+      <v-btn color="teal" outlined @click="signOut()">Log Out</v-btn>
     </v-col>
     <!-- <v-btn @click="postRealTimeDB"> write DB </v-btn>
     <v-btn @click="getRealTimeDB"> read DB </v-btn>

@@ -5,11 +5,11 @@ export default {
         }
     },
     methods: {
-        signOut(refresh) {
+        signOut() {
             console.log('im from mixin');
             this.$fire.auth.signOut()
             this.$store.dispatch('appReset')
-            refresh ? this.$router.push('/sign') : this.$router.push('/')
+            location.reload()
         },
         changeMixin() {
             this.mixin = !this.mixin
