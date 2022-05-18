@@ -116,7 +116,7 @@ export const actions = {
                         messageRef.child(user.uid).once('value', function (snapshot) {
                             // RETRIEVE DATA HERE WITH uid
                             let datas = {
-                                GeoJsonDatas: snapshot.val().GeoJsonDatas,
+                                GeoJsonDatas: snapshot.val().GeoJsonDatas ? snapshot.val().GeoJsonDatas : {},
                                 markers: snapshot.val().markers
                             }
                             commit('SAVE_MARKERS', datas);
@@ -282,9 +282,9 @@ export const mutations = {
             state.markers = [{
                 type: 'Point',
                 category: 'test',
-                subCategory: ['subcat'],
+                subCategory: '',
                 icon: 'home',
-                color: ['red'],
+                color: 'red',
             }]
             : ""
     },

@@ -83,6 +83,7 @@ export default {
           redirectTo(result)
         } else {
           // if want to signup
+          this.overlay = true
           let result = await this.signUp(this.formData)
           redirectTo(result)
         }
