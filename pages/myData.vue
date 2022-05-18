@@ -41,7 +41,7 @@ export default {
     },
   },
   mounted() {
-    this.$store.dispatch('appLoad')
+    this.$store.dispatch('appLoad') // because store does not detect add / delete on object key
   },
 }
 </script>

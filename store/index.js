@@ -130,7 +130,6 @@ export const actions = {
                     }
                 } else {
                     dispatch('appLoad')
-                    console.log('dispatch to remove on disconnect');
                     resolve(true)
                 }
             })
