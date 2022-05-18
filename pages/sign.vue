@@ -3,39 +3,14 @@
     <theNavBar />
     <v-col cols="11">
       <h1>My account</h1>
+      {{ userAuth }}
     </v-col>
-    <v-col cols="11" sm="6">
-      <v-overlay :value="overlay">
-        <v-progress-circular indeterminate size="64"></v-progress-circular>
-      </v-overlay>
+    <authForm v-if="!userAuth"/>
+    <p v-if="errorMessage" class="info__message--alert">{{ errorMessage }}</p>
 
-      <authForm :login="signType" :doThis="signType ? loginUser : createUser" />
-      <p v-if="errorMessage" class="info__message--alert">{{ errorMessage }}</p>
-      <span class="info__message">You forgot your password ? </span>
-      <v-btn small text color="teal" @click="forgotPassword">reset here</v-btn>
-      <p v-if="resetMessage" class="info__message--success">{{ resetMessage }}</p>
-
-    </v-col>
-    <v-col cols="11">
-      <v-btn
-        v-if="userAuth"
-        color="teal"
-        outlined
-        @click="signOut(false)"
-        >Log Out</v-btn
-      >
-    </v-col>
-    <v-col cols="11" sm="6">
-      <p>
-        {{
-          signType
-            ? "If you don't have connection ID ? Please click 'Sign Up'"
-            : 'Back to the login'
-        }}
-      </p>
-      <v-btn class="mb-3" color="teal" outlined @click="signType = !signType">{{
-        signType ? 'Sign Up' : 'Login'
-      }}</v-btn>
+    <myProfile :userAuth="userAuth" v-if="userAuth"/>
+    <v-col cols="11" v-if="userAuth">
+      <v-btn color="teal" outlined @click="signOut(false)">Log Out</v-btn>
     </v-col>
     <!-- <v-btn @click="postRealTimeDB"> write DB </v-btn>
     <v-btn @click="getRealTimeDB"> read DB </v-btn>
@@ -57,10 +32,7 @@ export default {
 
   data() {
     return {
-      overlay: false,
-      resetMessage: undefined,
       RLvalue: undefined,
-      signType: true,
       id: 'ID123444',
     }
   },
@@ -68,32 +40,7 @@ export default {
     ...mapState(['userAuth', 'errorMessage', 'markers']),
   },
   methods: {
-    ...mapActions(['login', 'signUp']),
 
-    // NUXT FIREBASE AUTH
-    async createUser(data) {
-      this.signUp(data)
-    },
-    async loginUser(data) {
-      this.overlay = true
-      await this.login(data).then(() => {
-        this.overlay = false
-        this.$router.push('/myData')
-      })
-    },
-    async forgotPassword() {
-      await this.$fire.auth
-        .sendPasswordResetEmail(this.userAuth.email)
-        .then(() => {
-          console.log('Email to reset the password send')
-          this.resetMessage =
-            'An email sent, follow the link to reset your password !'
-        })
-        .catch((error) => {
-          console.log(error, 'fail to send the email')
-          this.resetMessage = 'Fail to send the email !'
-        })
-    },
 
     // NUXT FIREBASE REALTIME DB
     async getRealTimeDB() {
@@ -167,21 +114,6 @@ export default {
         return
       }
     },
-    async tokenLog() {
-      /* const token = sessionStorage.getItem('TokenGeoMap')
-      console.log(token);
-      await this.$fire.auth.verifyIdToken(token)
-      .then((decodedToken) => {
-        console.log(decodedToken);
-      })
-      .catch(error => {
-        console.log(error, 'fail to send the email');
-      }) */
-      console.log(this.$fire.auth)
-    },
-  },
-  mounted () {
-    this.resetMessage = undefined
   },
 }
 </script>

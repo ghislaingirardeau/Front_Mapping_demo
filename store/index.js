@@ -1,3 +1,4 @@
+
 // holds your root state
 export const state = () => ({
     userAuth: undefined,
@@ -76,7 +77,7 @@ export const actions = {
                         console.log("User is signed out");
                         commit('USER_SIGNOUT')
                         dispatch('appReset')
-                        this.$router.push('/authentification')
+                        this.$router.push('/sign')
                     }
                 });
                 if (authListener) {
@@ -118,7 +119,6 @@ export const actions = {
                                 markers: snapshot.val().markers
                             }
                             commit('SAVE_MARKERS', datas);
-                            console.log(datas);
                             sessionStorage.setItem('APIGeoMap', JSON.stringify(datas))
                             commit('USER_FECTH', user)
                             resolve(true)
@@ -133,6 +133,20 @@ export const actions = {
                 }
             })
         });
+    },
+    async updateUser({ commit }, datas) {
+        console.log(datas);
+        await this.$fire.auth.currentUser
+            .updateProfile({
+                displayName: datas.displayName,
+                photoURL: datas.photoURL
+            })
+            .then(() => {
+                commit('UPDATE_USER', datas)
+            })
+            .catch(e => {
+             console.log(e);
+            })
     },
     appLoad({ commit }, datas) {
         if (datas) {
@@ -271,6 +285,9 @@ export const mutations = {
                 color: ['red'],
             }]
             : ""
+    },
+    UPDATE_USER(state, data) {
+        state.userAuth.displayName = data.displayName
     },
     USER_SIGNOUT(state) {
         state.userAuth = undefined
