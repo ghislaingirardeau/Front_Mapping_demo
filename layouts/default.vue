@@ -5,6 +5,7 @@
     </main>
     <main v-else>
       <v-overlay :value="overlay">
+        <p>Loading the map tool...</p>
         <v-progress-circular
           indeterminate
           size="64"

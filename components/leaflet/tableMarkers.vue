@@ -1,5 +1,5 @@
 <template>
-  <v-col cols="12">
+  <v-col cols="12" md="11">
     <!-- dialog for the data editing -->
     <modalCustom :showModal="showModal" @send-modal="modalResponse">
       <template v-slot:title> Edit Item</template>

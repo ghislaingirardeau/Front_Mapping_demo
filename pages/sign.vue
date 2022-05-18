@@ -1,5 +1,5 @@
 <template>
-  <v-row class="text-center" justify="space-around">
+  <v-row class="text-center" justify="center">
     <theNavBar />
     <v-col cols="11">
       <h1>{{userAuth ? 'Edit my profile' : 'Sign to your account'}}</h1>

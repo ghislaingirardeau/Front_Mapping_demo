@@ -1,11 +1,6 @@
 <template>
-  <v-row>
+  <v-row justify="center">
     <theNavBar/>
-    <createMarker
-      :markers="markers"
-      :showModal="showModal"
-      @send-marker="modalMarkerResponse"
-    />
 
     <v-col cols="12" class="mb-2 text-center">
       <h1 class="mb-2">My Markers</h1>
@@ -13,6 +8,11 @@
 
       <v-btn color="teal" @click="showModal = true">Add marker</v-btn>
     </v-col>
+    <createMarker
+      :markers="markers"
+      :showModal="showModal"
+      @send-marker="modalMarkerResponse"
+    />
 
     <tableMarkers :key="markers.length" />
   </v-row>

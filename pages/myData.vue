@@ -1,5 +1,5 @@
 <template>
-  <v-row>
+  <v-row justify="center">
     <theNavBar/>
     <v-col cols="11" class="text-center mt-3">
       <h1>
