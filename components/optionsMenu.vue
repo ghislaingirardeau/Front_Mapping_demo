@@ -127,7 +127,7 @@ export default {
   methods: {
     ...mapActions(['appReset', 'geoJsonReset']),
 
-    async resetApp() {
+    resetApp() {
       let confirm = window.confirm(
           'This action will reset the app'
       )

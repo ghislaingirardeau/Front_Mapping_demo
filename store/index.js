@@ -39,22 +39,22 @@ export const actions = {
                 });
                 if (authListener) {
                     console.log('ecouteur ok');
-                    commit('USER_FECTH', newUser.user)
+                    return new Promise((resolve, reject) => {
+                        commit('USER_FECTH', newUser.user)
 
-                    const messageRef = this.$fire.database.ref('mapApp')
-                    await messageRef.child(newUser.user.uid).set({
-                        markers: state.markers,
-                        GeoJsonDatas: state.GeoJsonDatas
-                    })
+                        const messageRef = this.$fire.database.ref('mapApp')
+                        messageRef.child(newUser.user.uid).set({
+                            markers: state.markers,
+                            GeoJsonDatas: state.GeoJsonDatas
+                        })
+                        resolve(true)
+                    });
                     // EMAIL VERIFICATION
                     /* console.log('email')
                     const userEmail = this.$fire.auth.currentUser
                     console.log(userEmail);
                     const sendEmail = userEmail.sendEmailVerification()
                     console.log(sendEmail); */
-                    console.log('data ok')
-                    this.$router.push('/myData')
-
                 }
             }
         } catch (error) {
@@ -76,28 +76,29 @@ export const actions = {
                     } else {
                         console.log("User is signed out");
                         commit('USER_SIGNOUT')
-                        dispatch('appReset')
-                        this.$router.push('/sign')
                     }
                 });
                 if (authListener) {
                     console.log('ecouteur ok');
-                    commit('USER_FECTH', userLog.user)
 
-                    const messageRef = this.$fire.database.ref('mapApp')
-                    try {
-                        messageRef.child(userLog.user.uid).once('value', function (snapshot) {
-                            // RETRIEVE DATA HERE WITH uid
-                            let datas = {
-                                GeoJsonDatas: snapshot.val().GeoJsonDatas,
-                                markers: snapshot.val().markers
-                            }
-                            commit('SAVE_MARKERS', datas);
-                            sessionStorage.setItem('APIGeoMap', JSON.stringify(datas))
-                        })
-                    } catch (e) {
-                        alert(e)
-                    }
+                    return new Promise((resolve, reject) => {
+                        const messageRef = this.$fire.database.ref('mapApp')
+                        try {
+                            messageRef.child(userLog.user.uid).once('value', function (snapshot) {
+                                // RETRIEVE DATA HERE WITH uid
+                                let datas = {
+                                    GeoJsonDatas: snapshot.val().GeoJsonDatas,
+                                    markers: snapshot.val().markers
+                                }
+                                commit('USER_FECTH', userLog.user)
+                                commit('SAVE_MARKERS', datas);
+                                sessionStorage.setItem('APIGeoMap', JSON.stringify(datas))
+                                resolve(true)
+                            })
+                        } catch (error) {
+                            reject(error)
+                        }
+                    });
                 }
             }
             // LISTENER TO THE AUTH CHANGED IF STILL LOG OR NOT
@@ -129,6 +130,7 @@ export const actions = {
                     }
                 } else {
                     dispatch('appLoad')
+                    console.log('dispatch to remove on disconnect');
                     resolve(true)
                 }
             })

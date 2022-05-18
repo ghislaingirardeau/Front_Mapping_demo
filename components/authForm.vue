@@ -67,15 +67,24 @@ export default {
     ...mapActions(['login', 'signUp']),
 
     async sendDataForm() {
+      const redirectTo = (result) => {
+        if (result) {
+          this.overlay = false
+          this.$router.push('/myData')
+        } else {
+          this.overlay = false
+        }
+      }
       if (this.$refs.form.validate()) {
-        if (this.signType) { // if want to log
+        if (this.signType) {
+          // if want to log
           this.overlay = true
-          await this.login(this.formData).then(() => {
-            this.overlay = false
-            this.$router.push('/myData')
-          })
-        } else { // if want to signup
-          this.signUp(this.formData)
+          let result = await this.login(this.formData)
+          redirectTo(result)
+        } else {
+          // if want to signup
+          let result = await this.signUp(this.formData)
+          redirectTo(result)
         }
       }
     },
