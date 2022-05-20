@@ -34,6 +34,7 @@ export default {
   ],
 
   plugins: [
+    '@/plugins/garmin-connect'
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
@@ -46,9 +47,9 @@ export default {
   buildModules: [
     // https://go.nuxtjs.dev/eslint
     '@nuxtjs/eslint-module',
-    // https://go.nuxtjs.dev/vuetify
     '@nuxtjs/vuetify',
-    '@nuxt/content'
+    '@nuxt/content',
+    '@nuxtjs/dotenv'
   ],
 
   // Modules: https://go.nuxtjs.dev/config-modules
@@ -110,5 +111,12 @@ export default {
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {
+    extend(config, { }) {
+      config.node = {
+        fs: 'empty',
+        net: 'empty', 
+        tls: 'empty'
+      }
+    }
   }
 }
