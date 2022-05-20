@@ -13,14 +13,17 @@
       ></v-text-field>
       <v-text-field
         v-model="formData.email"
-        :rules="ruleEmail"
-        label="email"
+        :rules="emailRules"
+        label="Email"
         required
       ></v-text-field>
       <v-text-field
         v-model="formData.password"
-        type="password"
-        label="email"
+        :rules="passwordRules"
+        :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+        :type="showPassword ? 'text' : 'password'"
+        @click:append="showPassword = !showPassword"
+        label="Password"
         required
       ></v-text-field>
       <v-btn color="teal" @click="sendDataForm">
@@ -55,7 +58,15 @@ export default {
       overlay: false,
       resetMessage: undefined,
       valid: true,
-      ruleEmail: [(v) => v.length > 4 || 'email too short'],
+      emailRules: [
+        v => !!v || 'E-mail est obligatoire',
+        v => /.+@.+\..+/.test(v) || 'E-mail doit etre valide',
+      ],
+      showPassword: false,
+      passwordRules: [
+        v => !!v || 'Mot de passe obligatoire',
+        v => /^.*(?=.{6,})(?=.*\d)(?=.*[a-zA-Z]).*$/.test(v) || 'Minimum 6 caracteres dont 1 lettre et une chiffre', 
+      ],
       formData: {
         email: 'tototest@mail.com',
         password: 'qwerty1',
