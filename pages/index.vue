@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="container__map">
     <createMarker
       :markers="markers"
       :showModal="showModalMarker"
@@ -727,10 +727,9 @@ export default {
 
 <style lang="scss">
 
-.container {
+.container__map {
   height: 100%;
   width: 100vw;
-  padding: 0px;
   position: relative;
 }
 #map {
@@ -887,7 +886,7 @@ export default {
   #app {
     background-color: white !important;
   }
-  .container {
+  .container__map {
     height: 100%;
     width: 100%;
   }
