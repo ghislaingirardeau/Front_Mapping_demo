@@ -19,9 +19,6 @@
     <v-btn @click="tokenLog"> log by token </v-btn>
 
     <h2 v-if="userAuth">The userAuth log : {{ userAuth.displayName }}</h2> -->
-    <v-col cols="11">
-      <v-btn @click="garminConnect"> garmin </v-btn>
-    </v-col>
   </v-row>
 </template>
 
@@ -116,15 +113,6 @@ export default {
         return
       }
     },
-    async garminConnect() {
-      /* const { GarminConnect } = require('garmin-connect'); */
-      /* const GCClient = new GarminConnect();
-      await GCClient.login(process.env.GARMIN_EMAIL ,process.env.GARMIN_PWD);
-      const userInfo = await GCClient.getActivities()); */
-      await this.$GCClient.login(process.env.GARMIN_EMAIL ,process.env.GARMIN_PWD);
-      const userInfo = await this.$GCClient.getActivities()
-      console.log(userInfo);
-    }
   },
 }
 </script>
