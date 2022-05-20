@@ -15,15 +15,15 @@
           class="modal_tuto-marker"
           v-if="tutoPage === 1"
         >
-        <h2>&#60-- Create a marker</h2>
-        <p>The marker will also be your layer name, you can add sub category to your layer</p>
+          <h2>&#60-- Create a marker</h2>
+          <p>The marker will also be your layer name, you can add sub category to your layer</p>
         </div>
         <div
           class="modal_tuto-options"
           v-if="tutoPage === 2"
         >
-        <h2>&#60-- Settings & Options</h2>
-        <p>Manage your datas, markers. Export/Import to CSV file. Options : Reset and show measure</p>
+          <h2>&#60-- Settings & Options</h2>
+          <p>Manage your datas, markers. Export/Import to CSV file. Options : Reset and show measure</p>
         </div>
 
         <div
@@ -92,12 +92,12 @@ export default {
     }
   },
   props: {
-      showTutorial: Boolean,
+    showTutorial: Boolean,
   },
   watch: {
-      showTutorial(newValue) {
-        newValue ? this.helpModal() : ''
-      }
+    showTutorial(newValue) {
+      newValue ? this.helpModal() : ''
+    },
   },
   methods: {
     helpModal() {
@@ -110,17 +110,17 @@ export default {
       }
       span.onclick = () => {
         resetModal(modal)
-        this.$emit("send-tuto", {
-            message: false,
-        });
+        this.$emit('send-tuto', {
+          message: false,
+        })
       }
       window.onclick = (event) => {
         if (event.target == modal) {
           resetModal(modal)
         }
-        this.$emit("send-tuto", {
-            message: false,
-        });
+        this.$emit('send-tuto', {
+          message: false,
+        })
       }
     },
     changeTuto() {
@@ -266,5 +266,4 @@ export default {
     }
   }
 }
-
 </style>
