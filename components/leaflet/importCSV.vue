@@ -3,16 +3,23 @@
     <p>Import a file will remove all the data actually displayed !</p>
     <v-form ref="form" v-model="valid" lazy-validation>
       <v-file-input
-        label="Selelct CSV file"
+        label="Select CSV file"
         id="csv"
         @click="readFileCsv"
         accept=".csv"
       ></v-file-input>
       <v-file-input
-        label="Test geojson"
+        label="Select GPX or KML file"
         id="geojson"
+        accept=".gpx, .kml"
         @click="readGeoJson"
       ></v-file-input>
+      <!-- <v-file-input
+        label="Select GPX or KML file"
+        id="geojson"
+        accept=".gpx, .kml"
+        @click="fileToConvert"
+      ></v-file-input> -->
     </v-form>
     <v-spacer></v-spacer>
     <v-btn color="success" class="mr-4" @click="validImport"> Import </v-btn>
@@ -42,10 +49,53 @@ export default {
   methods: {
     readGeoJson() {
       try {
+        this.objetData = {}
+        this.newMarker = []
+        const convertForApp = (newGeoJson) => {
+          let convert
+          newGeoJson.features.forEach((element, i) => {
+            convert = {
+              type: 'Feature',
+              properties: {
+                id: `ID${i}${Date.now()}`,
+                name: element.properties.name,
+                time: element.properties.time,
+                popupContent: ' ',
+                category: element.properties.name,
+                subCategory: '',
+              },
+              geometry: element.geometry,
+              icon: {
+                type: element.geometry.type === 'Point' ? 'map-marker' : '',
+                color: '',
+              },
+            }
+            if (this.objetData[element.properties.name]) {
+              convert.icon.color =
+                this.objetData[element.properties.name][0].icon.color
+              this.objetData[element.properties.name].push(convert)
+            } else {
+              let randomColor = Math.floor(Math.random() * 16777215).toString(
+                16
+              )
+              convert.icon.color = `#${randomColor}`
+              this.newMarker.push({
+                type: element.geometry.type === 'Point' ? 'Point' : 'MultiLineString',
+                category: element.properties.name,
+                subCategory: '',
+                icon: element.geometry.type === 'Point' ? 'map-marker' : '',
+                color: convert.icon.color,
+              })
+              this.objetData[element.properties.name] = new Array()
+              this.objetData[element.properties.name].push(convert)
+            }
+          })
+          console.log(this.objetData, this.newMarker)
+        }
         const myGPX = document.querySelector('#geojson')
         myGPX.addEventListener('change', (e) => {
           const gpxFile = e.target.files
-          console.log(e.target.files[0].name.slice(-3));
+          const mime = e.target.files[0].name.slice(-3)
           if (!gpxFile.length) {
             return false
           }
@@ -53,33 +103,17 @@ export default {
           reader.onload = (e) => {
             const parser = new DOMParser()
             const xmlDoc = parser.parseFromString(e.target.result, 'text/xml')
-            const newGeoJson = this.$convertToGeoJson.gpx(xmlDoc)
+            let newGeoJson
+            switch (mime) {
+              case 'gpx':
+                newGeoJson = this.$convertToGeoJson.gpx(xmlDoc)
+                break
+              case 'kml':
+                newGeoJson = this.$convertToGeoJson.kml(xmlDoc)
+                break
+            }
             console.log(newGeoJson) // GPX ou KML function
-            let convert
-            newGeoJson.features.forEach((element, i) => {
-              convert = {
-                type: 'Feature',
-                properties: {
-                  id: `${i}ID${Date.now()}`,
-                  name: element.properties.name,
-                  popupContent: ' ',
-                  category: 'circle',
-                  subCategory: '',
-                },
-                geometry: element.geometry,
-                icon: {
-                  type: 'circle',
-                  color: 'blue',
-                },
-              }
-              if (this.objetData[element.properties.name]) {
-                this.objetData[element.properties.name].push(convert)
-              } else {
-                this.objetData[element.properties.name] = new Array()
-                this.objetData[element.properties.name].push(convert)
-              }
-            });
-            console.log(this.objetData);
+            convertForApp(newGeoJson)
           }
           reader.readAsText(gpxFile[0])
         })
