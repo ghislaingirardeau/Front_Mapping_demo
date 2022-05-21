@@ -5,9 +5,13 @@
       <v-file-input
         label="Selelct CSV file"
         id="csv"
-        :rules="fileNameRules"
-        @click="readFileTest"
+        @click="readFileCsv"
         accept=".csv"
+      ></v-file-input>
+      <v-file-input
+        label="Test geojson"
+        id="geojson"
+        @click="readGeoJson"
       ></v-file-input>
     </v-form>
     <v-spacer></v-spacer>
@@ -36,7 +40,53 @@ export default {
     },
   },
   methods: {
-    async readFileTest() {
+    readGeoJson() {
+      try {
+        const myGPX = document.querySelector('#geojson')
+        myGPX.addEventListener('change', (e) => {
+          const gpxFile = e.target.files
+          console.log(e.target.files[0].name.slice(-3));
+          if (!gpxFile.length) {
+            return false
+          }
+          const reader = new FileReader()
+          reader.onload = (e) => {
+            const parser = new DOMParser()
+            const xmlDoc = parser.parseFromString(e.target.result, 'text/xml')
+            const newGeoJson = this.$convertToGeoJson.gpx(xmlDoc)
+            console.log(newGeoJson) // GPX ou KML function
+            let convert
+            newGeoJson.features.forEach((element, i) => {
+              convert = {
+                type: 'Feature',
+                properties: {
+                  id: `${i}ID${Date.now()}`,
+                  name: element.properties.name,
+                  popupContent: ' ',
+                  category: 'circle',
+                  subCategory: '',
+                },
+                geometry: element.geometry,
+                icon: {
+                  type: 'circle',
+                  color: 'blue',
+                },
+              }
+              if (this.objetData[element.properties.name]) {
+                this.objetData[element.properties.name].push(convert)
+              } else {
+                this.objetData[element.properties.name] = new Array()
+                this.objetData[element.properties.name].push(convert)
+              }
+            });
+            console.log(this.objetData);
+          }
+          reader.readAsText(gpxFile[0])
+        })
+        this.error = true
+      } catch {}
+    },
+    async readFileCsv() {
       // convert the coordinates
       const convertCoordinate = (coordinates, data) => {
         let indexLng = data.indexOf("'")
@@ -152,6 +202,7 @@ export default {
                 }
               })
             })
+            console.log(this.objetData)
           }
           reader.readAsBinaryString(fileInput.files[0])
         }
