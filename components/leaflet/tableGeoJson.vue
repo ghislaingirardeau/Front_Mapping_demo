@@ -55,7 +55,7 @@
           </v-icon>
         </template>
         <template v-slot:[`item.time`]="{ item }" >
-          <span>{{item.time.replaceAll(/[A-z]/g, ' ')}}</span>
+          <span v-if="item.time">{{item.time.replaceAll(/[A-z]/g, ' ')}}</span>
         </template>
 
       </v-data-table>

@@ -262,13 +262,27 @@ export const mutations = {
         if (typeof (update) === 'number') {
             state.markers.splice(update, 1)
         } else {
+            console.log(state.markers[update.index]);
+            //MARKERS
             state.markers[update.index].color = update.new.color
+            state.markers[update.index].icon = update.new.icon
+            state.markers[update.index].category = update.new.category
             state.markers[update.index].subCategory = update.new.subCategory.length > 0 ? update.new.subCategory : ''
-            let geoJsonCategorie = state.GeoJsonDatas[update.new.GeoJson.name]
+            // GEOJSON
+            // IF CATEGORY NAME CHANGE = COPY OLD NAME TO THE NEW KEY AND DELETE IT
+            if (update.new.category != update.new.GeoJson.name) {
+                state.GeoJsonDatas[update.new.category] = state.GeoJsonDatas[update.new.GeoJson.name]
+                delete state.GeoJsonDatas[update.new.GeoJson.name]
+            }
+            console.log(state.GeoJsonDatas);
+            let geoJsonCategorie = state.GeoJsonDatas[update.new.category]
             update.new.GeoJson.index.forEach(element => {
                 geoJsonCategorie[element].icon.color = update.new.color
+                geoJsonCategorie[element].icon.type = update.new.icon
                 geoJsonCategorie[element].properties.subCategory = update.new.subCategory
+                geoJsonCategorie[element].properties.category = update.new.category
             });
+            
         }
         setStorage(state.markers, state.GeoJsonDatas)
     },

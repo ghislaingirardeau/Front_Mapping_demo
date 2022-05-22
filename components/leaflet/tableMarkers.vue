@@ -6,11 +6,71 @@
       <template v-slot:content>
         <v-form ref="form" v-model="valid" lazy-validation>
           <v-text-field
+            v-model="editItem.newCategory"
+            label="Category name"
+            :rules="rulesEditSub"
+          >
+          </v-text-field>
+          <v-text-field
+            v-model="editItem.newIcon"
+            label="Icon name"
+            hint="Type the first letter to see the icon's list"
+            persistent-hint
+            prefix="mdi-"
+            class="mb-3"
+            :rules="checkIcon"
+            required
+            @keyup="showIconsList(editItem.newIcon)"
+          >
+          </v-text-field>
+          <v-icon class="ml-3" :color="editItem.newColor" large v-if="editItem.newIcon">
+            mdi-{{ editItem.newIcon }}
+          </v-icon>
+
+          <v-dialog v-model="dialog" fullscreen hide-overlay>
+            <template v-slot:activator="{ on, attrs }">
+              <span v-show="editItem.newIcon.length > 0"
+                >{{ iconSuggestList.length }} icons found</span
+              >
+              <v-icon
+                color="teal"
+                v-bind="attrs"
+                v-on="on"
+                v-show="editItem.newIcon.length > 0"
+                class="mr-3 iconAddColor"
+                size="24px"
+                >mdi-eye-settings-outline</v-icon
+              >
+            </template>
+            <v-card>
+              <v-card-title> Click to select icon </v-card-title>
+              <v-card-text class="ma-2">
+                <v-icon
+                  class="ma-2"
+                  v-for="(icon, i) in iconSuggestList"
+                  :key="i"
+                  x-large
+                  @click="pickIcon(icon)"
+                  >mdi-{{ icon }}</v-icon
+                >
+              </v-card-text>
+              <v-divider></v-divider>
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn color="teal" outlined @click="dialog = false">
+                  Close
+                </v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
+          <v-text-field
             v-model="editItem.newSubCategory"
             label="Change SubCategory"
             :rules="rulesEditSub"
           >
           </v-text-field>
+
+          <v-spacer></v-spacer>
           <v-color-picker
             v-model="editItem.newColor"
             dot-size="25"
@@ -34,11 +94,7 @@
       </v-card-title>
       <v-data-table :headers="headers" :items="markers" :search="search">
         <template v-slot:[`item.icon`]="{ item }">
-          <v-icon
-            v-if="item.type === 'Point'"
-            :color="item.color"
-            size="28px"
-          >
+          <v-icon v-if="item.type === 'Point'" :color="item.color" size="28px">
             mdi-{{ item.icon }}</v-icon
           >
           <v-icon
@@ -99,19 +155,53 @@ export default {
         { text: 'Remove', value: 'remove' },
       ],
       showModal: false,
+      dialog: false,
+      iconsSuggest: [],
       valid: true,
       rulesEditSub: [(v) => v.length > 0 || 'minimum 2 characters'],
       editItem: {
         old: '',
+        newCategory: '',
         newSubCategory: '',
+        newIcon: '',
         newColor: '',
       },
     }
   },
   computed: {
-    ...mapState(['markers', 'GeoJsonDatas']),
+    ...mapState(['markers', 'GeoJsonDatas', 'iconsList']),
+    checkIcon() {
+      let control = this.iconsList.find(
+        (element) => element === this.editItem.newIcon
+      )
+        ? true
+        : false
+      return [(v) => control || 'this icon does not exist']
+    },
+    iconSuggestList: {
+      // getter
+      get: function () {
+        return this.iconsSuggest
+      },
+      // setter
+      set: function (newValue) {
+        this.iconsSuggest = newValue
+      },
+    },
   },
   methods: {
+    showIconsList(e) {
+      // show icon inside the list
+      let value = e.toLowerCase()
+      if (value.length > 0) {
+        const result = this.iconsList.filter((word) => word.startsWith(value))
+        this.iconSuggestList = result
+      }
+    },
+    pickIcon(elt) {
+      this.editItem.newIcon = elt
+      this.dialog = false
+    },
     modalResponse(payload) {
       this.showModal = payload.message
     },
@@ -124,6 +214,10 @@ export default {
         this.rulesEditSub = [true]
       }
       this.editItem.old = e
+      console.log(e)
+      this.editItem.newCategory = e.category
+      this.editItem.newIcon = e.icon
+      this.editItem.newColor = e.color
       this.showModal = !this.showModal
     },
     async updateItem() {
@@ -146,6 +240,8 @@ export default {
           id: this.editItem.old,
           update: {
             color: this.editItem.newColor,
+            icon: this.editItem.newIcon,
+            category: this.editItem.newCategory,
             subCategory: this.editItem.newSubCategory,
             GeoJson: indice,
           },
