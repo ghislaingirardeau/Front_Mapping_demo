@@ -3,23 +3,11 @@
     <p>Import a file will remove all the data actually displayed !</p>
     <v-form ref="form" v-model="valid" lazy-validation>
       <v-file-input
-        label="Select CSV file"
-        id="csv"
-        @click="readFileCsv"
-        accept=".csv"
-      ></v-file-input>
-      <v-file-input
-        label="Select GPX or KML file"
-        id="geojson"
-        accept=".gpx, .kml"
-        @click="readGeoJson"
-      ></v-file-input>
-      <!-- <v-file-input
-        label="Select GPX or KML file"
-        id="geojson"
-        accept=".gpx, .kml"
+        label="Select CSV, GPX or KML files"
+        id="fileInput"
+        accept=".gpx, .kml, .csv"
         @click="fileToConvert"
-      ></v-file-input> -->
+      ></v-file-input>
     </v-form>
     <v-spacer></v-spacer>
     <v-btn color="success" class="mr-4" @click="validImport"> Import </v-btn>
@@ -47,80 +35,97 @@ export default {
     },
   },
   methods: {
-    readGeoJson() {
+    fileToConvert() {
       try {
         this.objetData = {}
         this.newMarker = []
-        const convertForApp = (newGeoJson) => {
-          let convert
-          newGeoJson.features.forEach((element, i) => {
-            convert = {
-              type: 'Feature',
-              properties: {
-                id: `ID${i}${Date.now()}`,
-                name: element.properties.name,
-                time: element.properties.time,
-                popupContent: ' ',
-                category: element.properties.name,
-                subCategory: '',
-              },
-              geometry: element.geometry,
-              icon: {
-                type: element.geometry.type === 'Point' ? 'map-marker' : '',
-                color: '',
-              },
-            }
-            if (this.objetData[element.properties.name]) {
-              convert.icon.color =
-                this.objetData[element.properties.name][0].icon.color
-              this.objetData[element.properties.name].push(convert)
-            } else {
-              let randomColor = Math.floor(Math.random() * 16777215).toString(
-                16
-              )
-              convert.icon.color = `#${randomColor}`
-              this.newMarker.push({
-                type: element.geometry.type === 'Point' ? 'Point' : 'MultiLineString',
-                category: element.properties.name,
-                subCategory: '',
-                icon: element.geometry.type === 'Point' ? 'map-marker' : '',
-                color: convert.icon.color,
-              })
-              this.objetData[element.properties.name] = new Array()
-              this.objetData[element.properties.name].push(convert)
-            }
-          })
-          console.log(this.objetData, this.newMarker)
-        }
-        const myGPX = document.querySelector('#geojson')
-        myGPX.addEventListener('change', (e) => {
-          const gpxFile = e.target.files
+        const fileToConvert = document.querySelector('#fileInput')
+        fileToConvert.addEventListener('change', (e) => {
+          const getFile = e.target.files
           const mime = e.target.files[0].name.slice(-3)
-          if (!gpxFile.length) {
+          if (!getFile.length) {
             return false
           }
           const reader = new FileReader()
           reader.onload = (e) => {
-            const parser = new DOMParser()
-            const xmlDoc = parser.parseFromString(e.target.result, 'text/xml')
-            let newGeoJson
             switch (mime) {
-              case 'gpx':
-                newGeoJson = this.$convertToGeoJson.gpx(xmlDoc)
+              case 'gpx': // do GPX method
+                this.readGeoJson(mime, e)
                 break
-              case 'kml':
-                newGeoJson = this.$convertToGeoJson.kml(xmlDoc)
+              case 'kml': // do KML method
+                this.readGeoJson(mime, e)
+                break
+              case 'csv': // do CSV method
+                this.readFileCsv(mime, e)
                 break
             }
-            console.log(newGeoJson) // GPX ou KML function
-            convertForApp(newGeoJson)
           }
-          reader.readAsText(gpxFile[0])
+          reader.readAsText(getFile[0])
         })
         this.error = true
-      } catch {}
+      } catch (error) {}
     },
-    async readFileCsv() {
+    readGeoJson(mimeParams, e) {
+      const convertForApp = (newGeoJson) => {
+        let convert
+        // any character that is not a letter character
+        const regex = /[^A-z]/g;
+        newGeoJson.features.forEach((element, i) => {
+          let category = element.properties.name.slice(0, element.properties.name.search(regex))
+          convert = {
+            type: 'Feature',
+            properties: {
+              id: `ID${i}${Date.now()}`,
+              name: element.properties.name,
+              time: element.properties.time,
+              popupContent: ' ',
+              category: category,
+              subCategory: '',
+            },
+            geometry: element.geometry,
+            icon: {
+              type: element.geometry.type === 'Point' ? 'map-marker' : '',
+              color: '',
+            },
+          }
+          if (this.objetData[category]) {
+            // get the color of the first element of the array, to get the same color
+            convert.icon.color =
+              this.objetData[category][0].icon.color
+            this.objetData[category].push(convert)
+          } else {
+            let randomColor = Math.floor(Math.random() * 16777215).toString(16)
+            convert.icon.color = `#${randomColor}`
+            // create the marker if the category is not create yet & define a random color
+            // if point define map-marker as default marker
+            this.newMarker.push({
+              type:
+                element.geometry.type === 'Point' ? 'Point' : 'MultiLineString',
+              category: category,
+              subCategory: '',
+              icon: element.geometry.type === 'Point' ? 'map-marker' : '',
+              color: convert.icon.color,
+            })
+            this.objetData[category] = new Array()
+            this.objetData[category].push(convert)
+          }
+        })
+      }
+
+      const parser = new DOMParser()
+      const xmlDoc = parser.parseFromString(e.target.result, 'text/xml')
+      let newGeoJson
+      switch (mimeParams) { // GPX ou KML function
+        case 'gpx':
+          newGeoJson = this.$convertToGeoJson.gpx(xmlDoc)
+          break
+        case 'kml':
+          newGeoJson = this.$convertToGeoJson.kml(xmlDoc)
+          break
+      }
+      convertForApp(newGeoJson)
+    },
+    async readFileCsv(mimeParams, e) {
       // convert the coordinates
       const convertCoordinate = (coordinates, data) => {
         let indexLng = data.indexOf("'")
@@ -132,6 +137,7 @@ export default {
           coordinates.push(parseFloat(degres) + parseFloat(minute))
         }
       }
+
       // function to create the layer for each category of json
       const createGeoJsons = (element, layer) => {
         try {
@@ -174,81 +180,62 @@ export default {
           this.error = false
         }
       }
-      try {
-        // GET THE FILE IMPORTED AND APPLY THE FUNCTION
-        var fileInput = document.getElementById('csv')
 
-        let readFile = () => {
-          var reader = new FileReader()
-          reader.onload = async () => {
-            // get the csv data here
-            let csv = reader.result
-            // CONVERT CSV TO JSON
-            var lines = csv.split('\n')
-            var result = []
-            var headers = lines[0].split(',')
+      let csv = e.target.result
+      // CONVERT CSV TO JSON
+      var lines = csv.split('\n')
+      var result = []
+      var headers = lines[0].split(',')
 
-            for (var i = 1; i < lines.length - 1; i++) {
-              var obj = {}
-              var currentline = lines[i].split(',')
+      for (var i = 1; i < lines.length - 1; i++) {
+        var obj = {}
+        var currentline = lines[i].split(',')
 
-              for (var j = 0; j < headers.length; j++) {
-                obj[headers[j]] = currentline[j]
-              }
-
-              result.push(obj)
-            }
-            let JsonFromCsv = result
-            // reinitialize datas marker & geojson => to prevent adding when change files
-            let categories = [
-              ...new Set(JsonFromCsv.map((elt) => elt.category)),
-            ]
-            // CREATE THE MARKERS
-            this.newMarker = []
-            // remove the object which as the same category and sub category
-            let res = JsonFromCsv.filter(
-              (value, index, array) =>
-                index ===
-                array.findIndex(
-                  (t) =>
-                    t.category === value.category &&
-                    t.subCategory === value.subCategory
-                )
-            )
-            this.newMarker = res.map(
-              ({ type, category, subCategory, icon, color }) => ({
-                type: type,
-                category: category,
-                subCategory: subCategory ? subCategory : '',
-                icon: icon,
-                color: color,
-              })
-            )
-            this.objetData = {}
-            // CREATE THE GEOJSON
-            await categories.forEach((eltCategory, i) => {
-              // pour chaque category, je lui crée un nouveau tableau
-              this.objetData[eltCategory] = new Array()
-              JsonFromCsv.forEach((index) => {
-                // j'envoie le geojson dans le tableau correspondant
-                if (index.category === eltCategory) {
-                  createGeoJsons(index, this.objetData[eltCategory])
-                }
-              })
-            })
-            console.log(this.objetData)
-          }
-          reader.readAsBinaryString(fileInput.files[0])
+        for (var j = 0; j < headers.length; j++) {
+          obj[headers[j]] = currentline[j]
         }
 
-        fileInput.addEventListener('change', readFile)
-        this.error = true
-      } catch (error) {
-        console.log(error, 'file is not at the right format')
-        this.error = false
+        result.push(obj)
       }
+      let JsonFromCsv = result
+      // reinitialize datas marker & geojson => to prevent adding when change files
+      let categories = [...new Set(JsonFromCsv.map((elt) => elt.category))]
+
+      // CREATE THE MARKERS
+      // remove the object which as the same category and sub category
+      let res = JsonFromCsv.filter(
+        (value, index, array) =>
+          index ===
+          array.findIndex(
+            (t) =>
+              t.category === value.category &&
+              t.subCategory === value.subCategory
+          )
+      )
+      this.newMarker = res.map(
+        ({ type, category, subCategory, icon, color }) => ({
+          type: type,
+          category: category,
+          subCategory: subCategory ? subCategory : '',
+          icon: icon,
+          color: color,
+        })
+      )
+      
+      // CREATE THE GEOJSON
+      await categories.forEach((eltCategory, i) => {
+        // pour chaque category, je lui crée un nouveau tableau
+        this.objetData[eltCategory] = new Array()
+        JsonFromCsv.forEach((index) => {
+          // j'envoie le geojson dans le tableau correspondant
+          if (index.category === eltCategory) {
+            createGeoJsons(index, this.objetData[eltCategory])
+          }
+        })
+      })
     },
-    async validImport() {
+
+    validImport() {
       if (this.$refs.form.validate()) {
         try {
           let dataStore = {
