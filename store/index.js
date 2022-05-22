@@ -184,25 +184,20 @@ export const actions = {
     markersOnCreate({ commit, state }, newMarker) {
         let flatMarkers = []
         // converti array en string
-        if (newMarker.subCategory.length === 0) {
-            newMarker.subCategory = newMarker.subCategory[0]
-            newMarker.color = newMarker.color[0]
-            flatMarkers.push(newMarker)
-        } else {
-            for (
-                let index = 0;
-                index < newMarker.subCategory.length;
-                index++
-            ) {
-                let multiMarker = {
-                    type: newMarker.type,
-                    category: newMarker.category,
-                    subCategory: newMarker.subCategory[index],
-                    icon: newMarker.icon,
-                    color: newMarker.color[index],
-                }
-                flatMarkers.push(multiMarker)
+        for (
+            let index = 0;
+            index < newMarker.subCategory.length;
+            index++
+        ) {
+            let multiMarker = {
+                id: `IM${index}${Date.now()}`,
+                type: newMarker.type,
+                category: newMarker.category,
+                subCategory: newMarker.subCategory[index],
+                icon: newMarker.icon,
+                color: newMarker.color[index],
             }
+            flatMarkers.push(multiMarker)
         }
         let addedMarker = [...state.markers, ...flatMarkers]
         let datas = {

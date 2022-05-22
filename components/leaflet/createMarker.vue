@@ -314,7 +314,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions(['markersOnCreate']),
+    ...mapActions(['markersOnCreate', 'getMarkersIcons']),
 
     modalResponse(payload) {
       this.$emit('send-marker', {
@@ -402,7 +402,7 @@ export default {
   },
   mounted() {
     // LOAD ALL THE ICON FROM ICONDESIGN
-    this.$store.dispatch('getMarkersIcons')
+    this.getMarkersIcons()
   },
 }
 </script>

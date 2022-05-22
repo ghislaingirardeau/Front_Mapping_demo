@@ -99,6 +99,7 @@ export default {
             // create the marker if the category is not create yet & define a random color
             // if point define map-marker as default marker
             this.newMarker.push({
+              id: `IM${i}${Date.now()}`,
               type:
                 element.geometry.type === 'Point' ? 'Point' : 'MultiLineString',
               category: category,
@@ -213,7 +214,8 @@ export default {
           )
       )
       this.newMarker = res.map(
-        ({ type, category, subCategory, icon, color }) => ({
+        ({ id, type, category, subCategory, icon, color }) => ({
+          id: `IM${id.slice(2)}`,
           type: type,
           category: category,
           subCategory: subCategory ? subCategory : '',
@@ -221,7 +223,7 @@ export default {
           color: color,
         })
       )
-      
+      console.log(this.newMarker);
       // CREATE THE GEOJSON
       await categories.forEach((eltCategory, i) => {
         // pour chaque category, je lui crée un nouveau tableau
