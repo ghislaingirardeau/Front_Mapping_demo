@@ -210,24 +210,15 @@ export const actions = {
         return new Promise((resolve, reject) => {
             const index = state.markers.findIndex(
                 elt =>
-                    elt.category === markerToUpdate.id.category &&
-                    elt.subCategory === markerToUpdate.id.subCategory
+                    elt.id === markerToUpdate.old.id
             )
-            if (index > -1) {
-                if (markerToUpdate.update) {
-                    let update = {
-                        index: index,
-                        new: markerToUpdate.update,
-                    }
-                    commit('UPDATE_MARKER', update); // envoie objet avec new color et new sub
+                if (markerToUpdate.new) {
+                    markerToUpdate.index = index
+                    commit('UPDATE_MARKER', markerToUpdate); // envoie objet avec new color et new sub
                 } else {
                     commit('UPDATE_MARKER', index); // envoie juste index a supprimer
                 }
                 resolve(true)
-            } else {
-                reject(false)
-                alert('This marker is not find')
-            }
         });
     },
     geoJsonOnCreate({ commit }, newGeoJson) {
@@ -257,27 +248,23 @@ export const mutations = {
         if (typeof (update) === 'number') {
             state.markers.splice(update, 1)
         } else {
-            console.log(state.markers[update.index]);
+            console.log(update);
             //MARKERS
-            state.markers[update.index].color = update.new.color
-            state.markers[update.index].icon = update.new.icon
-            state.markers[update.index].category = update.new.category
-            state.markers[update.index].subCategory = update.new.subCategory.length > 0 ? update.new.subCategory : ''
+            state.markers.splice(update.index, 1, update.new)
             // GEOJSON
             // IF CATEGORY NAME CHANGE = COPY OLD NAME TO THE NEW KEY AND DELETE IT
-            if (update.new.category != update.new.GeoJson.name) {
-                state.GeoJsonDatas[update.new.category] = state.GeoJsonDatas[update.new.GeoJson.name]
-                delete state.GeoJsonDatas[update.new.GeoJson.name]
+            if (update.new.category != update.old.category) {
+                state.GeoJsonDatas[update.new.category] = state.GeoJsonDatas[update.old.category]
+                delete state.GeoJsonDatas[update.old.category]
             }
             console.log(state.GeoJsonDatas);
             let geoJsonCategorie = state.GeoJsonDatas[update.new.category]
-            update.new.GeoJson.index.forEach(element => {
+            update.geosIndex.forEach(element => {
                 geoJsonCategorie[element].icon.color = update.new.color
                 geoJsonCategorie[element].icon.type = update.new.icon
                 geoJsonCategorie[element].properties.subCategory = update.new.subCategory
                 geoJsonCategorie[element].properties.category = update.new.category
             });
-            
         }
         setStorage(state.markers, state.GeoJsonDatas)
     },

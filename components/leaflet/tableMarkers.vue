@@ -6,13 +6,14 @@
       <template v-slot:content>
         <v-form ref="form" v-model="valid" lazy-validation>
           <v-text-field
-            v-model="editItem.newCategory"
+            v-model="editItem.category"
             label="Category name"
             :rules="rulesEditSub"
           >
           </v-text-field>
           <v-text-field
-            v-model="editItem.newIcon"
+            v-model="editItem.icon"
+            v-if="editItem.icon"
             label="Icon name"
             hint="Type the first letter to see the icon's list"
             persistent-hint
@@ -20,23 +21,23 @@
             class="mb-3"
             :rules="checkIcon"
             required
-            @keyup="showIconsList(editItem.newIcon)"
+            @keyup="showIconsList(editItem.icon)"
           >
           </v-text-field>
-          <v-icon class="ml-3" :color="editItem.newColor" large v-if="editItem.newIcon">
-            mdi-{{ editItem.newIcon }}
+          <v-icon class="ml-3" :color="editItem.color" large v-if="editItem.icon">
+            mdi-{{ editItem.icon }}
           </v-icon>
 
           <v-dialog v-model="dialog" fullscreen hide-overlay>
             <template v-slot:activator="{ on, attrs }">
-              <span v-show="editItem.newIcon.length > 0"
+              <span v-show="editItem.icon.length > 0"
                 >{{ iconSuggestList.length }} icons found</span
               >
               <v-icon
                 color="teal"
                 v-bind="attrs"
                 v-on="on"
-                v-show="editItem.newIcon.length > 0"
+                v-show="editItem.icon.length > 0"
                 class="mr-3 iconAddColor"
                 size="24px"
                 >mdi-eye-settings-outline</v-icon
@@ -64,7 +65,7 @@
             </v-card>
           </v-dialog>
           <v-text-field
-            v-model="editItem.newSubCategory"
+            v-model="editItem.subCategory"
             label="Change SubCategory"
             :rules="rulesEditSub"
           >
@@ -72,7 +73,7 @@
 
           <v-spacer></v-spacer>
           <v-color-picker
-            v-model="editItem.newColor"
+            v-model="editItem.color"
             dot-size="25"
             hide-inputs
           ></v-color-picker>
@@ -159,20 +160,15 @@ export default {
       iconsSuggest: [],
       valid: true,
       rulesEditSub: [(v) => v.length > 0 || 'minimum 2 characters'],
-      editItem: {
-        old: '',
-        newCategory: '',
-        newSubCategory: '',
-        newIcon: '',
-        newColor: '',
-      },
+      editItem: {},
+      oldItem: {}
     }
   },
   computed: {
     ...mapState(['markers', 'GeoJsonDatas', 'iconsList']),
     checkIcon() {
       let control = this.iconsList.find(
-        (element) => element === this.editItem.newIcon
+        (element) => element === this.editItem.icon
       )
         ? true
         : false
@@ -199,7 +195,7 @@ export default {
       }
     },
     pickIcon(elt) {
-      this.editItem.newIcon = elt
+      this.editItem.icon = elt
       this.dialog = false
     },
     modalResponse(payload) {
@@ -209,54 +205,42 @@ export default {
       if (e.subCategory.length > 0) {
         // if there is subcat
         this.rulesEditSub = [(v) => v.length > 2 || 'minimum 2 characters']
-        this.editItem.newSubCategory = e.subCategory // load the actual subcat
       } else {
         this.rulesEditSub = [true]
       }
-      this.editItem.old = e
-      console.log(e)
-      this.editItem.newCategory = e.category
-      this.editItem.newIcon = e.icon
-      this.editItem.newColor = e.color
+      this.editItem = {...e}
+      this.oldItem = {...e}
+  
       this.showModal = !this.showModal
     },
     async updateItem() {
       // TO UPDATE GEOJSON
-      let indice = {
-        name: this.editItem.old.category,
-        index: [],
-      }
-      if (this.GeoJsonDatas && this.GeoJsonDatas[this.editItem.old.category]) {
-        let array = this.GeoJsonDatas[this.editItem.old.category]
+      let listIndex = []
+      if (this.GeoJsonDatas && this.GeoJsonDatas[this.oldItem.category]) {
+        let array = this.GeoJsonDatas[this.oldItem.category]
         array.forEach((element, i) => {
-          element.properties.subCategory === this.editItem.old.subCategory
-            ? indice.index.push(i)
+          element.properties.subCategory === this.oldItem.subCategory
+            ? listIndex.push(i)
             : ''
         })
       }
 
       if (this.$refs.form.validate()) {
         let dataStore = {
-          id: this.editItem.old,
-          update: {
-            color: this.editItem.newColor,
-            icon: this.editItem.newIcon,
-            category: this.editItem.newCategory,
-            subCategory: this.editItem.newSubCategory,
-            GeoJson: indice,
-          },
+          old: this.oldItem,
+          new: this.editItem,
+          geosIndex: listIndex
         }
         let res = await this.$store.dispatch('updateMarker', dataStore)
         this.showModal = !this.showModal
-        this.editItem.subCategory = ''
       }
     },
     async removeDB(e) {
       let confirm = window.confirm(`Remove the item ${e.category} ?`)
       if (confirm) {
         let dataStore = {
-          id: e,
-          update: false,
+          old: {id: e.id},
+          new: false,
         }
         let res = await this.$store.dispatch('updateMarker', dataStore)
       }
