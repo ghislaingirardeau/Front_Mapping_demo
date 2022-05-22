@@ -268,6 +268,7 @@ export default {
     showModal: Boolean,
   },
   computed: {
+    ...mapState(['iconsList']),
     checkCatExist() {
       let result = this.markers.map((a) => a.category)
       let mySet = new Set(result)
@@ -294,7 +295,7 @@ export default {
       ]
     },
     checkIcon() {
-      let control = this.iconsListing.find(
+      let control = this.iconsList.find(
         (element) => element === this.newIcon.icon
       )
         ? true
@@ -325,7 +326,7 @@ export default {
       // show icon inside the list
       let value = e.toLowerCase()
       if (value.length > 0) {
-        const result = this.iconsListing.filter((word) =>
+        const result = this.iconsList.filter((word) =>
           word.startsWith(value)
         )
         this.iconSuggestList = result
@@ -400,21 +401,8 @@ export default {
     },
   },
   mounted() {
-    // LOAD ALL THE ICON AVAILABLE
-    const iconList = async () => {
-      let result = await this.$axios.$get(
-        'https://pictogrammers.github.io/@mdi/font/6.5.95/css/materialdesignicons.min.css'
-      )
-      if (result) {
-        let listing = result.split('.mdi-')
-        listing.forEach((element, i) => {
-          let index = element.indexOf(':')
-          let icons = element.slice(0, index)
-          this.iconsListing.push(icons)
-        })
-      }
-    }
-    iconList()
+    // LOAD ALL THE ICON FROM ICONDESIGN
+    this.$store.dispatch('getMarkersIcons')
   },
 }
 </script>

@@ -4,7 +4,8 @@ export const state = () => ({
     userAuth: undefined,
     errorMessage: undefined,
     markers: [],
-    GeoJsonDatas: {}
+    GeoJsonDatas: {},
+    iconsList: []
 })
 
 const setStorage = (markers, GeoJsonDatas) => {
@@ -164,6 +165,22 @@ export const actions = {
         commit('RESET_MARKERS')
         sessionStorage.removeItem('APIGeoMap')
     },
+    // LOAD ALL THE ICON FROM ICONDESIGN
+    async getMarkersIcons({commit}) {
+        let result = await this.$axios.$get(
+            'https://pictogrammers.github.io/@mdi/font/6.5.95/css/materialdesignicons.min.css'
+        )
+        if (result) {
+            let listFormated = []
+            let listingRaw = result.split('.mdi-')
+            listingRaw.forEach((element, i) => {
+                let index = element.indexOf(':')
+                let icons = element.slice(0, index)
+                listFormated.push(icons)
+            })
+            commit('SAVE_ICONS', listFormated)
+        }
+    },
     markersOnCreate({ commit, state }, newMarker) {
         let flatMarkers = []
         // converti array en string
@@ -230,6 +247,9 @@ export const actions = {
 }
 // contains your mutations
 export const mutations = {
+    SAVE_ICONS(state, data) {
+        state.iconsList = data;
+    },
     SAVE_MARKERS(state, data) {
         state.markers = data.markers;
         data.GeoJsonDatas ? state.GeoJsonDatas = data.GeoJsonDatas : '';
