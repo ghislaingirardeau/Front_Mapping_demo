@@ -54,6 +54,10 @@
             mdi-delete
           </v-icon>
         </template>
+        <template v-slot:[`item.time`]="{ item }" >
+          <span>{{item.time}}</span>
+        </template>
+
       </v-data-table>
     </v-card>
   </v-col>
@@ -64,7 +68,18 @@ export default {
   data() {
     return {
       search: '',
-      headers: [
+      showModal: false,
+      valid: true,
+      editItem: {},
+      rulesName: [(v) => v.length >= 2 || 'Mininum 2 characters'],
+    }
+  },
+  props: {
+    allDatas: Array,
+  },
+  computed: {
+    headers() {
+      let headersBase = [
         {
           text: 'Name',
           align: 'start',
@@ -75,15 +90,15 @@ export default {
         { text: 'Category', value: 'category' },
         { text: 'ID', value: 'id' },
         { text: 'Actions', value: 'actions' },
-      ],
-      showModal: false,
-      valid: true,
-      editItem: {},
-      rulesName: [(v) => v.length >= 2 || 'Mininum 2 characters'],
+      ]
+      if (this.allDatas[0].time != undefined) {
+        let array = headersBase
+        array.splice(-1, 0, { text: 'Time', value: 'time' })
+        return array
+      } else {
+        return headersBase
+      }
     }
-  },
-  props: {
-    allDatas: Array,
   },
   methods: {
     itemAction(item, remove) {
