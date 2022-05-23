@@ -147,7 +147,7 @@ export const actions = {
                 commit('UPDATE_USER', datas)
             })
             .catch(e => {
-             console.log(e);
+                console.log(e);
             })
     },
     appLoad({ commit }, datas) {
@@ -166,7 +166,7 @@ export const actions = {
         sessionStorage.removeItem('APIGeoMap')
     },
     // LOAD ALL THE ICON FROM ICONDESIGN
-    async getMarkersIcons({commit}) {
+    async getMarkersIcons({ commit }) {
         let result = await this.$axios.$get(
             'https://pictogrammers.github.io/@mdi/font/6.5.95/css/materialdesignicons.min.css'
         )
@@ -212,13 +212,13 @@ export const actions = {
                 elt =>
                     elt.id === markerToUpdate.old.id
             )
-                if (markerToUpdate.new) {
-                    markerToUpdate.index = index
-                    commit('UPDATE_MARKER', markerToUpdate); // envoie objet avec new color et new sub
-                } else {
-                    commit('UPDATE_MARKER', index); // envoie juste index a supprimer
-                }
-                resolve(true)
+            if (markerToUpdate.new) {
+                markerToUpdate.index = index
+                commit('UPDATE_MARKER', markerToUpdate); // envoie objet avec new color et new sub
+            } else {
+                commit('UPDATE_MARKER', index); // envoie juste index a supprimer
+            }
+            resolve(true)
         });
     },
     geoJsonOnCreate({ commit }, newGeoJson) {
@@ -248,7 +248,6 @@ export const mutations = {
         if (typeof (update) === 'number') {
             state.markers.splice(update, 1)
         } else {
-            console.log(update);
             //MARKERS
             state.markers.splice(update.index, 1, update.new)
             // GEOJSON
@@ -257,7 +256,6 @@ export const mutations = {
                 state.GeoJsonDatas[update.new.category] = state.GeoJsonDatas[update.old.category]
                 delete state.GeoJsonDatas[update.old.category]
             }
-            console.log(state.GeoJsonDatas);
             let geoJsonCategorie = state.GeoJsonDatas[update.new.category]
             update.geosIndex.forEach(element => {
                 geoJsonCategorie[element].icon.color = update.new.color
