@@ -88,6 +88,7 @@ export default {
         },
         { text: 'Popup', value: 'popupContent' },
         { text: 'Category', value: 'category' },
+        { text: 'Time', value: 'time' },
         { text: 'Actions', value: 'actions' },
       ]
       if (this.allDatas[0].time != undefined) {
