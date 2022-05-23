@@ -54,10 +54,11 @@
             mdi-delete
           </v-icon>
         </template>
-        <template v-slot:[`item.time`]="{ item }" >
-          <span v-if="item.time">{{item.time.replaceAll(/[A-z]/g, ' ')}}</span>
+        <template v-slot:[`item.time`]="{ item }">
+          <span>{{
+            item.time.replaceAll(/[A-z]/g, ' ')
+          }}</span>
         </template>
-
       </v-data-table>
     </v-card>
   </v-col>
@@ -72,14 +73,7 @@ export default {
       valid: true,
       editItem: {},
       rulesName: [(v) => v.length >= 2 || 'Mininum 2 characters'],
-    }
-  },
-  props: {
-    allDatas: Array,
-  },
-  computed: {
-    headers() {
-      let headersBase = [
+      headers: [
         {
           text: 'Name',
           align: 'start',
@@ -88,16 +82,13 @@ export default {
         },
         { text: 'Popup', value: 'popupContent' },
         { text: 'Category', value: 'category' },
+        { text: 'Time', value: 'time' },
         { text: 'Actions', value: 'actions' },
       ]
-      if (this.allDatas.filter(e => e.time).length > 0) {
-        let array = headersBase
-        array.splice(-1, 0, { text: 'Time', value: 'time' })
-        return array
-      } else {
-        return headersBase
-      }
     }
+  },
+  props: {
+    allDatas: Array,
   },
   methods: {
     itemAction(item, remove) {

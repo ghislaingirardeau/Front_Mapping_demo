@@ -89,7 +89,7 @@ export default {
       type: 'Feature',
       properties: {
         id: `ID${Date.now()}`,
-        name: 'Clean water',
+        name: 'plus 01',
         popupContent: ' ',
         category: '',
         subCategory: '',
@@ -199,6 +199,7 @@ export default {
         }
 
         this.addGeoJson.geometry.coordinates = getCoordinates
+        this.addGeoJson.properties.time = new Date(Date.now()).toISOString().slice(0, -5)
 
         this.$emit('send-data', {
           show: false,

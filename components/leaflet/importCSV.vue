@@ -167,6 +167,7 @@ export default {
               id: element.id,
               name: element.name,
               popupContent: element.popupContent,
+              time: element.time,
               category: element.category,
               subCategory: element.subCategory,
             },
