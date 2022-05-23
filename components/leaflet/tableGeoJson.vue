@@ -90,7 +90,6 @@ export default {
         { text: 'Category', value: 'category' },
         { text: 'Actions', value: 'actions' },
       ]
-      console.log(this.allDatas.filter(e => e.time).length);
       if (this.allDatas.filter(e => e.time).length > 0) {
         let array = headersBase
         array.splice(-1, 0, { text: 'Time', value: 'time' })

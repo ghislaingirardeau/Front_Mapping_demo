@@ -252,9 +252,9 @@ export default {
       colorSelected: '',
       newIcon: {
         type: 'Point',
-        category: 'home',
+        category: 'plus',
         subCategory: [''],
-        icon: 'home',
+        icon: 'plus',
         color: [],
       },
       // manage datas

@@ -63,42 +63,30 @@ export const actions = {
         }
 
     },
-    async login({ commit, dispatch }, formData) {
+    async login({ commit, state }, formData) {
         try {
             const userLog = await this.$fire.auth.signInWithEmailAndPassword(
                 formData.email,
                 formData.password
             );
+            
             if (userLog) {
                 console.log('log ok');
-                const authListener = await this.$fire.auth.onAuthStateChanged((user) => {
-                    if (user) {
-                        console.log(user);
-                    } else {
-                        console.log("User is signed out");
-                        commit('USER_SIGNOUT')
-                    }
-                });
-                if (authListener) {
-                    console.log('ecouteur ok');
+                const messageRef = this.$fire.database.ref('mapApp')
+                let dataDB = await messageRef.child(userLog.user.uid).once('value', function (snapshot) {
+                    if (formData.checkboxMerge) {
+                        console.log(snapshot.val().markers);
 
+                        messageRef.child(userLog.user.uid).update({
+                            markers: [state.markers, snapshot.val().markers].flat(),
+                            GeoJsonDatas: Object.assign(state.GeoJsonDatas, snapshot.val().GeoJsonDatas)
+                        })
+                    }
+                    commit('USER_FECTH', userLog.user)
+                })
+                if (dataDB) {
                     return new Promise((resolve, reject) => {
-                        const messageRef = this.$fire.database.ref('mapApp')
-                        try {
-                            messageRef.child(userLog.user.uid).once('value', function (snapshot) {
-                                // RETRIEVE DATA HERE WITH uid
-                                let datas = {
-                                    GeoJsonDatas: snapshot.val().GeoJsonDatas,
-                                    markers: snapshot.val().markers
-                                }
-                                commit('USER_FECTH', userLog.user)
-                                commit('SAVE_MARKERS', datas);
-                                sessionStorage.setItem('APIGeoMap', JSON.stringify(datas))
-                                resolve(true)
-                            })
-                        } catch (error) {
-                            reject(error)
-                        }
+                        resolve(true)
                     });
                 }
             }
@@ -114,14 +102,14 @@ export const actions = {
                 if (user) {
                     const messageRef = this.$fire.database.ref('mapApp')
                     try {
-                        messageRef.child(user.uid).once('value', function (snapshot) {
+                        messageRef.child(user.uid).once('value', (snapshot) => {
                             // RETRIEVE DATA HERE WITH uid
                             let datas = {
                                 GeoJsonDatas: snapshot.val().GeoJsonDatas ? snapshot.val().GeoJsonDatas : {},
                                 markers: snapshot.val().markers
                             }
                             commit('SAVE_MARKERS', datas);
-                            sessionStorage.setItem('APIGeoMap', JSON.stringify(datas))
+                            console.log('keepconnection');
                             commit('USER_FECTH', user)
                             resolve(true)
                         })
@@ -151,9 +139,10 @@ export const actions = {
             })
     },
     appLoad({ commit }, datas) {
+        console.log('appLoad');
         if (datas) {
-            commit('SAVE_MARKERS', datas);
-            setStorage(datas.markers, datas.GeoJsonDatas)
+            commit('SAVE_MARKERS', datas)
+            
         } else {
             let datasLocalStorage = JSON.parse(sessionStorage.getItem('APIGeoMap'))
             if (datasLocalStorage) {
@@ -237,8 +226,16 @@ export const mutations = {
         state.iconsList = data;
     },
     SAVE_MARKERS(state, data) {
-        state.markers = data.markers;
-        data.GeoJsonDatas ? state.GeoJsonDatas = data.GeoJsonDatas : '';
+        if (data.merge === true) {
+            state.markers.push(...data.markers);
+            Object.assign(state.GeoJsonDatas, data.GeoJsonDatas)
+            console.log('merge true');
+        } else {
+            console.log('merge false');
+            state.markers = data.markers;
+            data.GeoJsonDatas ? state.GeoJsonDatas = data.GeoJsonDatas : '';
+        }
+        setStorage(state.markers, state.GeoJsonDatas)
     },
     RESET_MARKERS(state) {
         state.markers = [];

@@ -10,6 +10,10 @@
       ></v-file-input>
     </v-form>
     <v-spacer></v-spacer>
+    <v-checkbox
+      v-model="checkboxMerge"
+      :label="`Merge the import datas to your actual data ? ${checkboxMerge.toString()}`"
+    ></v-checkbox>
     <v-btn color="success" class="mr-4" @click="validImport"> Import </v-btn>
   </div>
 </template>
@@ -20,12 +24,13 @@ import { mapState } from 'vuex'
 export default {
   data: () => ({
     valid: true,
+    checkboxMerge: false,
     objetData: {},
     newMarker: [],
     error: false,
   }),
   computed: {
-    ...mapState(['markers']),
+    ...mapState(['markers', 'userAuth']),
 
     fileNameRules() {
       return [
@@ -243,6 +248,7 @@ export default {
           let dataStore = {
             markers: this.newMarker,
             GeoJsonDatas: this.objetData,
+            merge: this.checkboxMerge
           }
           this.$store.dispatch('appLoad', dataStore)
           this.$router.push('/myData')
