@@ -88,10 +88,10 @@ export default {
         },
         { text: 'Popup', value: 'popupContent' },
         { text: 'Category', value: 'category' },
-        { text: 'Time', value: 'time' },
         { text: 'Actions', value: 'actions' },
       ]
-      if (this.allDatas[0].time != undefined) {
+      console.log(this.allDatas.filter(e => e.time).length);
+      if (this.allDatas.filter(e => e.time).length > 0) {
         let array = headersBase
         array.splice(-1, 0, { text: 'Time', value: 'time' })
         return array
