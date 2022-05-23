@@ -88,9 +88,7 @@ export default {
     async sendDataForm() {
       const redirectTo = (result) => {
         if (result) {
-          this.overlay = false
           this.formData.checkboxMerge ? location.assign(window.location.origin) : this.$router.push('/myData')
-          
         } else {
           this.overlay = false
         }
