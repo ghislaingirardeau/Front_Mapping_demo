@@ -68,8 +68,8 @@ export default {
         v => /^.*(?=.{6,})(?=.*\d)(?=.*[a-zA-Z]).*$/.test(v) || 'Minimum 6 caracteres dont 1 lettre et une chiffre', 
       ],
       formData: {
-        email: 'tototest@mail.com',
-        password: 'qwerty1',
+        email: 'testmymap@mail.com',
+        password: 'qwerty123',
         displayName: 'Ghislain',
       },
     }
