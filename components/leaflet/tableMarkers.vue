@@ -7,13 +7,14 @@
         <v-form ref="form" v-model="valid" lazy-validation>
           <v-text-field
             v-model="editItem.category"
+            v-if="!editItem.subCategory"
             label="Category name"
             :rules="rulesEditSub"
           >
           </v-text-field>
           <v-text-field
             v-model="editItem.icon"
-            v-if="editItem.icon"
+            v-if="editItem.icon && !editItem.subCategory"
             label="Icon name"
             hint="Type the first letter to see the icon's list"
             persistent-hint
@@ -24,20 +25,20 @@
             @keyup="showIconsList(editItem.icon)"
           >
           </v-text-field>
-          <v-icon class="ml-3" :color="editItem.color" large v-if="editItem.icon">
+          <v-icon class="ml-3" :color="editItem.color" large v-if="editItem.icon && !editItem.subCategory">
             mdi-{{ editItem.icon }}
           </v-icon>
 
           <v-dialog v-model="dialog" fullscreen hide-overlay>
             <template v-slot:activator="{ on, attrs }">
-              <span v-show="editItem.icon.length > 0"
+              <span v-show="editItem.icon.length > 0 && !editItem.subCategory"
                 >{{ iconSuggestList.length }} icons found</span
               >
               <v-icon
                 color="teal"
                 v-bind="attrs"
                 v-on="on"
-                v-show="editItem.icon.length > 0"
+                v-show="editItem.icon.length > 0 && !editItem.subCategory"
                 class="mr-3 iconAddColor"
                 size="24px"
                 >mdi-eye-settings-outline</v-icon
@@ -224,7 +225,7 @@ export default {
             : ''
         })
       }
-
+      // DEBUG IF EDIT CAT AND ICON OF SUB CAT
       if (this.$refs.form.validate()) {
         let dataStore = {
           old: this.oldItem,
