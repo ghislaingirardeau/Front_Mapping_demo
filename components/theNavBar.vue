@@ -41,7 +41,7 @@ export default {
       {
         icon: 'mdi-account-box-outline',
         title: 'Sign',
-        to: '/sign',
+        to: '/account',
       },
     ],
   }),

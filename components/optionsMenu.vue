@@ -72,6 +72,11 @@ export default {
     settings() {
       let menu = [
         {
+          icon: 'mdi-login',
+          title: 'login / Sign-in',
+          to: '/account',
+        },
+        {
           icon: 'mdi-database-eye',
           title: 'Manage My Datas',
           to: '/myData',
@@ -83,12 +88,12 @@ export default {
         },
       ]
       this.userAuth
-        ? ''
-        : menu.splice(0, 0, {
-            icon: 'mdi-login',
-            title: 'login / Sign-in',
-            to: '/sign',
+        ? menu.splice(0, 1, {
+            icon: 'mdi-account',
+            title: 'My Profil',
+            to: '/account',
           })
+        : ''
       return menu
     },
     actions() {
@@ -114,13 +119,13 @@ export default {
           title: 'Show measure',
         },
       ]
-      this.userAuth ?
-        menu.push({
-          id: '5',
-          icon: 'mdi-logout',
-          title: 'Logout',
-        }) :
-        ''
+      this.userAuth
+        ? menu.push({
+            id: '5',
+            icon: 'mdi-logout',
+            title: 'Logout',
+          })
+        : ''
       return menu
     },
   },
@@ -128,9 +133,7 @@ export default {
     ...mapActions(['appReset', 'geoJsonReset']),
 
     resetApp() {
-      let confirm = window.confirm(
-          'This action will reset the app'
-      )
+      let confirm = window.confirm('This action will reset the app')
       if (confirm) {
         this.appReset()
         location.reload()
@@ -139,9 +142,7 @@ export default {
       }
     },
     removeGeoJson() {
-      let confirm = window.confirm(
-          'This action will delete only your datas'
-      )
+      let confirm = window.confirm('This action will delete only your datas')
       if (confirm) {
         this.geoJsonReset()
         this.message = 'datas have been removed successfully'
