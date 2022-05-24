@@ -31,6 +31,7 @@ export default {
   },
 
   css: [
+    '@/assets/home.scss'
   ],
 
   plugins: [
