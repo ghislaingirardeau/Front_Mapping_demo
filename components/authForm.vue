@@ -26,10 +26,6 @@
         label="Password"
         required
       ></v-text-field>
-      <v-checkbox
-        v-model="formData.checkboxMerge"
-        :label="`Merge your actual data to your database ? ${formData.checkboxMerge.toString()}`"
-      ></v-checkbox>
 
       <v-btn color="teal" @click="sendDataForm">
         {{ signType ? 'Login' : 'Register' }}
@@ -78,7 +74,6 @@ export default {
         email: 'testmymap@mail.com',
         password: 'qwerty123',
         displayName: 'Ghislain',
-        checkboxMerge: false
       },
     }
   },
@@ -88,7 +83,7 @@ export default {
     async sendDataForm() {
       const redirectTo = (result) => {
         if (result) {
-          this.formData.checkboxMerge ? location.assign(window.location.origin) : this.$router.push('/myData')
+          this.$router.push('/myData')
         } else {
           this.overlay = false
         }

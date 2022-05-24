@@ -69,26 +69,13 @@ export const actions = {
                 formData.email,
                 formData.password
             );
-            
+
             if (userLog) {
                 console.log('log ok');
-                const messageRef = this.$fire.database.ref('mapApp')
-                let dataDB = await messageRef.child(userLog.user.uid).once('value', function (snapshot) {
-                    if (formData.checkboxMerge) {
-                        console.log(snapshot.val().markers);
-
-                        messageRef.child(userLog.user.uid).update({
-                            markers: [state.markers, snapshot.val().markers].flat(),
-                            GeoJsonDatas: Object.assign(state.GeoJsonDatas, snapshot.val().GeoJsonDatas)
-                        })
-                    }
+                return new Promise((resolve, reject) => {
                     commit('USER_FECTH', userLog.user)
-                })
-                if (dataDB) {
-                    return new Promise((resolve, reject) => {
-                        resolve(true)
-                    });
-                }
+                    resolve(true)
+                });
             }
             // LISTENER TO THE AUTH CHANGED IF STILL LOG OR NOT
         } catch (error) {
@@ -142,7 +129,7 @@ export const actions = {
         console.log('appLoad');
         if (datas) {
             commit('SAVE_MARKERS', datas)
-            
+
         } else {
             let datasLocalStorage = JSON.parse(sessionStorage.getItem('APIGeoMap'))
             if (datasLocalStorage) {
