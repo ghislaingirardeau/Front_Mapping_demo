@@ -860,6 +860,9 @@ export default {
 }
 
 @media screen and (min-width: 990px) {
+  .container__map {
+    width: 99%;
+  }
   .btn-map {
     &--action {
       &:hover {

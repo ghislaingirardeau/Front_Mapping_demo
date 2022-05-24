@@ -3,7 +3,7 @@
     <main v-if="showMap" class="animOnShow">
         <Nuxt />
     </main>
-    <main v-else>
+    <main v-else class="text-center">
       <v-overlay :value="overlay">
         <p>Loading the map tool...</p>
         <v-progress-circular
