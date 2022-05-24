@@ -227,11 +227,28 @@ export const mutations = {
     },
     SAVE_MARKERS(state, data) {
         if (data.merge === true) {
-            state.markers.push(...data.markers);
-            Object.assign(state.GeoJsonDatas, data.GeoJsonDatas)
-            console.log('merge true');
+            // REMOVE DUPLICATE MARKERS
+            let allMarkersMerge = [...state.markers, ...data.markers]
+            let removeDuplicateMarks = allMarkersMerge.filter(
+                (value, index, array) =>
+                    index ===
+                    array.findIndex(
+                        (t) =>
+                            t.category === value.category &&
+                            t.subCategory === value.subCategory
+                    )
+            )
+            state.markers = removeDuplicateMarks
+            // MERGE DATAS IF KEY ALREADY EXIST
+            let keys = Object.keys(data.GeoJsonDatas)
+            keys.forEach(element => {
+                if (state.GeoJsonDatas.hasOwnProperty(element)) {
+                    state.GeoJsonDatas[element].push(...data.GeoJsonDatas[element])
+                } else {
+                    state.GeoJsonDatas[element] = data.GeoJsonDatas[element]
+                }
+            });
         } else {
-            console.log('merge false');
             state.markers = data.markers;
             data.GeoJsonDatas ? state.GeoJsonDatas = data.GeoJsonDatas : '';
         }

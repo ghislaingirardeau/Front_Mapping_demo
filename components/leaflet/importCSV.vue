@@ -74,9 +74,14 @@ export default {
       const convertForApp = (newGeoJson) => {
         let convert
         // any character that is not a letter character
-        const regex = /[^A-z]/g;
+        const regex = /[^A-z]/g
         newGeoJson.features.forEach((element, i) => {
-          let category = element.properties.name.slice(0, element.properties.name.search(regex))
+          // create the name of the category, extracting the first string char until a special char
+          let category = element.properties.name.slice(
+            0,
+            element.properties.name.search(regex)
+          )
+
           convert = {
             type: 'Feature',
             properties: {
@@ -95,23 +100,32 @@ export default {
           }
           if (this.objetData[category]) {
             // get the color of the first element of the array, to get the same color
-            convert.icon.color =
-              this.objetData[category][0].icon.color
+            convert.icon.color = this.objetData[category][0].icon.color
             this.objetData[category].push(convert)
           } else {
-            let randomColor = Math.floor(Math.random() * 16777215).toString(16)
-            convert.icon.color = `#${randomColor}`
-            // create the marker if the category is not create yet & define a random color
-            // if point define map-marker as default marker
-            this.newMarker.push({
-              id: `IM${i}${Date.now()}`,
-              type:
-                element.geometry.type === 'Point' ? 'Point' : 'MultiLineString',
-              category: category,
-              subCategory: '',
-              icon: element.geometry.type === 'Point' ? 'map-marker' : '',
-              color: convert.icon.color,
-            })
+            let getMarker = this.markers.find((e) => e.category === category)
+            if (getMarker) { // if this category of marker exist already
+              convert.icon.color = getMarker.color
+              convert.icon.type = getMarker.category
+            } else {
+              let randomColor = Math.floor(Math.random() * 16777215).toString(
+                16
+              )
+              convert.icon.color = `#${randomColor}`
+              // create the marker if the category is not create yet & define a random color
+              // if point define map-marker as default marker
+              this.newMarker.push({
+                id: `IM${i}${Date.now()}`,
+                type:
+                  element.geometry.type === 'Point'
+                    ? 'Point'
+                    : 'MultiLineString',
+                category: category,
+                subCategory: '',
+                icon: element.geometry.type === 'Point' ? 'map-marker' : '',
+                color: convert.icon.color,
+              })
+            }
             this.objetData[category] = new Array()
             this.objetData[category].push(convert)
           }
@@ -121,7 +135,9 @@ export default {
       const parser = new DOMParser()
       const xmlDoc = parser.parseFromString(e.target.result, 'text/xml')
       let newGeoJson
-      switch (mimeParams) { // GPX ou KML function
+      switch (
+        mimeParams // GPX ou KML function
+      ) {
         case 'gpx':
           newGeoJson = this.$convertToGeoJson.gpx(xmlDoc)
           break
@@ -219,7 +235,17 @@ export default {
               t.subCategory === value.subCategory
           )
       )
-      this.newMarker = res.map(
+      let allMarkers = [...this.markers, ...res]
+      let checkIfMarkExist = allMarkers.filter(
+        (value, index, array) =>
+          index ===
+          array.findIndex(
+            (t) =>
+              t.category === value.category &&
+              t.subCategory === value.subCategory
+          )
+      )
+      this.newMarker = checkIfMarkExist.map(
         ({ id, type, category, subCategory, icon, color }) => ({
           id: `IM${id.slice(2)}`,
           type: type,
@@ -229,7 +255,6 @@ export default {
           color: color,
         })
       )
-      console.log(this.newMarker);
       // CREATE THE GEOJSON
       await categories.forEach((eltCategory, i) => {
         // pour chaque category, je lui crée un nouveau tableau
@@ -249,7 +274,7 @@ export default {
           let dataStore = {
             markers: this.newMarker,
             GeoJsonDatas: this.objetData,
-            merge: this.checkboxMerge
+            merge: this.checkboxMerge,
           }
           this.$store.dispatch('appLoad', dataStore)
           this.$router.push('/myData')
