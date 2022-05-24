@@ -9,7 +9,7 @@
     <modalCustom :showModal="modalDatas.showModal" @send-modal="modalResponse">
       <template v-slot:title>
         <span v-if="userAuth" class="mr-3"
-          >Welcome {{ userAuth.displayName }} / 
+          >Welcome {{ userAuth.displayName }} /
         </span>
         {{ modalDatas.modalTitle }}
       </template>
@@ -33,10 +33,17 @@
     <!-- MODAL TUTORIAL -->
     <theTutorial :showTutorial="showTutorial" @send-tuto="closeTuto" />
 
-    <!-- MODAL INFORMATIONS -->
-    <div class="hub__informations" v-if="hubPosition">
+    <!-- MODAL GPS LOCATION -->
+    <span class="hub__informations hub__informations--GPS" v-if="hubPosition">
       {{ hubCoordinate }}
-    </div>
+    </span>
+    <!-- MODAL INFO -->
+    <span
+      class="hub__informations hub__informations--connection"
+      v-if="!userAuth && !hubPosition"
+    >
+      You are not log !
+    </span>
 
     <!-- FOR DISTANCE: BUG DIFFERENTE MEASURE BETWEEN POINTS & LINES -->
     <!-- <div class="hub__informations" v-if="distance.length === 2">
@@ -44,29 +51,16 @@
     </div> -->
 
     <!-- MODAL HUB POINT LOCATION -->
-    <div id="hub" class="hub__target--btn">
-      <v-btn color="black" class="mx-3" @click="saveTarget(false)">
-        Cancel
-      </v-btn>
-      <v-btn color="black" class="mx-3" @click="saveTarget(true)"> OK </v-btn>
-    </div>
+    <hub-location :saveTarget="saveTarget" :locationTarget="locationTarget" />
 
-    <p id="hubTuto" class="hub__target--tuto">Click inside</p>
-
-    <i
-      id="hubTarget"
-      @click="locationTarget"
-      aria-hidden="true"
-      class="hub__target--icon mdi mdi-target"
-    ></i>
-
-    <!-- MAP -->
+    <!-- TITLE FOR PRINTING -->
     <span class="print__block--title">{{ titleDocPrint }}</span>
+    <!-- MAP -->
     <div id="map" class="mt-5"></div>
 
     <!-- DISPLAY FOR PRINTING -->
     <div class="print__block">
-      <legendModal
+      <legend-modal
         class="print__block--legend"
         v-if="showPrintMap"
         :showPrintMap="showPrintOption"
@@ -439,7 +433,6 @@ export default {
     },
   },
   mounted() {
-
     // config mapbox
     const tokenMapbox =
       'pk.eyJ1IjoiZ2d3ZWJkZXYiLCJhIjoiY2t4OGVhemd5MXpyMzJvbzE4ZXpxajJzZCJ9.P2KXn7NQDyQ11BkYVkPEcQ'
@@ -726,5 +719,4 @@ export default {
 </script>
 
 <style lang="scss">
-
 </style>
