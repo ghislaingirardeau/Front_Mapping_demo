@@ -34,15 +34,15 @@
     <theTutorial :showTutorial="showTutorial" @send-tuto="closeTuto" />
 
     <!-- MODAL GPS LOCATION -->
-    <span class="hub__informations hub__informations--GPS" v-if="hubPosition">
+    <span class="hub__informations" v-if="hubPosition">
       {{ hubCoordinate }}
     </span>
     <!-- MODAL INFO -->
     <span
-      class="hub__informations hub__informations--connection"
+      class="hub__informations"
       v-if="!userAuth && !hubPosition"
     >
-      You are not log !
+      Don't forget to log to save your datas
     </span>
 
     <!-- FOR DISTANCE: BUG DIFFERENTE MEASURE BETWEEN POINTS & LINES -->
