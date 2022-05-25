@@ -5,7 +5,7 @@
           :counter="20"
           label="Add a title here"
         ></v-text-field>
-        <v-btn color="primary" @click="print">Print</v-btn>
+        <v-btn color="teal" @click="print">Print</v-btn>
     </div>
 </template>
 

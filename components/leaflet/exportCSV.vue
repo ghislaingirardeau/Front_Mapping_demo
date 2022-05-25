@@ -17,7 +17,7 @@
     <v-spacer></v-spacer>
     <v-btn
       :disabled="!valid"
-      color="success"
+      color="teal"
       class="mr-4"
       @click="convertMyJson"
       v-if="!errorMessage"

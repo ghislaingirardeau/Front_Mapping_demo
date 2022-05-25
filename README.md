@@ -1,5 +1,8 @@
 # map_Demo
 
+TODO:
+name and category: keep both or remove name ?
+
 ## Build Setup
 
 ```bash
