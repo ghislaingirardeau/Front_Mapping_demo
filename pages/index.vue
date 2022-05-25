@@ -40,7 +40,7 @@
     <!-- MODAL INFO -->
     <span
       class="hub__informations"
-      v-if="!userAuth && !hubPosition"
+      v-if="!userAuth && !hubPosition && !showPrintOption && !modalDatas.showModal && !showModalMarker"
     >
       Don't forget to log to save your datas
     </span>
@@ -631,7 +631,6 @@ export default {
             if (result) {
               // mount the map after
               this.printMap = await L.map('mapPrint').setView(actualMapCenter, 6)
-              console.log(this.printMap, result);
               print.addTo(this.printMap)
               let mark = L.marker(actualMapCenter).addTo(this.printMap)
               // hide the container after the printing: cancel or save
