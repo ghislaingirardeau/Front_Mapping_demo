@@ -502,6 +502,7 @@ export default {
             this.dynamicLayerGroup[element]
           ) // charge le array de goejsons dans le layer
           // zoom the map on the last point added coordinates
+
           if (this.GeoJsonDatas[element][0].geometry.type === 'Point') {
             setMapView.center = []
             setMapView.center.push(
@@ -611,28 +612,35 @@ export default {
               : 'For a safely save, consider to export your datas to CSV or Register for free'
           } else if (data.target.getAttribute('id') === 'btn-printer') {
             let openPrintOptions = () => {
-              this.showPrintOption = !this.showPrintOption // modal for options ex: add a title
-              this.modalDatas.showModal = !this.modalDatas.showModal // open common modal
-              this.showPrintMap = !this.showPrintMap // build map print container
-              this.modalDatas.modalTitle = 'Print option'
+              return new Promise((resolve, reject) => {
+                this.showPrintOption = !this.showPrintOption // modal for options ex: add a title
+                this.modalDatas.showModal = !this.modalDatas.showModal // open common modal
+                this.showPrintMap = !this.showPrintMap // build map print container
+                this.modalDatas.modalTitle = 'Print option'
+                resolve(true)
+              });
             }
 
-            await openPrintOptions()
             // set the view dynamicly
             let actualMapCenter = [
               this.map.getCenter().lat,
               this.map.getCenter().lng,
             ]
-            // mount the map after
-            this.printMap = await L.map('mapPrint').setView(actualMapCenter, 6)
-            await print.addTo(this.printMap)
-            let mark = L.marker(actualMapCenter).addTo(this.printMap)
-            // hide the container after the printing: cancel or save
-            window.onafterprint = (event) => {
-              this.showPrintOption = false
-              this.showPrintMap = false
-              mark.removeFrom(this.printMap) // remove the marker for the next print
-              this.printMap.remove() // debug error, remove the map built
+
+            let result = await openPrintOptions()
+            if (result) {
+              // mount the map after
+              this.printMap = await L.map('mapPrint').setView(actualMapCenter, 6)
+              console.log(this.printMap, result);
+              print.addTo(this.printMap)
+              let mark = L.marker(actualMapCenter).addTo(this.printMap)
+              // hide the container after the printing: cancel or save
+              window.onafterprint = (event) => {
+                this.showPrintOption = false
+                this.showPrintMap = false
+                mark.removeFrom(this.printMap) // remove the marker for the next print
+                this.printMap.remove() // debug error, remove the map built
+              }
             }
           } else if (data.target.getAttribute('id') === 'btn-map-marker') {
             this.showModalMarker = !this.showModalMarker
