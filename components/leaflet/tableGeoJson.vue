@@ -1,24 +1,7 @@
 <template>
   <v-col cols="12" md="11">
     <!-- dialog for the data editing -->
-    <modalCustom :showModal="showModal" @send-modal="modalResponse">
-      <template v-slot:title> Edit Item </template>
-      <template v-slot:content>
-        <v-form ref="form" v-model="valid" lazy-validation>
-          <v-text-field
-            v-model="editItem.name"
-            label="name"
-            :rules="rulesName"
-            required
-          >
-          </v-text-field>
-          <v-text-field v-model="editItem.popupContent" label="details">
-          </v-text-field>
-        </v-form>
-        <v-spacer></v-spacer>
-        <v-btn color="teal" @click="updateItem"> Save </v-btn>
-      </template>
-    </modalCustom>
+    <edit-data :editItem="editItem" :showModal="showModal" @send-modal="modalResponse"/>
 
     <v-card>
       <v-card-title>
@@ -72,9 +55,7 @@ export default {
     return {
       search: '',
       showModal: false,
-      valid: true,
       editItem: {},
-      rulesName: [(v) => v.length >= 2 || 'Mininum 2 characters'],
       headers: [
         {
           text: 'Name',
@@ -102,15 +83,6 @@ export default {
           action: remove,
           index: item,
         })
-      }
-    },
-    updateItem() {
-      if (this.$refs.form.validate()) {
-        this.$store.dispatch('updateGeoJson', {
-          action: false,
-          index: this.editItem, // send the change
-        })
-        this.showModal = false
       }
     },
     modalResponse(payload) {
