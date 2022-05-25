@@ -14,7 +14,7 @@
       v-model="checkboxMerge"
       :label="`Merge the import datas to your actual data ? ${checkboxMerge.toString()}`"
     ></v-checkbox>
-    <v-btn color="success" class="mr-4" @click="validImport"> Import </v-btn>
+    <v-btn color="teal" class="mr-4" @click="validImport"> Import </v-btn>
   </div>
 </template>
 
@@ -104,6 +104,7 @@ export default {
             this.objetData[category].push(convert)
           } else {
             let getMarker = this.markers.find((e) => e.category === category)
+            console.log(getMarker);
             if (getMarker) { // if this category of marker exist already
               convert.icon.color = getMarker.color
               convert.icon.type = getMarker.category
@@ -192,8 +193,8 @@ export default {
               coordinates: coordinates,
             },
             icon: {
-              type: element.icon,
-              color: element.color,
+              type: this.newMarker.find(e => e.category === element.category).icon,
+              color: this.newMarker.find(e => e.category === element.category).color,
             },
           }
           layer.push(newGeoJson)
@@ -245,6 +246,7 @@ export default {
               t.subCategory === value.subCategory
           )
       )
+      console.log(checkIfMarkExist);
       this.newMarker = checkIfMarkExist.map(
         ({ id, type, category, subCategory, icon, color }) => ({
           id: `IM${id.slice(2)}`,
