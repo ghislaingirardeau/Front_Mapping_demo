@@ -36,6 +36,8 @@
         :search="search"
         :sort-by="['id']"
         :sort-desc="[true]"
+        :loading="allDatas.length === 0"
+        loading-text="Loading... Please wait"
       >
         <template v-slot:[`item.actions`]="{ item }">
           <v-icon
