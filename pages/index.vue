@@ -60,7 +60,7 @@
 
     <!-- TITLE FOR PRINTING -->
     <span class="print__block--title">{{ titleDocPrint }}</span>
-    
+
     <!-- MAP -->
     <div id="map" class="mt-5"></div>
 
@@ -426,21 +426,7 @@ export default {
       }
     },
     async saveTemporaly() {
-      sessionStorage.setItem(
-        'APIGeoMap',
-        JSON.stringify({
-          GeoJsonDatas: this.GeoJsonDatas,
-          markers: this.markers,
-        })
-      )
-      // SAVE IN FIREBASE IF USER
-      if (this.userAuth) {
-        const messageRef = this.$fire.database.ref('mapApp')
-        await messageRef.child(this.userAuth.uid).update({
-          markers: this.markers,
-          GeoJsonDatas: this.GeoJsonDatas,
-        })
-      }
+      this.saveDatas() //mixins
     },
   },
   mounted() {

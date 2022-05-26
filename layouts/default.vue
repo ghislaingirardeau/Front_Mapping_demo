@@ -17,11 +17,11 @@
 
 <script>
 import Vue from 'vue'
-import sign from '~/mixins/sign.js';
-Vue.mixin(sign)
+import globalFunctions from '~/mixins/globalFunctions.js';
+Vue.mixin(globalFunctions)
 
 export default {
-  mixins: [sign],
+  mixins: [globalFunctions],
   data () {
     return {
       showMap: false,
