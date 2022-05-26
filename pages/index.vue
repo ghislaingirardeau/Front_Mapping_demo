@@ -631,12 +631,12 @@ export default {
               print.addTo(this.printMap)
               let mark = L.marker(actualMapCenter).addTo(this.printMap)
               // hide the container after the printing: cancel or save
-              window.onafterprint = (event) => {
+              /* window.onafterprint = (event) => {
                 this.showPrintOption = false
                 this.showPrintMap = false
-                mark.removeFrom(this.printMap) // remove the marker for the next print
-                this.printMap.remove() // debug error, remove the map built
-              }
+                mark.removeFrom(this.printMap) 
+                this.printMap.remove() 
+              } */
             }
           } else if (data.target.getAttribute('id') === 'btn-map-marker') {
             this.showModalMarker = !this.showModalMarker
