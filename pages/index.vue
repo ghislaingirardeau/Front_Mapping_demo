@@ -12,7 +12,7 @@
         <span v-if="userAuth" class="mr-3"
           >Welcome {{ userAuth.displayName }} /
         </span>
-        {{ modalDatas.modalTitle }}
+          {{ modalDatas.modalTitle ? modalDatas.modalTitle : ""}}
       </template>
       <template v-slot:content>
         <legendModal v-if="modalDatas.showLegend" :markers="markers" />
