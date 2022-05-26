@@ -30,6 +30,8 @@
       </template>
     </modalCustom>
 
+    <edit-data :editItem="editItem" :showModal="showEditModal" @send-modal="modalMarkerResponse"/>
+
     <!-- MODAL TUTORIAL -->
     <theTutorial :showTutorial="showTutorial" @send-tuto="closeTuto" />
 
@@ -110,6 +112,9 @@ export default {
     controlLayers: undefined,
     //test distance
     distance: [],
+    //edit Item
+    editItem: {},
+    showEditModal: false,
   }),
   computed: {
     ...mapState(['markers', 'userAuth', 'GeoJsonDatas']),
@@ -140,6 +145,7 @@ export default {
     },
     modalMarkerResponse(payload) {
       this.showModalMarker = payload.message
+      this.showEditModal = payload.message
     },
     modalResponse(payload) {
       Object.keys(this.modalDatas).forEach((element) => {
@@ -211,8 +217,9 @@ export default {
           return new Promise((resolve, reject) => {
             let testClick = (e) => {
               // TEST TO MODIFY DIRECTLY HERE !!!!!!!!!
-              var layer = e.target
-              console.log(layer)
+              console.log(e.target)
+              this.editItem = {...e.target.feature.properties}
+              this.showEditModal = !this.showEditModal
               /* if (this.distance.length < 2) {
                 this.distance.push(layer.feature.geometry.coordinates)
               } else {

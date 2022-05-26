@@ -1,5 +1,5 @@
 <template>
-  <v-row justify="center">
+  <v-row justify="center" v-if="showModal">
     <v-dialog
       v-model="showModal"
       persistent
@@ -52,6 +52,9 @@ export default {
           index: this.editItem, // send the change
         })
         this.close()
+        this.$nuxt.$emit('refresh', {
+          id: Math.floor(Math.random()*1000),
+        })
       }
     },
     close() {
