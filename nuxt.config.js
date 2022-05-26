@@ -42,7 +42,8 @@ export default {
   // Auto import components: https://go.nuxtjs.dev/config-components
   components: [
     '@/components',
-    { path: '@/components/leaflet', extensions: ['vue'] }
+    { path: '@/components/leaflet', extensions: ['vue'] },
+    { path: '@/components/external', extensions: ['vue'] }
   ],
 
   // Modules for dev and build (recommended): https://go.nuxtjs.dev/config-modules

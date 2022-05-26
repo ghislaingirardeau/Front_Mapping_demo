@@ -12,10 +12,13 @@
       <v-btn @click="resetApp" color="error"> Reset All </v-btn>
     </div>
     <p v-else>{{ message }}</p>
-    <!-- CSV options -->
-    <exportCSV v-if="modalExport" />
-    <!-- CSV options -->
-    <importCSV v-if="modalImport" />
+
+    <!-- External options -->
+    <export-file v-if="modalExport"/>
+    
+    <!-- External options -->
+    <import-files v-if="modalImport"/>
+
     <!-- Menu -->
     <v-list v-if="showMenu">
       <h2>Settings</h2>
@@ -53,8 +56,10 @@
 
 <script>
 import { mapState, mapActions } from 'vuex'
+import importFiles from './external/importFiles.vue'
 
 export default {
+  components: { importFiles },
   data() {
     return {
       modalExport: false,
