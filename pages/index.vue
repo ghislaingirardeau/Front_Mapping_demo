@@ -215,7 +215,7 @@ export default {
       const onEachFeature = async (feature, layer) => {
         const createLayer = () => {
           return new Promise((resolve, reject) => {
-            let testClick = (e) => {
+            let editData = (e) => {
               // TEST TO MODIFY DIRECTLY HERE !!!!!!!!!
               console.log(e.target)
               this.editItem = {...e.target.feature.properties}
@@ -243,7 +243,7 @@ export default {
             layer.on({
               mouseover: showPopupMarker,
               mouseout: hidePopupMarker,
-              dblclick: testClick,
+              dblclick: editData,
             })
             resolve(true)
           })

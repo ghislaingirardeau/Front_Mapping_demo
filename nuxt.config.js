@@ -31,7 +31,8 @@ export default {
   },
 
   css: [
-    '@/assets/home.scss'
+    '@/assets/home.scss',
+    '@/assets/modal.scss'
   ],
 
   plugins: [

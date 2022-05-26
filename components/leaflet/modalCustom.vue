@@ -42,11 +42,5 @@
 </script>
 
 <style lang="scss" scoped>
-.modal__content {
-    font-family: "Architects Daughter", cursive;
-    &--close{
-        cursor: pointer;
-        font-size: 42px;
-    }
-}
+
 </style>
