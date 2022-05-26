@@ -1,6 +1,6 @@
 <template>
   <v-app dark>
-    <main v-if="showMap" class="animOnShow">
+    <main v-if="showMap" class="animOnShow" :key="refresh">
         <Nuxt />
     </main>
     <main v-else class="text-center">
@@ -25,7 +25,8 @@ export default {
   data () {
     return {
       showMap: false,
-      overlay: true
+      overlay: true,
+      refresh: 1
     }
   },
   async created () {
@@ -34,8 +35,10 @@ export default {
       this.overlay = false
       this.showMap = true
     }
+    this.$nuxt.$on('refresh', (payload) => {
+      this.refresh = payload.id
+    })
   },
-
 }
 </script>
 
