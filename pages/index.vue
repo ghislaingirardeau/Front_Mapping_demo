@@ -1,5 +1,6 @@
 <template>
   <div class="container__map">
+    <!-- MODAL CREATE MARKER -->
     <createMarker
       :markers="markers"
       :showModal="showModalMarker"
@@ -30,22 +31,24 @@
       </template>
     </modalCustom>
 
+    <!-- MODAL EDIT POSITION -->
     <edit-data :editItem="editItem" :showModal="showEditModal" @send-modal="modalMarkerResponse"/>
 
     <!-- MODAL TUTORIAL -->
     <theTutorial :showTutorial="showTutorial" @send-tuto="closeTuto" />
 
     <!-- MODAL GPS LOCATION -->
-    <span class="hub__informations" v-if="hubPosition">
-      {{ hubCoordinate }}
-    </span>
+    <hub-info v-if="hubPosition">
+      <template v-slot:title>
+        {{ hubCoordinate }}
+      </template>
+    </hub-info>
     <!-- MODAL INFO -->
-    <span
-      class="hub__informations"
-      v-if="!userAuth && !hubPosition && !showPrintOption && !modalDatas.showModal && !showModalMarker"
-    >
-      Don't forget to log to save your datas
-    </span>
+    <hub-info v-if="!userAuth && !hubPosition && !showPrintOption && !modalDatas.showModal && !showModalMarker" :hubPosition="hubPosition">
+      <template v-slot:title>
+        Don't forget to log to save your datas
+      </template>
+    </hub-info>
 
     <!-- FOR DISTANCE: BUG DIFFERENTE MEASURE BETWEEN POINTS & LINES -->
     <!-- <div class="hub__informations" v-if="distance.length === 2">
@@ -57,6 +60,7 @@
 
     <!-- TITLE FOR PRINTING -->
     <span class="print__block--title">{{ titleDocPrint }}</span>
+    
     <!-- MAP -->
     <div id="map" class="mt-5"></div>
 
