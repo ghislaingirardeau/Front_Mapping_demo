@@ -136,7 +136,9 @@ export default {
       let confirm = window.confirm('This action will reset the app')
       if (confirm) {
         this.appReset()
-        location.reload()
+        this.$nuxt.$emit('refresh', {
+          id: Math.floor(Math.random()*1000),
+        })
       } else {
         console.log('Cancel')
       }
