@@ -88,7 +88,7 @@ export default {
               id: `ID${i}${Date.now()}`,
               name: element.properties.name,
               time: element.properties.time,
-              popupContent: ' ',
+              popupContent: (element.properties.popupContent && element.properties.popupContent.length > 1) ? element.properties.popupContent: element.properties.name,
               category: category,
               subCategory: '',
             },
@@ -104,7 +104,6 @@ export default {
             this.objetData[category].push(convert)
           } else {
             let getMarker = this.markers.find((e) => e.category === category)
-            console.log(getMarker);
             if (getMarker) { // if this category of marker exist already
               convert.icon.color = getMarker.color
               convert.icon.type = getMarker.category
@@ -183,7 +182,7 @@ export default {
             properties: {
               id: element.id,
               name: element.name,
-              popupContent: element.popupContent,
+              popupContent: (element.popupContent && element.popupContent.length > 1) ? element.popupContent: element.name,
               time: element.time,
               category: element.category,
               subCategory: element.subCategory,
@@ -279,7 +278,9 @@ export default {
             merge: this.checkboxMerge,
           }
           this.$store.dispatch('appLoad', dataStore)
-          this.$router.push('/myData')
+          this.$nuxt.$emit('refresh', {
+            id: 'refresh'
+          })
         } catch (error) {
           console.log(error)
         }

@@ -137,7 +137,7 @@ export default {
       if (confirm) {
         this.appReset()
         this.$nuxt.$emit('refresh', {
-          id: Math.floor(Math.random()*1000),
+          id: 'refresh'
         })
       } else {
         console.log('Cancel')

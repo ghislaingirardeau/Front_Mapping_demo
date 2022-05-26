@@ -36,7 +36,7 @@ export default {
       this.showMap = true
     }
     this.$nuxt.$on('refresh', (payload) => {
-      this.refresh = payload.id
+      this.refresh++
     })
   },
 }

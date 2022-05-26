@@ -53,7 +53,7 @@ export default {
         })
         this.close()
         this.$nuxt.$emit('refresh', {
-          id: Math.floor(Math.random()*1000),
+          id: 'refresh'
         })
       }
     },
