@@ -626,7 +626,7 @@ export default {
                 this.modalDatas.showModal = !this.modalDatas.showModal // open common modal
                 this.showPrintMap = !this.showPrintMap // build map print container
                 this.modalDatas.modalTitle = 'Print option'
-                console.log(this.printMap);
+                console.log(this.printMap)
                 resolve(true)
               })
             }
@@ -636,7 +636,6 @@ export default {
               this.map.getCenter().lat,
               this.map.getCenter().lng,
             ]
-
             let result = await openPrintOptions()
             if (result) {
               // mount the map after
@@ -644,33 +643,14 @@ export default {
                 actualMapCenter,
                 6
               )
-              print.addTo(this.printMap) // layer print
+              print.addTo(this.printMap)
               let mark = L.marker(actualMapCenter).addTo(this.printMap)
-              
-              // hide the container after the printing: cancel or save
-
-              // DEBUG THE PRINT ON MOBILE
-
-              /* window.onafterprint = (event) => {
+              window.onafterprint = (event) => {
                 this.showPrintOption = false
                 this.showPrintMap = false
-                mark.removeFrom(this.printMap)
-                this.printMap.remove()
-              } */
-              
-              let mediaQueryList = window.matchMedia('print')
-              mediaQueryList.addListener(async (mql) => {
-                if (mql.matches) {
-                  console.log('before print')
-                } else {
-                  console.log('after print')
-                  this.showPrintOption = false
-                  this.showPrintMap = false
-                  mark.removeFrom(this.printMap)
-                  this.printMap.remove()
-                  this.printMap = undefined
-                }
-              })
+                mark.removeFrom(this.printMap) // remove the marker for the next print
+                this.printMap.remove() // debug error, remove the map built
+              }
             }
           } else if (data.target.getAttribute('id') === 'btn-map-marker') {
             this.showModalMarker = !this.showModalMarker
