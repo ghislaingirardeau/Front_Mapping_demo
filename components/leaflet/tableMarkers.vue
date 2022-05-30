@@ -5,16 +5,22 @@
       <template v-slot:title> Edit Item </template>
       <template v-slot:content>
         <v-form ref="form" v-model="valid" lazy-validation>
+          <p 
+            v-if="oldItem.subCategory" 
+            class="subCategory__message"
+          >
+            This marker is a part of subCategory. You can only change the subcategory name & color !
+          </p>
           <v-text-field
             v-model="editItem.category"
-            v-if="!editItem.subCategory"
+            v-if="!oldItem.subCategory"
             label="Category name"
             :rules="rulesEditSub"
           >
           </v-text-field>
           <v-text-field
             v-model="editItem.icon"
-            v-if="editItem.icon && !editItem.subCategory"
+            v-if="editItem.icon && !oldItem.subCategory"
             label="Icon name"
             hint="Type the first letter to see the icon's list"
             persistent-hint
@@ -25,20 +31,20 @@
             @keyup="showIconsList(editItem.icon)"
           >
           </v-text-field>
-          <v-icon class="ml-3" :color="editItem.color" large v-if="editItem.icon && !editItem.subCategory">
+          <v-icon class="ml-3" :color="editItem.color" large v-if="editItem.icon && !oldItem.subCategory">
             mdi-{{ editItem.icon }}
           </v-icon>
 
           <v-dialog v-model="dialog" fullscreen hide-overlay>
             <template v-slot:activator="{ on, attrs }">
-              <span v-show="editItem.icon.length > 0 && !editItem.subCategory"
+              <span v-show="editItem.icon.length > 0 && !oldItem.subCategory"
                 >{{ iconSuggestList.length }} icons found</span
               >
               <v-icon
                 color="teal"
                 v-bind="attrs"
                 v-on="on"
-                v-show="editItem.icon.length > 0 && !editItem.subCategory"
+                v-show="editItem.icon.length > 0 && !oldItem.subCategory"
                 class="mr-3 iconAddColor"
                 size="24px"
                 >mdi-eye-settings-outline</v-icon
@@ -67,6 +73,7 @@
           </v-dialog>
           <v-text-field
             v-model="editItem.subCategory"
+            v-if="oldItem.subCategory"
             label="Change SubCategory"
             :rules="rulesEditSub"
           >
@@ -77,6 +84,7 @@
             v-model="editItem.color"
             dot-size="25"
             hide-inputs
+            class="mt-3"
           ></v-color-picker>
           <v-spacer></v-spacer>
           <v-btn color="teal" outlined @click="updateItem"> Save </v-btn>
@@ -205,7 +213,7 @@ export default {
     openEditor(e) {
       if (e.subCategory.length > 0) {
         // if there is subcat
-        this.rulesEditSub = [(v) => v.length > 2 || 'minimum 2 characters']
+        this.rulesEditSub = [(v) => v.length > 1 || 'minimum 2 characters']
       } else {
         this.rulesEditSub = [true]
       }
@@ -251,4 +259,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.subCategory__message{
+  color: rgb(243, 129, 129);
+}
 </style>
