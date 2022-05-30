@@ -252,6 +252,41 @@ export default {
               var layer = e.target
               layer.closePopup()
             }
+            const dragMarker = (e) => {
+              let array
+              // if it's a point or a polygon, store array of coordinates differently
+              e.target.feature.geometry.type === 'Point'
+                ? (array = [
+                    structuredClone(e.target.feature.geometry.coordinates),
+                  ])
+                : (array = structuredClone(
+                    e.target.feature.geometry.coordinates[0]
+                  ))
+              // get the id of the geojson to change
+              const id = e.target.feature.properties.id
+
+              array.forEach((element, i) => {
+                L.marker(element.reverse(), {
+                  opacity: 0.5,
+                  draggable: true,
+                })
+                  .addTo(this.map)
+                  .on('dragend', (el) => {
+                    let data = {
+                      id: id,
+                      coordinates: [
+                        el.target._latlng.lng,
+                        el.target._latlng.lat,
+                      ],
+                      index: i,
+                    }
+                    this.$store.dispatch('updateMarkCoordinates', data)
+                    this.$nuxt.$emit('refresh', {
+                      id: 'refresh',
+                    })
+                  })
+              })
+            }
             // pour faire apparaitre le popup du marker si popupContent est defini
             if (feature.properties && feature.properties.popupContent) {
               layer.bindPopup(feature.properties.popupContent)
@@ -260,6 +295,7 @@ export default {
               mouseover: showPopupMarker,
               mouseout: hidePopupMarker,
               dblclick: editData,
+              click: dragMarker,
             })
             resolve(true)
           })

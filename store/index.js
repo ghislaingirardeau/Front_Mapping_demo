@@ -206,6 +206,9 @@ export const actions = {
     geoJsonReset({ commit, state }) {
         commit('RESET_GEOJSON')
     },
+    updateMarkCoordinates({commit}, data) {
+        commit('DRAG_MARKER', data)
+    }
 }
 // contains your mutations
 export const mutations = {
@@ -311,6 +314,14 @@ export const mutations = {
     ERROR_REPONSE(state, message) {
         state.errorMessage = message
     },
+    DRAG_MARKER(state, data) {
+        // find the geojson match with the data.id
+        let item = Object.values(state.GeoJsonDatas).flat().find(elt => elt.properties.id == data.id)
+        // update coordinate depending if point or polygon
+        item.geometry.type === "Point"
+            ? item.geometry.coordinates = data.coordinates
+            : item.geometry.coordinates[0].splice(data.index, 1, data.coordinates)
+    }
 }
 export const getters = {
     GeoJsonTable(state) {

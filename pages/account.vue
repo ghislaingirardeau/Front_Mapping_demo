@@ -11,14 +11,6 @@
     <v-col cols="11" v-if="userAuth">
       <v-btn color="teal" outlined @click="signOut()">Log Out</v-btn>
     </v-col>
-    <!-- <v-btn @click="postRealTimeDB"> write DB </v-btn>
-    <v-btn @click="getRealTimeDB"> read DB </v-btn>
-    <v-btn @click="updateRealTimeDB"> update DB </v-btn>
-    <v-btn @click="removeRealTimeDB"> remove DB </v-btn>
-    <v-btn @click="forgotPassword"> reset password </v-btn>
-    <v-btn @click="tokenLog"> log by token </v-btn>
-
-    <h2 v-if="userAuth">The userAuth log : {{ userAuth.displayName }}</h2> -->
   </v-row>
 </template>
 
