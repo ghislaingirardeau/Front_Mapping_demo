@@ -8,11 +8,11 @@
 
           <v-divider></v-divider>
 
-          <v-stepper-step :complete="e1 > 2" step="2"> Color </v-stepper-step>
+          <v-stepper-step :complete="e1 > 2" step="2"> Options </v-stepper-step>
 
           <v-divider></v-divider>
 
-          <v-stepper-step step="3"> Summary </v-stepper-step>
+          <v-stepper-step step="3"> Color </v-stepper-step>
         </v-stepper-header>
 
         <v-stepper-items>
@@ -101,8 +101,6 @@
             <v-row align="center" justify="center" class="my-2">
               <v-col cols="11">
                 <span>Add subcategories (Optionnal) ?</span>
-              </v-col>
-              <v-col cols="11">
                 <v-form ref="formSub" v-model="validSub" lazy-validation>
                   <v-text-field
                     v-model="subCategory.selected"
@@ -119,8 +117,9 @@
                     >mdi-plus-circle</v-icon
                   >
                 </v-form>
+                <span v-if="subMessage" class="subMessage">{{subMessage}}</span>
               </v-col>
-              <v-row v-if="newIcon.subCategory.length > 0 && newIcon.subCategory[0].length > 1">
+              <v-row align="center" v-if="newIcon.subCategory.length > 0 && newIcon.subCategory[0].length > 1">
                 <span>My sub categories:</span>
                 <v-col
                   v-for="(item, l) in newIcon.subCategory"
@@ -146,7 +145,7 @@
               
 
               <v-col cols="11">
-                <v-btn color="teal" @click="e1 = 3"> Pick colors </v-btn>
+                <v-btn color="teal" @click="validSubOption"> Pick colors </v-btn>
                 <v-btn text @click="e1 = 1" outlined color="secondary">
                   back
                 </v-btn>
@@ -261,6 +260,7 @@ export default {
       iconsListing: [],
       iconsSuggest: [],
       dialog: false,
+      subMessage: undefined
     }
   },
   props: {
@@ -291,7 +291,7 @@ export default {
       return [
         (v) => v.length >= 2 || 'Mininum 2 characters',
         (v) => v.length <= 10 || 'Max 10 characters',
-        (v) => control || 'this category already exist',
+        (v) => control || 'this subcategory already exist',
       ]
     },
     checkIcon() {
@@ -364,9 +364,23 @@ export default {
         this.subCategory.selected = 'One more ?'
       }
     },
+    validSubOption() {
+      if (this.newIcon.subCategory.length > 1 || this.newIcon.subCategory[0].length === 0) {
+        this.e1 = 3
+        this.subMessage = undefined
+      } else {
+        console.log('reject');
+        this.subMessage = "Need a minimum of 2 sub categories"
+      }
+    },
     removeSubCategory (i) {
-      this.newIcon.subCategory.splice(i, 1)
-      this.newIcon.color.splice(i, 1)
+      if (this.newIcon.subCategory.length === 1 && this.newIcon.color.length === 1) {
+        this.newIcon.subCategory = [""]
+        this.newIcon.color = ['white']
+      } else {
+        this.newIcon.subCategory.splice(i, 1)
+        this.newIcon.color.splice(i, 1)
+      }
     },
     editColor(l, $event) {
       let elt = document.getElementsByClassName('iconAnimation')
@@ -408,6 +422,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.subMessage{
+  color: $color-erreur;
+}
 .iconAddColor {
   padding: 8px;
   transition: transform 200ms;

@@ -15,12 +15,12 @@
             v-model="editItem.category"
             v-if="!oldItem.subCategory"
             label="Category name"
-            :rules="rulesEditSub"
+            :rules="rulesEditCat"
           >
           </v-text-field>
           <v-text-field
             v-model="editItem.icon"
-            v-if="editItem.icon && !oldItem.subCategory"
+            v-if="oldItem.icon && !oldItem.subCategory"
             label="Icon name"
             hint="Type the first letter to see the icon's list"
             persistent-hint
@@ -31,20 +31,20 @@
             @keyup="showIconsList(editItem.icon)"
           >
           </v-text-field>
-          <v-icon class="ml-3" :color="editItem.color" large v-if="editItem.icon && !oldItem.subCategory">
+          <v-icon class="ml-3" :color="editItem.color" large v-if="oldItem.icon && !oldItem.subCategory">
             mdi-{{ editItem.icon }}
           </v-icon>
 
           <v-dialog v-model="dialog" fullscreen hide-overlay>
             <template v-slot:activator="{ on, attrs }">
-              <span v-show="editItem.icon.length > 0 && !oldItem.subCategory"
+              <span v-show="oldItem.icon.length > 0 && !oldItem.subCategory"
                 >{{ iconSuggestList.length }} icons found</span
               >
               <v-icon
                 color="teal"
                 v-bind="attrs"
                 v-on="on"
-                v-show="editItem.icon.length > 0 && !oldItem.subCategory"
+                v-show="oldItem.icon.length > 0 && !oldItem.subCategory"
                 class="mr-3 iconAddColor"
                 size="24px"
                 >mdi-eye-settings-outline</v-icon
@@ -168,7 +168,8 @@ export default {
       dialog: false,
       iconsSuggest: [],
       valid: true,
-      rulesEditSub: [(v) => v.length > 0 || 'minimum 2 characters'],
+      rulesEditSub: [(v) => v.length > 1 || 'minimum 2 characters'],
+      rulesEditCat: [(v) => v.length > 1 || 'minimum 2 characters'],
       editItem: {},
       oldItem: {}
     }
@@ -260,6 +261,6 @@ export default {
 
 <style lang="scss" scoped>
 .subCategory__message{
-  color: rgb(243, 129, 129);
+  color: $color-erreur;
 }
 </style>
