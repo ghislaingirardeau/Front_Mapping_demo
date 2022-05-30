@@ -147,12 +147,17 @@
         display: none;
     }
 }
+#btn-printer {
+    display: none;
+}
 
 @media screen and (min-width: 990px) {
     .container__map {
         width: 99%;
     }
-
+    #btn-printer{
+        display: block;
+    }
     .btn-map {
         &--action {
             &:hover {

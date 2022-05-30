@@ -45,7 +45,7 @@
           v-if="tutoPage === 4"
         >
           <p
-            v-for="item in tutorialsData"
+            v-for="item in tutorialData"
             :key="item.message"
             :style="{ 'margin-bottom': item.margin }"
           >
@@ -74,20 +74,6 @@ export default {
           text: 'Add one or multiple point',
         },
       ],
-      tutorialsData: [
-        {
-          message: '<-- Show legend',
-          margin: '22px',
-        },
-        {
-          message: '<-- Print or save as PDF',
-          margin: '22px',
-        },
-        {
-          message: '<-- Save datas',
-          margin: '40px',
-        },
-      ],
       tutoPage: 1,
     }
   },
@@ -97,6 +83,27 @@ export default {
   watch: {
     showTutorial(newValue) {
       newValue ? this.helpModal() : ''
+    },
+  },
+  computed: {
+    tutorialData() {
+      let items = [
+        {
+          message: '<-- Show legend',
+          margin: '22px',
+        },
+        {
+          message: '<-- Save datas',
+          margin: '40px',
+        },
+      ]
+      if (this.$vuetify.breakpoint.width > 990) {
+        items.splice(1, 0, {
+          message: '<-- Print or save as PDF',
+          margin: '22px',
+        })
+      }
+      return items
     },
   },
   methods: {
@@ -163,7 +170,7 @@ export default {
     position: absolute;
     text-align: left;
     left: 80px;
-    top: 250px;
+    top: 200px;
     color: rgb(255, 255, 255);
     width: 75%; /* Could be more or less, depending on screen size */
   }
@@ -234,6 +241,7 @@ export default {
     }
     &-marker {
       left: 170px;
+      top: 250px;
     }
     &-options {
       left: 170px;
