@@ -12,7 +12,7 @@
         <span v-if="userAuth" class="mr-3"
           >Welcome {{ userAuth.displayName }} /
         </span>
-          {{ modalDatas.modalTitle ? modalDatas.modalTitle : ""}}
+        {{ modalDatas.modalTitle ? modalDatas.modalTitle : '' }}
       </template>
       <template v-slot:content>
         <legendModal v-if="modalDatas.showLegend" :markers="markers" />
@@ -32,7 +32,11 @@
     </modalCustom>
 
     <!-- MODAL EDIT POSITION -->
-    <edit-data :editItem="editItem" :showModal="showEditModal" @send-modal="modalMarkerResponse"/>
+    <edit-data
+      :editItem="editItem"
+      :showModal="showEditModal"
+      @send-modal="modalMarkerResponse"
+    />
 
     <!-- MODAL TUTORIAL -->
     <theTutorial :showTutorial="showTutorial" @send-tuto="closeTuto" />
@@ -44,10 +48,17 @@
       </template>
     </hub-info>
     <!-- MODAL INFO -->
-    <hub-info v-if="!userAuth && !hubPosition && !showPrintOption && !modalDatas.showModal && !showModalMarker" :hubPosition="hubPosition">
-      <template v-slot:title>
-        Don't forget to log to save your datas
-      </template>
+    <hub-info
+      v-if="
+        !userAuth &&
+        !hubPosition &&
+        !showPrintOption &&
+        !modalDatas.showModal &&
+        !showModalMarker
+      "
+      :hubPosition="hubPosition"
+    >
+      <template v-slot:title> Don't forget to log to save your datas </template>
     </hub-info>
 
     <!-- FOR DISTANCE: BUG DIFFERENTE MEASURE BETWEEN POINTS & LINES -->
@@ -160,6 +171,7 @@ export default {
       if (this.showPrintMap) {
         this.showPrintMap = false
         this.printMap.remove()
+        this.printMap = undefined
       }
     },
     printResponse(payload) {
@@ -222,7 +234,7 @@ export default {
             let editData = (e) => {
               // TEST TO MODIFY DIRECTLY HERE !!!!!!!!!
               console.log(e.target)
-              this.editItem = {...e.target.feature.properties}
+              this.editItem = { ...e.target.feature.properties }
               this.showEditModal = !this.showEditModal
               /* if (this.distance.length < 2) {
                 this.distance.push(layer.feature.geometry.coordinates)
@@ -614,8 +626,9 @@ export default {
                 this.modalDatas.showModal = !this.modalDatas.showModal // open common modal
                 this.showPrintMap = !this.showPrintMap // build map print container
                 this.modalDatas.modalTitle = 'Print option'
+                console.log(this.printMap);
                 resolve(true)
-              });
+              })
             }
 
             // set the view dynamicly
@@ -627,16 +640,37 @@ export default {
             let result = await openPrintOptions()
             if (result) {
               // mount the map after
-              this.printMap = await L.map('mapPrint').setView(actualMapCenter, 6)
-              print.addTo(this.printMap)
+              this.printMap = await L.map('mapPrint').setView(
+                actualMapCenter,
+                6
+              )
+              print.addTo(this.printMap) // layer print
               let mark = L.marker(actualMapCenter).addTo(this.printMap)
+              
               // hide the container after the printing: cancel or save
+
+              // DEBUG THE PRINT ON MOBILE
+
               /* window.onafterprint = (event) => {
                 this.showPrintOption = false
                 this.showPrintMap = false
-                mark.removeFrom(this.printMap) 
-                this.printMap.remove() 
+                mark.removeFrom(this.printMap)
+                this.printMap.remove()
               } */
+              
+              let mediaQueryList = window.matchMedia('print')
+              mediaQueryList.addListener(async (mql) => {
+                if (mql.matches) {
+                  console.log('before print')
+                } else {
+                  console.log('after print')
+                  this.showPrintOption = false
+                  this.showPrintMap = false
+                  mark.removeFrom(this.printMap)
+                  this.printMap.remove()
+                  this.printMap = undefined
+                }
+              })
             }
           } else if (data.target.getAttribute('id') === 'btn-map-marker') {
             this.showModalMarker = !this.showModalMarker
