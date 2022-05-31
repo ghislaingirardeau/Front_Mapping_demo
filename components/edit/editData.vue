@@ -1,10 +1,8 @@
 <template>
   <v-row justify="center" v-if="showModal">
-    <v-dialog
+    <v-bottom-sheet
       v-model="showModal"
-      persistent
-      max-width="590"
-      origin="center top"
+      inset
     >
       <v-card class="modal__content">
         <v-card-title>
@@ -26,9 +24,10 @@
           </v-form>
           <v-spacer></v-spacer>
           <v-btn color="teal" @click="updateItem"> Save </v-btn>
+          <v-btn color="#d6d306" @click="moveItem"> Change Location </v-btn>
         </v-card-text>
       </v-card>
-    </v-dialog>
+    </v-bottom-sheet>
   </v-row>
 </template>
 
@@ -56,6 +55,11 @@ export default {
           id: 'refresh'
         })
       }
+    },
+    moveItem() {
+      this.$emit('send-modal', {
+        message: true,
+      })
     },
     close() {
       this.$emit('send-modal', {

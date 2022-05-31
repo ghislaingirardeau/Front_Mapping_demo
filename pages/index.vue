@@ -129,6 +129,7 @@ export default {
     distance: [],
     //edit Item
     editItem: {},
+    editMark: [],
     showEditModal: false,
   }),
   computed: {
@@ -159,8 +160,9 @@ export default {
       this.showTutorial = payload.message
     },
     modalMarkerResponse(payload) {
-      this.showModalMarker = payload.message
-      this.showEditModal = payload.message
+      payload.message ? '' : this.editMark.forEach(elt => elt.removeFrom(this.map))
+      this.showModalMarker = false
+      this.showEditModal = false
     },
     modalResponse(payload) {
       Object.keys(this.modalDatas).forEach((element) => {
@@ -252,7 +254,10 @@ export default {
               var layer = e.target
               layer.closePopup()
             }
+            
             const dragMarker = (e) => {
+              this.editItem = { ...e.target.feature.properties }
+              this.showEditModal = !this.showEditModal
               let array
               // if it's a point or a polygon, store array of coordinates differently
               e.target.feature.geometry.type === 'Point'
@@ -264,14 +269,15 @@ export default {
                   ))
               // get the id of the geojson to change
               const id = e.target.feature.properties.id
+              this.editMark = []
 
               array.forEach((element, i) => {
-                L.marker(element.reverse(), {
+                this.editMark.push(L.marker(element.reverse(), {
                   opacity: 0.5,
                   draggable: true,
-                })
-                  .addTo(this.map)
-                  .on('dragend', (el) => {
+                }))
+                this.editMark[i].addTo(this.map)
+                this.editMark[i].on('dragend', (el) => {
                     let data = {
                       id: id,
                       coordinates: [
@@ -294,7 +300,7 @@ export default {
             layer.on({
               mouseover: showPopupMarker,
               mouseout: hidePopupMarker,
-              dblclick: editData,
+              /* dblclick: editData, */
               click: dragMarker,
             })
             resolve(true)
