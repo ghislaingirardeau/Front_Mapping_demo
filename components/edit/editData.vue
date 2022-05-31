@@ -3,6 +3,7 @@
     <v-bottom-sheet
       v-model="showModal"
       inset
+      persistent
     >
       <v-card class="modal__content">
         <v-card-title>
@@ -23,9 +24,10 @@
             </v-text-field>
           </v-form>
           <v-spacer></v-spacer>
-          <v-btn color="teal" @click="updateItem"> Save </v-btn>
-          <v-btn color="#d6d306" @click="moveItem"> Change Location </v-btn>
-          <v-btn v-if="editItem.geometry.type != 'Point'" color="#d6d306" @click="addItem"> add </v-btn>
+          <v-btn color="teal" @click="updateItem(true)"> Save </v-btn>
+          <v-btn v-if="editItem.geometry.type" color="#d6d306" @click="moveItem"> Move </v-btn>
+          <v-btn color="rgb(243, 129, 129)" @click="updateItem(false)"> Remove </v-btn>
+          <v-btn v-if="editItem.geometry.type && editItem.geometry.type != 'Point'" color="#d6d306" @click="addItem"> add </v-btn>
         </v-card-text>
       </v-card>
     </v-bottom-sheet>
@@ -45,16 +47,27 @@ export default {
     editItem: Object
   },
   methods: {
-    updateItem() {
-      if (this.$refs.form.validate()) {
-        this.$store.dispatch('updateGeoJson', {
-          action: false,
-          index: this.editItem.properties, // send the change
-        })
+    updateItem(action) {
+      const refresh = () => {
         this.close()
         this.$nuxt.$emit('refresh', {
           id: 'refresh'
         })
+      }
+
+      if (this.$refs.form.validate() && action) {
+        this.$store.dispatch('updateGeoJson', {
+          action: false,
+          index: this.editItem.properties,
+        })
+        refresh()
+        
+      } else if(!action) {
+        this.$store.dispatch('updateGeoJson', {
+          action: !action,
+          index: this.editItem.properties,
+        })
+        refresh()
       }
     },
     moveItem() {

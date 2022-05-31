@@ -1,7 +1,11 @@
 <template>
   <v-col cols="12" md="11">
     <!-- dialog for the data editing -->
-    <edit-data :editItem="editItem" :showModal="showModal" @send-modal="modalResponse"/>
+    <edit-data
+      :editItem="editItem"
+      :showModal="showModal"
+      @send-modal="modalResponse"
+    />
 
     <v-card>
       <v-card-title>
@@ -31,18 +35,9 @@
           >
             mdi-pencil
           </v-icon>
-          <v-icon
-            color="teal"
-            style="border: 2px solid teal; padding: 3px"
-            @click="itemAction(item, true)"
-          >
-            mdi-delete
-          </v-icon>
         </template>
         <template v-slot:[`item.time`]="{ item }">
-          <span>{{
-            item.time.replaceAll(/[A-z]/g, ' ')
-          }}</span>
+          <span>{{ item.time.replaceAll(/[A-z]/g, ' ') }}</span>
         </template>
       </v-data-table>
     </v-card>
@@ -55,7 +50,11 @@ export default {
     return {
       search: '',
       showModal: false,
-      editItem: {},
+      editItem: {
+        geometry: {
+          type: false,
+        },
+      },
       headers: [
         {
           text: 'Name',
@@ -67,7 +66,7 @@ export default {
         { text: 'Category', value: 'category' },
         { text: 'Time', value: 'time' },
         { text: 'Actions', value: 'actions' },
-      ]
+      ],
     }
   },
   props: {
@@ -76,8 +75,8 @@ export default {
   methods: {
     itemAction(item, remove) {
       if (!remove) {
+        this.editItem.properties = { ...item }
         this.showModal = true
-        this.editItem = { ...item }
       } else {
         this.$store.dispatch('updateGeoJson', {
           action: remove,
@@ -86,7 +85,7 @@ export default {
       }
     },
     modalResponse(payload) {
-      this.showModal = payload.message
+      this.showModal = false
     },
   },
 }

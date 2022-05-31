@@ -183,12 +183,6 @@ export default {
       }
       this.showModalMarker = false
       this.showEditModal = false
-      document.addEventListener('keydown', (e) => {
-        this.map.off('click')
-        this.$nuxt.$emit('refresh', {
-          id: 'refresh',
-        })
-      })
     },
     modalResponse(payload) {
       Object.keys(this.modalDatas).forEach((element) => {
