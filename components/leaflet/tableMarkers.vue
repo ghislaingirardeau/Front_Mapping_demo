@@ -41,7 +41,7 @@
                 >{{ iconSuggestList.length }} icons found</span
               >
               <v-icon
-                color="teal"
+                color="primary"
                 v-bind="attrs"
                 v-on="on"
                 v-show="oldItem.icon.length > 0 && !oldItem.subCategory"
@@ -65,7 +65,7 @@
               <v-divider></v-divider>
               <v-card-actions>
                 <v-spacer></v-spacer>
-                <v-btn color="teal" outlined @click="dialog = false">
+                <v-btn color="primary" outlined @click="dialog = false">
                   Close
                 </v-btn>
               </v-card-actions>
@@ -124,7 +124,7 @@
         </template>
         <template v-slot:[`item.edit`]="{ item }">
           <v-icon
-            color="teal"
+            color="primary"
             style="border: 2px solid teal; padding: 3px"
             @click="openEditor(item)"
           >
@@ -133,7 +133,7 @@
         </template>
         <template v-slot:[`item.remove`]="{ item }">
           <v-icon
-            color="teal"
+            color="primary"
             style="border: 2px solid teal; padding: 3px"
             @click="removeDB(item)"
           >

@@ -24,10 +24,10 @@
             </v-text-field>
           </v-form>
           <v-spacer></v-spacer>
-          <v-btn color="teal" @click="updateItem(true)"> Save </v-btn>
-          <v-btn v-if="editItem.geometry.type" color="#d6d306" @click="moveItem"> Move </v-btn>
-          <v-btn color="rgb(243, 129, 129)" @click="updateItem(false)"> Remove </v-btn>
-          <v-btn v-if="editItem.geometry.type && editItem.geometry.type != 'Point'" color="#d6d306" @click="addItem"> add </v-btn>
+          <v-btn outlined color="primary" @click="updateItem(true)"> Save </v-btn>
+          <v-btn outlined v-if="editItem.geometry.type" color="secondary" @click="moveItem"> Move </v-btn>
+          <v-btn outlined v-if="editItem.geometry.type && editItem.geometry.type != 'Point'" color="secondary" @click="addItem"> add </v-btn>
+          <v-btn outlined color="rgb(243, 129, 129)" @click="updateItem(false)"> Remove </v-btn>
         </v-card-text>
       </v-card>
     </v-bottom-sheet>

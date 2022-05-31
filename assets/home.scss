@@ -18,7 +18,7 @@
 
 .leaflet-touch .leaflet-control-layers {
     background-color: black;
-    border: 2px solid #e6e20b;
+    border: 2px solid $color-secondary;
     color: white;
     padding: 4px;
     border-radius: 20px 2px;
@@ -107,7 +107,7 @@
         padding: 15px;
         margin-top: 10px;
         border-radius: 20px 2px;
-        border: 2px solid #e6e20b;
+        border: 2px solid $color-secondary;
     }
 
     &::after {

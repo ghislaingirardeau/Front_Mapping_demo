@@ -27,12 +27,12 @@
         required
       ></v-text-field>
 
-      <v-btn color="teal" @click="sendDataForm">
+      <v-btn color="primary" @click="sendDataForm">
         {{ signType ? 'Login' : 'Register' }}
       </v-btn>
     </v-form>
     <span class="info__message">You forgot your password ? </span>
-    <v-btn small text color="teal" @click="forgotPassword">reset here</v-btn>
+    <v-btn small text color="primary" @click="forgotPassword">reset here</v-btn>
     <p v-if="resetMessage" class="info__message--success">
       {{ resetMessage }}
     </p>
@@ -43,7 +43,7 @@
           : 'Back to the login'
       }}
     </p>
-    <v-btn class="mb-3" color="teal" outlined @click="signType = !signType">{{
+    <v-btn class="mb-3" color="primary" outlined @click="signType = !signType">{{
       signType ? 'Sign Up' : 'Login'
     }}</v-btn>
   </v-col>

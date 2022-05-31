@@ -15,7 +15,7 @@
         label="email"
         readonly
       ></v-text-field>
-      <v-btn color="teal" @click="saveChanges"> Save change </v-btn>
+      <v-btn color="primary" @click="saveChanges"> Save change </v-btn>
     </v-form>
   </v-col>
 </template>

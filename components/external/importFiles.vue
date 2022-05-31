@@ -14,7 +14,7 @@
       v-model="checkboxMerge"
       :label="`Merge the import datas to your actual data ? ${checkboxMerge.toString()}`"
     ></v-checkbox>
-    <v-btn color="teal" class="mr-4" @click="validImport"> Import </v-btn>
+    <v-btn color="primary" class="mr-4" @click="validImport"> Import </v-btn>
   </div>
 </template>
 

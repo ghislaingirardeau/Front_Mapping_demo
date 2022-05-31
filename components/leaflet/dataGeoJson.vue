@@ -57,7 +57,7 @@
       required
     ></v-text-field>
 
-    <v-btn :disabled="!valid" color="teal" class="mr-4" @click="validate">
+    <v-btn :disabled="!valid" color="primary" class="mr-4" @click="validate">
       Validate
     </v-btn>
 

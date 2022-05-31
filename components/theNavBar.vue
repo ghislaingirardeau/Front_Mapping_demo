@@ -1,7 +1,7 @@
 <template>
   <v-col cols="12" md="11">
     <v-app-bar dark class="px-4">
-      <v-btn color="teal" @click="linkMap" class="mr-3">
+      <v-btn color="primary" @click="linkMap" class="mr-3">
         <v-icon>mdi-map-outline</v-icon>
       </v-btn>
 
@@ -9,7 +9,7 @@
       <v-tooltip bottom v-for="(link, i) in navItems" :key="i">
         <template v-slot:activator="{ on, attrs }">
           <v-icon
-            color="teal"
+            color="primary"
             v-bind="attrs"
             v-on="on"
             class="mx-7"

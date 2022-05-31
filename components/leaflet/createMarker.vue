@@ -57,7 +57,7 @@
                         >{{ iconSuggestList.length }} icons found</span
                       >
                       <v-icon 
-                        color="teal"
+                        color="primary"
                         v-bind="attrs"
                         v-on="on"
                         v-show="newIcon.icon.length > 0"
@@ -80,7 +80,7 @@
                       <v-divider></v-divider>
                       <v-card-actions>
                         <v-spacer></v-spacer>
-                        <v-btn color="teal" outlined @click="dialog = false">
+                        <v-btn color="primary" outlined @click="dialog = false">
                           Close
                         </v-btn>
                       </v-card-actions>
@@ -88,7 +88,7 @@
                   </v-dialog>
                 </v-col>
                 <v-col cols="11" class="mt-n-5">
-                  <v-btn color="teal" @click="validate"> Next </v-btn>
+                  <v-btn color="primary" @click="validate"> Next </v-btn>
                   <v-icon class="ml-3" large v-if="newIcon.icon">
                     mdi-{{ newIcon.icon }}
                   </v-icon>
@@ -111,7 +111,7 @@
                   ></v-text-field>
                   <span class="mr-2">Add</span>
                   <v-icon
-                    color="teal"
+                    color="primary"
                     class="iconAddColor"
                     @click="addToArraySubCat"
                     >mdi-plus-circle</v-icon
@@ -137,7 +137,7 @@
                       ? newIcon.subCategory[l]
                       : newIcon.category
                   }}</span>
-                  <v-icon color="teal" size="22px" @click="removeSubCategory(l)">
+                  <v-icon color="primary" size="22px" @click="removeSubCategory(l)">
                     mdi-delete-forever
                   </v-icon>
                 </v-col>
@@ -145,7 +145,7 @@
               
 
               <v-col cols="11">
-                <v-btn color="teal" @click="validSubOption"> Pick colors </v-btn>
+                <v-btn color="primary" @click="validSubOption"> Pick colors </v-btn>
                 <v-btn text @click="e1 = 1" outlined color="secondary">
                   back
                 </v-btn>
@@ -176,7 +176,7 @@
                       : newIcon.category
                   }}</span>
                   <v-icon 
-                    color="teal" 
+                    color="primary" 
                     class="iconAddColor iconAnimation" 
                     size="25px" 
                     style="padding: 4px;"
@@ -214,11 +214,11 @@
 
 
               <v-col cols="11" sm="7" class="mt-sm-2">
-                <v-btn color="teal" @click="addNewMarker">Valid</v-btn>
-                <v-btn color="warning" outlined @click="resetMarker">Reset</v-btn>
+                <v-btn color="primary" @click="addNewMarker">Valid</v-btn>
+                <v-btn color="secondary" outlined @click="resetMarker">Reset</v-btn>
               </v-col>
               <v-col cols="11" sm="4" class="mt-sm-2">
-                <v-btn text @click="e1 = 2" outlined color="secondary">
+                <v-btn text @click="e1 = 2" outlined color="warning">
                   back
                 </v-btn>
               </v-col>

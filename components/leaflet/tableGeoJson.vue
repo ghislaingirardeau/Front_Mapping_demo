@@ -29,7 +29,7 @@
         <template v-slot:[`item.actions`]="{ item }">
           <v-icon
             class="mr-10"
-            color="teal"
+            color="primary"
             style="border: 2px solid teal; padding: 3px"
             @click="itemAction(item, false)"
           >

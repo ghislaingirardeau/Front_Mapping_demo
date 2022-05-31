@@ -6,7 +6,7 @@
       <h1 class="mb-2">My Markers</h1>
       <p v-if="DBmessage">{{ DBmessage }}</p>
 
-      <v-btn color="teal" @click="showModal = true">Add marker</v-btn>
+      <v-btn color="primary" @click="showModal = true">Add marker</v-btn>
     </v-col>
     <createMarker
       :markers="markers"

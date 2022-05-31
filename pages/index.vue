@@ -58,7 +58,12 @@
       "
       :hubPosition="hubPosition"
     >
-      <template v-slot:title> Don't forget to log to save your datas </template>
+      <template v-slot:title>
+        <span v-if="editMark.length === 0">
+          Don't forget to log to save your datas
+        </span>
+        <v-btn v-else color="secondary" outlined @click="cancelMove">cancel</v-btn>
+      </template>
     </hub-info>
 
     <!-- FOR DISTANCE: BUG DIFFERENTE MEASURE BETWEEN POINTS & LINES -->
@@ -184,6 +189,14 @@ export default {
       this.showModalMarker = false
       this.showEditModal = false
     },
+    cancelMove() {
+      /* this.editMark.forEach((elt) => elt.removeFrom(this.map))
+      this.map.off('click')
+      this.editMark = [] */
+      this.$nuxt.$emit('refresh', {
+            id: 'refresh',
+          })
+    },
     modalResponse(payload) {
       Object.keys(this.modalDatas).forEach((element) => {
         this.modalDatas[element] = payload.message
@@ -294,7 +307,9 @@ export default {
               array.forEach((element, i) => {
                 this.editMark.push(
                   L.marker(element.reverse(), {
-                    opacity: 0.5,
+                    icon: L.divIcon({
+                      html: `<i aria-hidden="true" class="v-icon notranslate mdi mdi-arrow-expand-all theme--dark icon__layer--update--size" style="font-size: 20px; color:black;"></i>`,
+                    }),
                     draggable: true,
                   })
                 )
