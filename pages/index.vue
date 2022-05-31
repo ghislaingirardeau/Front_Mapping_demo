@@ -160,9 +160,35 @@ export default {
       this.showTutorial = payload.message
     },
     modalMarkerResponse(payload) {
-      payload.message ? '' : this.editMark.forEach(elt => elt.removeFrom(this.map))
+      if (payload.message === 'close') {
+        this.editMark.forEach((elt) => elt.removeFrom(this.map))
+      } else if (payload.message === 'add') {
+        // change the cursor
+        document.getElementById('map').style.cursor = 'crosshair'
+        // remove all editMark
+        this.editMark.forEach((elt) => elt.removeFrom(this.map))
+        this.map.on('click', (e) => {
+          let coordinates = [e.latlng.lng, e.latlng.lat]
+          let data = {
+            id: payload.id,
+            coordinates: coordinates,
+          }
+          this.$store.dispatch('addPointLine', data)
+          // disable the click after one
+          this.map.off('click')
+          this.$nuxt.$emit('refresh', {
+            id: 'refresh',
+          })
+        })
+      }
       this.showModalMarker = false
       this.showEditModal = false
+      document.addEventListener('keydown', (e) => {
+        this.map.off('click')
+        this.$nuxt.$emit('refresh', {
+          id: 'refresh',
+        })
+      })
     },
     modalResponse(payload) {
       Object.keys(this.modalDatas).forEach((element) => {
@@ -254,9 +280,9 @@ export default {
               var layer = e.target
               layer.closePopup()
             }
-            
+
             const dragMarker = (e) => {
-              this.editItem = { ...e.target.feature.properties }
+              this.editItem = structuredClone({ ...e.target.feature })
               this.showEditModal = !this.showEditModal
               let array
               // if it's a point or a polygon, store array of coordinates differently
@@ -272,25 +298,24 @@ export default {
               this.editMark = []
 
               array.forEach((element, i) => {
-                this.editMark.push(L.marker(element.reverse(), {
-                  opacity: 0.5,
-                  draggable: true,
-                }))
+                this.editMark.push(
+                  L.marker(element.reverse(), {
+                    opacity: 0.5,
+                    draggable: true,
+                  })
+                )
                 this.editMark[i].addTo(this.map)
                 this.editMark[i].on('dragend', (el) => {
-                    let data = {
-                      id: id,
-                      coordinates: [
-                        el.target._latlng.lng,
-                        el.target._latlng.lat,
-                      ],
-                      index: i,
-                    }
-                    this.$store.dispatch('updateMarkCoordinates', data)
-                    this.$nuxt.$emit('refresh', {
-                      id: 'refresh',
-                    })
+                  let data = {
+                    id: id,
+                    coordinates: [el.target._latlng.lng, el.target._latlng.lat],
+                    index: i,
+                  }
+                  this.$store.dispatch('updateMarkCoordinates', data)
+                  this.$nuxt.$emit('refresh', {
+                    id: 'refresh',
                   })
+                })
               })
             }
             // pour faire apparaitre le popup du marker si popupContent est defini

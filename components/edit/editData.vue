@@ -13,18 +13,19 @@
         <v-card-text>
           <v-form ref="form" v-model="valid" lazy-validation>
             <v-text-field
-              v-model="editItem.name"
+              v-model="editItem.properties.name"
               label="name"
               :rules="rulesName"
               required
             >
             </v-text-field>
-            <v-text-field v-model="editItem.popupContent" label="details">
+            <v-text-field v-model="editItem.properties.popupContent" label="details">
             </v-text-field>
           </v-form>
           <v-spacer></v-spacer>
           <v-btn color="teal" @click="updateItem"> Save </v-btn>
           <v-btn color="#d6d306" @click="moveItem"> Change Location </v-btn>
+          <v-btn v-if="editItem.geometry.type != 'Point'" color="#d6d306" @click="addItem"> add </v-btn>
         </v-card-text>
       </v-card>
     </v-bottom-sheet>
@@ -48,7 +49,7 @@ export default {
       if (this.$refs.form.validate()) {
         this.$store.dispatch('updateGeoJson', {
           action: false,
-          index: this.editItem, // send the change
+          index: this.editItem.properties, // send the change
         })
         this.close()
         this.$nuxt.$emit('refresh', {
@@ -58,14 +59,22 @@ export default {
     },
     moveItem() {
       this.$emit('send-modal', {
-        message: true,
+        message: 'move',
+      })
+    },
+    addItem() {
+      this.$emit('send-modal', {
+        message: 'add',
+        id: this.editItem.properties.id
       })
     },
     close() {
       this.$emit('send-modal', {
-        message: false,
+        message: 'close',
       })
     },
+  },
+  mounted () {
   },
 }
 </script>

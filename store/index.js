@@ -208,6 +208,9 @@ export const actions = {
     },
     updateMarkCoordinates({commit}, data) {
         commit('DRAG_MARKER', data)
+    },
+    addPointLine({ commit }, data) {
+        commit('ADD_POINT', data)
     }
 }
 // contains your mutations
@@ -291,6 +294,18 @@ export const mutations = {
         state.GeoJsonDatas = []
         setStorage(state.markers)
     },
+    DRAG_MARKER(state, data) {
+        // find the geojson match with the data.id
+        let item = Object.values(state.GeoJsonDatas).flat().find(elt => elt.properties.id == data.id)
+        // update coordinate depending if point or polygon
+        item.geometry.type === "Point"
+            ? item.geometry.coordinates = data.coordinates
+            : item.geometry.coordinates[0].splice(data.index, 1, data.coordinates)
+    },
+    ADD_POINT(state, data) {
+        let item = Object.values(state.GeoJsonDatas).flat().find(elt => elt.properties.id == data.id)
+        item.geometry.coordinates[0].push(data.coordinates)
+    },
     // FIREBASE PAGE
     USER_FECTH(state, authUser) {
         const { uid, email, emailVerified, displayName } = authUser
@@ -313,14 +328,6 @@ export const mutations = {
     },
     ERROR_REPONSE(state, message) {
         state.errorMessage = message
-    },
-    DRAG_MARKER(state, data) {
-        // find the geojson match with the data.id
-        let item = Object.values(state.GeoJsonDatas).flat().find(elt => elt.properties.id == data.id)
-        // update coordinate depending if point or polygon
-        item.geometry.type === "Point"
-            ? item.geometry.coordinates = data.coordinates
-            : item.geometry.coordinates[0].splice(data.index, 1, data.coordinates)
     }
 }
 export const getters = {
