@@ -54,15 +54,19 @@
         !hubPosition &&
         !showPrintOption &&
         !modalDatas.showModal &&
-        !showModalMarker
+        !showModalMarker &&
+        editMark.length === 0
       "
       :hubPosition="hubPosition"
     >
       <template v-slot:title>
-        <span v-if="editMark.length === 0">
-          Don't forget to log to save your datas
-        </span>
-        <v-btn v-else color="secondary" outlined @click="cancelMove">cancel</v-btn>
+        Don't forget to log to save your datas
+      </template>
+    </hub-info>
+
+    <hub-info v-if="editMark.length > 0">
+      <template v-slot:title>
+        <v-btn color="secondary" outlined @click="cancelMove">cancel</v-btn>
       </template>
     </hub-info>
 
