@@ -170,7 +170,7 @@ export default {
     },
     modalMarkerResponse(payload) {
       if (payload.message === 'close') {
-        // do nothing, remove markers
+        // reset the map
         this.cancelMove()
       } else if (payload.message === 'add') {
         // add a point to the line or polygon
@@ -195,7 +195,6 @@ export default {
       } else if(payload.message === 'move') {
         this.activateOrNotBtn(['btn-add', 'btn-trace', 'btn-target'])
       }
-      // on "move" just close the bottom sheet & show the cancel btn
       this.showModalMarker = false
       this.showEditModal = false
     },

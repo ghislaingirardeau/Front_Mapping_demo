@@ -126,7 +126,6 @@ export const actions = {
             })
     },
     appLoad({ commit }, datas) {
-        console.log('appLoad');
         if (datas) {
             commit('SAVE_MARKERS', datas)
 
@@ -301,10 +300,12 @@ export const mutations = {
         item.geometry.type === "Point"
             ? item.geometry.coordinates = data.coordinates
             : item.geometry.coordinates[0].splice(data.index, 1, data.coordinates)
+        setStorage(state.markers, state.GeoJsonDatas)
     },
     ADD_POINT(state, data) {
         let item = Object.values(state.GeoJsonDatas).flat().find(elt => elt.properties.id == data.id)
         item.geometry.coordinates[0].push(data.coordinates)
+        setStorage(state.markers, state.GeoJsonDatas)
     },
     // FIREBASE PAGE
     USER_FECTH(state, authUser) {
