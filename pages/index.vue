@@ -184,7 +184,8 @@ export default {
     modalMarkerResponse(payload) {
       if (payload.message === 'close') {
         // reset the map
-        this.cancelMove()
+        this.editMark.forEach((elt) => elt.removeFrom(this.map))
+        this.editMark = []
       } else if (payload.message === 'add') {
         // add a point to the line or polygon
         // change the cursor
@@ -281,7 +282,7 @@ export default {
       const onEachFeature = async (feature, layer) => {
         const createLayer = () => {
           return new Promise((resolve, reject) => {
-            const editData = (e) => {
+            const editMarker = (e) => {
               this.oldMark = this.markers.find(
                 (elt) =>
                   elt.category === e.target.feature.properties.category &&
@@ -312,7 +313,7 @@ export default {
               layer.closePopup()
             }
 
-            const dragMarker = (e) => {
+            const editLocation = (e) => {
               this.editItem = structuredClone({ ...e.target.feature })
               this.showEditLocation = !this.showEditLocation
               let array
@@ -356,8 +357,8 @@ export default {
             layer.on({
               mouseover: showPopupMarker,
               mouseout: hidePopupMarker,
-              contextmenu: editData,
-              click: dragMarker,
+              contextmenu: editMarker,
+              click: editLocation,
             })
             resolve(true)
           })
