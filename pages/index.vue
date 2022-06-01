@@ -273,10 +273,7 @@ export default {
         const createLayer = () => {
           return new Promise((resolve, reject) => {
             let editData = (e) => {
-              // TEST TO MODIFY DIRECTLY HERE !!!!!!!!!
               console.log(e.target)
-              this.editItem = { ...e.target.feature.properties }
-              this.showEditModal = !this.showEditModal
               /* if (this.distance.length < 2) {
                 this.distance.push(layer.feature.geometry.coordinates)
               } else {
@@ -340,7 +337,7 @@ export default {
             layer.on({
               mouseover: showPopupMarker,
               mouseout: hidePopupMarker,
-              /* dblclick: editData, */
+              contextmenu: editData,
               click: dragMarker,
             })
             resolve(true)
