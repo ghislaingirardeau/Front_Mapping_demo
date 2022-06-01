@@ -141,9 +141,7 @@ export default {
       let confirm = window.confirm('This action will reset the app')
       if (confirm) {
         this.appReset()
-        this.$nuxt.$emit('refresh', {
-          id: 'refresh'
-        })
+        this.refreshMap()
       } else {
         console.log('Cancel')
       }

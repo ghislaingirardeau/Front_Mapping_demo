@@ -34,9 +34,16 @@
     <!-- MODAL EDIT POSITION -->
     <edit-data
       :editItem="editItem"
-      :showModal="showEditModal"
+      :showModal="showEditLocation"
       @send-modal="modalMarkerResponse"
     />
+    <edit-marker
+      :showModal="showEditMark"
+      :rulesEditSub="rulesEditSub"
+      :editItem="editMarker"
+      :oldItem="oldMark"
+      @edit-marker="modalMarker"
+    ></edit-marker>
 
     <!-- MODAL TUTORIAL -->
     <theTutorial :showTutorial="showTutorial" @send-tuto="closeTuto" />
@@ -59,9 +66,7 @@
       "
       :hubPosition="hubPosition"
     >
-      <template v-slot:title>
-        Don't forget to log to save your datas
-      </template>
+      <template v-slot:title> Don't forget to log to save your datas </template>
     </hub-info>
 
     <hub-info v-if="editMark.length > 0">
@@ -139,7 +144,11 @@ export default {
     //edit Item
     editItem: {},
     editMark: [],
-    showEditModal: false,
+    showEditLocation: false,
+    showEditMark: false,
+    oldMark: {},
+    editMarker: {},
+    rulesEditSub: [(v) => v.length > 1 || 'minimum 2 characters'],
   }),
   computed: {
     ...mapState(['markers', 'userAuth', 'GeoJsonDatas']),
@@ -168,6 +177,10 @@ export default {
     closeTuto(payload) {
       this.showTutorial = payload.message
     },
+    modalMarker(payload) {
+      this.showEditMark = payload.message
+      payload.refresh ? this.refreshMap() : ''
+    },
     modalMarkerResponse(payload) {
       if (payload.message === 'close') {
         // reset the map
@@ -188,20 +201,16 @@ export default {
           this.$store.dispatch('addPointLine', data)
           // disable the click after one
           this.map.off('click')
-          this.$nuxt.$emit('refresh', {
-            id: 'refresh',
-          })
+          this.refreshMap()
         })
-      } else if(payload.message === 'move') {
+      } else if (payload.message === 'move') {
         this.activateOrNotBtn(['btn-add', 'btn-trace', 'btn-target'])
       }
       this.showModalMarker = false
-      this.showEditModal = false
+      this.showEditLocation = false
     },
     cancelMove() {
-      this.$nuxt.$emit('refresh', {
-            id: 'refresh',
-          })
+      this.refreshMap()
     },
     modalResponse(payload) {
       Object.keys(this.modalDatas).forEach((element) => {
@@ -272,15 +281,27 @@ export default {
       const onEachFeature = async (feature, layer) => {
         const createLayer = () => {
           return new Promise((resolve, reject) => {
-            let editData = (e) => {
-              console.log(e.target)
-              /* if (this.distance.length < 2) {
-                this.distance.push(layer.feature.geometry.coordinates)
+            const editData = (e) => {
+              this.oldMark = this.markers.find(
+                (elt) =>
+                  elt.category === e.target.feature.properties.category &&
+                  elt.icon === e.target.feature.icon.type &&
+                  elt.color === e.target.feature.icon.color &&
+                  elt.subCategory === e.target.feature.properties.subCategory
+              )
+              if (e.target.feature.properties.subCategory.length > 0) {
+                // if there is subcat
+                this.rulesEditSub = [
+                  (v) => v.length > 1 || 'minimum 2 characters',
+                ]
               } else {
-                this.distance = []
-                this.distance.push(layer.feature.geometry.coordinates)
-              } */
+                this.rulesEditSub = [true]
+              }
+              this.editMarker = structuredClone(this.oldMark)
+
+              this.showEditMark = !this.showEditMark
             }
+
             const showPopupMarker = (e) => {
               var layer = e.target
               layer.openPopup()
@@ -293,7 +314,7 @@ export default {
 
             const dragMarker = (e) => {
               this.editItem = structuredClone({ ...e.target.feature })
-              this.showEditModal = !this.showEditModal
+              this.showEditLocation = !this.showEditLocation
               let array
               // if it's a point or a polygon, store array of coordinates differently
               e.target.feature.geometry.type === 'Point'
@@ -324,9 +345,7 @@ export default {
                     index: i,
                   }
                   this.$store.dispatch('updateMarkCoordinates', data)
-                  this.$nuxt.$emit('refresh', {
-                    id: 'refresh',
-                  })
+                  this.refreshMap()
                 })
               })
             }

@@ -32,8 +32,10 @@ export default {
                 })
             }
         },
-        changeMixin() {
-            this.mixin = !this.mixin
+        refreshMap() {
+            this.$nuxt.$emit('refresh', {
+                id: 'refresh',
+            })
         }
     }
 }

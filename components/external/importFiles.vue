@@ -278,9 +278,7 @@ export default {
             merge: this.checkboxMerge,
           }
           this.$store.dispatch('appLoad', dataStore)
-          this.$nuxt.$emit('refresh', {
-            id: 'refresh'
-          })
+          this.refreshMap()
         } catch (error) {
           console.log(error)
         }

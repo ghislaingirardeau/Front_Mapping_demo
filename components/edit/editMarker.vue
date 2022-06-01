@@ -172,6 +172,7 @@ export default {
         let res = await this.$store.dispatch('updateMarker', dataStore)
         this.$emit('edit-marker', {
             message: false,
+            refresh: true
         })
       }
     },

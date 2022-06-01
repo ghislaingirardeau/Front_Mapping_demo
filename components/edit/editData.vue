@@ -50,9 +50,7 @@ export default {
     updateItem(action) {
       const refresh = () => {
         this.close()
-        this.$nuxt.$emit('refresh', {
-          id: 'refresh'
-        })
+        this.refreshMap()
       }
 
       if (this.$refs.form.validate() && action) {

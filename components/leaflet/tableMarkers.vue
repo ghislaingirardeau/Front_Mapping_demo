@@ -103,6 +103,7 @@ export default {
       }
       this.editItem = { ...e }
       this.oldItem = { ...e }
+      console.log(this.oldItem);
 
       this.showModal = !this.showModal
     },
