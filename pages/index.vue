@@ -170,10 +170,13 @@ export default {
     },
     modalMarkerResponse(payload) {
       if (payload.message === 'close') {
-        this.editMark.forEach((elt) => elt.removeFrom(this.map))
+        // do nothing, remove markers
+        this.cancelMove()
       } else if (payload.message === 'add') {
+        // add a point to the line or polygon
         // change the cursor
         document.getElementById('map').style.cursor = 'crosshair'
+        this.activateOrNotBtn(['btn-add', 'btn-trace', 'btn-target'])
         // remove all editMark
         this.editMark.forEach((elt) => elt.removeFrom(this.map))
         this.map.on('click', (e) => {
@@ -189,14 +192,14 @@ export default {
             id: 'refresh',
           })
         })
+      } else if(payload.message === 'move') {
+        this.activateOrNotBtn(['btn-add', 'btn-trace', 'btn-target'])
       }
+      // on "move" just close the bottom sheet & show the cancel btn
       this.showModalMarker = false
       this.showEditModal = false
     },
     cancelMove() {
-      /* this.editMark.forEach((elt) => elt.removeFrom(this.map))
-      this.map.off('click')
-      this.editMark = [] */
       this.$nuxt.$emit('refresh', {
             id: 'refresh',
           })
