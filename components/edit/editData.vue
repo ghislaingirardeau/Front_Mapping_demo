@@ -63,10 +63,13 @@ export default {
         refresh()
         
       } else if(!action) {
-        this.$store.dispatch('updateGeoJson', {
-          action: !action,
-          index: this.editItem.properties,
-        })
+        let confirm = window.confirm('Remove this item ?')
+        if (confirm) {
+          this.$store.dispatch('updateGeoJson', {
+            action: !action,
+            index: this.editItem.properties,
+          })
+        }
         refresh()
       }
     },
