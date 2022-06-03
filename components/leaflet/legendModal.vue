@@ -16,7 +16,7 @@
     <v-col v-for="(i, l) in markers" :key="l" order="first">
       <span>{{ i.category }}</span>
       <br />
-      <v-icon v-if="i.icon.length > 0" :color="i.color">
+      <v-icon v-if="i.icon.length > 0" :color="i.color" size="35px">
         mdi-{{ i.icon }}
       </v-icon>
       <v-chip
@@ -32,6 +32,7 @@
       <span v-if="i.subCategory && i.subCategory.length > 0">{{
         i.subCategory
       }}</span>
+      <br />
       <v-icon
         v-show="!showPrintMap"
         color="primary"
@@ -42,19 +43,20 @@
       <v-icon
         v-show="!showPrintMap"
         color="primary"
-        style="border: 2px solid teal; padding: 3px"
+        style="padding: 3px"
         @click="openEditor(i)"
       >
-        mdi-brush
+        mdi-pencil-circle-outline
       </v-icon>
     </v-col>
-    <v-col cols="12" v-show="!showPrintMap">
+    <v-col cols="12" v-show="!showPrintMap" class="text-left">
+      <h3 class="pb-2 my-3">Options</h3>
       <v-slider
         v-model="size"
         max="42"
         min="10"
         step="4"
-        label="Size"
+        label="Size of Icons :"
         @change="newSize"
       ></v-slider>
     </v-col>
@@ -131,5 +133,9 @@ export default {
 }
 .block__items {
   padding: 2px;
+}
+h3 {
+  color: white;
+  border-bottom: 2px solid white;
 }
 </style>

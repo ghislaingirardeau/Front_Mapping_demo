@@ -83,12 +83,12 @@ export default {
         },
         {
           icon: 'mdi-database-eye',
-          title: 'Datas summary',
+          title: 'Datas table',
           to: '/myData',
         },
         {
           icon: 'mdi-database-marker',
-          title: 'Manage My Markers',
+          title: 'Markers table',
           to: '/myConfig',
         },
       ]
