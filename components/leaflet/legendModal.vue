@@ -1,5 +1,18 @@
 <template>
   <v-row class="text-center" v-if="markers.length > 0">
+    <edit-menu :showModal="showModal" @send-modal="modalMarker">
+      <template v-slot:title>
+        <span> Edit my data </span>
+      </template>
+      <template v-slot:content>
+        <edit-marker
+          :rulesEditSub="rulesEditSub"
+          :editItem="editItem"
+          :oldItem="oldItem"
+        ></edit-marker>
+      </template>
+    </edit-menu>
+
     <v-col v-for="(i, l) in markers" :key="l" order="first">
       <span>{{ i.category }}</span>
       <br />
@@ -19,6 +32,21 @@
       <span v-if="i.subCategory && i.subCategory.length > 0">{{
         i.subCategory
       }}</span>
+      <v-icon
+        v-show="!showPrintMap"
+        color="primary"
+        style="padding: 3px"
+        @click="removeIcon(i)"
+        >mdi-delete-forever-outline</v-icon
+      >
+      <v-icon
+        v-show="!showPrintMap"
+        color="primary"
+        style="border: 2px solid teal; padding: 3px"
+        @click="openEditor(i)"
+      >
+        mdi-brush
+      </v-icon>
     </v-col>
     <v-col cols="12" v-show="!showPrintMap">
       <v-slider
@@ -43,6 +71,10 @@ export default {
   data: () => ({
     showContent: false,
     size: 20,
+    showModal: false,
+    rulesEditSub: [(v) => v.length > 1 || 'minimum 2 characters'],
+    editItem: {},
+    oldItem: {},
   }),
   props: {
     showLegend: Boolean,
@@ -59,6 +91,34 @@ export default {
     },
     legend() {
       this.showContent = !this.showContent
+    },
+    async removeIcon(e) {
+      console.log(e)
+      let confirm = window.confirm(`Remove the item ${e.category} ?`)
+      if (confirm) {
+        let dataStore = {
+          old: { id: e.id },
+          new: false,
+        }
+        let res = await this.$store.dispatch('updateMarker', dataStore)
+      }
+    },
+    modalMarker(payload) {
+      this.showModal = false
+    },
+
+    openEditor(e) {
+      console.log(e)
+      if (e.subCategory.length > 0) {
+        // if there is subcat
+        this.rulesEditSub = [(v) => v.length > 1 || 'minimum 2 characters']
+      } else {
+        this.rulesEditSub = [true]
+      }
+      this.editItem = { ...e }
+      this.oldItem = { ...e }
+
+      this.showModal = !this.showModal
     },
   },
   mounted() {},

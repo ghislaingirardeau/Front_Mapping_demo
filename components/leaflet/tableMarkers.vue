@@ -1,13 +1,20 @@
 <template>
   <v-col cols="12" md="11">
     <!-- dialog for the data editing -->
-    <edit-marker
-      :showModal="showModal"
-      :rulesEditSub="rulesEditSub"
-      :editItem="editItem"
-      :oldItem="oldItem"
-      @edit-marker="modalMarker"
-    ></edit-marker>
+    <edit-menu :showModal="showModal" @send-modal="modalMarker">
+      <template v-slot:title> 
+        <span>
+          Edit my data
+        </span>  
+      </template>
+      <template v-slot:content>
+        <edit-marker
+          :rulesEditSub="rulesEditSub"
+          :editItem="editItem"
+          :oldItem="oldItem"
+        ></edit-marker>
+      </template>
+    </edit-menu>
 
     <v-card>
       <v-card-title>
@@ -92,9 +99,10 @@ export default {
   },
   methods: {
     modalMarker(payload) {
-      this.showModal = payload.message
+      this.showModal = false
     },
     openEditor(e) {
+      console.log(e);
       if (e.subCategory.length > 0) {
         // if there is subcat
         this.rulesEditSub = [(v) => v.length > 1 || 'minimum 2 characters']
@@ -103,19 +111,19 @@ export default {
       }
       this.editItem = { ...e }
       this.oldItem = { ...e }
-      console.log(this.oldItem);
 
       this.showModal = !this.showModal
     },
     async removeDB(e) {
-      let confirm = window.confirm(`Remove the item ${e.category} ?`)
+      console.log(e);
+      /* let confirm = window.confirm(`Remove the item ${e.category} ?`)
       if (confirm) {
         let dataStore = {
           old: { id: e.id },
           new: false,
         }
         let res = await this.$store.dispatch('updateMarker', dataStore)
-      }
+      } */
     },
   },
 }

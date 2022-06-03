@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-form ref="form" v-model="valid" lazy-validation>
+    <v-form ref="form" v-model="valid" lazy-validation class="mb-3">
       <v-text-field
         v-model="editItem.properties.name"
         label="name"
@@ -10,6 +10,10 @@
       </v-text-field>
       <v-text-field v-model="editItem.properties.popupContent" label="details">
       </v-text-field>
+      <span>
+        Created the {{ editItem.properties.time.replaceAll(/[A-z]/g, ' ') }} in
+        the layer name : {{ editItem.properties.category }}
+      </span>
     </v-form>
     <v-spacer></v-spacer>
     <v-btn outlined color="primary" @click="updateItem(true)"> Save </v-btn>

@@ -83,7 +83,7 @@ export default {
         },
         {
           icon: 'mdi-database-eye',
-          title: 'Manage My Datas',
+          title: 'Datas summary',
           to: '/myData',
         },
         {
