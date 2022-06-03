@@ -1,11 +1,18 @@
 <template>
   <v-col cols="12" md="11">
     <!-- dialog for the data editing -->
-    <edit-data
-      :editItem="editItem"
-      :showModal="showModal"
-      @send-modal="modalResponse"
-    />
+    <edit-menu :showModal="showModal" @send-modal="modalResponse">
+      <template v-slot:title> 
+        <span>
+          Edit my data
+        </span>  
+      </template>
+      <template v-slot:content>
+        <edit-data
+          :editItem="editItem"
+        />
+      </template>
+    </edit-menu>
 
     <v-card>
       <v-card-title>
@@ -76,6 +83,7 @@ export default {
     itemAction(item, remove) {
       if (!remove) {
         this.editItem.properties = { ...item }
+        console.log(this.editItem);
         this.showModal = true
       } else {
         this.$store.dispatch('updateGeoJson', {
