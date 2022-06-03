@@ -2,15 +2,11 @@
   <v-col cols="12" md="11">
     <!-- dialog for the data editing -->
     <edit-menu :showModal="showModal" @send-modal="modalResponse">
-      <template v-slot:title> 
-        <span>
-          Edit my data
-        </span>  
+      <template v-slot:title>
+        <span> Edit my data </span>
       </template>
       <template v-slot:content>
-        <edit-data
-          :editItem="editItem"
-        />
+        <edit-data :editItem="editItem" />
       </template>
     </edit-menu>
 
@@ -38,7 +34,7 @@
             class="mr-10"
             color="primary"
             style="border: 2px solid teal; padding: 3px"
-            @click="itemAction(item, false)"
+            @click="openEditor(item)"
           >
             mdi-pencil
           </v-icon>
@@ -80,17 +76,10 @@ export default {
     allDatas: Array,
   },
   methods: {
-    itemAction(item, remove) {
-      if (!remove) {
-        this.editItem.properties = { ...item }
-        console.log(this.editItem);
-        this.showModal = true
-      } else {
-        this.$store.dispatch('updateGeoJson', {
-          action: remove,
-          index: item,
-        })
-      }
+    openEditor(item) {
+      this.editItem.properties = { ...item }
+      console.log(this.editItem)
+      this.showModal = true
     },
     modalResponse(payload) {
       this.showModal = false
