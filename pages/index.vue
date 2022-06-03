@@ -4,7 +4,7 @@
     <createMarker
       :markers="markers"
       :showModal="showModalMarker"
-      @send-marker="modalMarkerResponse"
+      @send-marker="modalEdit"
     />
     <!-- MODAL SETTING -->
     <modalCustom :showModal="modalDatas.showModal" @send-modal="modalResponse">
@@ -32,18 +32,30 @@
     </modalCustom>
 
     <!-- MODAL EDIT POSITION -->
-    <edit-data
-      :editItem="editItem"
-      :showModal="showEditLocation"
-      @send-modal="modalMarkerResponse"
-    />
-    <edit-marker
-      :showModal="showEditMark"
-      :rulesEditSub="rulesEditSub"
-      :editItem="editMarker"
-      :oldItem="oldMark"
-      @edit-marker="modalMarker"
-    ></edit-marker>
+    <edit-menu :showModal="editMenu" @send-modal="modalEdit">
+      <template v-slot:title> 
+        <span>
+          Edit my data
+        </span>  
+      </template>
+      <template v-slot:content>
+        <edit-data
+          :editItem="editItem"
+          v-if="showEditLocation"
+          @send-modal="modalEditLocation"
+        />
+        <edit-marker
+          v-if="showEditMark"
+          :rulesEditSub="rulesEditSub"
+          :editItem="editMarker"
+          :oldItem="oldMark"
+        ></edit-marker>
+        <div class="d-flex justify-space-around align-center" v-if="!showEditMark && !showEditLocation">
+          <v-btn outlined color="primary" @click="showEditMark = true">Marker</v-btn> <span>Or</span>
+          <v-btn outlined color="primary" @click="showEditLocation = true">Location</v-btn>
+        </div>
+      </template>
+    </edit-menu>
 
     <!-- MODAL TUTORIAL -->
     <theTutorial :showTutorial="showTutorial" @send-tuto="closeTuto" />
@@ -142,6 +154,7 @@ export default {
     //test distance
     distance: [],
     //edit Item
+    editMenu: false,
     editItem: {},
     editMark: [],
     showEditLocation: false,
@@ -149,6 +162,7 @@ export default {
     oldMark: {},
     editMarker: {},
     rulesEditSub: [(v) => v.length > 1 || 'minimum 2 characters'],
+    pointsOfLocation: {},
   }),
   computed: {
     ...mapState(['markers', 'userAuth', 'GeoJsonDatas']),
@@ -177,20 +191,47 @@ export default {
     closeTuto(payload) {
       this.showTutorial = payload.message
     },
-    modalMarker(payload) {
-      this.showEditMark = payload.message
-      payload.refresh ? this.refreshMap() : ''
+    modalEdit(payload) {
+      this.editMenu = false
+      this.showEditMark = false
+      this.showEditLocation = false
+      this.showModalMarker = false
     },
-    modalMarkerResponse(payload) {
-      if (payload.message === 'close') {
-        // reset the map
-        this.editMark.forEach((elt) => elt.removeFrom(this.map))
+    modalEditLocation(payload) {
+      // build the marker on map only if click on move or add
+      const displayMarkersOnMap = () => {
         this.editMark = []
+
+        this.pointsOfLocation.coordinates.forEach((element, i) => {
+          this.editMark.push(
+            L.marker(element.reverse(), {
+              icon: L.divIcon({
+                html: `<i aria-hidden="true" class="v-icon notranslate mdi mdi-arrow-expand-all theme--dark icon__layer--update--size" style="font-size: 20px; color:black;"></i>`,
+              }),
+              draggable: true,
+            })
+          )
+          this.editMark[i].addTo(this.map)
+          this.editMark[i].on('dragend', (el) => {
+            let data = {
+              id: this.pointsOfLocation.id,
+              coordinates: [el.target._latlng.lng, el.target._latlng.lat],
+              index: i,
+            }
+            this.$store.dispatch('updateMarkCoordinates', data)
+            this.refreshMap()
+          })
+        })
+      }
+      if (payload.message === 'move') {
+        displayMarkersOnMap()
+        this.activateOrNotBtn(['btn-add', 'btn-trace', 'btn-target'])
       } else if (payload.message === 'add') {
+        displayMarkersOnMap()
+        this.activateOrNotBtn(['btn-add', 'btn-trace', 'btn-target'])
         // add a point to the line or polygon
         // change the cursor
         document.getElementById('map').style.cursor = 'crosshair'
-        this.activateOrNotBtn(['btn-add', 'btn-trace', 'btn-target'])
         // remove all editMark
         this.editMark.forEach((elt) => elt.removeFrom(this.map))
         this.map.on('click', (e) => {
@@ -204,11 +245,9 @@ export default {
           this.map.off('click')
           this.refreshMap()
         })
-      } else if (payload.message === 'move') {
-        this.activateOrNotBtn(['btn-add', 'btn-trace', 'btn-target'])
       }
-      this.showModalMarker = false
       this.showEditLocation = false
+      this.editMenu = !this.editMenu
     },
     cancelMove() {
       this.refreshMap()
@@ -282,27 +321,6 @@ export default {
       const onEachFeature = async (feature, layer) => {
         const createLayer = () => {
           return new Promise((resolve, reject) => {
-            const editMarker = (e) => {
-              this.oldMark = this.markers.find(
-                (elt) =>
-                  elt.category === e.target.feature.properties.category &&
-                  elt.icon === e.target.feature.icon.type &&
-                  elt.color === e.target.feature.icon.color &&
-                  elt.subCategory === e.target.feature.properties.subCategory
-              )
-              if (e.target.feature.properties.subCategory.length > 0) {
-                // if there is subcat
-                this.rulesEditSub = [
-                  (v) => v.length > 1 || 'minimum 2 characters',
-                ]
-              } else {
-                this.rulesEditSub = [true]
-              }
-              this.editMarker = structuredClone(this.oldMark)
-
-              this.showEditMark = !this.showEditMark
-            }
-
             const showPopupMarker = (e) => {
               var layer = e.target
               layer.openPopup()
@@ -314,41 +332,37 @@ export default {
             }
 
             const editLocation = (e) => {
+              // EDIT LOCATION
               this.editItem = structuredClone({ ...e.target.feature })
-              this.showEditLocation = !this.showEditLocation
-              let array
               // if it's a point or a polygon, store array of coordinates differently
-              e.target.feature.geometry.type === 'Point'
-                ? (array = [
-                    structuredClone(e.target.feature.geometry.coordinates),
+              this.editItem.geometry.type === 'Point'
+                ? (this.pointsOfLocation.coordinates = [
+                    structuredClone(this.editItem.geometry.coordinates),
                   ])
-                : (array = structuredClone(
-                    e.target.feature.geometry.coordinates[0]
+                : (this.pointsOfLocation.coordinates = structuredClone(
+                    this.editItem.geometry.coordinates[0]
                   ))
               // get the id of the geojson to change
-              const id = e.target.feature.properties.id
-              this.editMark = []
+              this.pointsOfLocation.id = this.editItem.properties.id
 
-              array.forEach((element, i) => {
-                this.editMark.push(
-                  L.marker(element.reverse(), {
-                    icon: L.divIcon({
-                      html: `<i aria-hidden="true" class="v-icon notranslate mdi mdi-arrow-expand-all theme--dark icon__layer--update--size" style="font-size: 20px; color:black;"></i>`,
-                    }),
-                    draggable: true,
-                  })
-                )
-                this.editMark[i].addTo(this.map)
-                this.editMark[i].on('dragend', (el) => {
-                  let data = {
-                    id: id,
-                    coordinates: [el.target._latlng.lng, el.target._latlng.lat],
-                    index: i,
-                  }
-                  this.$store.dispatch('updateMarkCoordinates', data)
-                  this.refreshMap()
-                })
-              })
+              // EDIT MARKER
+              this.oldMark = this.markers.find(
+                (elt) =>
+                  elt.category === this.editItem.properties.category &&
+                  elt.icon === this.editItem.icon.type &&
+                  elt.color === this.editItem.icon.color &&
+                  elt.subCategory === this.editItem.properties.subCategory
+              )
+              if (this.editItem.properties.subCategory.length > 0) {
+                this.rulesEditSub = [
+                  (v) => v.length > 1 || 'minimum 2 characters',
+                ]
+              } else {
+                this.rulesEditSub = [true]
+              }
+              this.editMarker = structuredClone(this.oldMark)
+
+              this.editMenu = !this.editMenu
             }
             // pour faire apparaitre le popup du marker si popupContent est defini
             if (feature.properties && feature.properties.popupContent) {
@@ -357,7 +371,6 @@ export default {
             layer.on({
               mouseover: showPopupMarker,
               mouseout: hidePopupMarker,
-              contextmenu: editMarker,
               click: editLocation,
             })
             resolve(true)
