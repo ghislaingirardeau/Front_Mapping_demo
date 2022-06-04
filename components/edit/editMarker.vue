@@ -98,7 +98,7 @@ export default {
       dialog: false,
       iconsSuggest: [],
       valid: true,
-      rulesEditCat: [(v) => v.length > 1 || 'minimum 2 characters'],
+      /* rulesEditCat: [(v) => v.length > 1 || 'minimum 2 characters'], */
     }
   },
   props: {
@@ -109,6 +109,15 @@ export default {
   },
   computed: {
     ...mapState(['markers', 'GeoJsonDatas', 'iconsList']),
+    rulesEditCat() {
+      let catExist = Object.keys(this.GeoJsonDatas).find(e => e === this.editItem.category)
+      // if cat new is different cat old
+      if (catExist && this.editItem.category != this.oldItem.category) {
+        return [false || 'Category already exist']
+      } else {
+        return [(v) => v.length > 1 || 'minimum 2 characters']
+      }
+    },
     checkIcon() {
       let control = this.iconsList.find(
         (element) => element === this.editItem.icon
