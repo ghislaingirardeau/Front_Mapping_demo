@@ -13,7 +13,7 @@
     </v-text-field>
     <v-text-field
       v-model="editItem.icon"
-      v-if="oldItem.icon && !oldItem.subCategory"
+      v-if="oldItem.icon"
       label="Icon name"
       hint="Type the first letter to see the icon's list"
       persistent-hint
@@ -28,21 +28,21 @@
       class="ml-3"
       :color="editItem.color"
       large
-      v-if="oldItem.icon && !oldItem.subCategory"
+      v-if="oldItem.icon"
     >
       mdi-{{ editItem.icon }}
     </v-icon>
 
     <v-dialog v-model="dialog" fullscreen hide-overlay>
       <template v-slot:activator="{ on, attrs }">
-        <span v-show="oldItem.icon.length > 0 && !oldItem.subCategory"
+        <span v-show="oldItem.icon.length > 0"
           >{{ iconSuggestList.length }} icons found</span
         >
         <v-icon
           color="primary"
           v-bind="attrs"
           v-on="on"
-          v-show="oldItem.icon.length > 0 && !oldItem.subCategory"
+          v-show="oldItem.icon.length > 0"
           class="mr-3 iconAddColor"
           size="24px"
           >mdi-eye-settings-outline</v-icon

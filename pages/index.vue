@@ -360,7 +360,6 @@ export default {
               } else {
                 this.rulesEditSub = [true]
               }
-              console.log(this.oldMark);
               this.editMarker = structuredClone(this.oldMark)
 
               this.editMenu = !this.editMenu

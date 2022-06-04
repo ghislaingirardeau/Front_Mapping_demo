@@ -95,7 +95,6 @@ export default {
       this.showContent = !this.showContent
     },
     async removeIcon(e) {
-      console.log(e)
       let confirm = window.confirm(`Remove the item ${e.category} ?`)
       if (confirm) {
         let dataStore = {
@@ -110,7 +109,6 @@ export default {
     },
 
     openEditor(e) {
-      console.log(e)
       if (e.subCategory.length > 0) {
         // if there is subcat
         this.rulesEditSub = [(v) => v.length > 1 || 'minimum 2 characters']

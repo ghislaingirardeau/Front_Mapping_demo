@@ -115,15 +115,14 @@ export default {
       this.showModal = !this.showModal
     },
     async removeDB(e) {
-      console.log(e);
-      /* let confirm = window.confirm(`Remove the item ${e.category} ?`)
+      let confirm = window.confirm(`Remove the item ${e.category} ?`)
       if (confirm) {
         let dataStore = {
           old: { id: e.id },
           new: false,
         }
         let res = await this.$store.dispatch('updateMarker', dataStore)
-      } */
+      }
     },
   },
 }
