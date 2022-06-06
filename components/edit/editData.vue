@@ -16,26 +16,36 @@
       </span>
     </v-form>
     <v-spacer></v-spacer>
-    <v-btn outlined color="primary" @click="updateItem(true)"> Save </v-btn>
-    <v-btn
-      outlined
-      v-if="editItem.geometry.type"
-      color="secondary"
-      @click="moveItem"
-    >
-      Move
-    </v-btn>
-    <v-btn
-      outlined
-      v-if="editItem.geometry.type && editItem.geometry.type != 'Point'"
-      color="secondary"
-      @click="addItem"
-    >
-      add
-    </v-btn>
-    <v-btn outlined color="rgb(243, 129, 129)" @click="updateItem(false)">
-      Remove
-    </v-btn>
+    <v-row justify="space-between" class="text-center">
+      <v-col cols="3">
+        <v-btn outlined fab color="primary" @click="updateItem(true)">
+          <v-icon>mdi-content-save-check-outline </v-icon>
+        </v-btn>
+      </v-col>
+      <v-col cols="3" v-if="editItem.geometry.type">
+        <v-btn outlined fab color="secondary" @click="moveItem">
+          <v-icon>mdi-arrow-all </v-icon>
+        </v-btn>
+      </v-col>
+      <v-col
+        cols="3"
+        v-if="editItem.geometry.type && editItem.geometry.type != 'Point'"
+      >
+        <v-btn outlined fab color="secondary" @click="addItem">
+          <v-icon>mdi-map-marker-plus-outline </v-icon>
+        </v-btn>
+      </v-col>
+      <v-col cols="3">
+        <v-btn
+          outlined
+          fab
+          color="rgb(243, 129, 129)"
+          @click="updateItem(false)"
+        >
+          <v-icon>mdi-delete-forever-outline </v-icon>
+        </v-btn>
+      </v-col>
+    </v-row>
   </div>
 </template>
 
