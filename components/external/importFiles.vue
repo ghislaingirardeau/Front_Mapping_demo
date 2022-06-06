@@ -193,7 +193,7 @@ export default {
             },
             icon: {
               type: this.newMarker.find(e => e.category === element.category).icon,
-              color: this.newMarker.find(e => e.category === element.category).color,
+              color: this.newMarker.find(e => e.category === element.category && e.subCategory === element.subCategory).color,
             },
           }
           layer.push(newGeoJson)
@@ -245,7 +245,6 @@ export default {
               t.subCategory === value.subCategory
           )
       )
-      console.log(checkIfMarkExist);
       this.newMarker = checkIfMarkExist.map(
         ({ id, type, category, subCategory, icon, color }) => ({
           id: `IM${id.slice(2)}`,
