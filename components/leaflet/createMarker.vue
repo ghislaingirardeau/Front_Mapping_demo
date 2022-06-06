@@ -119,29 +119,31 @@
                 </v-form>
                 <span v-if="subMessage" class="subMessage">{{subMessage}}</span>
               </v-col>
-              <v-row align="center" v-if="newIcon.subCategory.length > 0 && newIcon.subCategory[0].length > 1">
-                <span>My sub categories:</span>
-                <v-col
-                  v-for="(item, l) in newIcon.subCategory"
-                  :key="l"
-                  cols="4"
-                  class="text-center"
-                >
-                  <v-icon color="white" size="16px">
-                    mdi-{{
-                      newIcon.icon.length > 0 ? newIcon.icon : 'vector-polyline'
-                    }}
-                  </v-icon>
-                  <span>{{
-                    newIcon.subCategory[l]
-                      ? newIcon.subCategory[l]
-                      : newIcon.category
-                  }}</span>
-                  <v-icon color="primary" size="22px" @click="removeSubCategory(l)">
-                    mdi-delete-forever
-                  </v-icon>
-                </v-col>
-              </v-row>
+                <v-row align="center" no-gutters justify="space-around" v-if="newIcon.subCategory.length > 0 && newIcon.subCategory[0].length > 1">
+                  <v-col cols="11" class="pa-3">
+                    My sub categories:
+                  </v-col>
+                  <v-col
+                    v-for="(item, l) in newIcon.subCategory"
+                    :key="l"
+                    cols="4"
+                    class="text-center pa-2"
+                  >
+                    <v-icon color="white" size="16px">
+                      mdi-{{
+                        newIcon.icon.length > 0 ? newIcon.icon : 'vector-polyline'
+                      }}
+                    </v-icon>
+                    <span>{{
+                      newIcon.subCategory[l]
+                        ? newIcon.subCategory[l]
+                        : newIcon.category
+                    }}</span>
+                    <v-icon color="primary" size="22px" @click="removeSubCategory(l)">
+                      mdi-delete-forever
+                    </v-icon>
+                  </v-col>
+                </v-row>
               
 
               <v-col cols="11">
