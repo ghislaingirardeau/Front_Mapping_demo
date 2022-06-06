@@ -4,6 +4,7 @@
       v-model="showModal"
       inset
       persistent
+      :scrollable="true"
     >
       <v-card class="modal__content">
         <v-card-title>

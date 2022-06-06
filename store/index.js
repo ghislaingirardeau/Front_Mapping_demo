@@ -257,10 +257,11 @@ export const mutations = {
             //MARKERS
             state.markers.splice(update.index, 1, update.new)
             // IF IT'S A SUB CAT, CHECK THE OTHER MARKERS
-            let checkOtherMark = state.markers.filter(e => e.category === update.new.category && e.icon === update.old.icon)
+            let checkOtherMark = state.markers.filter(e => e.category === update.old.category || e.icon === update.old.icon)
             if (checkOtherMark.length > 0) {
                 checkOtherMark.forEach(e => {
                     e.icon = update.new.icon
+                    e.category = update.new.category
                 })
             }
             
@@ -278,12 +279,14 @@ export const mutations = {
                 geoJsonCategorie[element].properties.category = update.new.category
             });
             // IF IT'S A SUB CAT, CHECK THE OTHER DATAS TO CHANGE
-            let checkOtherData = geoJsonCategorie.filter(e => e.properties.category === update.new.category && e.icon.type === update.old.icon)
+            let checkOtherData = geoJsonCategorie.filter(e => e.properties.category === update.old.category || e.icon.type === update.old.icon)
             if (checkOtherData.length > 0) {
                 checkOtherData.forEach(e => {
                     e.icon.type = update.new.icon
+                    e.properties.category = update.new.category
                 })
             }
+            // TEST CATEGORY NAME AND ICON CHANGE
         }
         setStorage(state.markers, state.GeoJsonDatas)
     },

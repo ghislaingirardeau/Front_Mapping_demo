@@ -415,7 +415,7 @@ export default {
         },
         style: (feature) => {
           // DEFINE SYTLE OF POLYGONS AND LINE
-          return { color: feature.icon.color }
+          return { color: feature.icon.color, weight: 4 }
         },
       })
 

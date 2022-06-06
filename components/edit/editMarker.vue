@@ -1,12 +1,7 @@
 <template>
   <v-form ref="form" v-model="valid" lazy-validation>
-    <p v-if="oldItem.subCategory" class="subCategory__message">
-      This marker is a part of subCategory. You can only change the subcategory
-      name & color !
-    </p>
     <v-text-field
       v-model="editItem.category"
-      v-if="!oldItem.subCategory"
       label="Category name"
       :rules="rulesEditCat"
     >
@@ -177,7 +172,4 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.subCategory__message {
-  color: $color-erreur;
-}
 </style>
