@@ -38,8 +38,8 @@ export default {
   },
   methods: {
     saveChanges() {
-      console.log(this.formEdit)
       this.$store.dispatch('updateUser', this.formEdit)
+      this.refreshMap()
     },
   },
 }
