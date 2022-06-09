@@ -15,7 +15,13 @@
         {{ modalDatas.modalTitle ? modalDatas.modalTitle : '' }}
       </template>
       <template v-slot:content>
-        <legendModal v-if="modalDatas.showLegend" :markers="markers" />
+        <legendModal
+          v-if="modalDatas.showLegend"
+          :markers="markers"
+          :map="map"
+          :measureActive="measureActive"
+          @send-measure="measureActivate"
+        />
         <dataGeoJson
           v-if="showInputGeoDetail"
           @send-data="getData"
@@ -23,8 +29,6 @@
         />
         <optionsMenu
           v-if="modalDatas.showSetting"
-          :map="map"
-          @send-measure="measureActivate"
         />
         <printOptions v-if="showPrintOption" @send-modal="printResponse" />
         <p v-if="modalDatas.modalMessage">{{ modalDatas.modalMessage }}</p>
@@ -33,10 +37,8 @@
 
     <!-- MODAL EDIT POSITION -->
     <edit-menu :showModal="editMenu" @send-modal="modalEdit">
-      <template v-slot:title> 
-        <span>
-          Edit my data
-        </span>  
+      <template v-slot:title>
+        <span> Edit my data </span>
       </template>
       <template v-slot:content>
         <edit-data
@@ -50,9 +52,17 @@
           :editItem="editMarker"
           :oldItem="oldMark"
         ></edit-marker>
-        <div class="d-flex justify-space-around align-center" v-if="!showEditMark && !showEditLocation">
-          <v-btn outlined color="primary" @click="showEditMark = true">Marker</v-btn> <span>Or</span>
-          <v-btn outlined color="primary" @click="showEditLocation = true">Location</v-btn>
+        <div
+          class="d-flex justify-space-around align-center"
+          v-if="!showEditMark && !showEditLocation"
+        >
+          <v-btn outlined color="primary" @click="showEditMark = true"
+            >Marker</v-btn
+          >
+          <span>Or</span>
+          <v-btn outlined color="primary" @click="showEditLocation = true"
+            >Location</v-btn
+          >
         </div>
       </template>
     </edit-menu>
@@ -184,9 +194,9 @@ export default {
   methods: {
     measureActivate(payload) {
       this.measureActive = payload.measure
-      Object.keys(this.modalDatas).forEach((element) => {
+      /* Object.keys(this.modalDatas).forEach((element) => {
         this.modalDatas[element] = false
-      })
+      }) */
     },
     closeTuto(payload) {
       this.showTutorial = payload.message

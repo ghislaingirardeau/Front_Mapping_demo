@@ -59,6 +59,11 @@
         label="Size of Icons :"
         @change="newSize"
       ></v-slider>
+      <v-checkbox
+        @change="showMeasure"
+        v-model="measureCheckBox"
+        :label="`: Show measure`"
+    ></v-checkbox>
     </v-col>
   </v-row>
   <v-row v-else>
@@ -77,13 +82,15 @@ export default {
     rulesEditSub: [(v) => v.length > 1 || 'minimum 2 characters'],
     editItem: {},
     oldItem: {},
+    measureCheckBox: false
   }),
   props: {
     showLegend: Boolean,
     showPrintMap: Boolean,
     markers: Array,
+    map: Object,
+    measureActive: Boolean
   },
-  computed: {},
   methods: {
     newSize() {
       let elt = document.getElementsByClassName('icon__layer--update--size')
@@ -120,8 +127,28 @@ export default {
 
       this.showModal = !this.showModal
     },
+    showMeasure() {
+      this.map.eachLayer((layer) => {
+        if (
+          layer instanceof L.Polygon ||
+          (layer instanceof L.Path && layer.feature)
+        ) {
+          // layer feature not undefined ex: L.circleMarker is a layer = show an error. but layer L.circleMarker doesn't have a feature
+          if (layer._measurementLayer) {
+            layer.hideMeasurements()
+          } else {
+            layer.showMeasurements()
+          }
+        }
+        this.$emit('send-measure', {
+          measure: !this.measureActive,
+        })
+      })
+    },
   },
-  mounted() {},
+  mounted() {
+    this.measureCheckBox = this.measureActive
+  },
 }
 </script>
 

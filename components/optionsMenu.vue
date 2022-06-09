@@ -69,9 +69,6 @@ export default {
       showMenu: true,
     }
   },
-  props: {
-    map: Object,
-  },
   computed: {
     ...mapState(['userAuth', 'markers']),
     settings() {
@@ -118,15 +115,10 @@ export default {
           icon: 'mdi-eraser',
           title: 'Reset Options',
         },
-        {
-          id: '4',
-          icon: 'mdi-ruler',
-          title: 'Show measure',
-        },
       ]
       this.userAuth
         ? menu.push({
-            id: '5',
+            id: '4',
             icon: 'mdi-logout',
             title: 'Logout',
           })
@@ -172,51 +164,12 @@ export default {
           this.showMenu = false
           break
         case '4':
-          this.showMeasure()
-          break
-        case '5':
           this.signOut()
           break
       }
     },
-    showMeasure() {
-      this.map.eachLayer((layer) => {
-        if (
-          layer instanceof L.Polygon ||
-          (layer instanceof L.Path && layer.feature)
-        ) {
-          // layer feature not undefined ex: L.circleMarker is a layer = show an error. but layer L.circleMarker doesn't have a feature
-          if (layer._measurementLayer) {
-            layer.hideMeasurements()
-            this.actions[3].title = 'Show measure'
-            this.$emit('send-measure', {
-              measure: false,
-            })
-          } else {
-            layer.showMeasurements()
-            this.actions[3].title = 'Hide measure'
-            this.$emit('send-measure', {
-              measure: true,
-            })
-          }
-        }
-      })
-    },
   },
   mounted() {
-    this.map.eachLayer((layer) => {
-      if (
-        layer instanceof L.Polygon ||
-        (layer instanceof L.Path && layer.feature)
-      ) {
-        // layer feature not undefined ex: L.circleMarker is a layer = show an error. but layer L.circleMarker doesn't have a feature
-        if (layer._measurementLayer) {
-          this.actions[3].title = 'Hide measure'
-        } else {
-          this.actions[3].title = 'Show measure'
-        }
-      }
-    })
   },
 }
 </script>
