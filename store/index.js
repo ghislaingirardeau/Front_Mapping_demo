@@ -235,6 +235,7 @@ export const mutations = {
             let keys = Object.keys(data.GeoJsonDatas)
             keys.forEach(element => {
                 if (state.GeoJsonDatas.hasOwnProperty(element)) {
+                    // if already exist
                     state.GeoJsonDatas[element].push(...data.GeoJsonDatas[element])
                 } else {
                     state.GeoJsonDatas[element] = data.GeoJsonDatas[element]

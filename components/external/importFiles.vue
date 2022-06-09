@@ -81,6 +81,7 @@ export default {
             0,
             element.properties.name.search(regex)
           )
+          let getMarker = this.markers.find((e) => e.category === category)
 
           convert = {
             type: 'Feature',
@@ -94,8 +95,8 @@ export default {
             },
             geometry: element.geometry,
             icon: {
-              type: element.geometry.type === 'Point' ? 'map-marker' : '',
-              color: '',
+              type: element.geometry.type === 'Point' ? (getMarker ? getMarker.icon : 'map-marker') : '',
+              color: getMarker ? getMarker.color : '',
             },
           }
           if (this.objetData[category]) {
@@ -103,11 +104,8 @@ export default {
             convert.icon.color = this.objetData[category][0].icon.color
             this.objetData[category].push(convert)
           } else {
-            let getMarker = this.markers.find((e) => e.category === category)
-            if (getMarker) { // if this category of marker exist already
-              convert.icon.color = getMarker.color
-              convert.icon.type = getMarker.category
-            } else {
+            
+            if (!getMarker) { // if this category of marker exist already
               let randomColor = Math.floor(Math.random() * 16777215).toString(
                 16
               )
