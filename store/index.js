@@ -272,21 +272,22 @@ export const mutations = {
                 delete state.GeoJsonDatas[update.old.category]
             }
             let geoJsonCategorie = state.GeoJsonDatas[update.new.category]
-            update.geosIndex.forEach(element => {
-                geoJsonCategorie[element].icon.color = update.new.color
-                geoJsonCategorie[element].icon.type = update.new.icon
-                geoJsonCategorie[element].properties.subCategory = update.new.subCategory
-                geoJsonCategorie[element].properties.category = update.new.category
-            });
-            // IF IT'S A SUB CAT, CHECK THE OTHER DATAS TO CHANGE
-            let checkOtherData = geoJsonCategorie.filter(e => e.properties.category === update.old.category || e.icon.type === update.old.icon)
-            if (checkOtherData.length > 0) {
-                checkOtherData.forEach(e => {
-                    e.icon.type = update.new.icon
-                    e.properties.category = update.new.category
-                })
+            if (geoJsonCategorie) { // if i have not an empty geojson
+                update.geosIndex.forEach(element => {
+                    geoJsonCategorie[element].icon.color = update.new.color
+                    geoJsonCategorie[element].icon.type = update.new.icon
+                    geoJsonCategorie[element].properties.subCategory = update.new.subCategory
+                    geoJsonCategorie[element].properties.category = update.new.category
+                });
+                // IF IT'S A SUB CAT, CHECK THE OTHER DATAS TO CHANGE
+                let checkOtherData = geoJsonCategorie.filter(e => e.properties.category === update.old.category || e.icon.type === update.old.icon)
+                if (checkOtherData.length > 0) {
+                    checkOtherData.forEach(e => {
+                        e.icon.type = update.new.icon
+                        e.properties.category = update.new.category
+                    })
+                }
             }
-            // TEST CATEGORY NAME AND ICON CHANGE
         }
         setStorage(state.markers, state.GeoJsonDatas)
     },
