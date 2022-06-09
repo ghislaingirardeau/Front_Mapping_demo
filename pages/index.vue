@@ -7,33 +7,62 @@
       @send-marker="modalEdit"
     />
     <!-- MODAL SETTING -->
-    <modalCustom :showModal="modalDatas.showModal" @send-modal="modalResponse">
+    <modalCustom :showModal="modalShow.legend" @send-modal="modalResponse">
       <template v-slot:title>
-        <span v-if="userAuth" class="mr-3"
-          >Welcome {{ userAuth.displayName }} /
-        </span>
-        {{ modalDatas.modalTitle ? modalDatas.modalTitle : '' }}
+        Legend & Options
       </template>
       <template v-slot:content>
         <legendModal
-          v-if="modalDatas.showLegend"
           :markers="markers"
           :map="map"
           :measureActive="measureActive"
           @send-measure="measureActivate"
         />
+      </template>
+    </modalCustom>
+
+    <modalCustom :showModal="modalShow.addLocation" @send-modal="modalResponse">
+      <template v-slot:title>
+        Add a location
+      </template>
+      <template v-slot:content>
         <dataGeoJson
-          v-if="showInputGeoDetail"
           @send-data="getData"
           :coordinates="coordinates"
         />
-        <optionsMenu
-          v-if="modalDatas.showSetting"
-        />
-        <printOptions v-if="showPrintOption" @send-modal="printResponse" />
-        <p v-if="modalDatas.modalMessage">{{ modalDatas.modalMessage }}</p>
       </template>
     </modalCustom>
+
+    <modalCustom :showModal="modalShow.setting" @send-modal="modalResponse">
+      <template v-slot:title>
+        Settings & Menu
+      </template>
+      <template v-slot:content>
+        <optionsMenu
+          :key="modalShow.setting"
+        />
+      </template>
+    </modalCustom>
+
+    <modalCustom :showModal="modalShow.print" @send-modal="modalResponse">
+      <template v-slot:title>
+        Print or save as PDF
+      </template>
+      <template v-slot:content>
+        <printOptions @send-modal="printResponse" />
+      </template>
+    </modalCustom>
+
+    <modalCustom :showModal="modalShow.generic" @send-modal="modalResponse">
+      <template v-slot:title>
+        {{ modalShow.modalTitle }}
+      </template>
+      <template v-slot:content>
+        <p>{{ modalShow.modalMessage }}</p>
+      </template>
+    </modalCustom>
+
+
 
     <!-- MODAL EDIT POSITION -->
     <edit-menu :showModal="editMenu" @send-modal="modalEdit">
@@ -81,8 +110,8 @@
       v-if="
         !userAuth &&
         !hubPosition &&
-        !showPrintOption &&
-        !modalDatas.showModal &&
+        !modalShow.print &&
+        !modalShow.generic &&
         !showModalMarker &&
         editMark.length === 0
       "
@@ -116,7 +145,7 @@
       <legend-modal
         class="print__block--legend"
         v-if="showPrintMap"
-        :showPrintMap="showPrintOption"
+        :showPrintMap="modalShow.print"
         :markers="markers"
       />
     </div>
@@ -132,7 +161,6 @@ export default {
     map: Object,
     coordinates: [],
     myLocationMark: undefined,
-    showInputGeoDetail: false,
     watchMe: undefined,
     accuracyLocation: undefined,
     hubPosition: undefined,
@@ -140,10 +168,12 @@ export default {
     // tutorial
     showTutorial: false,
     // modal
-    modalDatas: {
-      showModal: false,
-      showLegend: false,
-      showSetting: false,
+    modalShow: {
+      generic: false,
+      addLocation: false,
+      legend: false,
+      print: false,
+      setting: false,
       modalTitle: false,
       modalMessage: false,
     },
@@ -151,7 +181,6 @@ export default {
     //modal Markers
     showModalMarker: false,
     // print
-    showPrintOption: false,
     showPrintMap: false,
     titleDocPrint: undefined,
     printMap: undefined,
@@ -194,8 +223,8 @@ export default {
   methods: {
     measureActivate(payload) {
       this.measureActive = payload.measure
-      /* Object.keys(this.modalDatas).forEach((element) => {
-        this.modalDatas[element] = false
+      /* Object.keys(this.modalShow).forEach((element) => {
+        this.modalShow[element] = false
       }) */
     },
     closeTuto(payload) {
@@ -263,11 +292,9 @@ export default {
       this.refreshMap()
     },
     modalResponse(payload) {
-      Object.keys(this.modalDatas).forEach((element) => {
-        this.modalDatas[element] = payload.message
+      Object.keys(this.modalShow).forEach((element) => {
+        this.modalShow[element] = payload.message
       })
-      this.showInputGeoDetail = payload.message
-      this.showPrintOption = false
       if (this.showPrintMap) {
         this.showPrintMap = false
         this.printMap.remove()
@@ -275,14 +302,10 @@ export default {
       }
     },
     printResponse(payload) {
-      this.modalDatas.modalTitle = false
-      this.modalDatas.showModal = payload.message
       this.titleDocPrint = payload.titleDocPrint
     },
     getData(payload) {
-      this.showInputGeoDetail = payload.show
-      this.modalDatas.showModal = payload.show
-      this.modalDatas.modalTitle = false
+      this.modalShow.addLocation = payload.show
 
       if (payload.createGeoJon) {
         // si je valide la creation
@@ -436,9 +459,7 @@ export default {
       if (this.watchMe) {
         navigator.geolocation.clearWatch(this.watchMe)
         this.watchMe = undefined
-        this.showInputGeoDetail = true
-        this.modalDatas.showModal = true
-        this.modalDatas.modalTitle = 'Add a symbol'
+        this.modalShow.addLocation = true
         this.hubPosition = false
       } else {
         // track my location, update the coordinates
@@ -470,8 +491,8 @@ export default {
         }
 
         let error = () => {
-          this.modalDatas.modalTitle = 'Unable to retrieve your location'
-          this.modalDatas.showModal = true
+          this.modalShow.modalTitle = 'Unable to retrieve your location'
+          this.modalShow.generic = true
         }
 
         if (navigator.geolocation) {
@@ -481,9 +502,9 @@ export default {
             maximumAge: 0,
           })
         } else {
-          this.modalDatas.modalTitle =
+          this.modalShow.modalTitle =
             'Geolocation is not supported by your browser'
-          this.modalDatas.showModal = true
+          this.modalShow.generic = true
         }
       }
     },
@@ -514,9 +535,7 @@ export default {
 
       if (e) {
         // if click on save marker true
-        this.showInputGeoDetail = true
-        this.modalDatas.showModal = true
-        this.modalDatas.modalTitle = 'Add a symbol'
+        this.modalShow.addLocation = true
       } else {
         // if false, reset all
         this.coordinates = []
@@ -725,30 +744,23 @@ export default {
             this.showTutorial = !this.showTutorial
           } else if (data.target.getAttribute('id') === 'btn-menu') {
             /* this.saveTemporaly() */
-            this.modalDatas.showModal = true
-            this.modalDatas.modalTitle = 'Settings and Options'
-            this.modalDatas.showSetting = true
+            this.modalShow.setting = true
           } else if (data.target.getAttribute('id') === 'btn-legend') {
-            this.modalDatas.showLegend = !this.modalDatas.showLegend
-            this.modalDatas.showModal = !this.modalDatas.showModal
-            this.modalDatas.modalTitle = 'Map Legend'
+            this.modalShow.legend = !this.modalShow.legend
           } else if (data.target.getAttribute('id') === 'btn-save') {
             this.saveTemporaly()
-            this.modalDatas.showModal = !this.modalDatas.showModal
-            this.modalDatas.modalTitle = this.userAuth
+            this.modalShow.generic = !this.modalShow.generic
+            this.modalShow.modalTitle = this.userAuth
               ? 'Data save'
               : 'Data save TEMPORALY'
-            this.modalDatas.modalMessage = this.userAuth
+            this.modalShow.modalMessage = this.userAuth
               ? 'Your data is saved in the database.'
               : 'For a safely save, consider to export your datas to CSV or Register for free'
           } else if (data.target.getAttribute('id') === 'btn-printer') {
             let openPrintOptions = () => {
               return new Promise((resolve, reject) => {
-                this.showPrintOption = !this.showPrintOption // modal for options ex: add a title
-                this.modalDatas.showModal = !this.modalDatas.showModal // open common modal
+                this.modalShow.print = !this.modalShow.print // modal for options ex: add a title
                 this.showPrintMap = !this.showPrintMap // build map print container
-                this.modalDatas.modalTitle = 'Print option'
-                console.log(this.printMap)
                 resolve(true)
               })
             }
@@ -768,7 +780,7 @@ export default {
               print.addTo(this.printMap)
               let mark = L.marker(actualMapCenter).addTo(this.printMap)
               window.onafterprint = (event) => {
-                this.showPrintOption = false
+                this.modalShow.print = false
                 this.showPrintMap = false
                 mark.removeFrom(this.printMap) // remove the marker for the next print
                 this.printMap.remove() // debug error, remove the map built
@@ -783,8 +795,8 @@ export default {
 
     const checkIfMarkerEmpty = (doThis) => {
       if (this.markers.length === 0) {
-        this.modalDatas.showModal = !this.modalDatas.showModal
-        this.modalDatas.modalTitle = 'Create a marker first !'
+        this.modalShow.generic = !this.modalShow.generic
+        this.modalShow.modalTitle = 'Create a marker first !'
       } else {
         doThis()
       }
