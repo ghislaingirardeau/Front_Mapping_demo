@@ -58,11 +58,13 @@
         step="4"
         label="Size of Icons :"
         @change="newSize"
+        hide-details
       ></v-slider>
       <v-checkbox
         @change="showMeasure"
         v-model="measureCheckBox"
         :label="`: Show measure`"
+        hide-details
     ></v-checkbox>
     </v-col>
   </v-row>
