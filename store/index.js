@@ -257,7 +257,7 @@ export const mutations = {
             //MARKERS
             state.markers.splice(update.index, 1, update.new)
             // IF IT'S A SUB CAT, CHECK THE OTHER MARKERS
-            let checkOtherMark = state.markers.filter(e => e.category === update.old.category || e.icon === update.old.icon)
+            let checkOtherMark = state.markers.filter(e => (e.category === update.old.category || e.icon === update.old.icon) && e.subCategory.length > 0)
             if (checkOtherMark.length > 0) {
                 checkOtherMark.forEach(e => {
                     e.icon = update.new.icon
