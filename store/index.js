@@ -268,7 +268,8 @@ export const mutations = {
             
             // GEOJSON
             // IF CATEGORY NAME CHANGE = COPY OLD NAME TO THE NEW KEY AND DELETE IT
-            if (update.new.category != update.old.category) {
+            // if geojson with old category exist = avoid to create a new one empty
+            if (state.GeoJsonDatas[update.old.category] && update.new.category != update.old.category) {
                 state.GeoJsonDatas[update.new.category] = state.GeoJsonDatas[update.old.category]
                 delete state.GeoJsonDatas[update.old.category]
             }
