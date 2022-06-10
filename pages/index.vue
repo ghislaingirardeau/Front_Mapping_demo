@@ -3,8 +3,8 @@
     <!-- MODAL CREATE MARKER -->
     <createMarker
       :markers="markers"
-      :showModal="showModalMarker"
-      @send-marker="modalEdit"
+      :showModal="modalShow.addMarker"
+      @send-marker="modalResponse"
     />
     <!-- MODAL SETTING -->
     <modalCustom :showModal="modalShow.legend" @send-modal="modalResponse">
@@ -63,34 +63,32 @@
       </template>
     </modalCustom>
 
-
-
     <!-- MODAL EDIT POSITION -->
-    <edit-menu :showModal="editMenu" @send-modal="modalEdit">
+    <edit-menu :showModal="editShow.menu" @send-modal="modalResponse">
       <template v-slot:title>
         <span> Edit my data </span>
       </template>
       <template v-slot:content>
         <edit-data
           :editItem="editItem"
-          v-if="showEditLocation"
+          v-if="editShow.location"
           @send-modal="modalEditLocation"
         />
         <edit-marker
-          v-if="showEditMark"
+          v-if="editShow.mark"
           :rulesEditSub="rulesEditSub"
           :editItem="editMarker"
           :oldItem="oldMark"
         ></edit-marker>
         <div
           class="d-flex justify-space-around align-center"
-          v-if="!showEditMark && !showEditLocation"
+          v-if="!editShow.mark && !editShow.location"
         >
-          <v-btn outlined color="primary" @click="showEditMark = true"
+          <v-btn outlined color="primary" @click="editShow.mark = true"
             >Marker</v-btn
           >
           <span>Or</span>
-          <v-btn outlined color="primary" @click="showEditLocation = true"
+          <v-btn outlined color="primary" @click="editShow.location = true"
             >Location</v-btn
           >
         </div>
@@ -113,7 +111,7 @@
         !hubPosition &&
         !modalShow.print &&
         !modalShow.generic &&
-        !showModalMarker &&
+        !modalShow.addMarker &&
         editMark.length === 0
       "
       :hubPosition="hubPosition"
@@ -137,6 +135,15 @@
 
     <!-- TITLE FOR PRINTING -->
     <span class="print__block--title">{{ titleDocPrint }}</span>
+
+    <div class="btn__actions">
+      <v-icon size="30px" :disabled="disableAction" color="rgb(33, 150, 243)" @click="showTutorial = true" class="pa-2">mdi-help-rhombus-outline</v-icon>
+      <v-icon size="30px" :disabled="disableAction" color="rgb(33, 150, 243)" @click="modalShow.setting = true" class="pa-2 btn--border">mdi-menu</v-icon>
+      <v-icon size="30px" :disabled="disableAction" color="rgb(33, 150, 243)" @click="modalShow.legend = !modalShow.legend" class="pa-2">mdi-map-legend</v-icon>
+      <v-icon size="30px" :disabled="disableAction" color="rgb(33, 150, 243)" @click="saveAction" class="pa-2">mdi-content-save</v-icon>
+      <v-icon size="30px" :disabled="disableAction" v-if="$vuetify.breakpoint.width > 990" color="rgb(33, 150, 243)" @click="printAction" class="pa-2">mdi-printer</v-icon>
+      <v-icon size="30px" :disabled="disableAction" color="rgb(33, 150, 243)" @click="modalShow.addMarker = !modalShow.addMarker" class="pa-2 btn--border">mdi-map-marker-plus</v-icon>
+    </div>
 
     <!-- MAP -->
     <div id="map" class="mt-5"></div>
@@ -168,10 +175,11 @@ export default {
     layerGeoJson: undefined,
     // tutorial
     showTutorial: false,
-    // modal
+    // modal modalShow.addMarker
     modalShow: {
       generic: false,
       addLocation: false,
+      addMarker: false,
       legend: false,
       print: false,
       setting: false,
@@ -179,10 +187,10 @@ export default {
       modalMessage: false,
     },
     measureActive: false,
-    //modal Markers
-    showModalMarker: false,
+    disableAction: false,
     // print
     showPrintMap: false,
+    printLayer: undefined,
     titleDocPrint: undefined,
     printMap: undefined,
     // hub display
@@ -193,12 +201,14 @@ export default {
     controlLayers: undefined,
     //test distance
     distance: [],
-    //edit Item
-    editMenu: false,
+    //edit Item editShow.mark
+    editShow: {
+      menu: false,
+      location: false,
+      mark: false
+    },
     editItem: {},
     editMark: [],
-    showEditLocation: false,
-    showEditMark: false,
     oldMark: {},
     editMarker: {},
     rulesEditSub: [(v) => v.length > 1 || 'minimum 2 characters'],
@@ -222,20 +232,52 @@ export default {
     }, */
   },
   methods: {
+    saveAction() {
+      this.saveDatas() //mixins
+      this.modalShow.generic = !this.modalShow.generic
+      this.modalShow.modalTitle = this.userAuth
+        ? 'Data save'
+        : 'Data save TEMPORALY'
+      this.modalShow.modalMessage = this.userAuth
+        ? 'Your data is saved in the database.'
+        : 'For a safely save, consider to export your datas to CSV or Register for free'
+    },
+    async printAction() {
+      let openPrintOptions = () => {
+        return new Promise((resolve, reject) => {
+          this.modalShow.print = !this.modalShow.print // modal for options ex: add a title
+          this.showPrintMap = !this.showPrintMap // build map print container
+          resolve(true)
+        })
+      }
+
+      // set the view dynamicly
+      let actualMapCenter = [
+        this.map.getCenter().lat,
+        this.map.getCenter().lng,
+      ]
+      let result = await openPrintOptions()
+      if (result) {
+        // mount the map after
+        this.printMap = await L.map('mapPrint').setView(
+          actualMapCenter,
+          6
+        )
+        this.printLayer.addTo(this.printMap)
+        let mark = L.marker(actualMapCenter).addTo(this.printMap)
+        window.onafterprint = (event) => {
+          this.modalShow.print = false
+          this.showPrintMap = false
+          mark.removeFrom(this.printMap) // remove the marker for the next print
+          this.printMap.remove() // debug error, remove the map built
+        }
+      }
+    },
     measureActivate(payload) {
       this.measureActive = payload.measure
-      /* Object.keys(this.modalShow).forEach((element) => {
-        this.modalShow[element] = false
-      }) */
     },
     closeTuto(payload) {
       this.showTutorial = payload.message
-    },
-    modalEdit(payload) {
-      this.editMenu = false
-      this.showEditMark = false
-      this.showEditLocation = false
-      this.showModalMarker = false
     },
     modalEditLocation(payload) {
       // build the marker on map only if click on move or add
@@ -265,10 +307,10 @@ export default {
       }
       if (payload.message === 'move') {
         displayMarkersOnMap()
-        this.activateOrNotBtn(['btn-add', 'btn-trace', 'btn-target'])
+        this.disableAction = !this.disableAction
       } else if (payload.message === 'add') {
         displayMarkersOnMap()
-        this.activateOrNotBtn(['btn-add', 'btn-trace', 'btn-target'])
+        this.disableAction = !this.disableAction
         // add a point to the line or polygon
         // change the cursor
         document.getElementById('map').style.cursor = 'crosshair'
@@ -286,8 +328,8 @@ export default {
           this.refreshMap()
         })
       }
-      this.showEditLocation = false
-      this.editMenu = !this.editMenu
+      this.editShow.location = false
+      this.editShow.menu = !this.editShow.menu
     },
     cancelMove() {
       this.refreshMap()
@@ -295,6 +337,9 @@ export default {
     modalResponse(payload) {
       Object.keys(this.modalShow).forEach((element) => {
         this.modalShow[element] = payload.message
+      })
+      Object.keys(this.editShow).forEach((element) => {
+        this.editShow[element] = payload.message
       })
       if (this.showPrintMap) {
         this.showPrintMap = false
@@ -305,6 +350,7 @@ export default {
     },
     printResponse(payload) {
       this.titleDocPrint = payload.titleDocPrint
+      this.modalShow.print = false
     },
     getData(payload) {
       this.modalShow.addLocation = payload.show
@@ -393,7 +439,7 @@ export default {
               }
               this.editMarker = structuredClone(this.oldMark)
 
-              this.editMenu = !this.editMenu
+              this.editShow.menu = !this.editShow.menu
             }
             // pour faire apparaitre le popup du marker si popupContent est defini
             if (feature.properties && feature.properties.popupContent) {
@@ -459,9 +505,10 @@ export default {
         this.watchMe = undefined
         this.modalShow.addLocation = true
         this.hubPosition = false
+        this.disableAction = !this.disableAction
       } else {
         // track my location, update the coordinates
-
+        this.disableAction = !this.disableAction
         let success = (position) => {
           this.hubPosition = true
           this.accuracyLocation = position.coords.accuracy
@@ -523,6 +570,7 @@ export default {
       addMarker()
     },
     saveTarget(e) {
+      this.disableAction = !this.disableAction
       const disabledDisplay = (id) => {
         let elt = document.getElementById(id)
         elt.style.display = 'none'
@@ -539,45 +587,6 @@ export default {
         this.coordinates = []
       }
       this.markerTarget.clearLayers()
-      this.activateOrNotBtn(['btn-add', 'btn-trace', 'btn-target'])
-    },
-    activateOrNotBtn(arrayId) {
-      let firstButton = document.getElementById(arrayId[0])
-      let actionsBtn = document.getElementsByClassName('btn-map--action')
-      let btnMarker = document.getElementById('btn-map-marker')
-      let attribut = firstButton.getAttribute('disabled')
-      let btn
-
-      const btnAttribut = (booleen, color = 'grey') => {
-        let typeColor = typeof color === 'string'
-        arrayId.forEach((btnId) => {
-          btn = document.getElementById(btnId)
-          attributMethod(btn, booleen)
-          btn.firstChild.style.color = typeColor ? color : color[0]
-        })
-        for (let btnAction of actionsBtn) {
-          attributMethod(btnAction, booleen)
-          btnAction.firstChild.style.color = typeColor ? color : color[1]
-        }
-        attributMethod(btnMarker, booleen)
-        btnMarker.firstChild.style.color = typeColor ? color : color[2]
-        btnMarker.style.border = `2px solid ${typeColor ? color : color[2]}`
-      }
-      const attributMethod = (a, booleen) => {
-        booleen
-          ? a.removeAttribute('disabled', '')
-          : a.setAttribute('disabled', '')
-      }
-
-      if (attribut != null) {
-        this.myLocationMark.removeFrom(this.map)
-        btnAttribut(true, ['white', 'rgb(33, 150, 243)', '#e6e20b'])
-      } else {
-        btnAttribut(false)
-      }
-    },
-    async saveTemporaly() {
-      this.saveDatas() //mixins
     },
   },
   mounted() {
@@ -592,7 +601,7 @@ export default {
       'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>'
 
     // pour switcher sur different layers
-    var outdoors = L.tileLayer(mapBoxUrl, {
+    let outdoors = L.tileLayer(mapBoxUrl, {
         id: mapboxOutdoors,
         tileSize: 512,
         zoomOffset: -1,
@@ -601,13 +610,6 @@ export default {
       }),
       streets = L.tileLayer(mapBoxUrl, {
         id: mapboxStreets,
-        tileSize: 512,
-        zoomOffset: -1,
-        attribution: mapboxAttribution,
-        accessToken: tokenMapbox,
-      }),
-      print = L.tileLayer(mapBoxUrl, {
-        id: mapboxOutdoors,
         tileSize: 512,
         zoomOffset: -1,
         attribution: mapboxAttribution,
@@ -624,8 +626,16 @@ export default {
         'https://tile.thunderforest.com/landscape/{z}/{x}/{y}.png?apikey=05002ac7d7034aec81f8963fa723e851'
       )
 
+    this.printLayer = L.tileLayer(mapBoxUrl, {
+      id: mapboxOutdoors,
+      tileSize: 512,
+      zoomOffset: -1,
+      attribution: mapboxAttribution,
+      accessToken: tokenMapbox,
+    })
+
     // bouton pour le switch
-    var baseMaps = {
+    let baseMaps = {
       Streets: streets,
       Outdoors: outdoors,
       Google: google,
@@ -713,84 +723,6 @@ export default {
         : e.classList.add('click')
     }
 
-    let actionsControl = L.control.custom({
-      position: 'topleft',
-      content:
-        '<button id="btn-tutorial" type="button" class="btn-map btn-map--action">' +
-        '<i aria-hidden="true" class="v-icon notranslate mdi mdi-help-circle theme--dark" style="color:rgb(33, 150, 243);"></i>' +
-        '</button>' +
-        '<button id="btn-menu" type="button" class="btn-map btn-map--action">' +
-        '<i aria-hidden="true" class="v-icon notranslate mdi mdi-menu theme--dark" style="color:rgb(33, 150, 243);"></i>' +
-        '</button>' +
-        '<button id="btn-legend" type="button" class="btn-map btn-map--action">' +
-        '<i aria-hidden="true" class="v-icon notranslate mdi mdi-map-legend theme--dark" style="color:rgb(33, 150, 243);"></i>' +
-        '</button>' +
-        '<button id="btn-printer" type="button" class="btn-map btn-map--action">' +
-        '<i aria-hidden="true" class="v-icon notranslate mdi mdi-printer theme--dark" style="color:rgb(33, 150, 243);"></i>' +
-        '</button>' +
-        '<button id="btn-save" type="button" class="btn-map btn-map--action">' +
-        '<i aria-hidden="true" class="v-icon notranslate mdi mdi-content-save theme--dark" style="color:rgb(33, 150, 243);"></i>' +
-        '</button>' +
-        '<button id="btn-map-marker" type="button" class="btn-map btn-map--marker">' +
-        '<i aria-hidden="true" class="v-icon notranslate mdi mdi-map-marker theme--dark" style="color:#e6e20b;"></i>' +
-        '</button>',
-      classes: 'btn-group-icon-map',
-      style: styleControl,
-      events: {
-        click: async (data) => {
-          if (data.target.getAttribute('id') === 'btn-tutorial') {
-            this.showTutorial = !this.showTutorial
-          } else if (data.target.getAttribute('id') === 'btn-menu') {
-            /* this.saveTemporaly() */
-            this.modalShow.setting = true
-          } else if (data.target.getAttribute('id') === 'btn-legend') {
-            this.modalShow.legend = !this.modalShow.legend
-          } else if (data.target.getAttribute('id') === 'btn-save') {
-            this.saveTemporaly()
-            this.modalShow.generic = !this.modalShow.generic
-            this.modalShow.modalTitle = this.userAuth
-              ? 'Data save'
-              : 'Data save TEMPORALY'
-            this.modalShow.modalMessage = this.userAuth
-              ? 'Your data is saved in the database.'
-              : 'For a safely save, consider to export your datas to CSV or Register for free'
-          } else if (data.target.getAttribute('id') === 'btn-printer') {
-            let openPrintOptions = () => {
-              return new Promise((resolve, reject) => {
-                this.modalShow.print = !this.modalShow.print // modal for options ex: add a title
-                this.showPrintMap = !this.showPrintMap // build map print container
-                resolve(true)
-              })
-            }
-
-            // set the view dynamicly
-            let actualMapCenter = [
-              this.map.getCenter().lat,
-              this.map.getCenter().lng,
-            ]
-            let result = await openPrintOptions()
-            if (result) {
-              // mount the map after
-              this.printMap = await L.map('mapPrint').setView(
-                actualMapCenter,
-                6
-              )
-              print.addTo(this.printMap)
-              let mark = L.marker(actualMapCenter).addTo(this.printMap)
-              window.onafterprint = (event) => {
-                this.modalShow.print = false
-                this.showPrintMap = false
-                mark.removeFrom(this.printMap) // remove the marker for the next print
-                this.printMap.remove() // debug error, remove the map built
-              }
-            }
-          } else if (data.target.getAttribute('id') === 'btn-map-marker') {
-            this.showModalMarker = !this.showModalMarker
-          }
-        },
-      },
-    })
-
     const checkIfMarkerEmpty = (doThis) => {
       if (this.markers.length === 0) {
         this.modalShow.generic = !this.modalShow.generic
@@ -819,9 +751,9 @@ export default {
         click: (data) => {
           // ADD MY POSTION
           if (data.target.getAttribute('id') === 'btn-add') {
+            
             const functionsLocate = () => {
               styleOnClick(data.target)
-              this.activateOrNotBtn(['btn-trace', 'btn-target'])
               this.coordinatesOnLocation(true) // display differente type of coordinates one array
             }
             checkIfMarkerEmpty(functionsLocate)
@@ -831,14 +763,13 @@ export default {
             const functionsTrack = () => {
               styleOnClick(data.target)
               this.coordinatesOnLocation(false) // display differente type of coordinates multiple array
-              this.activateOrNotBtn(['btn-add', 'btn-target'])
             }
             checkIfMarkerEmpty(functionsTrack)
 
             // POINT A COORDINATE
           } else if (data.target.getAttribute('id') === 'btn-target') {
+            this.disableAction = !this.disableAction
             const functionsAdd = () => {
-              this.activateOrNotBtn(['btn-add', 'btn-trace', 'btn-target'])
               // LOAD THE HUB FOR TARGET
               let x = this.map.getSize().x / 2 - 24
               let y = this.map.getSize().y / 2 - 29.5
@@ -863,7 +794,6 @@ export default {
       },
     })
 
-    this.map.addControl(actionsControl)
     this.map.addControl(locationsControl)
   },
 }

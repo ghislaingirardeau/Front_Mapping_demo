@@ -29,6 +29,19 @@
 .leaflet-control-layers-expanded {
     background-color: black;
 }
+.btn__actions{
+    display: flex;
+    position: absolute;
+    flex-direction: column;
+    z-index: 2;
+    top: 20px;
+    left: 10px;
+    background-color: rgb(44, 44, 41);
+    padding: 5px;
+}
+.btn--border{
+    border-top: 2px solid white;
+}
 
 .hub__target {
     &--icon {
@@ -91,23 +104,9 @@
     position: relative;
     margin: 3px 0px;
 
-    &--action {
-        padding: 6px;
-        border-radius: 10px 10px;
-        width: 40px;
-        margin-left: 7px;
-    }
-
     &--location {
         padding: 15px;
         border-radius: 30px 30px;
-    }
-
-    &--marker {
-        padding: 15px;
-        margin-top: 10px;
-        border-radius: 20px 2px;
-        border: 2px solid $color-secondary;
     }
 
     &::after {
@@ -147,6 +146,9 @@
     }
 }
 #btn-printer {
+    display: none;
+}
+.btn-printer {
     display: none;
 }
 

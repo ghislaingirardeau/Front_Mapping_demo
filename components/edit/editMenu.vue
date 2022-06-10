@@ -34,7 +34,7 @@ export default {
   methods: {
       close() {
       this.$emit('send-modal', {
-        message: 'close',
+        message: false,
       })
     },
   },
