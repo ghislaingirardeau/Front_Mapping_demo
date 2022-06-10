@@ -64,14 +64,7 @@
     <v-btn color="secondary" class="mr-4" @click="manualCoordinates">
       Manual
     </v-btn>
-
-    <!-- <v-btn color="secondary" class="mr-4" @click="addCoordinate">
-      Add
-    </v-btn>
- -->
-    <v-btn color="error" class="mr-4 mt-3 mt-sm-0" @click="cancel">
-      Cancel
-    </v-btn>
+    
   </v-form>
 </template>
 
@@ -209,11 +202,6 @@ export default {
     },
     manualCoordinates() {
       this.coordinates = []
-    },
-    cancel() {
-      this.$emit('send-data', {
-        show: false,
-      })
     },
   },
 }

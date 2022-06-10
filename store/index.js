@@ -311,7 +311,7 @@ export const mutations = {
         setStorage(state.markers, state.GeoJsonDatas)
     },
     RESET_GEOJSON(state) {
-        state.GeoJsonDatas = []
+        state.GeoJsonDatas = {}
         setStorage(state.markers)
     },
     DRAG_MARKER(state, data) {
