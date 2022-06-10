@@ -19,16 +19,9 @@
       <v-icon v-if="i.icon.length > 0" :color="i.color" size="35px">
         mdi-{{ i.icon }}
       </v-icon>
-      <v-chip
-        :color="i.color"
-        small
-        label
-        outlined
-        v-else-if="i.type === 'Polygon'"
-        >area</v-chip
-      >
-      <v-icon v-else :color="i.color"> mdi-vector-polyline </v-icon>
-      <br />
+      <v-icon v-else-if="i.type === 'Polygon'" :color="i.color" size="35px"> mdi-square-outline </v-icon>
+      <v-icon v-else :color="i.color" size="35px"> mdi-vector-polyline </v-icon>
+      <br v-if="i.subCategory && i.subCategory.length > 0" />
       <span v-if="i.subCategory && i.subCategory.length > 0">{{
         i.subCategory
       }}</span>

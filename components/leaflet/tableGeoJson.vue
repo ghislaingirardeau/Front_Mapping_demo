@@ -78,7 +78,6 @@ export default {
   methods: {
     openEditor(item) {
       this.editItem.properties = { ...item }
-      console.log(this.editItem)
       this.showModal = true
     },
     modalResponse(payload) {
