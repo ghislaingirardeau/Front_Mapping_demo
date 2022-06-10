@@ -249,7 +249,7 @@ export const mutations = {
     },
     RESET_MARKERS(state) {
         state.markers = [];
-        state.GeoJsonDatas = []
+        state.GeoJsonDatas = {}
     },
     UPDATE_MARKER(state, update) {
         if (typeof (update) === 'number') {
