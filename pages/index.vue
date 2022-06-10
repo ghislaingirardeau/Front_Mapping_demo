@@ -796,7 +796,8 @@ export default {
     const checkIfMarkerEmpty = (doThis) => {
       if (this.markers.length === 0) {
         this.modalShow.generic = !this.modalShow.generic
-        this.modalShow.modalTitle = 'Create a marker first !'
+        this.modalShow.modalTitle = 'Add a location'
+        this.modalShow.modalMessage = 'Create a marker before to add a location !'
       } else {
         doThis()
       }
