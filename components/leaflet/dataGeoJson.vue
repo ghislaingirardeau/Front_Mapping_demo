@@ -203,8 +203,6 @@ export default {
 
         this.$emit('send-data', {
           show: false,
-          resetCoordinates: true,
-          createGeoJon: true,
           newGeoJson: this.addGeoJson,
         })
       }
@@ -215,7 +213,6 @@ export default {
     cancel() {
       this.$emit('send-data', {
         show: false,
-        resetCoordinates: true,
       })
     },
   },

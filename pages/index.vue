@@ -29,6 +29,7 @@
         <dataGeoJson
           @send-data="getData"
           :coordinates="coordinates"
+          :key="modalShow.addLocation"
         />
       </template>
     </modalCustom>
@@ -300,6 +301,7 @@ export default {
         this.printMap.remove()
         this.printMap = undefined
       }
+      this.coordinates = []
     },
     printResponse(payload) {
       this.titleDocPrint = payload.titleDocPrint
@@ -307,7 +309,7 @@ export default {
     getData(payload) {
       this.modalShow.addLocation = payload.show
 
-      if (payload.createGeoJon) {
+      if (payload.newGeoJson) {
         // si je valide la creation
         let newGeoJson = payload.newGeoJson
         let groupLayer = newGeoJson.properties.category
@@ -339,13 +341,9 @@ export default {
             this.dynamicLayerGroup[groupLayer]
           )
         }
-      } else {
-        // sinon je l'ai annulé en cliquant sur cancel
       }
 
-      if (payload.resetCoordinates) {
-        this.coordinates = []
-      }
+      this.coordinates = []
     },
     createGeoJsonLayer(layerType, groupLayer) {
       // layerType = le geojson que je souhaite envoyer dans le layer
