@@ -11,7 +11,6 @@
       <p>Coordinates and Markers will be delete</p>
       <v-btn @click="resetApp" color="error"> Reset All </v-btn>
     </div>
-    <p v-else>{{ message }}</p>
 
     <!-- External options -->
     <export-file v-if="modalExport"/>
@@ -65,7 +64,6 @@ export default {
       modalExport: false,
       modalImport: false,
       removeBtn: false,
-      message: undefined,
       showMenu: true,
     }
   },
@@ -142,9 +140,9 @@ export default {
       let confirm = window.confirm('This action will delete only your datas')
       if (confirm) {
         this.geoJsonReset()
-        this.message = 'datas have been removed successfully'
         this.showMenu = false
         this.removeBtn = false
+        this.refreshMap()
       } else {
         console.log('Cancel')
       }
