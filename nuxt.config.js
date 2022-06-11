@@ -26,7 +26,6 @@ export default {
     script: [
       {src: "https://unpkg.com/leaflet@1.7.1/dist/leaflet.js", integrity: "sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA==", crossorigin: ""},
       {src: "measure/leaflet-measure-path.js"}, //https://github.com/ProminentEdge/leaflet-measure-path
-      {src: "iconMap/Leaflet.Control.Custom.js"} //https://github.com/yigityuce/Leaflet.Control.Custom
     ]
   },
 
@@ -51,7 +50,7 @@ export default {
     // https://go.nuxtjs.dev/eslint
     '@nuxtjs/eslint-module',
     '@nuxtjs/vuetify',
-    '@nuxt/content',
+    /* '@nuxt/content', */
     '@nuxtjs/dotenv'
   ],
 
