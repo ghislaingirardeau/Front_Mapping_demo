@@ -8,9 +8,7 @@
     />
     <!-- MODAL SETTING -->
     <modalCustom :showModal="modalShow.legend" @send-modal="modalResponse">
-      <template v-slot:title>
-        Legend & Options
-      </template>
+      <template v-slot:title> Legend & Options </template>
       <template v-slot:content>
         <legendModal
           :markers="markers"
@@ -22,9 +20,7 @@
     </modalCustom>
 
     <modalCustom :showModal="modalShow.addLocation" @send-modal="modalResponse">
-      <template v-slot:title>
-        Add a location
-      </template>
+      <template v-slot:title> Add a location </template>
       <template v-slot:content>
         <dataGeoJson
           @send-data="getData"
@@ -35,20 +31,14 @@
     </modalCustom>
 
     <modalCustom :showModal="modalShow.setting" @send-modal="modalResponse">
-      <template v-slot:title>
-        Settings & Menu
-      </template>
+      <template v-slot:title> Settings & Menu </template>
       <template v-slot:content>
-        <optionsMenu
-          :key="modalShow.setting"
-        />
+        <optionsMenu :key="modalShow.setting" />
       </template>
     </modalCustom>
 
     <modalCustom :showModal="modalShow.print" @send-modal="modalResponse">
-      <template v-slot:title>
-        Print or save as PDF
-      </template>
+      <template v-slot:title> Print or save as PDF </template>
       <template v-slot:content>
         <printOptions @send-modal="printResponse" />
       </template>
@@ -136,13 +126,84 @@
     <!-- TITLE FOR PRINTING -->
     <span class="print__block--title">{{ titleDocPrint }}</span>
 
+    <!-- MAP CONTROL ACTIONS -->
     <div class="btn__actions">
-      <v-icon size="30px" :disabled="disableAction" color="rgb(33, 150, 243)" @click="showTutorial = true" class="pa-2">mdi-help-rhombus-outline</v-icon>
-      <v-icon size="30px" :disabled="disableAction" color="rgb(33, 150, 243)" @click="modalShow.setting = true" class="pa-2 btn--border">mdi-menu</v-icon>
-      <v-icon size="30px" :disabled="disableAction" color="rgb(33, 150, 243)" @click="modalShow.legend = !modalShow.legend" class="pa-2">mdi-map-legend</v-icon>
-      <v-icon size="30px" :disabled="disableAction" color="rgb(33, 150, 243)" @click="saveAction" class="pa-2">mdi-content-save</v-icon>
-      <v-icon size="30px" :disabled="disableAction" v-if="$vuetify.breakpoint.width > 990" color="rgb(33, 150, 243)" @click="printAction" class="pa-2">mdi-printer</v-icon>
-      <v-icon size="30px" :disabled="disableAction" color="rgb(33, 150, 243)" @click="modalShow.addMarker = !modalShow.addMarker" class="pa-2 btn--border">mdi-map-marker-plus</v-icon>
+      <v-icon
+        size="30px"
+        :disabled="disableAction"
+        color="rgb(33, 150, 243)"
+        @click="showTutorial = true"
+        class="pa-2"
+        >mdi-help-rhombus-outline</v-icon
+      >
+      <v-icon
+        size="30px"
+        :disabled="disableAction"
+        color="rgb(33, 150, 243)"
+        @click="modalShow.setting = true"
+        class="pa-2 border"
+        >mdi-menu</v-icon
+      >
+      <v-icon
+        size="30px"
+        :disabled="disableAction"
+        color="rgb(33, 150, 243)"
+        @click="modalShow.legend = !modalShow.legend"
+        class="pa-2"
+        >mdi-map-legend</v-icon
+      >
+      <v-icon
+        size="30px"
+        :disabled="disableAction"
+        color="rgb(33, 150, 243)"
+        @click="saveAction"
+        class="pa-2"
+        >mdi-content-save</v-icon
+      >
+      <v-icon
+        size="30px"
+        :disabled="disableAction"
+        v-if="$vuetify.breakpoint.width > 990"
+        color="rgb(33, 150, 243)"
+        @click="printAction"
+        class="pa-2"
+        >mdi-printer</v-icon
+      >
+      <v-icon
+        size="30px"
+        :disabled="disableAction"
+        color="rgb(33, 150, 243)"
+        @click="modalShow.addMarker = !modalShow.addMarker"
+        class="pa-2 border"
+        >mdi-map-marker-plus</v-icon
+      >
+    </div>
+
+    <div class="btn__location">
+      <v-icon
+        size="33px"
+        color="rgb(33, 150, 243)"
+        :disabled="disableLocation.position"
+        @click="GPSLocation(true, $event)"
+        class="pa-3 btn-track"
+        >mdi-map-marker-radius</v-icon
+      >
+      <v-icon
+        size="33px"
+        color="rgb(33, 150, 243)"
+        :disabled="disableLocation.track"
+        @click="GPSLocation(false, $event)"
+        class="pa-3 btn-track"
+        >mdi-map-marker-path</v-icon
+      >
+      <v-icon
+        size="33px"
+        color="rgb(33, 150, 243)"
+        :disabled="disableLocation.target"
+        @click="targetLocation"
+        class="pa-3 btn-track"
+        >mdi-map-marker-outline</v-icon
+      >
     </div>
 
     <!-- MAP -->
@@ -187,7 +248,13 @@ export default {
       modalMessage: false,
     },
     measureActive: false,
+    // btn controls
     disableAction: false,
+    disableLocation: {
+      position: false,
+      track: false,
+      target: false
+    },
     // print
     showPrintMap: false,
     printLayer: undefined,
@@ -205,7 +272,7 @@ export default {
     editShow: {
       menu: false,
       location: false,
-      mark: false
+      mark: false,
     },
     editItem: {},
     editMark: [],
@@ -223,7 +290,7 @@ export default {
           crd[0]
         }`
       } else {
-        return 'Waiting for position... Accuracy low'
+        return 'Waiting for position... Accuracy too low'
       }
     },
     /* hubDistance() {
@@ -252,17 +319,11 @@ export default {
       }
 
       // set the view dynamicly
-      let actualMapCenter = [
-        this.map.getCenter().lat,
-        this.map.getCenter().lng,
-      ]
+      let actualMapCenter = [this.map.getCenter().lat, this.map.getCenter().lng]
       let result = await openPrintOptions()
       if (result) {
         // mount the map after
-        this.printMap = await L.map('mapPrint').setView(
-          actualMapCenter,
-          6
-        )
+        this.printMap = await L.map('mapPrint').setView(actualMapCenter, 6)
         this.printLayer.addTo(this.printMap)
         let mark = L.marker(actualMapCenter).addTo(this.printMap)
         window.onafterprint = (event) => {
@@ -499,58 +560,114 @@ export default {
       // GROUPE DE LAYER DANS LEQUEL J'ENREGISTRE LE JSON
       groupLayer.addLayer(this.layerGeoJson)
     },
-    coordinatesOnLocation(element) {
-      if (this.watchMe) {
-        navigator.geolocation.clearWatch(this.watchMe)
-        this.watchMe = undefined
-        this.modalShow.addLocation = true
-        this.hubPosition = false
-        this.disableAction = !this.disableAction
-      } else {
-        // track my location, update the coordinates
-        this.disableAction = !this.disableAction
-        let success = (position) => {
-          this.hubPosition = true
-          this.accuracyLocation = position.coords.accuracy
-          if (element && this.accuracyLocation < 10) {
-            this.coordinates = [
-              [position.coords.longitude, position.coords.latitude],
-            ]
-          } else if (this.accuracyLocation < 10) {
-            this.coordinates.push([
-              position.coords.longitude,
-              position.coords.latitude,
-            ])
-          }
-
-          let updatePositionMarker = {
-            lat: position.coords.latitude,
-            lng: position.coords.longitude,
-          }
-          this.myLocationMark
-            .setLatLng(updatePositionMarker)
-            .setRadius(position.coords.accuracy)
-
-          this.map.flyTo(updatePositionMarker, 16)
-          this.myLocationMark.addTo(this.map)
-        }
-
-        let error = () => {
-          this.modalShow.modalTitle = 'Unable to retrieve your location'
-          this.modalShow.generic = true
-        }
-
-        if (navigator.geolocation) {
-          /* this.message = 'Locating...' */
-          this.watchMe = navigator.geolocation.watchPosition(success, error, {
-            enableHighAccuracy: true,
-            maximumAge: 0,
-          })
+    GPSLocation(element) {
+      const disabledBtn = (boolean) => {
+        if (element) {
+          this.disableLocation.track = boolean
+          this.disableLocation.target = boolean
         } else {
-          this.modalShow.modalTitle =
-            'Geolocation is not supported by your browser'
-          this.modalShow.generic = true
+          this.disableLocation.position = boolean
+          this.disableLocation.target = boolean
         }
+      }
+      // customize pseudo element before (already use on the button for the icon)
+      let eltBefore = document.getElementsByClassName('btn__location')[0]
+      element ? eltBefore.style.setProperty("--selection-top", "20px") : eltBefore.style.setProperty("--selection-top", "90px")
+
+      if (this.markers.length === 0) {
+        this.modalShow.generic = !this.modalShow.generic
+        this.modalShow.modalTitle = 'Add a location'
+        this.modalShow.modalMessage =
+          'Create a marker before to add a location !'
+      } else {
+        if (this.watchMe) {
+          navigator.geolocation.clearWatch(this.watchMe)
+          this.watchMe = undefined
+          this.modalShow.addLocation = true
+          this.hubPosition = false
+          this.disableAction = !this.disableAction
+          disabledBtn(false)
+          eltBefore.style.setProperty("--selection-block", "none")
+        } else {
+          this.disableAction = !this.disableAction
+          disabledBtn(true)
+          
+          let success = (position) => {
+            this.hubPosition = true
+            this.accuracyLocation = position.coords.accuracy
+            if (element && this.accuracyLocation < 10) {
+              this.coordinates = [
+                [position.coords.longitude, position.coords.latitude],
+              ]
+            } else if (this.accuracyLocation < 10) {
+              // show only if accuracy is good
+              eltBefore.style.setProperty("--selection-block", "block")
+              this.coordinates.push([
+                position.coords.longitude,
+                position.coords.latitude,
+              ])
+            }
+
+            let updatePositionMarker = {
+              lat: position.coords.latitude,
+              lng: position.coords.longitude,
+            }
+            this.myLocationMark
+              .setLatLng(updatePositionMarker)
+              .setRadius(position.coords.accuracy)
+
+            this.map.flyTo(updatePositionMarker, 16)
+            this.myLocationMark.addTo(this.map)
+          }
+
+          let error = () => {
+            this.modalShow.modalTitle = 'Unable to retrieve your location'
+            this.modalShow.generic = true
+          }
+
+          if (navigator.geolocation) {
+            this.watchMe = navigator.geolocation.watchPosition(success, error, {
+              enableHighAccuracy: true,
+              maximumAge: 0,
+            })
+          } else {
+            this.modalShow.modalTitle =
+              'Geolocation is not supported by your browser'
+            this.modalShow.generic = true
+          }
+        }
+      }
+    },
+    targetLocation() {
+      // disable all btn
+      Object.keys(this.disableLocation).forEach((element) => {
+        this.disableLocation[element] = true
+      })
+
+      if (this.markers.length === 0) {
+        this.modalShow.generic = !this.modalShow.generic
+        this.modalShow.modalTitle = 'Add a location'
+        this.modalShow.modalMessage =
+          'Create a marker before to add a location !'
+      } else {
+        this.disableAction = !this.disableAction
+        // LOAD THE HUB FOR TARGET
+        let x = this.map.getSize().x / 2 - 24
+        let y = this.map.getSize().y / 2 - 29.5
+
+        let icon = document.getElementById('hubTarget')
+        icon.style.display = 'block'
+        let tuto = document.getElementById('hubTuto')
+        tuto.style.display = 'block'
+        let hub = document.getElementById('hub')
+        hub.style.display = 'flex'
+
+        icon.style.top = `${y}px`
+        icon.style.left = `${x}px`
+        tuto.style.top = `${y - 10}px`
+        tuto.style.left = `${x - 10}px`
+        hub.style.top = `${y + 100}px`
+        hub.style.left = `${x + 20}px`
       }
     },
     locationTarget() {
@@ -571,6 +688,9 @@ export default {
     },
     saveTarget(e) {
       this.disableAction = !this.disableAction
+      Object.keys(this.disableLocation).forEach((element) => {
+        this.disableLocation[element] = false
+      })
       const disabledDisplay = (id) => {
         let elt = document.getElementById(id)
         elt.style.display = 'none'
@@ -596,7 +716,6 @@ export default {
     const mapBoxUrl = `https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=${tokenMapbox}`
     const mapboxStreets = 'mapbox/streets-v11'
     const mapboxOutdoors = 'mapbox/outdoors-v11'
-    const mapboxSatellite = 'mapbox/satellite-v9'
     const mapboxAttribution =
       'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>'
 
@@ -710,91 +829,6 @@ export default {
     // ADD scale control
     L.control.scale().addTo(this.map)
 
-    // CUSTOMIZE AN ICON MENU ACTIONS ON THE MAP
-    let styleControl = {
-      margin: '15px',
-      padding: '0px',
-      cursor: 'pointer',
-    }
-
-    const styleOnClick = (e) => {
-      e.classList.contains('click')
-        ? e.classList.remove('click')
-        : e.classList.add('click')
-    }
-
-    const checkIfMarkerEmpty = (doThis) => {
-      if (this.markers.length === 0) {
-        this.modalShow.generic = !this.modalShow.generic
-        this.modalShow.modalTitle = 'Add a location'
-        this.modalShow.modalMessage = 'Create a marker before to add a location !'
-      } else {
-        doThis()
-      }
-    }
-
-    let locationsControl = L.control.custom({
-      position: 'topright',
-      content:
-        '<button id="btn-add" type="button" class="btn-map btn-map--location">' +
-        '<i aria-hidden="true" class="v-icon notranslate mdi mdi-map-marker-radius theme--dark" style="color:white;"></i>' +
-        '</button>' +
-        '<button id="btn-trace" type="button" class="btn-map btn-map--location">' +
-        '<i aria-hidden="true" class="v-icon notranslate mdi mdi-map-marker-path theme--dark" style="color:white;"></i>' +
-        '</button>' +
-        '<button id="btn-target" type="button" class="btn-map btn-map--location">' +
-        '<i aria-hidden="true" class="v-icon notranslate mdi mdi-map-marker-plus theme--dark" style="color:white;"></i>' +
-        '</button>',
-      classes: 'btn-group-icon-map',
-      style: styleControl,
-      events: {
-        click: (data) => {
-          // ADD MY POSTION
-          if (data.target.getAttribute('id') === 'btn-add') {
-            
-            const functionsLocate = () => {
-              styleOnClick(data.target)
-              this.coordinatesOnLocation(true) // display differente type of coordinates one array
-            }
-            checkIfMarkerEmpty(functionsLocate)
-
-            // TRACK ME
-          } else if (data.target.getAttribute('id') === 'btn-trace') {
-            const functionsTrack = () => {
-              styleOnClick(data.target)
-              this.coordinatesOnLocation(false) // display differente type of coordinates multiple array
-            }
-            checkIfMarkerEmpty(functionsTrack)
-
-            // POINT A COORDINATE
-          } else if (data.target.getAttribute('id') === 'btn-target') {
-            this.disableAction = !this.disableAction
-            const functionsAdd = () => {
-              // LOAD THE HUB FOR TARGET
-              let x = this.map.getSize().x / 2 - 24
-              let y = this.map.getSize().y / 2 - 29.5
-
-              let icon = document.getElementById('hubTarget')
-              icon.style.display = 'block'
-              let tuto = document.getElementById('hubTuto')
-              tuto.style.display = 'block'
-              let hub = document.getElementById('hub')
-              hub.style.display = 'flex'
-
-              icon.style.top = `${y}px`
-              icon.style.left = `${x}px`
-              tuto.style.top = `${y - 10}px`
-              tuto.style.left = `${x - 10}px`
-              hub.style.top = `${y + 100}px`
-              hub.style.left = `${x + 20}px`
-            }
-            checkIfMarkerEmpty(functionsAdd)
-          }
-        },
-      },
-    })
-
-    this.map.addControl(locationsControl)
   },
 }
 </script>

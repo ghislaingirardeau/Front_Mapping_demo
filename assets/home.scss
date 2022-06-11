@@ -1,3 +1,7 @@
+:root {
+    --selection-block: none;
+    --selection-top: 20px;
+}
 .container__map {
     height: 100%;
     width: 100vw;
@@ -9,6 +13,7 @@
     width: 100%;
     z-index: 1;
 }
+
 #mapPrint {
     height: 300px;
     width: 360px;
@@ -29,18 +34,48 @@
 .leaflet-control-layers-expanded {
     background-color: black;
 }
-.btn__actions{
+
+.btn__actions {
     display: flex;
     position: absolute;
     flex-direction: column;
     z-index: 2;
-    top: 20px;
-    left: 10px;
+    top: 15px;
+    left: 5px;
     background-color: rgb(44, 44, 41);
     padding: 5px;
+
+    &>.border {
+        border-top: 2px solid white;
+    }
 }
-.btn--border{
-    border-top: 2px solid white;
+.btn__location {
+    display: flex;
+    position: absolute;
+    flex-direction: column;
+    z-index: 2;
+    top: 85px;
+    right: 10px;
+
+    &::before {
+        content: 'Click to save =>';
+        font-family: 'Architects Daughter', cursive;
+        display: var(--selection-block);
+        position: absolute;
+        top: var(--selection-top);
+        left: -130px;
+        height: 40px;
+        width: 130px;
+        color: rgb(46, 46, 46);
+        font-size: 15px;
+        font-weight: bold;
+    }
+
+    &>button {
+        border-radius: 30px 30px;
+        background-color: rgb(44, 44, 41);
+        margin: 5px;
+    }
 }
 
 .hub__target {
@@ -98,46 +133,6 @@
     flex-direction: column;
 }
 
-.btn-map {
-    border: 2px solid black;
-    background-color: black;
-    position: relative;
-    margin: 3px 0px;
-
-    &--location {
-        padding: 15px;
-        border-radius: 30px 30px;
-    }
-
-    &::after {
-        /* extend the click to all the button */
-        content: '';
-        position: absolute;
-        top: 0px;
-        left: 0px;
-        height: 100%;
-        width: 100%;
-    }
-}
-
-/* style button on map on click */
-.click {
-    border: 2px solid rgb(33, 150, 243);
-
-    &::before {
-        content: 'Click to save =>';
-        font-family: 'Architects Daughter', cursive;
-        position: absolute;
-        top: 15px;
-        left: -130px;
-        height: 20px;
-        width: 130px;
-        color: rgb(46, 46, 46);
-        font-size: 15px;
-        font-weight: bold;
-    }
-}
-
 .print__block {
     display: none;
 
@@ -145,9 +140,11 @@
         display: none;
     }
 }
+
 #btn-printer {
     display: none;
 }
+
 .btn-printer {
     display: none;
 }
@@ -156,9 +153,11 @@
     .container__map {
         width: 99%;
     }
-    #btn-printer{
+
+    #btn-printer {
         display: block;
     }
+
     .btn-map {
         &--action {
             &:hover {
