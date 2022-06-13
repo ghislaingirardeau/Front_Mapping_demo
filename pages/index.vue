@@ -178,7 +178,7 @@
         >mdi-map-marker-plus</v-icon
       >
 
-      <layer-menu icon="mdi-layers-edit" :switchLayer="switchLayerMap" :disableAction="disableAction" :layers="Object.keys(layersMapsMixin())" />
+      <layer-menu icon="mdi-layers-edit" :switchLayer="switchLayerMap" :disableAction="disableAction" :layers="Object.keys(layersMapsMixin())" :closeOnClick="true" />
 <!--       <layer-menu icon="mdi-layers-search" :switchLayer="switchLayerGeoJson" :layers="Object.keys(GeoJsonDatas)" :disableAction="disableAction" />
  -->    
       <v-menu bottom :offset-x="true" :close-on-content-click="false">
@@ -211,7 +211,6 @@
             </v-list-item>
         </v-list>
       </v-menu>
-
       </div>
 
     <div class="btn__location">
@@ -492,6 +491,7 @@ export default {
           )
           // show automaticly the new layer group marker on map
           this.map.addLayer(this.dynamicLayerGroup[groupLayer])
+          this.geoActive[groupLayer] = true
         } else {
           // if category already exist, i just create the new geojson marker
 
