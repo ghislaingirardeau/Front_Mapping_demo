@@ -178,35 +178,9 @@
         >mdi-map-marker-plus</v-icon
       >
 
-      <v-menu top :offset-x="true">
-        <template v-slot:activator="{ on, attrs }">
-          <v-icon
-            dark
-            v-bind="attrs"
-            v-on="on"
-            size="30px"
-            :disabled="disableAction"
-            color="rgb(33, 150, 243)"
-            class="pa-2 border"
-          >
-            mdi-layers-edit
-          </v-icon>
-        </template>
-
-        <v-list>
-          <v-list-item-group v-model="selectedItem" color="primary">
-            <v-list-item
-              v-for="(item, i) in Object.keys(layersMapsMixin())"
-              :key="i"
-            >
-              <v-list-item-content @click="switchLayer(item)">
-                <v-list-item-title v-text="item"></v-list-item-title>
-              </v-list-item-content>
-            </v-list-item>
-          </v-list-item-group>
-        </v-list>
-      </v-menu>
-    </div>
+      <layer-menu icon="mdi-layers-edit" :switchLayer="switchLayerMap" :disableAction="disableAction" :layers="Object.keys(layersMapsMixin())" />
+<!--       <layer-menu icon="mdi-layers-search" :switchLayer="switchLayerGeoJson" :layers="Object.keys(GeoJsonDatas)" :disableAction="disableAction" />
+ -->    </div>
 
     <div class="btn__location">
       <v-icon
@@ -329,18 +303,22 @@ export default {
     }, */
   },
   methods: {
-    async switchLayer(name) {
-      let layersTest = this.layersMapsMixin()
+    async switchLayerMap(name) {
+      let layers = this.layersMapsMixin()
       const remove = () => {
         return new Promise((resolve, reject) => {
-          Object.keys(layersTest).forEach((e) =>
-            this.map.removeLayer(layersTest[e])
+          Object.keys(layers).forEach((e) =>
+            this.map.removeLayer(layers[e])
           )
           resolve(true)
         })
       }
       let result = await remove()
-      result ? this.map.addLayer(layersTest[name]) : ''
+      result ? this.map.addLayer(layers[name]) : ''
+    },
+    switchLayerGeoJson(e) {
+      this.map.removeLayer(this.dynamicLayerGroup[e])
+      console.log(e);
     },
     saveAction() {
       this.saveDatas() //mixins
