@@ -17,11 +17,13 @@
 
 <script>
 import Vue from 'vue'
-import globalFunctions from '~/mixins/globalFunctions.js';
-Vue.mixin(globalFunctions)
+import globalMixins from '~/mixins/globalFunctions.js';
+import mapMixins from '~/mixins/mapMixins.js';
+Vue.mixin(globalMixins)
+Vue.mixin(mapMixins)
 
 export default {
-  mixins: [globalFunctions],
+  mixins: [globalMixins, mapMixins],
   data () {
     return {
       showMap: false,

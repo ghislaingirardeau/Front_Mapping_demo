@@ -37,5 +37,5 @@ export default {
                 id: 'refresh',
             })
         }
-    }
+     }
 }
