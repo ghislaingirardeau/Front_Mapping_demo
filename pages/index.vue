@@ -178,40 +178,43 @@
         >mdi-map-marker-plus</v-icon
       >
 
-      <layer-menu icon="mdi-layers-edit" :switchLayer="switchLayerMap" :disableAction="disableAction" :layers="Object.keys(layersMapsMixin())" :closeOnClick="true" />
-<!--       <layer-menu icon="mdi-layers-search" :switchLayer="switchLayerGeoJson" :layers="Object.keys(GeoJsonDatas)" :disableAction="disableAction" />
- -->    
-      <v-menu bottom :offset-x="true" :close-on-content-click="false">
-        <template v-slot:activator="{ on, attrs }">
-          <v-icon
-            dark
-            v-bind="attrs"
-            v-on="on"
-            size="30px"
-            :disabled="disableAction"
-            color="rgb(33, 150, 243)"
-            class="pa-2 border"
-          >
-            mdi-layers-search
-          </v-icon>
-        </template>
-
-        <v-list>
+      <layer-menu
+        icon="mdi-layers-edit"
+        :disableAction="disableAction"
+        :closeOnClick="true"
+      >
+        <template v-slot:content>
+          <v-list-item-group color="rgb(33, 150, 243)">
             <v-list-item
-              v-for="(item, i) in Object.keys(GeoJsonDatas)"
+              v-for="(item, i) in Object.keys(layersMapsMixin())"
               :key="i"
             >
-              <v-checkbox
-                v-model="geoActive[item]"
-                :label="item"
-                dense
-                @click="switchLayerGeoJson(item)"
-                color="rgb(33, 150, 243)"
-              ></v-checkbox>
+              <v-list-item-content @click="switchLayerMap(item)">
+                <v-list-item-title v-text="item"></v-list-item-title>
+              </v-list-item-content>
             </v-list-item>
-        </v-list>
-      </v-menu>
-      </div>
+          </v-list-item-group>
+        </template>
+      </layer-menu>
+
+      <layer-menu
+        icon="mdi-layers-search"
+        :disableAction="disableAction"
+        :closeOnClick="false"
+      >
+        <template v-slot:content>
+          <v-list-item v-for="(item, i) in Object.keys(GeoJsonDatas)" :key="i">
+            <v-checkbox
+              v-model="geoActive[item]"
+              :label="item"
+              dense
+              @click="switchLayerGeoJson(item)"
+              color="rgb(33, 150, 243)"
+            ></v-checkbox>
+          </v-list-item>
+        </template>
+      </layer-menu>
+    </div>
 
     <div class="btn__location">
       <v-icon
@@ -332,18 +335,16 @@ export default {
       let meters = this.map.distance(this.distance[0], this.distance[1])
       return meters
     }, */
-    geoActive () {
+    geoActive() {
       return {}
-    }
+    },
   },
   methods: {
     async switchLayerMap(name) {
       let layers = this.layersMapsMixin()
       const remove = () => {
         return new Promise((resolve, reject) => {
-          Object.keys(layers).forEach((e) =>
-            this.map.removeLayer(layers[e])
-          )
+          Object.keys(layers).forEach((e) => this.map.removeLayer(layers[e]))
           resolve(true)
         })
       }
@@ -351,7 +352,9 @@ export default {
       result ? this.map.addLayer(layers[name]) : ''
     },
     switchLayerGeoJson(e) {
-      this.geoActive[e] ? this.map.addLayer(this.dynamicLayerGroup[e]) : this.map.removeLayer(this.dynamicLayerGroup[e])
+      this.geoActive[e]
+        ? this.map.addLayer(this.dynamicLayerGroup[e])
+        : this.map.removeLayer(this.dynamicLayerGroup[e])
     },
     saveAction() {
       this.saveDatas() //mixins
@@ -548,7 +551,7 @@ export default {
   },
   created() {
     // menu layer geojson: load switch on true automaticly
-    Object.keys(this.GeoJsonDatas).forEach(e => {
+    Object.keys(this.GeoJsonDatas).forEach((e) => {
       this.geoActive[e] = true
     })
   },

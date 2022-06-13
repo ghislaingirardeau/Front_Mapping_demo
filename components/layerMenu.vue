@@ -1,5 +1,5 @@
 <template>
-    <v-menu bottom :offset-x="true">
+    <v-menu bottom :offset-x="true" :close-on-content-click="closeOnClick">
         <template v-slot:activator="{ on, attrs }">
           <v-icon
             dark
@@ -15,17 +15,7 @@
         </template>
 
         <v-list>
-          <v-list-item-group color="rgb(33, 150, 243)">
-            <v-list-item
-              v-for="(item, i) in layers"
-              :key="i"
-            >
-              <v-list-item-content @click="switchLayer(item)">
-                <v-list-item-title v-text="item"></v-list-item-title>
-              </v-list-item-content>
-
-            </v-list-item>
-          </v-list-item-group>
+            <slot name="content"></slot>
         </v-list>
       </v-menu>
 
@@ -37,7 +27,8 @@
             layers: Array,
             switchLayer: Function,
             icon: String,
-            disableAction: Boolean
+            disableAction: Boolean,
+            closeOnClick: Boolean
         },
     }
 </script>
