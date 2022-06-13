@@ -53,22 +53,6 @@
       </template>
     </modalCustom>
 
-    <modalCustom :showModal="modalShow.layers" @send-modal="modalResponse">
-      <template v-slot:title> Change the map </template>
-      <template v-slot:content>
-        <v-list>
-          <v-list-item
-            v-for="(item, index) in Object.keys(layersMapsMixin())"
-            :key="index"
-          >
-            <v-list-item-action>
-              <v-btn @click="switchLayer(item)">{{ item }}</v-btn>
-            </v-list-item-action>
-          </v-list-item>
-        </v-list>
-      </template>
-    </modalCustom>
-
     <!-- MODAL EDIT POSITION -->
     <edit-menu :showModal="editShow.menu" @send-modal="modalResponse">
       <template v-slot:title>
@@ -194,14 +178,34 @@
         >mdi-map-marker-plus</v-icon
       >
 
-      <v-icon
-        size="30px"
-        :disabled="disableAction"
-        color="rgb(33, 150, 243)"
-        class="pa-2 border"
-        @click="modalShow.layers = true"
-        >mdi-map</v-icon
-      >
+      <v-menu top :offset-x="true">
+        <template v-slot:activator="{ on, attrs }">
+          <v-icon
+            dark
+            v-bind="attrs"
+            v-on="on"
+            size="30px"
+            :disabled="disableAction"
+            color="rgb(33, 150, 243)"
+            class="pa-2 border"
+          >
+            mdi-layers-edit
+          </v-icon>
+        </template>
+
+        <v-list>
+          <v-list-item-group v-model="selectedItem" color="primary">
+            <v-list-item
+              v-for="(item, i) in Object.keys(layersMapsMixin())"
+              :key="i"
+            >
+              <v-list-item-content @click="switchLayer(item)">
+                <v-list-item-title v-text="item"></v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+          </v-list-item-group>
+        </v-list>
+      </v-menu>
     </div>
 
     <div class="btn__location">
@@ -265,7 +269,6 @@ export default {
     // modal modalShow.addMarker
     modalShow: {
       generic: false,
-      layers: false,
       addLocation: false,
       addMarker: false,
       legend: false,
@@ -576,7 +579,7 @@ export default {
     }
 
     const layersToShow = () => {
-      let array = [this.layersMapsMixin().google, this.markerTarget] // layer by default + the layer for the target selection
+      let array = [this.layersMapsMixin().landscape, this.markerTarget] // layer by default + the layer for the target selection
       // add to the array the futur otherlays, depending on the object dynamicLayerGroup properties
       this.propertiesNames.forEach((element) => {
         array.push(this.dynamicLayerGroup[element])
@@ -598,7 +601,7 @@ export default {
       wheelPxPerZoomLevel: 300, // to control the snap of the zoom
     })
     let baseMaps = {
-      Goolge: this.layersMapsMixin().google,
+      Goolge: this.layersMapsMixin().landscape,
     }
     // control layer choice
     this.controlLayers = L.control.layers(baseMaps, this.dynamicLayerGroup)

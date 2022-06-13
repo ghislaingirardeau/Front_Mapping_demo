@@ -24,7 +24,7 @@ export default {
                 attribution: mapboxAttribution,
                 accessToken: tokenMapbox,
             })
-            data.lanscape = L.tileLayer(
+            data.landscape = L.tileLayer(
                 'https://tile.thunderforest.com/landscape/{z}/{x}/{y}.png?apikey=05002ac7d7034aec81f8963fa723e851'
             )
             data.google = L.tileLayer(
