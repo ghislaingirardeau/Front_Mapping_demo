@@ -622,12 +622,6 @@ export default {
       zoomControl: false,
       wheelPxPerZoomLevel: 300, // to control the snap of the zoom
     })
-    let baseMaps = {
-      Goolge: this.layersMapsMixin().landscape,
-    }
-    // control layer choice
-    this.controlLayers = L.control.layers(baseMaps, this.dynamicLayerGroup)
-    this.controlLayers.addTo(this.map)
     // ADD scale control
     L.control.scale().addTo(this.map)
   },
