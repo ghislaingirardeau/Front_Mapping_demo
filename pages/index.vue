@@ -180,7 +180,39 @@
 
       <layer-menu icon="mdi-layers-edit" :switchLayer="switchLayerMap" :disableAction="disableAction" :layers="Object.keys(layersMapsMixin())" />
 <!--       <layer-menu icon="mdi-layers-search" :switchLayer="switchLayerGeoJson" :layers="Object.keys(GeoJsonDatas)" :disableAction="disableAction" />
- -->    </div>
+ -->    
+      <v-menu bottom :offset-x="true" :close-on-content-click="false">
+        <template v-slot:activator="{ on, attrs }">
+          <v-icon
+            dark
+            v-bind="attrs"
+            v-on="on"
+            size="30px"
+            :disabled="disableAction"
+            color="rgb(33, 150, 243)"
+            class="pa-2 border"
+          >
+            mdi-layers-search
+          </v-icon>
+        </template>
+
+        <v-list>
+            <v-list-item
+              v-for="(item, i) in Object.keys(GeoJsonDatas)"
+              :key="i"
+            >
+              <v-checkbox
+                v-model="geoActive[item]"
+                :label="item"
+                dense
+                @click="switchLayerGeoJson(item)"
+                color="rgb(33, 150, 243)"
+              ></v-checkbox>
+            </v-list-item>
+        </v-list>
+      </v-menu>
+
+      </div>
 
     <div class="btn__location">
       <v-icon
@@ -301,6 +333,9 @@ export default {
       let meters = this.map.distance(this.distance[0], this.distance[1])
       return meters
     }, */
+    geoActive () {
+      return {}
+    }
   },
   methods: {
     async switchLayerMap(name) {
@@ -317,8 +352,7 @@ export default {
       result ? this.map.addLayer(layers[name]) : ''
     },
     switchLayerGeoJson(e) {
-      this.map.removeLayer(this.dynamicLayerGroup[e])
-      console.log(e);
+      this.geoActive[e] ? this.map.addLayer(this.dynamicLayerGroup[e]) : this.map.removeLayer(this.dynamicLayerGroup[e])
     },
     saveAction() {
       this.saveDatas() //mixins
@@ -511,6 +545,12 @@ export default {
       }
       this.markerTarget.clearLayers()
     },
+  },
+  created() {
+    // menu layer geojson: load switch on true automaticly
+    Object.keys(this.GeoJsonDatas).forEach(e => {
+      this.geoActive[e] = true
+    })
   },
   mounted() {
     this.printLayer = L.tileLayer(
