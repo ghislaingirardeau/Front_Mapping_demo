@@ -24,8 +24,6 @@
 <script>
     export default {
         props: {
-            layers: Array,
-            switchLayer: Function,
             icon: String,
             disableAction: Boolean,
             closeOnClick: Boolean

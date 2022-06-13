@@ -127,7 +127,7 @@
     <span class="print__block--title">{{ titleDocPrint }}</span>
 
     <!-- MAP CONTROL ACTIONS -->
-    <div class="btn__actions">
+    <nav class="btn__actions">
       <v-icon
         size="30px"
         :disabled="disableAction"
@@ -201,6 +201,7 @@
         icon="mdi-layers-search"
         :disableAction="disableAction"
         :closeOnClick="false"
+        v-if="Object.keys(GeoJsonDatas).length > 0"
       >
         <template v-slot:content>
           <v-list-item v-for="(item, i) in Object.keys(GeoJsonDatas)" :key="i">
@@ -214,7 +215,7 @@
           </v-list-item>
         </template>
       </layer-menu>
-    </div>
+    </nav>
 
     <div class="btn__location">
       <v-icon
