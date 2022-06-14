@@ -155,19 +155,19 @@
       <v-icon
         size="30px"
         :disabled="disableAction"
-        color="rgb(33, 150, 243)"
-        @click="saveAction"
-        class="pa-2"
-        >mdi-content-save</v-icon
-      >
-      <v-icon
-        size="30px"
-        :disabled="disableAction"
         v-if="$vuetify.breakpoint.width > 990"
         color="rgb(33, 150, 243)"
         @click="printAction"
         class="pa-2"
         >mdi-printer</v-icon
+      >
+      <v-icon
+        size="30px"
+        :disabled="disableAction"
+        color="rgb(33, 150, 243)"
+        @click="saveAction"
+        class="pa-2"
+        >mdi-content-save</v-icon
       >
       <v-icon
         size="30px"
@@ -202,14 +202,15 @@
         :disableAction="disableAction"
         :closeOnClick="false"
         v-if="Object.keys(GeoJsonDatas).length > 0"
+        :key="Object.keys(GeoJsonDatas).length"
       >
         <template v-slot:content>
-          <v-list-item v-for="(item, i) in Object.keys(GeoJsonDatas)" :key="i">
+          <v-list-item v-for="(value, key, index) in GeoJsonDatas" :key="index">
             <v-checkbox
-              v-model="geoActive[item]"
-              :label="item"
+              v-model="geoActive[key]"
+              :label="key"
               dense
-              @click="switchLayerGeoJson(item)"
+              @click="switchLayerGeoJson(key)"
               color="rgb(33, 150, 243)"
             ></v-checkbox>
           </v-list-item>
@@ -304,7 +305,6 @@ export default {
     // layers & layer group
     dynamicLayerGroup: {},
     propertiesNames: [],
-    controlLayers: undefined,
     //test distance
     distance: [],
     //edit Item editShow.mark
@@ -489,13 +489,9 @@ export default {
             this.dynamicLayerGroup[groupLayer]
           )
           // add the new layer inside the control overlay
-          this.controlLayers.addOverlay(
-            this.dynamicLayerGroup[groupLayer],
-            groupLayer
-          )
+          this.geoActive[groupLayer] = true
           // show automaticly the new layer group marker on map
           this.map.addLayer(this.dynamicLayerGroup[groupLayer])
-          this.geoActive[groupLayer] = true
         } else {
           // if category already exist, i just create the new geojson marker
 
