@@ -10,7 +10,7 @@
         </button>
       </div>
       <div class="modal_tuto">
-        <h1 class="modal_tuto-title">Steps {{tutoPage}}</h1>
+        <!-- <h1 class="modal_tuto-title">Steps {{tutoPage}}</h1> -->
         <div
           class="modal_tuto-marker"
           v-if="tutoPage === 1"
@@ -37,20 +37,28 @@
             <p>
               {{item.text}}
             </p>
-
           </div>
         </div>
         <div
           class="modal_tuto-data"
           v-if="tutoPage === 4"
         >
-          <p
-            v-for="item in tutorialData"
-            :key="item.message"
+          <div v-for="(item, l) in tutorialData" :key="l" :style="{ 'margin-bottom': item.margin }">
+            <span class="modal_tuto-data-title">
+              {{item.title}}
+            </span>
+            <p>
+              {{item.text}}
+            </p>
+          </div>
+
+          <!-- <p
+            v-for="(item, i) in tutorialData"
+            :key="i"
             :style="{ 'margin-bottom': item.margin }"
           >
-            {{ item.message }}
-          </p>
+            {{ item.text }}
+          </p> -->
         </div>
       </div>
     </div>
@@ -87,20 +95,34 @@ export default {
   },
   computed: {
     tutorialData() {
+      
       let items = [
         {
-          message: '<-- Show legend',
-          margin: '22px',
+          title: '<-- Show legend',
+          text: 'Edit marker and size',
+          margin: '3px',
         },
         {
-          message: '<-- Save datas',
-          margin: '40px',
+          title: '<-- Save datas',
+          margin: '60px',
+        },
+        {
+          title: '<-- Layers map',
+          text: 'Change the map layer',
+          margin: '10px',
         },
       ]
       if (this.$vuetify.breakpoint.width > 990) {
         items.splice(1, 0, {
-          message: '<-- Print or save as PDF',
-          margin: '22px',
+          title: '<-- Print or save as PDF',
+          margin: '3px',
+        })
+      }
+      if(Object.keys(this.$store.state.GeoJsonDatas).length > 0) {
+        let index = items.length
+        items.splice(index, 0, {
+          title: '<-- layers views',
+          margin: '3px',
         })
       }
       return items
@@ -162,7 +184,7 @@ export default {
     position: absolute;
     text-align: left;
     left: 80px;
-    top: 10px;
+    top: 400px;
     color: rgb(255, 255, 255);
     width: 40%; /* Could be more or less, depending on screen size */
   }
@@ -172,7 +194,7 @@ export default {
     left: 80px;
     top: 200px;
     color: rgb(255, 255, 255);
-    width: 75%; /* Could be more or less, depending on screen size */
+    width: 55%; /* Could be more or less, depending on screen size */
   }
   &-options {
     position: absolute;
@@ -180,15 +202,15 @@ export default {
     left: 80px;
     top: 65px;
     color: rgb(255, 255, 255);
-    width: 75%; /* Could be more or less, depending on screen size */
+    width: 55%; /* Could be more or less, depending on screen size */
   }
   &-actions {
     position: absolute;
     text-align: right;
     right: 80px;
-    top: 85px;
+    top: 15px;
     color: rgb(255, 255, 255);
-    width: 60%; /* Could be more or less, depending on screen size */
+    width: 50%; /* Could be more or less, depending on screen size */
     &-title {
       font-size: 20px;
       font-weight: bold;
@@ -198,9 +220,14 @@ export default {
     position: absolute;
     text-align: left;
     left: 80px;
-    top: 110px;
+    top: 100px;
     color: rgb(255, 255, 255);
-    width: 60%; /* Could be more or less, depending on screen size */
+    font-size: 14px;
+    width: 50%; /* Could be more or less, depending on screen size */
+    &-title {
+      font-size: 16px;
+      font-weight: bold;
+    }
   }
 }
 
@@ -208,8 +235,8 @@ export default {
 .modal_action {
   &-close {
     position: absolute;
-    left: 20px;
-    top: -10px;
+    left: 5px;
+    top: -15px;
     width: 90%;
     color: rgb(255, 255, 255);
     font-size: 62px;
@@ -223,10 +250,10 @@ export default {
   }
   &-btn {
     position: absolute;
-    right: 5%;
+    left: 45px;
     top: 10px;
-    font-size: 24px;
-    padding: 8px 10px;
+    font-size: 20px;
+    padding: 6px 8px;
     border: 2px white solid;
     border-radius: 4px 4px;
   }
