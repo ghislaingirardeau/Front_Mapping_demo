@@ -8,7 +8,8 @@
             size="30px"
             :disabled="disableAction"
             color="rgb(33, 150, 243)"
-            class="pa-2 border"
+            class="pa-2"
+            :class="{'border' : closeOnClick}"
           >
             {{icon}}
           </v-icon>
