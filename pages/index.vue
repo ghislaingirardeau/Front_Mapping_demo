@@ -174,7 +174,7 @@
         :disabled="disableAction"
         color="rgb(33, 150, 243)"
         @click="modalShow.addMarker = !modalShow.addMarker"
-        class="pa-2 border"
+        class="pa-2 border-double"
         >mdi-map-marker-plus</v-icon
       >
 
@@ -342,6 +342,7 @@ export default {
   },
   methods: {
     async switchLayerMap(name) {
+
       let layers = this.layersMapsMixin()
       const remove = () => {
         return new Promise((resolve, reject) => {
@@ -357,7 +358,8 @@ export default {
         ? this.map.addLayer(this.dynamicLayerGroup[e])
         : this.map.removeLayer(this.dynamicLayerGroup[e])
     },
-    saveAction() {
+    saveAction($event) {
+      this.animationBtn($event.target, 0, 180, false) //mixins
       this.saveDatas() //mixins
       this.modalShow.generic = !this.modalShow.generic
       this.modalShow.modalTitle = this.userAuth
@@ -466,6 +468,12 @@ export default {
         this.printMap = undefined
       }
       this.coordinates = []
+      // disable animation
+      
+      let elt = document.getElementsByClassName('animationRotateBtn')
+      for (let index of elt) {
+        this.animationBtn(index, 180, 0, true) //mixins
+      }
     },
     printResponse(payload) {
       this.titleDocPrint = payload.titleDocPrint

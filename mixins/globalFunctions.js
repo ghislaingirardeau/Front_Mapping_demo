@@ -36,6 +36,18 @@ export default {
             this.$nuxt.$emit('refresh', {
                 id: 'refresh',
             })
+        },
+        animationBtn (elt, a, z, reverse) {
+            elt.animate([
+                // keyframes
+                { transform: `rotateZ(${a}deg)` },
+                { transform: `rotateZ(${z}deg)` }
+            ], {
+                // timing options
+                duration: 400,
+                fill: 'both'
+            });
+            reverse ? elt.classList.remove('animationRotateBtn') : elt.classList.add('animationRotateBtn')
         }
      }
 }
