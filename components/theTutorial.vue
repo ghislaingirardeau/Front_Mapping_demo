@@ -71,7 +71,7 @@ export default {
       tutorialsAction: [
         {
           title: 'My location -->',
-          text: 'Wait and find my position',
+          text: 'Find my position',
         },
         {
           title: 'Track me -->',

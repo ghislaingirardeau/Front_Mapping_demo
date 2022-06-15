@@ -185,6 +185,7 @@ export default {
                             this.coordinates = [
                                 [position.coords.longitude, position.coords.latitude],
                             ]
+                            eltBefore.style.setProperty('--selection-block', 'block')
                         } else if (this.accuracyLocation < 10) {
                             // show only if accuracy is good
                             eltBefore.style.setProperty('--selection-block', 'block')

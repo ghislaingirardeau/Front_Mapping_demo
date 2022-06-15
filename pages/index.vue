@@ -528,6 +528,7 @@ export default {
       }
 
       this.coordinates = []
+      this.myLocationMark.removeFrom(this.map)
     },
     locationTarget() {
       let style = {
