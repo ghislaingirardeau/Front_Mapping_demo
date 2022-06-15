@@ -42,7 +42,8 @@ export default {
   components: [
     '@/components',
     { path: '@/components/leaflet', extensions: ['vue'] },
-    { path: '@/components/external', extensions: ['vue'] }
+    { path: '@/components/external', extensions: ['vue'] },
+    { path: '@/components/menu', extensions: ['vue'] }
   ],
 
   // Modules for dev and build (recommended): https://go.nuxtjs.dev/config-modules

@@ -128,57 +128,45 @@
 
     <!-- MAP CONTROL ACTIONS -->
     <nav class="btn__actions">
-      <v-icon
-        size="30px"
-        :disabled="disableAction"
-        color="rgb(33, 150, 243)"
-        @click="navShow(1)"
-        class="pa-2 border"
-        >mdi-help-rhombus-outline</v-icon
-      >
-      <v-icon
-        size="30px"
-        :disabled="disableAction"
-        color="rgb(33, 150, 243)"
-        @click="navShow(2, $event)"
-        class="pa-2"
-        >mdi-menu</v-icon
-      >
-      <v-icon
-        size="30px"
-        :disabled="disableAction"
-        color="rgb(33, 150, 243)"
-        @click="navShow(3, $event)"
-        class="pa-2"
-        >mdi-map-legend</v-icon
-      >
-      <v-icon
-        size="30px"
-        :disabled="disableAction"
+      <control-menu
+        :disableAction="disableAction"
+        border="border"
+        icon="mdi-help-rhombus-outline"
+        :doThis="navShow"
+        :id="1"
+      />
+      <control-menu
+        :disableAction="disableAction"
+        icon="mdi-menu"
+        :doThis="navShow"
+        :id="2"
+      />
+      <control-menu
+        :disableAction="disableAction"
+        icon="mdi-map-legend"
+        :doThis="navShow"
+        :id="3"
+      />
+      <control-menu
+        :disableAction="disableAction"
         v-if="$vuetify.breakpoint.width > 990"
-        color="rgb(33, 150, 243)"
-        @click="printAction"
-        class="pa-2"
-        >mdi-printer</v-icon
-      >
-      <v-icon
-        size="30px"
-        :disabled="disableAction"
-        color="rgb(33, 150, 243)"
-        @click="saveAction"
-        class="pa-2"
-        >mdi-content-save</v-icon
-      >
-      <v-icon
-        size="30px"
-        :disabled="disableAction"
-        color="rgb(33, 150, 243)"
-        @click="navShow(4, $event)"
-        class="pa-2 border-double"
-        >mdi-map-marker-plus</v-icon
-      >
+        icon="mdi-printer"
+        :doThis="printAction"
+      />
+      <control-menu
+        :disableAction="disableAction"
+        icon="mdi-content-save"
+        :doThis="saveAction"
+      />
+      <control-menu
+        :disableAction="disableAction"
+        icon="mdi-map-marker-plus"
+        border="border-double"
+        :doThis="navShow"
+        :id="4"
+      />
 
-      <layer-menu
+      <control-layers
         icon="mdi-layers-edit"
         :disableAction="disableAction"
         :closeOnClick="true"
@@ -195,9 +183,9 @@
             </v-list-item>
           </v-list-item-group>
         </template>
-      </layer-menu>
+      </control-layers>
 
-      <layer-menu
+      <control-layers
         icon="mdi-layers-search"
         :disableAction="disableAction"
         :closeOnClick="false"
@@ -215,7 +203,7 @@
             ></v-checkbox>
           </v-list-item>
         </template>
-      </layer-menu>
+      </control-layers>
     </nav>
 
     <div class="btn__location">
@@ -342,26 +330,25 @@ export default {
   },
   methods: {
     navShow(elt, $event) {
-      
       switch (elt) {
         case 1:
           this.showTutorial = true
-          break;
+          break
         case 2:
           this.modalShow.setting = true
           this.animationBtn($event.target, 0, 180, false) //mixins
 
-          break;
+          break
         case 3:
           this.modalShow.legend = true
           this.animationBtn($event.target, 0, 180, false) //mixins
 
-          break;
+          break
         case 4:
           this.modalShow.addMarker = true
           this.animationBtn($event.target, 0, 180, false) //mixins
 
-          break;
+          break
       }
     },
     async switchLayerMap(name) {
@@ -380,7 +367,7 @@ export default {
         ? this.map.addLayer(this.dynamicLayerGroup[e])
         : this.map.removeLayer(this.dynamicLayerGroup[e])
     },
-    saveAction($event) {
+    saveAction(none, $event) {
       this.animationBtn($event.target, 0, 180, false) //mixins
       this.saveDatas() //mixins
       this.modalShow.generic = !this.modalShow.generic
@@ -391,7 +378,7 @@ export default {
         ? 'Your data is saved in the database.'
         : 'For a safely save, consider to export your datas to CSV or Register for free'
     },
-    async printAction($event) {
+    async printAction(none, $event) {
       this.animationBtn($event.target, 0, 180, false) //mixins
       let openPrintOptions = () => {
         return new Promise((resolve, reject) => {
@@ -493,7 +480,7 @@ export default {
       }
       this.coordinates = []
       // disable animation
-      
+
       let elt = document.getElementsByClassName('animationRotateBtn')
       for (let index of elt) {
         this.animationBtn(index, 180, 0, true) //mixins
