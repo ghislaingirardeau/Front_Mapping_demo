@@ -132,23 +132,23 @@
         size="30px"
         :disabled="disableAction"
         color="rgb(33, 150, 243)"
-        @click="showTutorial = true"
-        class="pa-2"
+        @click="navShow(1)"
+        class="pa-2 border"
         >mdi-help-rhombus-outline</v-icon
       >
       <v-icon
         size="30px"
         :disabled="disableAction"
         color="rgb(33, 150, 243)"
-        @click="modalShow.setting = true"
-        class="pa-2 border"
+        @click="navShow(2, $event)"
+        class="pa-2"
         >mdi-menu</v-icon
       >
       <v-icon
         size="30px"
         :disabled="disableAction"
         color="rgb(33, 150, 243)"
-        @click="modalShow.legend = !modalShow.legend"
+        @click="navShow(3, $event)"
         class="pa-2"
         >mdi-map-legend</v-icon
       >
@@ -173,7 +173,7 @@
         size="30px"
         :disabled="disableAction"
         color="rgb(33, 150, 243)"
-        @click="modalShow.addMarker = !modalShow.addMarker"
+        @click="navShow(4, $event)"
         class="pa-2 border-double"
         >mdi-map-marker-plus</v-icon
       >
@@ -341,8 +341,30 @@ export default {
     },
   },
   methods: {
-    async switchLayerMap(name) {
+    navShow(elt, $event) {
+      
+      switch (elt) {
+        case 1:
+          this.showTutorial = true
+          break;
+        case 2:
+          this.modalShow.setting = true
+          this.animationBtn($event.target, 0, 180, false) //mixins
 
+          break;
+        case 3:
+          this.modalShow.legend = true
+          this.animationBtn($event.target, 0, 180, false) //mixins
+
+          break;
+        case 4:
+          this.modalShow.addMarker = true
+          this.animationBtn($event.target, 0, 180, false) //mixins
+
+          break;
+      }
+    },
+    async switchLayerMap(name) {
       let layers = this.layersMapsMixin()
       const remove = () => {
         return new Promise((resolve, reject) => {
@@ -369,7 +391,8 @@ export default {
         ? 'Your data is saved in the database.'
         : 'For a safely save, consider to export your datas to CSV or Register for free'
     },
-    async printAction() {
+    async printAction($event) {
+      this.animationBtn($event.target, 0, 180, false) //mixins
       let openPrintOptions = () => {
         return new Promise((resolve, reject) => {
           this.modalShow.print = !this.modalShow.print // modal for options ex: add a title
@@ -387,6 +410,7 @@ export default {
         this.printLayer.addTo(this.printMap)
         let mark = L.marker(actualMapCenter).addTo(this.printMap)
         window.onafterprint = (event) => {
+          this.animationBtn($event.target, 180, 0, true) //mixins
           this.modalShow.print = false
           this.showPrintMap = false
           mark.removeFrom(this.printMap) // remove the marker for the next print
