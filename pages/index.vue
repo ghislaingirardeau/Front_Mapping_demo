@@ -211,7 +211,7 @@
         size="33px"
         color="rgb(33, 150, 243)"
         :disabled="disableLocation.position"
-        @click="GPSLocation(true, $event)"
+        @click="GPSLocation(true)"
         class="pa-3 btn-track"
         >mdi-map-marker-radius</v-icon
       >
@@ -219,7 +219,7 @@
         size="33px"
         color="rgb(33, 150, 243)"
         :disabled="disableLocation.track"
-        @click="GPSLocation(false, $event)"
+        @click="GPSLocation(false)"
         class="pa-3 btn-track"
         >mdi-map-marker-path</v-icon
       >
@@ -438,9 +438,15 @@ export default {
       if (payload.message === 'move') {
         displayMarkersOnMap()
         this.disableAction = !this.disableAction
+        Object.keys(this.disableLocation).forEach((element) => {
+        this.disableLocation[element] = true
+      })
       } else if (payload.message === 'add') {
         displayMarkersOnMap()
         this.disableAction = !this.disableAction
+        Object.keys(this.disableLocation).forEach((element) => {
+        this.disableLocation[element] = true
+      })
         // add a point to the line or polygon
         // change the cursor
         document.getElementById('map').style.cursor = 'crosshair'
