@@ -240,8 +240,7 @@
     <div class="print__block">
       <legend-modal
         class="print__block--legend"
-        v-if="showPrintMap"
-        :showPrintMap="modalShow.print"
+        :showPrintMap="showPrintMap"
         :markers="markers"
       />
     </div>
