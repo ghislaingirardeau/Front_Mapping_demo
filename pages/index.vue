@@ -332,6 +332,7 @@ export default {
       switch (elt) {
         case 1:
           this.showTutorial = !this.showTutorial
+          this.animTutoBtn($event.target, false)
           break
         case 2:
           this.modalShow.setting = true
@@ -438,14 +439,14 @@ export default {
         displayMarkersOnMap()
         this.disableAction = !this.disableAction
         Object.keys(this.disableLocation).forEach((element) => {
-        this.disableLocation[element] = true
-      })
+          this.disableLocation[element] = true
+        })
       } else if (payload.message === 'add') {
         displayMarkersOnMap()
         this.disableAction = !this.disableAction
         Object.keys(this.disableLocation).forEach((element) => {
-        this.disableLocation[element] = true
-      })
+          this.disableLocation[element] = true
+        })
         // add a point to the line or polygon
         // change the cursor
         document.getElementById('map').style.cursor = 'crosshair'

@@ -37,7 +37,7 @@ export default {
                 id: 'refresh',
             })
         },
-        animationBtn (elt, a, z, reverse) {
+        animationBtn(elt, a, z, reverse) {
             elt.animate([
                 // keyframes
                 { transform: `rotateZ(${a}deg)` },
@@ -48,6 +48,18 @@ export default {
                 fill: 'both'
             });
             reverse ? elt.classList.remove('animationRotateBtn') : elt.classList.add('animationRotateBtn')
+        },
+        animTutoBtn(elt, reverse) {
+            elt.animate([
+                // keyframes
+                { opacity: `${reverse ? 0 : 1}`, transform: `rotateZ(${reverse ? 90 : 0}deg)` },
+                { opacity: `${reverse ? 1 : 0}`, transform: `rotateZ(${reverse ? 0 : 90}deg)` }
+            ], {
+                // timing options
+                duration: 400,
+                fill: 'both'
+            });
+            reverse ? elt.classList.remove('animationOpacityBtn') : elt.classList.add('animationOpacityBtn')
         }
-     }
+    }
 }

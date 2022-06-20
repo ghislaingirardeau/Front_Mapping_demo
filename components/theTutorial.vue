@@ -132,46 +132,50 @@ export default {
       // affiche un message lors du click
       var modal = document.getElementById('helpModal')
       var span = document.getElementsByClassName('modal_action-close')[0]
-      modal.style.display = 'block'
-      modal.animate(
-        [
-          // keyframes
-          { opacity: 0 },
-          { opacity: 1 },
-        ],
-        {
-          // timing options
-          duration: 400,
-          fill: 'both',
-        }
-      )
-      const resetModal = (display) => {
+
+      const resetModal = (display, span, reverse) => {
         display.animate(
           [
-            // keyframes
-            { opacity: 1 },
-            { opacity: 0 },
+            { opacity: `${reverse ? 1 : 0}` },
+            { opacity: `${reverse ? 0 : 1}` },
           ],
           {
-            // timing options
             duration: 400,
             fill: 'both',
           }
         )
-        window.setTimeout(() => {
-          display.style.display = 'none'
-        }, 350);
-        
+        span.animate(
+          [
+            { transform: `rotateZ(${reverse ? 0 : -90}deg)` },
+            { transform: `rotateZ(${reverse ? -90 : 0}deg)` },
+          ],
+          {
+            duration: 400,
+            fill: 'both',
+          }
+        )
+        window.setTimeout(
+          () => {
+            display.style.display = reverse ? 'none' : 'block'
+          },
+          reverse ? 350 : 0
+        )
       }
+
+      resetModal(modal, span, false)
+
+      let element = document.getElementsByClassName('animationOpacityBtn')
       span.onclick = () => {
-        resetModal(modal)
+        resetModal(modal, span, true)
         this.$emit('send-tuto', {
           message: false,
         })
+        this.animTutoBtn(element[0], true)
       }
       window.onclick = (event) => {
         if (event.target == modal) {
-          resetModal(modal)
+          resetModal(modal, span, true)
+          this.animTutoBtn(element[0], true)
         }
         this.$emit('send-tuto', {
           message: false,
@@ -234,7 +238,7 @@ export default {
   &-actions {
     position: absolute;
     text-align: right;
-    right: 80px;
+    right: 70px;
     top: 15px;
     color: rgb(255, 255, 255);
     width: 50%; /* Could be more or less, depending on screen size */
@@ -268,10 +272,11 @@ export default {
 .modal_action {
   &-close {
     position: absolute;
-    left: 5px;
-    top: -15px;
-    width: 90%;
+    left: 3px;
+    top: -17px;
+    width: 60px;
     color: rgb(255, 255, 255);
+    text-align: center;
     font-size: 62px;
     font-weight: bold;
     &:hover,
@@ -283,7 +288,7 @@ export default {
   }
   &-btn {
     position: absolute;
-    left: 45px;
+    left: 60px;
     top: 10px;
     font-size: 20px;
     padding: 6px 8px;
