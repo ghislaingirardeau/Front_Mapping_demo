@@ -50,21 +50,67 @@
       </v-btn>
     </div>
 
-    <v-text-field
-      v-if="manualActive"
-      v-model="latitude"
-      :rules="latitudeRules"
-      label="latitude"
-      required
-    ></v-text-field>
+    <v-row v-if="manualActive" class="mt-sm-2" no-gutters align="center">
+      <v-col cols="11" sm="2">
+        <p>Latitude : </p>
+      </v-col>
 
-    <v-text-field
-      v-if="manualActive"
-      v-model="longitude"
-      :rules="longitudeRules"
-      label="longitude"
-      required
-    ></v-text-field>
+      <v-col cols="3" sm="3">
+        <v-text-field
+          outlined
+          v-model="manualLatitude.deg"
+          :rules="[(v) => (v < 91 && v > -91) || '-90 < latitude > 90']"
+          label="Degrees"
+        ></v-text-field>
+      </v-col>
+        <v-col cols="3" sm="3" class="mx-1">
+        <v-text-field
+          outlined
+          v-model="manualLatitude.min"
+          :rules="[(v) => (v < 60 && v >= 0) || 'wrong']"
+          label="Minutes"
+        ></v-text-field>
+      </v-col>
+      <v-col cols="4" sm="3">
+        <v-text-field
+          outlined
+          v-model="manualLatitude.sec"
+          :rules="[(v) => (v < 9999 && v > 0) || 'wrong']"
+          label="Seconds"
+        ></v-text-field>
+      </v-col>
+    </v-row>
+
+    <v-row v-if="manualActive" no-gutters align="center">
+      <v-col cols="11" sm="2">
+        <p>Longitude : </p>
+      </v-col>
+
+      <v-col cols="3" sm="3">
+        <v-text-field
+          outlined
+          v-model="manualLongitude.deg"
+          :rules="[(v) => (v < 181 && v > -181) || '-181 < longitude > 181']"
+          label="Degrees"
+        ></v-text-field>
+      </v-col>
+        <v-col cols="3" sm="3" class="mx-1">
+        <v-text-field
+          outlined
+          v-model="manualLongitude.min"
+          :rules="[(v) => (v < 60 && v >= 0) || 'wrong']"
+          label="Minutes"
+        ></v-text-field>
+      </v-col>
+      <v-col cols="4" sm="3">
+        <v-text-field
+          outlined
+          v-model="manualLongitude.sec"
+          :rules="[(v) => (v < 9999 && v > 0) || 'wrong']"
+          label="Seconds"
+        ></v-text-field>
+      </v-col>
+    </v-row>
 
     <v-btn
       :disabled="!valid"
@@ -95,8 +141,16 @@ export default {
   data: () => ({
     valid: true,
     geometryTypes: ['Area', 'Line'],
-    latitude: "-89'0.4745",
-    longitude: "90'58.6615",
+    manualLatitude: {
+      deg: 13,
+      min: 44,
+      sec: 4745
+    },
+    manualLongitude: {
+      deg: 106,
+      min: 58,
+      sec: 6615
+    },
     typeSelection: '',
     addGeoJson: {
       type: 'Feature',
@@ -172,12 +226,6 @@ export default {
         return []
       }
     },
-    latitudeRules() {
-      return manualCoordRules(this.latitude, 91, 'latitude')
-    },
-    longitudeRules() {
-      return manualCoordRules(this.longitude, 181, 'longitude')
-    }
   },
   methods: {
     validate() {
@@ -197,10 +245,9 @@ export default {
           }
         }
         const convertCoordinate = (data) => {
-          let indexLng = data.indexOf("'")
-          let degres = data.slice(0, indexLng)
-          let minute = data.slice(indexLng + 1) / 60
-          return parseFloat(degres) + parseFloat(minute)
+          let test = `${data.min}.${data.sec}`
+          console.log(parseFloat(data.deg) + parseFloat(test / 60));
+          return parseFloat(data.deg) + parseFloat(test / 60)
         }
         colorGeoJson()
 
@@ -211,8 +258,8 @@ export default {
         } else if (this.coordinates.length === 0) {
           // je saisis manuellement les coordonnées
           // convertir les coordonnées en degres/minute en lng/lat
-          getCoordinates.push(convertCoordinate(this.longitude))
-          getCoordinates.push(convertCoordinate(this.latitude))
+          getCoordinates.push(convertCoordinate(this.manualLongitude))
+          getCoordinates.push(convertCoordinate(this.manualLatitude))
         } else {
           // sinon je renvoie l'ensemble des coordonnées saisies
           getCoordinates.push(this.coordinates)
@@ -230,7 +277,7 @@ export default {
       }
     },
     manualCoordinates() {
-      this.manualActive = true
+      this.manualActive = !this.manualActive
     },
   },
 }
