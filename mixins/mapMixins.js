@@ -245,7 +245,7 @@ export default {
                 this.disableAction = !this.disableAction
                 // LOAD THE HUB FOR TARGET
                 let x = this.map.getSize().x / 2 - 24
-                let y = this.map.getSize().y / 2 - 29.5
+                let y = this.map.getSize().y / 2 - 49.5
 
                 let icon = document.getElementById('hubTarget')
                 icon.style.display = 'block'

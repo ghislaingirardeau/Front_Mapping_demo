@@ -99,7 +99,7 @@
       v-if="
         !userAuth &&
         !hubPosition &&
-        !modalShow.print &&
+        !showPrintMap &&
         !modalShow.generic &&
         !modalShow.addMarker &&
         editMark.length === 0
@@ -111,7 +111,7 @@
 
     <hub-info v-if="editMark.length > 0">
       <template v-slot:title>
-        <v-btn color="secondary" outlined @click="cancelMove">cancel</v-btn>
+        <v-btn color="secondary" text @click="cancelMove">cancel</v-btn>
       </template>
     </hub-info>
 

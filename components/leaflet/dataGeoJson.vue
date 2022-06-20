@@ -4,7 +4,7 @@
       v-if="coordinates.length > 1"
       v-model="typeSelection"
       :items="geometryTypes"
-      :rules="[(v) => !!v || 'Item is required']"
+      :rules="[(v) => !!v || 'Select a category']"
       label="Area type"
       required
     ></v-select>
@@ -12,7 +12,7 @@
     <v-select
       v-model="addGeoJson.properties.category"
       :items="category"
-      :rules="[(v) => !!v || 'Item is required']"
+      :rules="[(v) => !!v || 'No marker created for this category']"
       label="Category"
       required
       @change="addGeoJson.properties.subCategory = ''"
