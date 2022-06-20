@@ -245,9 +245,8 @@ export default {
           }
         }
         const convertCoordinate = (data) => {
-          let test = `${data.min}.${data.sec}`
-          console.log(parseFloat(data.deg) + parseFloat(test / 60));
-          return parseFloat(data.deg) + parseFloat(test / 60)
+          let calcTime = `${data.min}.${data.sec}`
+          return parseFloat(data.deg) + parseFloat(calcTime / 60)
         }
         colorGeoJson()
 

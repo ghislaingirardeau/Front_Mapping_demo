@@ -6,7 +6,7 @@
           class="modal_action-btn"
           @click="changeTuto"
         >
-          {{ tutoPage === 4 ? 'End' : 'Next' }}
+          {{ tutoPage === 5 ? 'End' : 'Next' }}
         </button>
       </div>
       <div class="modal_tuto">
@@ -51,14 +51,14 @@
               {{item.text}}
             </p>
           </div>
-
-          <!-- <p
-            v-for="(item, i) in tutorialData"
-            :key="i"
-            :style="{ 'margin-bottom': item.margin }"
-          >
-            {{ item.text }}
-          </p> -->
+        </div>
+        <div
+          class="modal_tuto-edit"
+          v-if="tutoPage === 5"
+        >
+          <v-icon size="36px">mdi-map-marker-radius-outline</v-icon>
+          <span class="modal_tuto-data-title"> &#60-- Click on any marker, to edit it :</span>
+          <p>Move location, change name, edit icon, color...</p>
         </div>
       </div>
     </div>
@@ -95,7 +95,6 @@ export default {
   },
   computed: {
     tutorialData() {
-      
       let items = [
         {
           title: '<-- Show legend',
@@ -118,7 +117,7 @@ export default {
           margin: '3px',
         })
       }
-      if(Object.keys(this.$store.state.GeoJsonDatas).length > 0) {
+      if (Object.keys(this.$store.state.GeoJsonDatas).length > 0) {
         let index = items.length
         items.splice(index, 0, {
           title: '<-- layers views',
@@ -134,8 +133,35 @@ export default {
       var modal = document.getElementById('helpModal')
       var span = document.getElementsByClassName('modal_action-close')[0]
       modal.style.display = 'block'
+      modal.animate(
+        [
+          // keyframes
+          { opacity: 0 },
+          { opacity: 1 },
+        ],
+        {
+          // timing options
+          duration: 400,
+          fill: 'both',
+        }
+      )
       const resetModal = (display) => {
-        display.style.display = 'none'
+        display.animate(
+          [
+            // keyframes
+            { opacity: 1 },
+            { opacity: 0 },
+          ],
+          {
+            // timing options
+            duration: 400,
+            fill: 'both',
+          }
+        )
+        window.setTimeout(() => {
+          display.style.display = 'none'
+        }, 350);
+        
       }
       span.onclick = () => {
         resetModal(modal)
@@ -153,7 +179,7 @@ export default {
       }
     },
     changeTuto() {
-      this.tutoPage === 4 ? (this.tutoPage = 1) : this.tutoPage++
+      this.tutoPage === 5 ? (this.tutoPage = 1) : this.tutoPage++
     },
   },
 }
@@ -164,6 +190,7 @@ export default {
 /* The Modal (background) */
 .modal_help {
   display: none; /* Hidden by default */
+  opacity: 0;
   position: fixed; /* Stay in place */
   z-index: 3; /* Sit on top */
   left: 0;
@@ -194,7 +221,7 @@ export default {
     left: 80px;
     top: 200px;
     color: rgb(255, 255, 255);
-    width: 55%; /* Could be more or less, depending on screen size */
+    width: 65%; /* Could be more or less, depending on screen size */
   }
   &-options {
     position: absolute;
@@ -202,7 +229,7 @@ export default {
     left: 80px;
     top: 65px;
     color: rgb(255, 255, 255);
-    width: 55%; /* Could be more or less, depending on screen size */
+    width: 65%; /* Could be more or less, depending on screen size */
   }
   &-actions {
     position: absolute;
@@ -228,6 +255,12 @@ export default {
       font-size: 16px;
       font-weight: bold;
     }
+  }
+  &-edit {
+    position: absolute;
+    left: 30%;
+    top: 200px;
+    width: 55%;
   }
 }
 
