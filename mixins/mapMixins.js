@@ -121,28 +121,33 @@ export default {
                 })
             }
 
-            this.layerGeoJson = L.geoJSON(layerType, {
-                // on peut enchainer les options ici
-                onEachFeature: onEachFeature,
-                pointToLayer: (feature, latlng) => {
-                    // CREATE THE MARKERS
-                    return L.marker(latlng, {
-                        icon: createIcon(
-                            feature.icon.type,
-                            feature.icon.color,
-                            20,
-                            feature.properties.name
-                        ),
-                    })
-                },
-                style: (feature) => {
-                    // DEFINE SYTLE OF POLYGONS AND LINE
-                    return { color: feature.icon.color, weight: 4 }
-                },
-            })
+            try {
+                this.layerGeoJson = L.geoJSON(layerType, {
+                    // on peut enchainer les options ici
+                    onEachFeature: onEachFeature,
+                    pointToLayer: (feature, latlng) => {
+                        // CREATE THE MARKERS
+                        return L.marker(latlng, {
+                            icon: createIcon(
+                                feature.icon.type,
+                                feature.icon.color,
+                                20,
+                                feature.properties.name
+                            ),
+                        })
+                    },
+                    style: (feature) => {
+                        // DEFINE SYTLE OF POLYGONS AND LINE
+                        return { color: feature.icon.color, weight: 4 }
+                    },
+                })
 
-            // GROUPE DE LAYER DANS LEQUEL J'ENREGISTRE LE JSON
-            groupLayer.addLayer(this.layerGeoJson)
+                // GROUPE DE LAYER DANS LEQUEL J'ENREGISTRE LE JSON
+                groupLayer.addLayer(this.layerGeoJson)
+            } catch (error) {
+                console.log(error);
+            }
+
         },
         GPSLocation(element) {
             const disabledBtn = (boolean) => {
@@ -226,10 +231,6 @@ export default {
             }
         },
         targetLocation() {
-            // disable all btn
-            Object.keys(this.disableLocation).forEach((element) => {
-                this.disableLocation[element] = true
-            })
 
             if (this.markers.length === 0) {
                 this.modalShow.generic = !this.modalShow.generic
@@ -237,6 +238,10 @@ export default {
                 this.modalShow.modalMessage =
                     'Create a marker before to add a location !'
             } else {
+                // disable all btn
+                Object.keys(this.disableLocation).forEach((element) => {
+                    this.disableLocation[element] = true
+                })
                 this.disableAction = !this.disableAction
                 // LOAD THE HUB FOR TARGET
                 let x = this.map.getSize().x / 2 - 24

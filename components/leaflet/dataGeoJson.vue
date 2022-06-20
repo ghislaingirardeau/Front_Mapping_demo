@@ -43,40 +43,60 @@
       required
     ></v-text-field>
 
+    <div v-if="coordinates.length === 0">
+      <span>The accuracy is too low, add the coordinates manualy ?</span>
+      <v-btn text color="secondary" class="mr-4" @click="manualCoordinates">
+        Manual
+      </v-btn>
+    </div>
+
     <v-text-field
-      v-if="coordinates.length === 0"
+      v-if="manualActive"
       v-model="latitude"
+      :rules="latitudeRules"
       label="latitude"
       required
     ></v-text-field>
 
     <v-text-field
-      v-if="coordinates.length === 0"
+      v-if="manualActive"
       v-model="longitude"
+      :rules="longitudeRules"
       label="longitude"
       required
     ></v-text-field>
 
-    <v-btn :disabled="!valid" color="primary" class="mr-4" @click="validate">
+    <v-btn
+      :disabled="!valid"
+      color="primary"
+      class="mr-4"
+      @click="validate"
+      v-if="coordinates.length > 0 || manualActive"
+    >
       Validate
     </v-btn>
-
-    <v-btn color="secondary" class="mr-4" @click="manualCoordinates">
-      Manual
-    </v-btn>
-    
   </v-form>
 </template>
 
 <script>
 import { mapState } from 'vuex'
 
+const manualCoordRules = (data, limits, text) => {
+  let index = data.indexOf("'")
+  let deg = parseInt(data.slice(0, index))
+  if (deg > -limits && deg < limits) {
+    return [true]
+  } else {
+    return [`wrong ${text}, has to be in the format Deg'min.sec`]
+  }
+}
+
 export default {
   data: () => ({
     valid: true,
     geometryTypes: ['Area', 'Line'],
-    latitude: "13'44.4745",
-    longitude: "106'58.6615",
+    latitude: "-89'0.4745",
+    longitude: "90'58.6615",
     typeSelection: '',
     addGeoJson: {
       type: 'Feature',
@@ -105,6 +125,7 @@ export default {
       (v) => !!v || 'Popup content is required',
       (v) => (v && v.length <= 20) || 'Name must be less than 20 characters',
     ],
+    manualActive: false,
   }),
 
   props: {
@@ -151,6 +172,12 @@ export default {
         return []
       }
     },
+    latitudeRules() {
+      return manualCoordRules(this.latitude, 91, 'latitude')
+    },
+    longitudeRules() {
+      return manualCoordRules(this.longitude, 181, 'longitude')
+    }
   },
   methods: {
     validate() {
@@ -192,7 +219,9 @@ export default {
         }
 
         this.addGeoJson.geometry.coordinates = getCoordinates
-        this.addGeoJson.properties.time = new Date(Date.now()).toISOString().slice(0, -5)
+        this.addGeoJson.properties.time = new Date(Date.now())
+          .toISOString()
+          .slice(0, -5)
 
         this.$emit('send-data', {
           show: false,
@@ -201,7 +230,7 @@ export default {
       }
     },
     manualCoordinates() {
-      this.coordinates = []
+      this.manualActive = true
     },
   },
 }
