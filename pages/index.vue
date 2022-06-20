@@ -331,7 +331,7 @@ export default {
     navShow(elt, $event) {
       switch (elt) {
         case 1:
-          this.showTutorial = true
+          this.showTutorial = !this.showTutorial
           break
         case 2:
           this.modalShow.setting = true
@@ -616,7 +616,6 @@ export default {
     } else {
       // if no data in local storage, no overlay and open the tutorials
       this.propertiesNames = []
-      this.showTutorial = !this.showTutorial
     }
 
     const layersToShow = () => {
