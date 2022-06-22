@@ -18,13 +18,10 @@
 import { mapState } from 'vuex'
 
 export default {
-  /* middleware: 'route-guards', */
   transition: 'home',
 
   data() {
     return {
-      RLvalue: undefined,
-      id: 'ID123444',
     }
   },
   computed: {
@@ -32,79 +29,6 @@ export default {
   },
   methods: {
 
-
-    // NUXT FIREBASE REALTIME DB
-    async getRealTimeDB() {
-      console.log(this.$fire.auth.currentUser)
-      const messageRef = this.$fire.database.ref('mapApp')
-      console.log(messageRef)
-      try {
-        messageRef
-          .child('HlmEVZJvEoPa7yianlEbhZ5OL0J2')
-          .once('value', function (snapshot) {
-            console.log(snapshot.val())
-          })
-      } catch (e) {
-        alert(e)
-      }
-    },
-    async postRealTimeDB() {
-      // CREATE A NEW DATA
-      const messageRef = this.$fire.database.ref('markers')
-      try {
-        await messageRef.child(this.id).set({
-          id: '1',
-          name: 'my first object',
-          content: 'object description',
-        })
-        console.log('success')
-      } catch (e) {
-        return
-      }
-    },
-    async updateRealTimeDB() {
-      const messageRef = this.$fire.database.ref('object')
-      try {
-        // UPDATE ONLY ONE VALUE INSIDE THE OBJECT
-        /* await messageRef.child('/update').update({
-            name: 'i update only name',
-          }) */
-        // UPDATE A DATA / WILL CREATE ONE IF DOESN'T EXIST YET
-        await messageRef
-          .child(this.id)
-          .child('new folder')
-          .update({
-            id: '4',
-            name: 'MY NEW UPDATE',
-            content: 'update description',
-            postID: ['a', 'b', 'c'],
-          })
-        // INSERT A NEW NODE WITH AUTO ID
-        /* await messageRef.push({
-            text: 'new text add'
-          }) */
-        console.log('success')
-        /* const snapshot = await messageRef.get('value')
-        console.log(snapshot.val())
-        this.RLvalue = snapshot.val() */
-      } catch (e) {
-        console.log(e)
-        return
-      }
-    },
-    async removeRealTimeDB() {
-      const messageRef = this.$fire.database.ref('object')
-      try {
-        await messageRef.child('id').remove()
-        console.log('success')
-        const snapshot = await messageRef.get('value')
-        console.log(snapshot.val())
-        this.RLvalue = snapshot.val()
-      } catch (e) {
-        console.log(e)
-        return
-      }
-    },
   },
 }
 </script>
