@@ -96,9 +96,8 @@ export const actions = {
                                 markers: snapshot.val().markers
                             }
                             commit('SAVE_MARKERS', datas);
-                            console.log('keepconnection');
                             commit('USER_FECTH', user)
-                            resolve(true)
+                            resolve({user: user})
                         })
                     } catch (e) {
                         alert(e)
@@ -106,7 +105,7 @@ export const actions = {
                     }
                 } else {
                     dispatch('appLoad')
-                    resolve(true)
+                    resolve({ user: undefined })
                 }
             })
         });

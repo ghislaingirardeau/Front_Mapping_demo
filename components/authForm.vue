@@ -1,7 +1,7 @@
 <template>
   <v-col cols="11" sm="6">
-    <v-overlay :value="overlay">
-      <v-progress-circular indeterminate size="64"></v-progress-circular>
+    <v-overlay :value="overlay" >
+      <loader-map />
     </v-overlay>
 
     <v-form ref="form" v-model="valid" lazy-validation>
