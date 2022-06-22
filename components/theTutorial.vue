@@ -9,8 +9,9 @@
           {{ tutoPage === 5 ? 'End' : 'Next' }}
         </button>
       </div>
+
+
       <div class="modal_tuto">
-        <!-- <h1 class="modal_tuto-title">Steps {{tutoPage}}</h1> -->
         <div
           class="modal_tuto-marker"
           v-if="tutoPage === 1"
@@ -20,7 +21,7 @@
         </div>
         <div
           class="modal_tuto-options"
-          v-if="tutoPage === 2"
+          v-show="tutoPage === 2"
         >
           <h2>&#60-- Settings & Options</h2>
           <p>Manage your datas, markers. Export/Import to CSV file. Options : Reset and show measure</p>
@@ -54,10 +55,11 @@
         </div>
         <div
           class="modal_tuto-edit"
-          v-if="tutoPage === 5"
+          v-show="tutoPage === 5"
         >
-          <v-icon size="36px">mdi-map-marker-radius-outline</v-icon>
-          <span class="modal_tuto-data-title"> &#60-- Click on any marker, to edit it :</span>
+          <v-icon size="46px" id="anim-tuto-marker" class="mb-3">mdi-map-marker-radius-outline</v-icon>
+          <arrow-tuto/>
+          <span class="modal_tuto-data-title">Click on any marker, to edit it :</span>
           <p>Move location, change name, edit icon, color...</p>
         </div>
       </div>
@@ -92,6 +94,16 @@ export default {
     showTutorial(newValue) {
       newValue ? this.helpModal() : ''
     },
+    tutoPage(newValue) {
+      if (newValue === 5) {
+        gsap.from("#anim-tuto-marker", {
+          duration: 1.4,
+          y: -80,
+          opacity: 0,
+          ease: 'elastic.out(1, 0.3)',
+        })
+      } 
+    }
   },
   computed: {
     tutorialData() {
@@ -210,6 +222,7 @@ export default {
 /* Modal Content/Box */
 
 .modal_tuto {
+  z-index: 4;
   position: relative;
   &-title {
     position: absolute;
@@ -265,12 +278,16 @@ export default {
     left: 30%;
     top: 200px;
     width: 55%;
+    & > i {
+      display: block;
+    }
   }
 }
 
 /* The Close Button */
 .modal_action {
   &-close {
+    z-index: 4;
     position: absolute;
     left: 3px;
     top: -17px;
@@ -287,6 +304,7 @@ export default {
     }
   }
   &-btn {
+    z-index: 4;
     position: absolute;
     left: 60px;
     top: 10px;
