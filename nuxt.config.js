@@ -26,6 +26,11 @@ export default {
     script: [
       {src: "https://unpkg.com/leaflet@1.7.1/dist/leaflet.js", integrity: "sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA==", crossorigin: ""},
       {src: "measure/leaflet-measure-path.js"}, //https://github.com/ProminentEdge/leaflet-measure-path
+      { src: "https://cdnjs.cloudflare.com/ajax/libs/gsap/3.10.4/gsap.min.js" },
+      { src: "https://cdnjs.cloudflare.com/ajax/libs/gsap/3.10.4/Observer.min.js" },
+      { src: "https://cdnjs.cloudflare.com/ajax/libs/gsap/3.10.4/MotionPathPlugin.min.js" },
+      { src: "https://cdnjs.cloudflare.com/ajax/libs/gsap/3.10.4/TextPlugin.min.js" },
+      { src: "https://cdnjs.cloudflare.com/ajax/libs/gsap/3.10.4/Flip.min.js" }
     ]
   },
 
@@ -43,7 +48,8 @@ export default {
     '@/components',
     { path: '@/components/leaflet', extensions: ['vue'] },
     { path: '@/components/external', extensions: ['vue'] },
-    { path: '@/components/menu', extensions: ['vue'] }
+    { path: '@/components/menu', extensions: ['vue'] },
+    { path: '@/components/svg', extensions: ['vue'] },
   ],
 
   // Modules for dev and build (recommended): https://go.nuxtjs.dev/config-modules
