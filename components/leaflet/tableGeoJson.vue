@@ -12,14 +12,19 @@
 
     <v-card>
       <v-card-title>
+        <span class="pt-5 mr-4 mr-sm-15">{{allDatas.length}} datas</span>
         <v-text-field
           v-model="search"
           append-icon="mdi-magnify"
           label="Search"
           single-line
           hide-details
+          class="px-sm-5"
         ></v-text-field>
       </v-card-title>
+      <!-- <v-card-subtitle class="mt-2">
+        Total of {{allDatas.length}}
+      </v-card-subtitle> -->
       <v-data-table
         :headers="headers"
         :items="allDatas"
