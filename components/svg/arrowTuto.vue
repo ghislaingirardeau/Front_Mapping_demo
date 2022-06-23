@@ -2,18 +2,6 @@
   <div class="arrow-marker">
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 200">
       <defs>
-        <style>
-          path,
-          polyline {
-            fill: none;
-            stroke: white;
-            vector-effect: non-scaling-stroke;
-            stroke-width: 2;
-          }
-          path {
-            stroke-dasharray: 11, 5;
-          }
-        </style>
         <marker
           id="pointer"
           markerWidth="20"
@@ -23,12 +11,17 @@
           orient="-45"
           markerUnits="userSpaceOnUse"
         >
-          <polyline points="1 1, 9 5, 1 7" />
+          <polyline points="1 1, 9 5, 1 7" fill='none' stroke='white' vector-effect= 'non-scaling-stroke' stroke-width='2'/>
         </marker>
       </defs>
       <path
         d="M 112 103 C 103 62 132 85 122 53 C 115 34 137 51 173 22"
         marker-end="url(#pointer)"
+        fill='none'
+        stroke='white'
+        vector-effect= 'non-scaling-stroke'
+        stroke-width='2'
+        stroke-dasharray= '11, 5'
       />
     </svg>
   </div>
