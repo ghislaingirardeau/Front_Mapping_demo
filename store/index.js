@@ -3,6 +3,7 @@
 export const state = () => ({
     userAuth: undefined,
     errorMessage: undefined,
+    foldersDatas: {},
     markers: [],
     GeoJsonDatas: {},
     iconsList: []
@@ -44,9 +45,15 @@ export const actions = {
                         commit('USER_FECTH', newUser.user)
 
                         const messageRef = this.$fire.database.ref('mapApp')
-                        messageRef.child(newUser.user.uid).set({
+                        messageRef.child(newUser.user.uid).child('folderA').set({
                             markers: state.markers,
-                            GeoJsonDatas: state.GeoJsonDatas
+                            GeoJsonDatas: state.GeoJsonDatas,
+                            lastUpdate: Date.now()
+                        })
+                        messageRef.child(newUser.user.uid).child('folderB').set({
+                            markers: state.markers,
+                            GeoJsonDatas: state.GeoJsonDatas,
+                            lastUpdate: Date.now() + 999
                         })
                         resolve(true)
                     });
@@ -91,10 +98,22 @@ export const actions = {
                     try {
                         messageRef.child(user.uid).once('value', (snapshot) => {
                             // RETRIEVE DATA HERE WITH uid
-                            let datas = {
-                                GeoJsonDatas: snapshot.val().GeoJsonDatas ? snapshot.val().GeoJsonDatas : {},
-                                markers: snapshot.val().markers
+                            let FBjson = snapshot.val()
+                            // sort the last folder updated to show
+                            let lastFolderUpdate = Object.values(snapshot.val()).sort((a, b) => {
+                                return a.lastUpdate - b.lastUpdate
+                            })
+                            // get the key name of the folder load
+                            for (const [key, value] of Object.entries(FBjson)) {
+                                if (value.lastUpdate === lastFolderUpdate[lastFolderUpdate.length - 1].lastUpdate) {
+                                    FBjson.on = key
+                                }
                             }
+                            let datas = {
+                                GeoJsonDatas: lastFolderUpdate[lastFolderUpdate.length - 1].GeoJsonDatas ? lastFolderUpdate[lastFolderUpdate.length - 1].GeoJsonDatas : {},
+                                markers: lastFolderUpdate[lastFolderUpdate.length - 1].markers
+                            }
+                            commit('SAVE_FBJSON', FBjson);
                             commit('SAVE_MARKERS', datas);
                             commit('USER_FECTH', user)
                             resolve({user: user})
@@ -209,10 +228,16 @@ export const actions = {
     },
     addPointLine({ commit }, data) {
         commit('ADD_POINT', data)
+    },
+    switchFolder({ commit }, folderName) {
+        commit('FOLDER_CHANGE', folderName)
     }
 }
 // contains your mutations
 export const mutations = {
+    SAVE_FBJSON(state, FBjson) {
+        state.foldersDatas = FBjson
+    },
     SAVE_ICONS(state, data) {
         state.iconsList = data;
     },
@@ -349,6 +374,12 @@ export const mutations = {
     },
     ERROR_REPONSE(state, message) {
         state.errorMessage = message
+    },
+    FOLDER_CHANGE(state, folderName) {
+        state.markers = state.foldersDatas[folderName].markers
+        state.GeoJsonDatas = state.foldersDatas[folderName].GeoJsonDatas
+        state.foldersDatas.on = folderName
+        setStorage(state.markers, state.GeoJsonDatas)
     }
 }
 export const getters = {
@@ -357,4 +388,10 @@ export const getters = {
         let array = values.map(({ properties }) => properties)
         return array
     },
+    foldersName(state) {
+        return Object.keys(state.foldersDatas).filter(e => e != 'on')
+    },
+    workOn(state) {
+        return state.foldersDatas.on
+    }
 }

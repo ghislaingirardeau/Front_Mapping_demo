@@ -249,7 +249,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapState, mapGetters } from 'vuex'
 
 export default {
   data: () => ({
@@ -309,6 +309,7 @@ export default {
   }),
   computed: {
     ...mapState(['markers', 'userAuth', 'GeoJsonDatas']),
+    ...mapGetters(['workOn']),
     hubCoordinate() {
       let crd = this.coordinates[this.coordinates.length - 1]
       if (this.coordinates.length > 0) {
