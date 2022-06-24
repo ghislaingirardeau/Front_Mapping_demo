@@ -7,25 +7,41 @@
         {{ userAuth ? `Your datas ${userAuth.displayName}` : 'My datas' }}
       </v-card-title>
       <v-card-subtitle class="d-flex flex-row align-center">
-        <span class="my-4">Create a new project :</span>
-        <v-icon size="30px" class="mx-4" color="secondary" @click="showNewField">mdi-folder-plus-outline</v-icon>
-        <v-text-field
-          v-if="newFolder.field"
-          v-model="newFolder.name"
-          dense
-          :counter="10"
-          label="Project Name"
-          class="px-sm-8"
-        ></v-text-field>
-        <v-icon size="30px" v-if="newFolder.field" class="mx-4" color="primary" @click="createNewFolder">mdi-checkbox-marked-circle-outline</v-icon>
+        <span class="my-4">New project ?</span>
+        <v-icon size="30px" class="mx-4" color="secondary" @click="showNewField(false)"
+          >mdi-folder-plus-outline</v-icon
+        >
+        <v-form ref="form" v-model="validForm" lazy-validation v-if="newFolder.create || newFolder.oldName">
+          <v-text-field
+            v-model="newFolder.name"
+            dense
+            :rules="nameRules"
+            :counter="10"
+            :label=" newFolder.oldName ? 'Rename Project' : 'Project Name'"
+            required
+          ></v-text-field>
+        </v-form>
+        <v-icon
+          v-if="newFolder.create || newFolder.oldName"
+          size="30px"
+          class="mx-4"
+          color="primary"
+          @click="editFolder"
+          >mdi-checkbox-marked-circle-outline</v-icon
+        >
       </v-card-subtitle>
-      <v-card-actions>
-        <span>Select project to display :</span>
-        <v-menu offset-y v-for="(name, l) in foldersName" :key="l">
+      <v-card-actions class="d-flex flex-wrap justify-space-around mx-2">
+        <span class="btn-active-folder">Select project to display :</span>
+        <v-menu
+          offset-y
+          v-for="(name, l) in foldersName"
+          :key="l"
+          min-width="120px"
+        >
           <template v-slot:activator="{ on, attrs }">
             <v-btn
               :color="activeFolder(name)"
-              class="ma-2 btn-active-folder"
+              class="ma-2"
               outlined
               dark
               v-bind="attrs"
@@ -43,27 +59,30 @@
             </v-btn>
           </template>
           <v-list v-if="name != workOn">
-            <v-list-item @click="editFolder(name, false)">
+            <v-list-item @click="actionFolder(name, false)">
               <v-list-item-title>Open</v-list-item-title>
-              <v-icon>mdi-folder-upload-outline</v-icon>
+              <v-icon color="secondary">mdi-folder-upload-outline</v-icon>
             </v-list-item>
-            <v-list-item @click="editFolder(name, true)">
+            <v-list-item @click="actionFolder(name, true)">
               <v-list-item-title>Remove</v-list-item-title>
-              <v-icon>mdi-folder-remove-outline</v-icon>
+              <v-icon color="secondary">mdi-folder-remove-outline</v-icon>
+            </v-list-item>
+            <v-list-item @click="showNewField(name)">
+              <v-list-item-title>Rename</v-list-item-title>
+              <v-icon color="secondary">mdi-folder-edit-outline</v-icon>
             </v-list-item>
           </v-list>
         </v-menu>
 
         <v-tooltip
           v-model="showTooltip"
-          nudge-bottom="30"
           attach=".btn-active-folder"
+          nudge-bottom="100"
         >
           <span>This folder is already open !</span>
         </v-tooltip>
       </v-card-actions>
     </v-card>
-
     <v-col cols="11" class="text-center" v-if="!userAuth">
       <p>Remember to login or register to save your data !</p>
     </v-col>
@@ -82,23 +101,31 @@ export default {
       objetData: {},
       newFolder: {
         name: '',
-        field: false
+        rename: false,
+        oldName: undefined,
+        create: false
       },
+      validForm: true,
       showTooltip: false,
     }
   },
   computed: {
     ...mapState(['markers', 'GeoJsonDatas', 'userAuth']),
     ...mapGetters(['GeoJsonTable', 'foldersName', 'workOn']),
+    nameRules() {
+      return this.foldersName.indexOf(this.newFolder.name) === -1
+        ? [true]
+        : ['This name already exist']
+    },
   },
   methods: {
     activeFolder(name) {
-      return name === this.workOn ? 'primary' : 'red'
+      return name === this.workOn ? 'secondary' : 'white'
     },
     linkMap() {
       this.$router.push('/')
     },
-    editFolder(name, remove) {
+    actionFolder(name, remove) {
       if (name != this.workOn) {
         let confirm = window.confirm(
           remove
@@ -109,23 +136,33 @@ export default {
           let folder = {
             name: name,
             remove: remove,
-            new: false
+            new: false,
           }
           this.$store.dispatch('clickFolder', folder)
         }
       }
     },
-    showNewField() {
-      this.newFolder.field = !this.newFolder.field
+    showNewField(name) {
+      if (name) {
+        this.newFolder.create = false
+        this.newFolder.oldName = name
+
+      } else {
+        this.newFolder.create = !this.newFolder.create
+        this.newFolder.oldName = undefined
+      }
     },
-    createNewFolder() {
-      let folder = {
-            name: this.newFolder.name,
-            remove: false,
-            new: true
-          }
-      this.$store.dispatch('clickFolder', folder)
-      this.refreshMap()
+    editFolder() {
+      if (this.$refs.form.validate()) {
+        let folder = {
+          name: this.newFolder.name,
+          remove: false,
+          new: this.newFolder.create,
+          rename: this.newFolder.oldName ? this.newFolder.oldName : false
+        }
+        this.$store.dispatch('clickFolder', folder)
+        this.refreshMap()
+      }
     },
     folderTooltip(name) {
       if (name === this.workOn) {
@@ -135,7 +172,6 @@ export default {
         }, 2000)
       }
     },
-    
   },
   mounted() {
     this.$store.dispatch('appLoad') // because store does not detect add / delete on object key

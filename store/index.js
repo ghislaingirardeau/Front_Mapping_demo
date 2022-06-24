@@ -46,15 +46,10 @@ export const actions = {
                         commit('USER_FECTH', newUser.user)
 
                         const messageRef = this.$fire.database.ref('mapApp')
-                        messageRef.child(newUser.user.uid).child('folderA').set({
+                        messageRef.child(newUser.user.uid).child('myProject').set({
                             markers: state.markers,
                             GeoJsonDatas: state.GeoJsonDatas,
                             lastUpdate: Date.now()
-                        })
-                        messageRef.child(newUser.user.uid).child('folderB').set({
-                            markers: state.markers,
-                            GeoJsonDatas: state.GeoJsonDatas,
-                            lastUpdate: Date.now() + 999
                         })
                         resolve(true)
                     });
@@ -230,8 +225,7 @@ export const actions = {
     addPointLine({ commit }, data) {
         commit('ADD_POINT', data)
     },
-    async clickFolder({ commit, state }, folder) {
-        console.log(folder);
+    async clickFolder({ commit, state, dispatch }, folder) {
         const messageRef = this.$fire.database.ref('mapApp')
         try {
             if (folder.remove) {
@@ -240,6 +234,11 @@ export const actions = {
                 await messageRef.child(state.userAuth.uid).child(folder.name).update({
                     lastUpdate: Date.now()
                 })
+            } else if (folder.rename) {
+                await messageRef.child(state.userAuth.uid).child(folder.name).update(
+                    state.foldersDatas[folder.rename]
+                )
+                await messageRef.child(state.userAuth.uid).child(folder.rename).remove()
             }
             commit('FOLDER_ACTION', folder)
             
@@ -372,14 +371,6 @@ export const mutations = {
     USER_FECTH(state, authUser) {
         const { uid, email, emailVerified, displayName } = authUser
         state.userAuth = { uid, email, emailVerified, displayName }
-        
-        /* (state.markers === undefined) ?
-            state.markers = []
-            : console.log(state.markers);
-                
-        (state.GeoJsonDatas === undefined) ?
-            state.GeoJsonDatas = {}
-            : console.log(state.GeoJsonDatas); */
     },
     UPDATE_USER(state, data) {
         state.userAuth.displayName = data.displayName
@@ -390,7 +381,7 @@ export const mutations = {
     ERROR_REPONSE(state, message) {
         state.errorMessage = message
     },
-    FOLDER_ACTION(state, folder) {
+    async FOLDER_ACTION(state, folder) {
         if (folder.remove) { // remove folder
             // use Vue to keep the getter reactive to the the object
             Vue.delete(state.foldersDatas, folder.name)
@@ -404,13 +395,22 @@ export const mutations = {
             state.markers = []
             state.GeoJsonDatas = {}
             setStorage(state.markers, state.GeoJsonDatas)
+        } else if (folder.rename) { // rename folder
+            const copyFolder = () => {
+                return new Promise((resolve, reject) => {
+                    Vue.set(state.foldersDatas, folder.name, state.foldersDatas[folder.rename])
+                    Vue.delete(state.foldersDatas, folder.rename)
+                    resolve(true)
+                });
+            }
+            await copyFolder()
         } else { // switch folder
             state.markers = state.foldersDatas[folder.name].markers
             state.GeoJsonDatas = state.foldersDatas[folder.name].GeoJsonDatas
             state.foldersDatas.on = folder.name
             setStorage(state.markers, state.GeoJsonDatas)
         }
-    }
+    },
 }
 export const getters = {
     GeoJsonTable(state) {
