@@ -22,9 +22,6 @@
           class="px-sm-5"
         ></v-text-field>
       </v-card-title>
-      <!-- <v-card-subtitle class="mt-2">
-        Total of {{allDatas.length}}
-      </v-card-subtitle> -->
       <v-data-table
         :headers="headers"
         :items="allDatas"

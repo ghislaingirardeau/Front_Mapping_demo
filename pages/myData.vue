@@ -1,18 +1,26 @@
 <template>
   <v-row justify="center">
     <theNavBar />
-    
-    <v-card width="100%" v-if="foldersName.length > 0">
+
+    <v-card min-width="90%" v-if="foldersName.length > 0">
       <v-card-title>
         {{ userAuth ? `Your datas ${userAuth.displayName}` : 'My datas' }}
       </v-card-title>
-      <v-card-subtitle> 
-        Select your folder to display : 
-        <v-btn icon color="secondary">
-          <v-icon>mdi-folder-plus-outline</v-icon>
-        </v-btn>
+      <v-card-subtitle class="d-flex flex-row align-center">
+        <span class="my-4">Create a new project :</span>
+        <v-icon size="30px" class="mx-4" color="secondary" @click="showNewField">mdi-folder-plus-outline</v-icon>
+        <v-text-field
+          v-if="newFolder.field"
+          v-model="newFolder.name"
+          dense
+          :counter="10"
+          label="Project Name"
+          class="px-sm-8"
+        ></v-text-field>
+        <v-icon size="30px" v-if="newFolder.field" class="mx-4" color="primary" @click="createNewFolder">mdi-checkbox-marked-circle-outline</v-icon>
       </v-card-subtitle>
       <v-card-actions>
+        <span>Select project to display :</span>
         <v-menu offset-y v-for="(name, l) in foldersName" :key="l">
           <template v-slot:activator="{ on, attrs }">
             <v-btn
@@ -45,7 +53,7 @@
             </v-list-item>
           </v-list>
         </v-menu>
-        
+
         <v-tooltip
           v-model="showTooltip"
           nudge-bottom="30"
@@ -57,12 +65,9 @@
     </v-card>
 
     <v-col cols="11" class="text-center" v-if="!userAuth">
-      <p >Remember to login or register to save your data !</p>
+      <p>Remember to login or register to save your data !</p>
     </v-col>
-    <tableGeoJson v-if="GeoJsonTable" :allDatas="GeoJsonTable" />
-    <v-col v-else cols="12">
-      <p>No data save yet</p>
-    </v-col>
+    <tableGeoJson :allDatas="GeoJsonTable" />
   </v-row>
 </template>
 
@@ -75,6 +80,10 @@ export default {
     return {
       isActive: false,
       objetData: {},
+      newFolder: {
+        name: '',
+        field: false
+      },
       showTooltip: false,
     }
   },
@@ -98,10 +107,17 @@ export default {
         )
         if (confirm) {
           remove
-            ? console.log('function to create')
+            ? this.$store.dispatch('removeFolder', name)
             : this.$store.dispatch('switchFolder', name)
         }
       }
+    },
+    showNewField() {
+      this.newFolder.field = !this.newFolder.field
+    },
+    createNewFolder() {
+      this.$store.dispatch('createFolder', this.newFolder.name)
+      this.refreshMap()
     },
     folderTooltip(name) {
       if (name === this.workOn) {
@@ -111,6 +127,7 @@ export default {
         }, 2000)
       }
     },
+    
   },
   mounted() {
     this.$store.dispatch('appLoad') // because store does not detect add / delete on object key

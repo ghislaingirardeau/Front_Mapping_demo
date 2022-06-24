@@ -1,3 +1,4 @@
+import Vue from 'vue'
 
 // holds your root state
 export const state = () => ({
@@ -231,6 +232,28 @@ export const actions = {
     },
     switchFolder({ commit }, folderName) {
         commit('FOLDER_CHANGE', folderName)
+    },
+    async removeFolder({ commit, state }, folderName) {
+        const messageRef = this.$fire.database.ref('mapApp')
+        try {
+            await messageRef.child(state.userAuth.uid).child(folderName).remove()
+            console.log('success');
+            commit('FOLDER_REMOVE', folderName)
+        } catch (e) {
+            console.log(e)
+        }
+    },
+    async createFolder({ commit, state }, folderName) {        
+        const messageRef = this.$fire.database.ref('mapApp')
+        try {
+            await messageRef.child(state.userAuth.uid).child(folderName).update({
+                    lastUpdate: Date.now()
+            })
+            console.log('success');
+            commit('FOLDER_CREATE', folderName)
+        } catch (e) {
+            console.log(e)
+        }
     }
 }
 // contains your mutations
@@ -266,7 +289,7 @@ export const mutations = {
                 }
             });
         } else {
-            state.markers = data.markers;
+            state.markers = data.markers ? data.markers : [];
             data.GeoJsonDatas ? state.GeoJsonDatas = data.GeoJsonDatas : '';
         }
         setStorage(state.markers, state.GeoJsonDatas)
@@ -356,15 +379,14 @@ export const mutations = {
     USER_FECTH(state, authUser) {
         const { uid, email, emailVerified, displayName } = authUser
         state.userAuth = { uid, email, emailVerified, displayName }
-        state.markers.length === 0 ?
-            state.markers = [{
-                type: 'Point',
-                category: 'test',
-                subCategory: '',
-                icon: 'home',
-                color: 'red',
-            }]
-            : ""
+        
+        /* (state.markers === undefined) ?
+            state.markers = []
+            : console.log(state.markers);
+                
+        (state.GeoJsonDatas === undefined) ?
+            state.GeoJsonDatas = {}
+            : console.log(state.GeoJsonDatas); */
     },
     UPDATE_USER(state, data) {
         state.userAuth.displayName = data.displayName
@@ -380,13 +402,32 @@ export const mutations = {
         state.GeoJsonDatas = state.foldersDatas[folderName].GeoJsonDatas
         state.foldersDatas.on = folderName
         setStorage(state.markers, state.GeoJsonDatas)
+    },
+    FOLDER_CREATE(state, folderName) {
+        // use Vue to keep the getter reactive to the the object
+        Vue.set(state.foldersDatas, folderName, {
+            GeoJsonDatas: {},
+            markers: []
+        })
+        state.foldersDatas.on = folderName
+        state.markers = []
+        state.GeoJsonDatas = {}
+        setStorage(state.markers, state.GeoJsonDatas)
+    },
+    FOLDER_REMOVE(state, folderName) {
+        // use Vue to keep the getter reactive to the the object
+        Vue.delete(state.foldersDatas, folderName)
     }
 }
 export const getters = {
     GeoJsonTable(state) {
-        let values = Object.values(state.GeoJsonDatas).flat()
-        let array = values.map(({ properties }) => properties)
-        return array
+        if (state.GeoJsonDatas) {
+            let values = Object.values(state.GeoJsonDatas).flat()
+            let array = values.map(({ properties }) => properties)
+            return array
+        } else {
+            return []
+        }
     },
     foldersName(state) {
         return Object.keys(state.foldersDatas).filter(e => e != 'on')
