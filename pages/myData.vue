@@ -3,10 +3,10 @@
     <theNavBar />
 
     <v-card min-width="90%" v-if="foldersName.length > 0">
-      <v-card-title>
+      <v-card-title style="padding: 6px 6px 6px 16px;">
         {{ userAuth ? `Your datas ${userAuth.displayName}` : 'My datas' }}
       </v-card-title>
-      <v-card-subtitle class="d-flex flex-row align-center">
+      <v-card-subtitle class="d-flex flex-row align-center" style="padding: 6px 6px 6px 16px;">
         <span class="my-4">New project ?</span>
         <v-icon size="30px" class="mx-4" color="secondary" @click="showNewField(false)"
           >mdi-folder-plus-outline</v-icon
@@ -30,8 +30,8 @@
           >mdi-checkbox-marked-circle-outline</v-icon
         >
       </v-card-subtitle>
-      <v-card-actions class="d-flex flex-wrap justify-space-around mx-2">
-        <span class="btn-active-folder">Select project to display :</span>
+      <v-card-actions class="d-flex flex-wrap justify-space-around" style="padding: 4px 4px 4px 8px;">
+        <!-- <span class="btn-active-folder">Select project to display :</span> -->
         <v-menu
           offset-y
           v-for="(name, l) in foldersName"
