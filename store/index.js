@@ -230,30 +230,23 @@ export const actions = {
     addPointLine({ commit }, data) {
         commit('ADD_POINT', data)
     },
-    switchFolder({ commit }, folderName) {
-        commit('FOLDER_CHANGE', folderName)
-    },
-    async removeFolder({ commit, state }, folderName) {
+    async clickFolder({ commit, state }, folder) {
+        console.log(folder);
         const messageRef = this.$fire.database.ref('mapApp')
         try {
-            await messageRef.child(state.userAuth.uid).child(folderName).remove()
-            console.log('success');
-            commit('FOLDER_REMOVE', folderName)
-        } catch (e) {
-            console.log(e)
-        }
-    },
-    async createFolder({ commit, state }, folderName) {        
-        const messageRef = this.$fire.database.ref('mapApp')
-        try {
-            await messageRef.child(state.userAuth.uid).child(folderName).update({
+            if (folder.remove) {
+                await messageRef.child(state.userAuth.uid).child(folder.name).remove()
+            } else if (folder.new) {
+                await messageRef.child(state.userAuth.uid).child(folder.name).update({
                     lastUpdate: Date.now()
-            })
-            console.log('success');
-            commit('FOLDER_CREATE', folderName)
+                })
+            }
+            commit('FOLDER_ACTION', folder)
+            
         } catch (e) {
             console.log(e)
         }
+        
     }
 }
 // contains your mutations
@@ -397,26 +390,26 @@ export const mutations = {
     ERROR_REPONSE(state, message) {
         state.errorMessage = message
     },
-    FOLDER_CHANGE(state, folderName) {
-        state.markers = state.foldersDatas[folderName].markers
-        state.GeoJsonDatas = state.foldersDatas[folderName].GeoJsonDatas
-        state.foldersDatas.on = folderName
-        setStorage(state.markers, state.GeoJsonDatas)
-    },
-    FOLDER_CREATE(state, folderName) {
-        // use Vue to keep the getter reactive to the the object
-        Vue.set(state.foldersDatas, folderName, {
-            GeoJsonDatas: {},
-            markers: []
-        })
-        state.foldersDatas.on = folderName
-        state.markers = []
-        state.GeoJsonDatas = {}
-        setStorage(state.markers, state.GeoJsonDatas)
-    },
-    FOLDER_REMOVE(state, folderName) {
-        // use Vue to keep the getter reactive to the the object
-        Vue.delete(state.foldersDatas, folderName)
+    FOLDER_ACTION(state, folder) {
+        if (folder.remove) { // remove folder
+            // use Vue to keep the getter reactive to the the object
+            Vue.delete(state.foldersDatas, folder.name)
+        } else if (folder.new) { // create folder
+            // use Vue to keep the getter reactive to the the object
+            Vue.set(state.foldersDatas, folder.name, {
+                GeoJsonDatas: {},
+                markers: []
+            })
+            state.foldersDatas.on = folder.name
+            state.markers = []
+            state.GeoJsonDatas = {}
+            setStorage(state.markers, state.GeoJsonDatas)
+        } else { // switch folder
+            state.markers = state.foldersDatas[folder.name].markers
+            state.GeoJsonDatas = state.foldersDatas[folder.name].GeoJsonDatas
+            state.foldersDatas.on = folder.name
+            setStorage(state.markers, state.GeoJsonDatas)
+        }
     }
 }
 export const getters = {

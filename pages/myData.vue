@@ -106,9 +106,12 @@ export default {
             : 'Be sure to save your datas before to switch !'
         )
         if (confirm) {
-          remove
-            ? this.$store.dispatch('removeFolder', name)
-            : this.$store.dispatch('switchFolder', name)
+          let folder = {
+            name: name,
+            remove: remove,
+            new: false
+          }
+          this.$store.dispatch('clickFolder', folder)
         }
       }
     },
@@ -116,7 +119,12 @@ export default {
       this.newFolder.field = !this.newFolder.field
     },
     createNewFolder() {
-      this.$store.dispatch('createFolder', this.newFolder.name)
+      let folder = {
+            name: this.newFolder.name,
+            remove: false,
+            new: true
+          }
+      this.$store.dispatch('clickFolder', folder)
       this.refreshMap()
     },
     folderTooltip(name) {
