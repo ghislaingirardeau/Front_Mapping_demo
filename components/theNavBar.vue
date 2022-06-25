@@ -1,15 +1,15 @@
 <template>
   <v-col cols="12" md="11">
     <v-app-bar dark class="px-4">
-      <v-btn color="primary" @click="linkMap" class="mr-3">
-        <v-icon>mdi-map-outline</v-icon>
+      <v-btn color=" secondary" @click="linkMap" class="mr-3">
+        <v-icon color="primary">mdi-map-outline</v-icon>
       </v-btn>
 
       <v-spacer></v-spacer>
       <v-tooltip bottom v-for="(link, i) in navItems" :key="i">
         <template v-slot:activator="{ on, attrs }">
           <v-icon
-            color="primary"
+            color="third"
             v-bind="attrs"
             v-on="on"
             class="mx-7"

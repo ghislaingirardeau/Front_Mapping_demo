@@ -112,13 +112,12 @@ export default {
           info: colors.teal.lighten1,
           warning: colors.amber.base,
           error: colors.deepOrange.accent4,
-          success: colors.green.accent3
+          third: '#f7a24d'
         }
       }
     }
   },
 
-  // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {
   }
 }

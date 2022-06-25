@@ -48,8 +48,8 @@
         </template>
         <template v-slot:[`item.edit`]="{ item }">
           <v-icon
-            color="primary"
-            style="border: 2px solid teal; padding: 3px"
+            color="secondary"
+            class="table-icon-editor"
             @click="openEditor(item)"
           >
             mdi-brush
@@ -57,8 +57,8 @@
         </template>
         <template v-slot:[`item.remove`]="{ item }">
           <v-icon
-            color="primary"
-            style="border: 2px solid teal; padding: 3px"
+            color="secondary"
+            class="table-icon-editor"
             @click="removeDB(item)"
           >
             mdi-delete
@@ -129,4 +129,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.table-icon-editor{
+  border: 2px solid $color-secondary; 
+  padding: 3px;
+}
 </style>

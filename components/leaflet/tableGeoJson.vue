@@ -33,9 +33,8 @@
       >
         <template v-slot:[`item.actions`]="{ item }">
           <v-icon
-            class="mr-10"
-            color="primary"
-            style="border: 2px solid teal; padding: 3px"
+            class="mr-10 table-icon-editor"
+            color="secondary"
             @click="openEditor(item)"
           >
             mdi-pencil
@@ -88,3 +87,10 @@ export default {
   },
 }
 </script>
+
+<style lang="scss" scoped>
+.table-icon-editor{
+  border: 2px solid $color-secondary; 
+  padding: 3px;
+}
+</style>
