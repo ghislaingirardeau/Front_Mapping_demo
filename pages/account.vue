@@ -1,13 +1,19 @@
 <template>
   <v-row class="text-center" justify="center">
     <theNavBar />
+
     <v-col cols="11">
       <h1>{{userAuth ? 'Edit my profile' : 'Sign to your account'}}</h1>
     </v-col>
+
     <authForm v-if="!userAuth"/>
-    <p v-if="errorMessage" class="info__message--alert">{{ errorMessage }}</p>
+
+    <v-col cols="11">
+      <p v-if="errorMessage" class="info__message--alert">{{ errorMessage }}</p>
+    </v-col>
 
     <myProfile :userAuth="userAuth" v-if="userAuth"/>
+    
     <v-col cols="11" v-if="userAuth">
       <v-btn color="primary" outlined @click="signOut()">Log Out</v-btn>
     </v-col>
