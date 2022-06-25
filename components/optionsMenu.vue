@@ -20,7 +20,7 @@
 
     <!-- Menu -->
     <v-list v-if="showMenu">
-      <h2>Settings</h2>
+      <h3>Settings</h3>
       <v-list-item
         v-for="(item, i) in settings"
         :key="i"
@@ -29,21 +29,21 @@
         exact
       >
         <v-list-item-action>
-          <v-icon>{{ item.icon }}</v-icon>
+          <v-icon color="secondary">{{ item.icon }}</v-icon>
         </v-list-item-action>
         <v-list-item-content>
           <v-list-item-title v-text="item.title" />
         </v-list-item-content>
       </v-list-item>
 
-      <h2>Actions</h2>
+      <h3>Actions</h3>
       <v-list-item
         v-for="item in actions"
         :key="item.title"
         @click="doThisFunction(item.id)"
       >
         <v-list-item-action>
-          <v-icon>{{ item.icon }}</v-icon>
+          <v-icon color="secondary">{{ item.icon }}</v-icon>
         </v-list-item-action>
         <v-list-item-content>
           <v-list-item-title v-text="item.title" />
@@ -171,8 +171,4 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-h2 {
-  border-bottom: 2px solid white;
-  padding-bottom: 5px;
-}
 </style>

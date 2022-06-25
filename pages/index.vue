@@ -165,14 +165,14 @@
         :doThis="navShow"
         :id="4"
       />
-
+      <!-- MAP LAYERS -->
       <control-layers
         icon="mdi-layers-edit"
         :disableAction="disableAction"
         :closeOnClick="true"
       >
         <template v-slot:content>
-          <v-list-item-group color="rgb(33, 150, 243)">
+          <v-list-item-group>
             <v-list-item
               v-for="(item, i) in Object.keys(layersMapsMixin())"
               :key="i"
@@ -184,7 +184,7 @@
           </v-list-item-group>
         </template>
       </control-layers>
-
+      <!-- GEOJSON LAYERS -->
       <control-layers
         icon="mdi-layers-search"
         :disableAction="disableAction"
@@ -199,7 +199,7 @@
               :label="key"
               dense
               @click="switchLayerGeoJson(key)"
-              color="rgb(33, 150, 243)"
+              color="secondary"
             ></v-checkbox>
           </v-list-item>
         </template>
@@ -209,7 +209,7 @@
     <div class="btn__location" v-if="!showPrintMap">
       <v-icon
         size="33px"
-        color="rgb(33, 150, 243)"
+        color="primary"
         :disabled="disableLocation.position"
         @click="GPSLocation(true)"
         class="pa-3 btn-track"
@@ -217,7 +217,7 @@
       >
       <v-icon
         size="33px"
-        color="rgb(33, 150, 243)"
+        color="primary"
         :disabled="disableLocation.track"
         @click="GPSLocation(false)"
         class="pa-3 btn-track"
@@ -225,7 +225,7 @@
       >
       <v-icon
         size="33px"
-        color="rgb(33, 150, 243)"
+        color="primary"
         :disabled="disableLocation.target"
         @click="targetLocation"
         class="pa-3 btn-track"

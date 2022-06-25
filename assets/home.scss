@@ -21,6 +21,11 @@
     border: 2px solid grey;
 }
 
+h3 {
+    color: $color-third;
+    border-bottom: 2px solid $color-third;
+}
+
 .btn__actions {
     display: flex;
     position: absolute;

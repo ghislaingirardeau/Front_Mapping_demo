@@ -13,7 +13,7 @@
         @click="animate"
         size="30px"
         :disabled="disableAction"
-        color="rgb(33, 150, 243)"
+        color="secondary"
         class="pa-2"
       >
         {{ icon }}

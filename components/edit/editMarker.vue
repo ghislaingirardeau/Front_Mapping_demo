@@ -80,7 +80,7 @@
       class="mt-3"
     ></v-color-picker>
     <v-spacer></v-spacer>
-    <v-btn color="teal" outlined @click="updateItem"> Save </v-btn>
+    <v-btn color="primary" outlined @click="updateItem"> Save </v-btn>
   </v-form>
 </template>
 

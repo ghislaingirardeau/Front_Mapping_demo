@@ -46,6 +46,7 @@
       <h3 class="pb-2 my-3">Options</h3>
       <v-slider
         v-model="size"
+        color="secondary"
         max="42"
         min="10"
         step="4"
@@ -57,6 +58,7 @@
         @change="showMeasure"
         v-model="measureCheckBox"
         :label="`: Show measure`"
+        color="secondary"
         hide-details
     ></v-checkbox>
     </v-col>
@@ -153,9 +155,5 @@ export default {
 }
 .block__items {
   padding: 2px;
-}
-h3 {
-  color: white;
-  border-bottom: 2px solid white;
 }
 </style>

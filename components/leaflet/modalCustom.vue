@@ -7,7 +7,7 @@
       origin="center top"
     >
       <v-card class="modal__content">
-        <v-card-title >
+        <v-card-title>
             <slot name="title"></slot>        
             <v-spacer></v-spacer>  
             <span @click="close" class="modal__content--close">&times;</span>

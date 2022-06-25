@@ -39,7 +39,7 @@
         <v-btn
           outlined
           fab
-          color="rgb(243, 129, 129)"
+          color="third"
           @click="updateItem(false)"
         >
           <v-icon>mdi-delete-forever-outline </v-icon>

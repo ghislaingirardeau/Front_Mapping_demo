@@ -425,12 +425,12 @@ export default {
 
 <style lang="scss" scoped>
 .subMessage{
-  color: $color-erreur;
+  color: $color-third;
 }
 .iconAddColor {
   padding: 8px;
   transition: transform 200ms;
-  border: 2px solid teal;
+  border: 2px solid $color-secondary;
   &::after {
     content: '';
     position: absolute;

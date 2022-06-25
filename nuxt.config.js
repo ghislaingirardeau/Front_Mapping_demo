@@ -101,12 +101,12 @@ export default {
   // Vuetify module configuration: https://go.nuxtjs.dev/config-vuetify
   vuetify: {
     customVariables: ['~/assets/variables.scss'],
-    treeShake: true, // add to change the variables
+    treeShake: true, // add to change the variable
     theme: {
       dark: true,
       themes: {
         dark: {
-          primary: "#009688",
+          primary: "#1e97f3",
           accent: colors.grey.darken3,
           secondary: '#d6d306',
           info: colors.teal.lighten1,
