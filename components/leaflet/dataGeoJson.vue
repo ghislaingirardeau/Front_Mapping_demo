@@ -52,7 +52,7 @@
 
     <v-row v-if="manualActive" class="mt-sm-2" no-gutters align="center">
       <v-col cols="11" sm="2">
-        <p>Latitude : </p>
+        <p>Latitude :</p>
       </v-col>
 
       <v-col cols="3" sm="3">
@@ -63,7 +63,7 @@
           label="Degrees"
         ></v-text-field>
       </v-col>
-        <v-col cols="3" sm="3" class="mx-1">
+      <v-col cols="3" sm="3" class="mx-1">
         <v-text-field
           outlined
           v-model="manualLatitude.min"
@@ -83,7 +83,7 @@
 
     <v-row v-if="manualActive" no-gutters align="center">
       <v-col cols="11" sm="2">
-        <p>Longitude : </p>
+        <p>Longitude :</p>
       </v-col>
 
       <v-col cols="3" sm="3">
@@ -94,7 +94,7 @@
           label="Degrees"
         ></v-text-field>
       </v-col>
-        <v-col cols="3" sm="3" class="mx-1">
+      <v-col cols="3" sm="3" class="mx-1">
         <v-text-field
           outlined
           v-model="manualLongitude.min"
@@ -144,12 +144,12 @@ export default {
     manualLatitude: {
       deg: 13,
       min: 44,
-      sec: 4745
+      sec: 4745,
     },
     manualLongitude: {
       deg: 106,
       min: 58,
-      sec: 6615
+      sec: 6615,
     },
     typeSelection: '',
     addGeoJson: {
@@ -187,10 +187,11 @@ export default {
   },
   computed: {
     ...mapState(['markers']),
-    // return Array with category from DB depending on type GeoJson
+
     category() {
+      // return Array with category from DB depending on type GeoJson
       const markerCategories = (geoJsonType) => {
-        let markerCategories = new Set(
+        const markerCategories = new Set(
           this.markers
             .filter((elt) => elt.type === geoJsonType)
             .map((i) => i.category)
@@ -216,26 +217,27 @@ export default {
     },
     // return Array of subCategory depending on the category selected
     subCategory() {
-      let arraySub = this.markers.filter(
+      const arraySubcategory = this.markers.filter(
         (elt) => elt.category === this.addGeoJson.properties.category
       )
-      arraySub.length > 0 ? (this.addGeoJson.icon.type = arraySub[0].icon) : '' // apply icon type here, no matter whoch sub cat selected
-      if (arraySub.length > 1) {
-        return arraySub.map((i) => i.subCategory)
-      } else {
-        return []
-      }
+      arraySubcategory.length > 0
+        ? (this.addGeoJson.icon.type = arraySubcategory[0].icon)
+        : '' // apply icon type here, no matter whoch sub cat selected
+
+      if (arraySubcategory.length > 1)
+        return arraySubcategory.map((i) => i.subCategory)
+      return []
     },
   },
   methods: {
     validate() {
       if (this.$refs.form.validate()) {
         const colorGeoJson = () => {
-          let category = this.markers.filter(
+          const category = this.markers.filter(
             (elt) => elt.category === this.addGeoJson.properties.category
           )
           if (category.length > 1) {
-            let subCategory = category.find(
+            const subCategory = category.find(
               (elt) =>
                 elt.subCategory === this.addGeoJson.properties.subCategory
             )
@@ -245,7 +247,7 @@ export default {
           }
         }
         const convertCoordinate = (data) => {
-          let calcTime = `${data.min}.${data.sec}`
+          const calcTime = `${data.min}.${data.sec}`
           return parseFloat(data.deg) + parseFloat(calcTime / 60)
         }
         colorGeoJson()
