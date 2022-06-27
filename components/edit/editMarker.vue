@@ -19,12 +19,7 @@
       @keyup="showIconsList(editItem.icon)"
     >
     </v-text-field>
-    <v-icon
-      class="ml-3"
-      :color="editItem.color"
-      large
-      v-if="oldItem.icon"
-    >
+    <v-icon class="ml-3" :color="editItem.color" large v-if="oldItem.icon">
       mdi-{{ editItem.icon }}
     </v-icon>
 
@@ -93,7 +88,6 @@ export default {
       dialog: false,
       iconsSuggest: [],
       valid: true,
-      /* rulesEditCat: [(v) => v.length > 1 || 'minimum 2 characters'], */
     }
   },
   props: {
@@ -105,18 +99,20 @@ export default {
   computed: {
     ...mapState(['markers', 'GeoJsonDatas', 'iconsList']),
     rulesEditCat() {
-      // if cat new is different cat old
-      const categoryExist = this.markers.map(e => e.category != this.oldItem.category ? e.category : null).includes(this.editItem.category)
+      // check if the category inside markers already exist, except the one edited
+      const categoryExist = this.markers
+        .map((e) => (e.category != this.oldItem.category ? e.category : null))
+        .includes(this.editItem.category)
       if (categoryExist) return [false || 'Category already exist']
       return [(v) => v.length > 1 || 'minimum 2 characters']
     },
     checkIcon() {
-      let control = this.iconsList.find(
-        (element) => element === this.editItem.icon
+      const showIconResult = this.iconsList.find(
+        (icon) => icon === this.editItem.icon
       )
         ? true
         : false
-      return [(v) => control || 'this icon does not exist']
+      return [(v) => showIconResult || 'this icon does not exist']
     },
     iconSuggestList: {
       // getter
@@ -130,9 +126,9 @@ export default {
     },
   },
   methods: {
-    showIconsList(e) {
+    showIconsList(inputModel) {
       // show icon inside the list
-      let value = e.toLowerCase()
+      const value = inputModel.toLowerCase()
       if (value.length > 0) {
         const result = this.iconsList.filter((word) => word.startsWith(value))
         this.iconSuggestList = result
@@ -143,11 +139,11 @@ export default {
       this.dialog = false
     },
     async updateItem() {
-      // TO UPDATE GEOJSON
+      // TO UPDATE GEOJSON, get the indexs of each geojson concern by the update (the sub cat)
       let listIndex = []
       if (this.GeoJsonDatas && this.GeoJsonDatas[this.oldItem.category]) {
-        let array = this.GeoJsonDatas[this.oldItem.category]
-        array.forEach((element, i) => {
+        let arrayOfGeoJson = this.GeoJsonDatas[this.oldItem.category]
+        arrayOfGeoJson.forEach((element, i) => {
           element.properties.subCategory === this.oldItem.subCategory
             ? listIndex.push(i)
             : ''
@@ -155,12 +151,12 @@ export default {
       }
       // DEBUG IF EDIT CAT AND ICON OF SUB CAT
       if (this.$refs.form.validate()) {
-        let dataStore = {
+        const dataStore = {
           old: this.oldItem,
           new: this.editItem,
           geosIndex: listIndex,
         }
-        let res = await this.$store.dispatch('updateMarker', dataStore)
+        await this.$store.dispatch('updateMarker', dataStore)
         this.refreshMap()
       }
     },
