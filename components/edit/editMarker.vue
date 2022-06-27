@@ -105,13 +105,10 @@ export default {
   computed: {
     ...mapState(['markers', 'GeoJsonDatas', 'iconsList']),
     rulesEditCat() {
-      let catExist = Object.keys(this.GeoJsonDatas).find(e => e === this.editItem.category)
       // if cat new is different cat old
-      if (catExist && this.editItem.category != this.oldItem.category) {
-        return [false || 'Category already exist']
-      } else {
-        return [(v) => v.length > 1 || 'minimum 2 characters']
-      }
+      const categoryExist = this.markers.map(e => e.category != this.oldItem.category ? e.category : null).includes(this.editItem.category)
+      if (categoryExist) return [false || 'Category already exist']
+      return [(v) => v.length > 1 || 'minimum 2 characters']
     },
     checkIcon() {
       let control = this.iconsList.find(
