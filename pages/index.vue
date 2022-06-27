@@ -212,7 +212,7 @@
         color="primary"
         :disabled="disableLocation.position"
         @click="GPSLocation(true)"
-        class="pa-3 btn-track"
+        class="pa-3 btn-location-position"
         >mdi-map-marker-radius</v-icon
       >
       <v-icon
@@ -220,7 +220,7 @@
         color="primary"
         :disabled="disableLocation.track"
         @click="GPSLocation(false)"
-        class="pa-3 btn-track"
+        class="pa-3 btn-location-trace"
         >mdi-map-marker-path</v-icon
       >
       <v-icon
@@ -228,7 +228,7 @@
         color="primary"
         :disabled="disableLocation.target"
         @click="targetLocation"
-        class="pa-3 btn-track"
+        class="pa-3 btn-location-target"
         >mdi-map-marker-outline</v-icon
       >
     </div>
@@ -549,6 +549,11 @@ export default {
       addMarker()
     },
     saveTarget(e) {
+      gsap.to('.btn-location-target', {
+        duration: 1.4,
+        rotateZ: '0deg',
+        ease: 'elastic.out(1, 0.3)',
+      })
       this.disableAction = !this.disableAction
       Object.keys(this.disableLocation).forEach((element) => {
         this.disableLocation[element] = false

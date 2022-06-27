@@ -179,18 +179,35 @@ export default {
                     this.disableAction = !this.disableAction
                     disabledBtn(false)
                     eltBefore.style.setProperty('--selection-block', 'none')
+                    gsap.to(".btn-location-position", {
+                        duration: 1.4,
+                        rotateZ: '0deg',
+                        ease: 'elastic.out(1, 0.3)',
+                    })
                 } else {
                     this.disableAction = !this.disableAction
                     disabledBtn(true)
+                    gsap.to(".btn-location-position", {
+                        duration: 1.4,
+                        rotateZ: '90deg',
+                        ease: 'elastic.out(1, 0.3)',
+                    })
 
-                    let success = (position) => {
+                    const success = (position) => {
                         this.hubPosition = true
+                        
                         this.accuracyLocation = position.coords.accuracy
+                        
                         if (element && this.accuracyLocation < 10) {
                             this.coordinates = [
                                 [position.coords.longitude, position.coords.latitude],
                             ]
                             eltBefore.style.setProperty('--selection-block', 'block')
+                            gsap.to(".btn-location-position", {
+                                duration: 1.4,
+                                rotateZ: '180deg',
+                                ease: 'elastic.out(1, 0.3)',
+                            })
                         } else if (this.accuracyLocation < 10) {
                             // show only if accuracy is good
                             eltBefore.style.setProperty('--selection-block', 'block')
@@ -231,7 +248,11 @@ export default {
             }
         },
         targetLocation() {
-
+            gsap.to(".btn-location-target", {
+                duration: 1.4,
+                rotateZ: '90deg',
+                ease: 'elastic.out(1, 0.3)',
+            })
             if (this.markers.length === 0) {
                 this.modalShow.generic = !this.modalShow.generic
                 this.modalShow.modalTitle = 'Add a location'

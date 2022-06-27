@@ -28,7 +28,7 @@ export default {
     },
   },
   mounted() {
-    let tl = gsap.timeline({
+    const tl = gsap.timeline({
       repeat: -1,
       onRepeat: () => {
         let list = []
