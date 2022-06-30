@@ -211,7 +211,7 @@
         size="33px"
         color="primary"
         :disabled="disableLocation.position"
-        @click="GPSLocation(true)"
+        @click="GPSLocation(true, $event)"
         class="pa-3 btn-location-position"
         >mdi-map-marker-radius</v-icon
       >
@@ -219,7 +219,7 @@
         size="33px"
         color="primary"
         :disabled="disableLocation.track"
-        @click="GPSLocation(false)"
+        @click="GPSLocation(false, $event)"
         class="pa-3 btn-location-trace"
         >mdi-map-marker-path</v-icon
       >
@@ -306,6 +306,7 @@ export default {
     editMarker: {},
     rulesEditSub: [(v) => v.length > 1 || 'minimum 2 characters'],
     pointsOfLocation: {},
+    animeBtnLocation: undefined
   }),
   computed: {
     ...mapState(['markers', 'userAuth', 'GeoJsonDatas']),

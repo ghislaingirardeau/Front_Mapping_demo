@@ -149,8 +149,8 @@ export default {
             }
 
         },
-        GPSLocation(element) {
-            const disabledBtn = (boolean) => {
+        GPSLocation(element, $event) {
+            const disableButtons = (boolean) => {
                 if (element) {
                     this.disableLocation.track = boolean
                     this.disableLocation.target = boolean
@@ -159,11 +159,43 @@ export default {
                     this.disableLocation.target = boolean
                 }
             }
-            // customize pseudo element before (already use on the button for the icon)
-            let eltBefore = document.getElementsByClassName('btn__location')[0]
-            element
-                ? eltBefore.style.setProperty('--selection-top', '20px')
-                : eltBefore.style.setProperty('--selection-top', '90px')
+            /* ANIMATION TO RUN */
+            const animationToRun = (from, to, iteration = 1, duration, direction = 'normal') => {
+                this.animeBtnLocation = $event.target.animate(
+                    [
+                        { transform: from },
+                        { transform: to }
+                    ],
+                    {
+                        duration: duration,
+                        easing: "ease",
+                        fill: 'both',
+                        iterations: iteration,
+                        direction: direction,
+                    }
+                )
+            }
+            /* ANIMATION END */
+            const animationEndRotation = (success) => {
+                this.animeBtnLocation.pause()
+                let matrix = window.getComputedStyle($event.target).transform
+                let angle
+                if (matrix) {
+                    let values = matrix.split('(')[1].split(')')[0].split(',')
+                    let a = values[0]
+                    let b = values[1]
+                    let degrees = Math.round(Math.atan2(b, a) * (180 / Math.PI))
+                    angle = Math.sign(degrees) === -1 ? 360 + degrees : degrees
+                }
+                animationToRun(`rotateZ(${angle}deg)`, `rotateZ(0deg)`, 1, 500)
+
+                if (success) {
+                    this.animeBtnLocation.addEventListener('finish', () => {
+                        animationToRun(`scale(1)`, `scale(0.9)`, Infinity, 800, 'alternate')
+                    })
+                }
+            }
+            /* ------------- */
 
             if (this.markers.length === 0) {
                 this.modalShow.generic = !this.modalShow.generic
@@ -171,46 +203,55 @@ export default {
                 this.modalShow.modalMessage =
                     'Create a marker before to add a location !'
             } else {
-                if (this.watchMe) {
+                if (this.watchMe) { // ON SECOND CLICK to stop the tracking location
                     navigator.geolocation.clearWatch(this.watchMe)
                     this.watchMe = undefined
                     this.modalShow.addLocation = true
                     this.hubPosition = false
                     this.disableAction = !this.disableAction
-                    disabledBtn(false)
-                    eltBefore.style.setProperty('--selection-block', 'none')
-                    gsap.to(".btn-location-position", {
-                        duration: 1.4,
-                        rotateZ: '0deg',
-                        ease: 'elastic.out(1, 0.3)',
-                    })
-                } else {
+                    disableButtons(false)
+
+                    /* ANIMATION ALL STOP */
+                    const animationClick = (complete) => {
+                        if (complete) {
+                            this.animeBtnLocation.cancel()
+                            this.animeBtnLocation = undefined
+                        } else {
+                            animationEndRotation(false)
+                        }
+                    }
+                    this.coordinates.length > 0 ? animationClick(true) : animationClick(false)
+                    /* -------------- */
+
+                } else { // start tracking
                     this.disableAction = !this.disableAction
-                    disabledBtn(true)
-                    gsap.to(".btn-location-position", {
-                        duration: 1.4,
-                        rotateZ: '90deg',
-                        ease: 'elastic.out(1, 0.3)',
-                    })
+                    disableButtons(true)
+
+                    /* ANIM START */
+                    animationToRun(`rotateZ(0deg)`, `rotateZ(360deg)`, Infinity, 1000)
+                    /* ---------- */
 
                     const success = (position) => {
                         this.hubPosition = true
                         
                         this.accuracyLocation = position.coords.accuracy
-                        
-                        if (element && this.accuracyLocation < 10) {
+
+                        /* TO TEST ON FIND */
+                        /* setTimeout(() => {
+                            animationEndRotation(true)
+                        }, 2400); */
+
+                        if (element && this.accuracyLocation < 10) { // Locate
+                            /* ANIMATION 3 SCALE */
+                            animationEndRotation(true)
+                            
                             this.coordinates = [
                                 [position.coords.longitude, position.coords.latitude],
                             ]
-                            eltBefore.style.setProperty('--selection-block', 'block')
-                            gsap.to(".btn-location-position", {
-                                duration: 1.4,
-                                rotateZ: '180deg',
-                                ease: 'elastic.out(1, 0.3)',
-                            })
-                        } else if (this.accuracyLocation < 10) {
-                            // show only if accuracy is good
-                            eltBefore.style.setProperty('--selection-block', 'block')
+                        } else if (this.accuracyLocation < 20) { // track
+                            /* ANIMATION 3 SCALE */
+                            animationEndRotation(true)
+
                             this.coordinates.push([
                                 position.coords.longitude,
                                 position.coords.latitude,
