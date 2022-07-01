@@ -149,9 +149,6 @@ export default {
     activeFolder(name) {
       return name === this.workOn ? 'secondary' : 'white'
     },
-    linkMap() {
-      this.$router.push('/')
-    },
     actionFolder(name, remove) {
       if (name != this.workOn) {
         let confirm = window.confirm(

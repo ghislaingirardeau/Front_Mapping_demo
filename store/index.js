@@ -375,7 +375,7 @@ export const mutations = {
     TRANSFER_GEOJSON(state, transfer) {
         const arrayGeoJsonFrom = state.foldersDatas[transfer.from].GeoJsonDatas[transfer.data.category]
         const indexFrom = arrayGeoJsonFrom.findIndex(e => e.properties.id === transfer.data.id)
-        const arrayGeoJsonTo = state.foldersDatas[transfer.to].GeoJsonDatas // if not exist return undefined
+        const arrayGeoJsonTo = state.foldersDatas[transfer.to].GeoJsonDatas
         const markerInFolderTo = state.foldersDatas[transfer.to].markers
             .find(e => e.category === transfer.data.category && e.subCategory === transfer.data.subCategory)
 
@@ -392,11 +392,6 @@ export const mutations = {
         arrayGeoJsonTo[transfer.data.category] ? 
             arrayGeoJsonTo[transfer.data.category].push(arrayGeoJsonFrom[indexFrom])
             : arrayGeoJsonTo[transfer.data.category] = [arrayGeoJsonFrom[indexFrom]]
-        /* if (arrayGeoJsonTo[transfer.data.category]) {
-            arrayGeoJsonTo[transfer.data.category].push(arrayGeoJsonFrom[indexFrom])
-        } else {
-            arrayGeoJsonTo[transfer.data.category] = [arrayGeoJsonFrom[indexFrom]]
-        } */
 
         arrayGeoJsonFrom.length === 1 ? delete state.foldersDatas[transfer.from].GeoJsonDatas[transfer.data.category] : arrayGeoJsonFrom.splice(indexFrom, 1)
     },
