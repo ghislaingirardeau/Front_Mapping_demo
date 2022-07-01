@@ -376,21 +376,27 @@ export const mutations = {
         const arrayGeoJsonFrom = state.foldersDatas[transfer.from].GeoJsonDatas[transfer.data.category]
         const indexFrom = arrayGeoJsonFrom.findIndex(e => e.properties.id === transfer.data.id)
         const arrayGeoJsonTo = state.foldersDatas[transfer.to].GeoJsonDatas // if not exist return undefined
-        const markerInFolderTo = state.foldersDatas[transfer.to].markers.find(e => e.category === transfer.data.category)
-        
+        const markerInFolderTo = state.foldersDatas[transfer.to].markers
+            .find(e => e.category === transfer.data.category && e.subCategory === transfer.data.subCategory)
+
         if (markerInFolderTo) {
             arrayGeoJsonFrom[indexFrom].icon.color = markerInFolderTo.color
             arrayGeoJsonFrom[indexFrom].icon.type = markerInFolderTo.icon
             arrayGeoJsonFrom[indexFrom].properties.subCategory = markerInFolderTo.subCategory
         } else {
-            state.foldersDatas[transfer.to].markers.push(state.markers.find(e => e.category === transfer.data.category))
+            state.foldersDatas[transfer.to].markers
+                .push(state.markers
+                    .find(e => e.category === transfer.data.category && e.subCategory === transfer.data.subCategory))
         }
-        
-        if (arrayGeoJsonTo[transfer.data.category]) {
+
+        arrayGeoJsonTo[transfer.data.category] ? 
+            arrayGeoJsonTo[transfer.data.category].push(arrayGeoJsonFrom[indexFrom])
+            : arrayGeoJsonTo[transfer.data.category] = [arrayGeoJsonFrom[indexFrom]]
+        /* if (arrayGeoJsonTo[transfer.data.category]) {
             arrayGeoJsonTo[transfer.data.category].push(arrayGeoJsonFrom[indexFrom])
         } else {
             arrayGeoJsonTo[transfer.data.category] = [arrayGeoJsonFrom[indexFrom]]
-        }
+        } */
 
         arrayGeoJsonFrom.length === 1 ? delete state.foldersDatas[transfer.from].GeoJsonDatas[transfer.data.category] : arrayGeoJsonFrom.splice(indexFrom, 1)
     },

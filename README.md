@@ -1,7 +1,8 @@
 # map_Demo
 
 TODO:
-name and category: keep both or remove name ?
+anim location btn
+switch data to an other folder
 
 ## Build Setup
 

@@ -98,7 +98,7 @@ export default {
         if (confirm) {
           this.$store.dispatch('updateGeoJson', {
             action: !action,
-            index: this.editItem.properties,
+            data: this.editItem.properties,
           })
         }
         this.refreshMap()
