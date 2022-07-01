@@ -20,13 +20,12 @@
         v-if="showFolderSelection"
         v-model="folderSelected"
         :items="folderList"
-        required
         color="secondary"
         label="Select"
       ></v-select>
       <span>
         Created the {{ editItem.properties.time.replaceAll(/[A-z]/g, ' ') }} in
-        the layer name : {{ editItem.properties.category }}
+        the layer name : {{ editItem.properties.category }}, in {{workOn}}
       </span>
     </v-form>
     <v-spacer></v-spacer>
@@ -76,7 +75,9 @@ export default {
   computed: {
     ...mapGetters(['workOn', 'foldersName']),
     folderList() {
-      return this.foldersName.filter((e) => e != this.workOn)
+      const otherFolders = this.foldersName.filter((e) => e != this.workOn)
+      this.folderSelected = otherFolders[0]
+      return otherFolders
     },
   },
   methods: {
