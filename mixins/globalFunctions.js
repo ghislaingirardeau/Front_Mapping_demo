@@ -25,8 +25,8 @@ export default {
             )
             // SAVE IN FIREBASE IF USER
             if (this.userAuth) { //this.workOn: the actual folder, the user is on
-                const messageRef = this.$fire.database.ref('mapApp')
-                await messageRef.child(this.userAuth.uid).child(this.workOn).update({
+                const firebaseProject = this.$fire.database.ref('mapApp')
+                await firebaseProject.child(this.userAuth.uid).child(this.workOn).update({
                     markers: this.markers,
                     GeoJsonDatas: this.GeoJsonDatas,
                     lastUpdate: Date.now()

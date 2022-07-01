@@ -10,6 +10,20 @@
       </v-text-field>
       <v-text-field v-model="editItem.properties.popupContent" label="details">
       </v-text-field>
+      <v-switch
+        v-if="folderList.length > 0"
+        v-model="showFolderSelection"
+        color="secondary"
+        label="Transfer to folder"
+      ></v-switch>
+      <v-select
+        v-if="showFolderSelection"
+        v-model="folderSelected"
+        :items="folderList"
+        required
+        color="secondary"
+        label="Select"
+      ></v-select>
       <span>
         Created the {{ editItem.properties.time.replaceAll(/[A-z]/g, ' ') }} in
         the layer name : {{ editItem.properties.category }}
@@ -36,12 +50,7 @@
         </v-btn>
       </v-col>
       <v-col cols="3">
-        <v-btn
-          outlined
-          fab
-          color="third"
-          @click="updateItem(false)"
-        >
+        <v-btn outlined fab color="third" @click="updateItem(false)">
           <v-icon>mdi-delete-forever-outline </v-icon>
         </v-btn>
       </v-col>
@@ -50,29 +59,44 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+
 export default {
   data() {
     return {
       valid: true,
       rulesName: [(v) => v.length >= 2 || 'Mininum 2 characters'],
+      folderSelected: undefined,
+      showFolderSelection: false,
     }
   },
   props: {
     editItem: Object,
   },
+  computed: {
+    ...mapGetters(['workOn', 'foldersName']),
+    folderList() {
+      return this.foldersName.filter((e) => e != this.workOn)
+    },
+  },
   methods: {
-    updateItem(action) {
-      const refresh = () => {
-        this.refreshMap()
-      }
-
+    async updateItem(action) {
       if (this.$refs.form.validate() && action) {
-        this.$store.dispatch('updateGeoJson', {
+        /* this.$store.dispatch('updateGeoJson', {
           action: false,
           index: this.editItem.properties,
-        })
-        refresh()
+        }) */
+        if (this.showFolderSelection && this.folderSelected) {
+          const result = await this.$store.dispatch('transferFolder', {
+            from: this.workOn,
+            to: this.folderSelected,
+            data: this.editItem.properties,
+          })
+          result ? this.refreshMap() : ''
+        }
+        
       } else if (!action) {
+        // click on remove
         let confirm = window.confirm('Remove this item ?')
         if (confirm) {
           this.$store.dispatch('updateGeoJson', {
@@ -80,7 +104,7 @@ export default {
             index: this.editItem.properties,
           })
         }
-        refresh()
+        this.refreshMap()
       }
     },
     moveItem() {

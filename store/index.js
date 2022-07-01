@@ -45,8 +45,8 @@ export const actions = {
                     return new Promise((resolve, reject) => {
                         commit('USER_FECTH', newUser.user)
 
-                        const messageRef = this.$fire.database.ref('mapApp')
-                        messageRef.child(newUser.user.uid).child('myProject').set({
+                        const firebaseProject = this.$fire.database.ref('mapApp')
+                        firebaseProject.child(newUser.user.uid).child('myProject').set({
                             markers: state.markers,
                             GeoJsonDatas: state.GeoJsonDatas,
                             lastUpdate: Date.now()
@@ -90,9 +90,9 @@ export const actions = {
         return new Promise((resolve, reject) => {
             this.$fire.auth.onAuthStateChanged((user) => {
                 if (user) {
-                    const messageRef = this.$fire.database.ref('mapApp')
+                    const firebaseProject = this.$fire.database.ref('mapApp')
                     try {
-                        messageRef.child(user.uid).once('value', (snapshot) => {
+                        firebaseProject.child(user.uid).once('value', (snapshot) => {
                             // RETRIEVE DATA HERE WITH uid
                             let FBjson = snapshot.val()
                             // sort the last folder updated to show
@@ -112,7 +112,7 @@ export const actions = {
                             commit('SAVE_FBJSON', FBjson);
                             commit('SAVE_MARKERS', datas);
                             commit('USER_FECTH', user)
-                            resolve({user: user})
+                            resolve({ user: user })
                         })
                     } catch (e) {
                         alert(e)
@@ -216,36 +216,54 @@ export const actions = {
     updateGeoJson({ commit, state }, dataToUpdate) {
         commit('UPDATE_GEOJSON', dataToUpdate);
     },
+    async transferFolder({ commit, state }, dataToTransfer) {
+        const updateStateFolder = () => {
+            return new Promise((resolve, reject) => {
+                commit('TRANSFER_GEOJSON', dataToTransfer);
+                resolve(true)
+            });
+        }
+        const result = await updateStateFolder()
+        if (result) {
+            const firebaseProject = this.$fire.database.ref('mapApp')
+            await firebaseProject.child(state.userAuth.uid).child(dataToTransfer.from).update(state.foldersDatas[dataToTransfer.from])
+            await firebaseProject.child(state.userAuth.uid).child(dataToTransfer.to).update(state.foldersDatas[dataToTransfer.to])
+            return new Promise((resolve, reject) => {
+                commit('FOLDER_ACTION', { name: dataToTransfer.to })
+                resolve(true)
+            });
+        }
+    },
     geoJsonReset({ commit, state }) {
         commit('RESET_GEOJSON')
     },
-    updateMarkCoordinates({commit}, data) {
+    updateMarkCoordinates({ commit }, data) {
         commit('DRAG_MARKER', data)
     },
     addPointLine({ commit }, data) {
         commit('ADD_POINT', data)
     },
     async clickFolder({ commit, state, dispatch }, folder) {
-        const messageRef = this.$fire.database.ref('mapApp')
+        const firebaseProject = this.$fire.database.ref('mapApp')
         try {
             if (folder.remove) {
-                await messageRef.child(state.userAuth.uid).child(folder.name).remove()
+                await firebaseProject.child(state.userAuth.uid).child(folder.name).remove()
             } else if (folder.new) {
-                await messageRef.child(state.userAuth.uid).child(folder.name).update({
+                await firebaseProject.child(state.userAuth.uid).child(folder.name).update({
                     lastUpdate: Date.now()
                 })
             } else if (folder.rename) {
-                await messageRef.child(state.userAuth.uid).child(folder.name).update(
+                await firebaseProject.child(state.userAuth.uid).child(folder.name).update(
                     state.foldersDatas[folder.rename]
                 )
-                await messageRef.child(state.userAuth.uid).child(folder.rename).remove()
+                await firebaseProject.child(state.userAuth.uid).child(folder.rename).remove()
             }
             commit('FOLDER_ACTION', folder)
-            
+
         } catch (e) {
             console.log(e)
         }
-        
+
     }
 }
 // contains your mutations
@@ -304,7 +322,7 @@ export const mutations = {
                     e.category = update.new.category
                 })
             }
-            
+
             // GEOJSON
             // IF CATEGORY NAME CHANGE = COPY OLD NAME TO THE NEW KEY AND DELETE IT
             // if geojson with old category exist = avoid to create a new one empty
@@ -342,6 +360,19 @@ export const mutations = {
             geoJsonCategorie[index].properties = update.index
         }
         setStorage(state.markers, state.GeoJsonDatas)
+    },
+    TRANSFER_GEOJSON(state, transfer) {
+        const arrayGeoJsonFrom = state.foldersDatas[transfer.from].GeoJsonDatas[transfer.data.category]
+        const indexFrom = arrayGeoJsonFrom.findIndex(e => e.properties.id === transfer.data.id)
+        const arrayGeoJsonTo = state.foldersDatas[transfer.to].GeoJsonDatas[transfer.data.category] // if not exist return undefined
+
+        if (arrayGeoJsonTo) {
+            arrayGeoJsonTo.push(arrayGeoJsonFrom[indexFrom])
+        } else {
+            state.foldersDatas[transfer.to].GeoJsonDatas[transfer.data.category] = [arrayGeoJsonFrom[indexFrom]]
+        }
+
+        arrayGeoJsonFrom.length === 1 ? delete state.foldersDatas[transfer.from].GeoJsonDatas[transfer.data.category] : arrayGeoJsonFrom.splice(indexFrom, 1)
     },
     SAVE_GEOJSON(state, data) {
         state.GeoJsonDatas[data.properties.category] ?
