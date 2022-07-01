@@ -1,5 +1,8 @@
 <template>
   <div>
+    <v-overlay :value="overlay">
+      <loader-map />
+    </v-overlay>
     <v-form ref="form" v-model="valid" lazy-validation class="mb-3">
       <v-text-field
         v-model="editItem.properties.name"
@@ -63,6 +66,7 @@ import { mapGetters } from 'vuex'
 export default {
   data() {
     return {
+      overlay: false,
       valid: true,
       rulesName: [(v) => v.length >= 2 || 'Mininum 2 characters'],
       folderSelected: undefined,
@@ -83,6 +87,7 @@ export default {
   methods: {
     async updateItem(action) {
       if (this.$refs.form.validate() && action) {
+        this.overlay = true
         const result = await this.$store.dispatch('updateGeoJson', {
           action: false,
           data: this.editItem.properties,
