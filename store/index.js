@@ -213,8 +213,19 @@ export const actions = {
     geoJsonOnCreate({ commit }, newGeoJson) {
         commit('SAVE_GEOJSON', newGeoJson)
     },
-    updateGeoJson({ commit, state }, dataToUpdate) {
-        commit('UPDATE_GEOJSON', dataToUpdate);
+    async updateGeoJson({ commit, dispatch }, dataToUpdate) {
+        const update = () => {
+            return new Promise((resolve, reject) => {
+                commit('UPDATE_GEOJSON', dataToUpdate);
+                resolve(true)
+            });
+        }
+        const result = await update()
+        if (result && dataToUpdate.switch) {
+            return dispatch('transferFolder', dataToUpdate)
+        } else {
+            return result
+        }
     },
     async transferFolder({ commit, state }, dataToTransfer) {
         const updateStateFolder = () => {
@@ -351,25 +362,34 @@ export const mutations = {
         setStorage(state.markers, state.GeoJsonDatas)
     },
     UPDATE_GEOJSON(state, update) {
-        const geoJsonCategorie = state.GeoJsonDatas[update.index.category]
-        const index = geoJsonCategorie.findIndex(elt => elt.properties.id === update.index.id)
+        const geoJsonCategorie = state.GeoJsonDatas[update.data.category]
+        const index = geoJsonCategorie.findIndex(elt => elt.properties.id === update.data.id)
         if (update.action) {
             geoJsonCategorie[index].properties = {} // to refresh the state.GeoJsonDatas
-            geoJsonCategorie.length === 1 ? delete state.GeoJsonDatas[update.index.category] : geoJsonCategorie.splice(index, 1)
+            geoJsonCategorie.length === 1 ? delete state.GeoJsonDatas[update.data.category] : geoJsonCategorie.splice(index, 1)
         } else {
-            geoJsonCategorie[index].properties = update.index
+            geoJsonCategorie[index].properties = update.data
         }
         setStorage(state.markers, state.GeoJsonDatas)
     },
     TRANSFER_GEOJSON(state, transfer) {
         const arrayGeoJsonFrom = state.foldersDatas[transfer.from].GeoJsonDatas[transfer.data.category]
         const indexFrom = arrayGeoJsonFrom.findIndex(e => e.properties.id === transfer.data.id)
-        const arrayGeoJsonTo = state.foldersDatas[transfer.to].GeoJsonDatas[transfer.data.category] // if not exist return undefined
-
-        if (arrayGeoJsonTo) {
-            arrayGeoJsonTo.push(arrayGeoJsonFrom[indexFrom])
+        const arrayGeoJsonTo = state.foldersDatas[transfer.to].GeoJsonDatas // if not exist return undefined
+        const markerInFolderTo = state.foldersDatas[transfer.to].markers.find(e => e.category === transfer.data.category)
+        
+        if (markerInFolderTo) {
+            arrayGeoJsonFrom[indexFrom].icon.color = markerInFolderTo.color
+            arrayGeoJsonFrom[indexFrom].icon.type = markerInFolderTo.icon
+            arrayGeoJsonFrom[indexFrom].properties.subCategory = markerInFolderTo.subCategory
         } else {
-            state.foldersDatas[transfer.to].GeoJsonDatas[transfer.data.category] = [arrayGeoJsonFrom[indexFrom]]
+            state.foldersDatas[transfer.to].markers.push(state.markers.find(e => e.category === transfer.data.category))
+        }
+        
+        if (arrayGeoJsonTo[transfer.data.category]) {
+            arrayGeoJsonTo[transfer.data.category].push(arrayGeoJsonFrom[indexFrom])
+        } else {
+            arrayGeoJsonTo[transfer.data.category] = [arrayGeoJsonFrom[indexFrom]]
         }
 
         arrayGeoJsonFrom.length === 1 ? delete state.foldersDatas[transfer.from].GeoJsonDatas[transfer.data.category] : arrayGeoJsonFrom.splice(indexFrom, 1)

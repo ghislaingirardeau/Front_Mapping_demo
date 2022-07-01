@@ -82,18 +82,14 @@ export default {
   methods: {
     async updateItem(action) {
       if (this.$refs.form.validate() && action) {
-        /* this.$store.dispatch('updateGeoJson', {
+        const result = await this.$store.dispatch('updateGeoJson', {
           action: false,
-          index: this.editItem.properties,
-        }) */
-        if (this.showFolderSelection && this.folderSelected) {
-          const result = await this.$store.dispatch('transferFolder', {
-            from: this.workOn,
-            to: this.folderSelected,
-            data: this.editItem.properties,
-          })
-          result ? this.refreshMap() : ''
-        }
+          data: this.editItem.properties,
+          from: this.workOn,
+          to: this.folderSelected,
+          switch: this.showFolderSelection
+        })
+        result ? this.refreshMap() : ''
         
       } else if (!action) {
         // click on remove
