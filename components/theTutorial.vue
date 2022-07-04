@@ -35,7 +35,7 @@
             <span class="modal_tuto-actions-title">
               {{item.title}}
             </span>
-            <p>
+            <p v-if="item.text">
               {{item.text}}
             </p>
           </div>
@@ -115,12 +115,11 @@ export default {
         },
         {
           title: '<-- Save datas',
-          margin: '60px',
+          margin: '70px',
         },
         {
-          title: '<-- Layers map',
-          text: 'Change the map layer',
-          margin: '10px',
+          title: '<-- Change the map',
+          margin: '18px',
         },
       ]
       if (this.$vuetify.breakpoint.width > 990) {
@@ -131,10 +130,18 @@ export default {
       }
       if (Object.keys(this.$store.state.GeoJsonDatas).length > 0) {
         let index = items.length
-        items.splice(index, 0, {
-          title: '<-- layers views',
-          margin: '3px',
-        })
+        const addItems = [
+          {
+            title: '<-- layers of datas to show',
+            margin: '18px',
+          },
+          {
+            title: '<-- your folders / projects',
+            text: "Don't forget to save when you switch to an other project",
+            margin: '3px',
+          },
+        ]
+        items.splice(index, 0, ...addItems)
       }
       return items
     },
