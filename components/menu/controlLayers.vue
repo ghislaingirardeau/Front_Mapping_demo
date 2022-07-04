@@ -10,6 +10,7 @@
         dark
         v-bind="attrs"
         v-on="on"
+        :id="'layerBtn' + id"
         @click="animate"
         size="30px"
         :disabled="disableAction"
@@ -36,15 +37,8 @@ export default {
   watch: {
     show(newValue, oldValue) {
       if (!newValue) {
-        // to alternate the animation of the icon
-        let elt = document.querySelectorAll('.animationRotateBtn')
-        elt.length === 2 && !this.closeOnClick //if
-          ? this.animationBtn(elt[1], 180, 0, true)
-          : elt.length === 2 && this.closeOnClick // else if
-          ? this.animationBtn(elt[0], 180, 0, true)
-          : elt.length === 1 // else if
-          ? this.animationBtn(elt[0], 180, 0, true)
-          : ''
+        let elt = document.querySelector(`#layerBtn${this.id}`)
+        this.animationBtn(elt, 180, 0, true)
       }
     },
   },
@@ -52,9 +46,14 @@ export default {
     icon: String,
     disableAction: Boolean,
     closeOnClick: Boolean,
+    id: String
   },
   methods: {
     animate($elt) {
+      let elt = document.querySelectorAll('.animationRotateBtn')
+        elt.forEach(e => {
+          this.animationBtn(e, 180, 0, true)
+        })
       this.show ? '' : this.animationBtn($elt.target, 0, 180, false)
     },
   },

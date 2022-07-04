@@ -167,9 +167,10 @@
       />
       <!-- MAP LAYERS -->
       <control-layers
-        icon="mdi-layers-edit"
+        icon="mdi-layers"
         :disableAction="disableAction"
         :closeOnClick="true"
+        id="1"
       >
         <template v-slot:content>
           <v-list-item-group>
@@ -189,6 +190,7 @@
         icon="mdi-layers-search"
         :disableAction="disableAction"
         :closeOnClick="false"
+        id="2"
         v-if="Object.keys(GeoJsonDatas).length > 0"
         :key="Object.keys(GeoJsonDatas).length"
       >
@@ -204,6 +206,28 @@
           </v-list-item>
         </template>
       </control-layers>
+      <!-- FOLDER TO SHOW -->
+      <control-layers
+        icon="mdi-layers-edit"
+        :disableAction="disableAction"
+        :closeOnClick="true"
+        id="3"
+        v-if="userAuth"
+      >
+        <template v-slot:content>
+          <v-list-item-group>
+            <v-list-item
+              v-for="(item, i) in foldersName"
+              :key="i"
+            >
+              <v-list-item-content @click="switchFolderMap(item)">
+                <v-list-item-title v-text="item" :class="{activeFolder: workOn === item}"></v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+          </v-list-item-group>
+        </template>
+      </control-layers>
+
     </nav>
 
     <div class="btn__location" v-if="!showPrintMap">
@@ -310,7 +334,7 @@ export default {
   }),
   computed: {
     ...mapState(['markers', 'userAuth', 'GeoJsonDatas']),
-    ...mapGetters(['workOn']),
+    ...mapGetters(['workOn', 'foldersName']),
     hubCoordinate() {
       let crd = this.coordinates[this.coordinates.length - 1]
       if (this.coordinates.length > 0) {
@@ -368,6 +392,13 @@ export default {
       this.geoActive[e]
         ? this.map.addLayer(this.dynamicLayerGroup[e])
         : this.map.removeLayer(this.dynamicLayerGroup[e])
+    },
+    switchFolderMap(name) { 
+      let folder = {
+        name: name,
+      }
+      this.$store.dispatch('clickFolder', folder)
+      this.refreshMap()
     },
     saveAction(none, $event) {
       this.animationBtn($event.target, 0, 180, false) //mixins

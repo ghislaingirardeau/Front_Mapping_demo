@@ -78,7 +78,7 @@ export default {
         },
         {
           icon: 'mdi-database-eye',
-          title: 'Datas table',
+          title: 'Manage folders & datas',
           to: '/myData',
         },
         {
