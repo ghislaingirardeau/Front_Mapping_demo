@@ -17,7 +17,7 @@
           v-if="tutoPage === 1"
         >
           <h2>&#60-- Create a marker</h2>
-          <p>The marker will also be your layer name, you can add sub category to your layer</p>
+          <p>The marker will also be your layer name, you can add sub category to your marker</p>
         </div>
         <div
           class="modal_tuto-options"
@@ -60,7 +60,7 @@
           <v-icon size="46px" id="anim-tuto-marker" class="mb-3">mdi-map-marker-radius-outline</v-icon>
           <arrow-tuto/>
           <span class="modal_tuto-data-title">Click on any marker, to edit it :</span>
-          <p>Move location, change name, edit icon, color...</p>
+          <p>Move location, change name, edit icon, color... Transfer the data to an other folder</p>
         </div>
       </div>
     </div>
@@ -89,6 +89,7 @@ export default {
   },
   props: {
     showTutorial: Boolean,
+    userAuth: Object
   },
   watch: {
     showTutorial(newValue) {
@@ -122,26 +123,22 @@ export default {
           margin: '18px',
         },
       ]
-      if (this.$vuetify.breakpoint.width > 990) {
-        items.splice(1, 0, {
-          title: '<-- Print or save as PDF',
-          margin: '3px',
+      const addToItems = (atTheEnd, title, margin = '3px', text = undefined) => {
+        let index = atTheEnd ? items.length : 1
+        items.splice(index, 0, {
+          title: title,
+          text: text,
+          margin: margin,
         })
       }
+      if (this.$vuetify.breakpoint.width > 990) {
+        addToItems(false, '<-- Print or save as PDF')
+      }
       if (Object.keys(this.$store.state.GeoJsonDatas).length > 0) {
-        let index = items.length
-        const addItems = [
-          {
-            title: '<-- layers of datas to show',
-            margin: '18px',
-          },
-          {
-            title: '<-- your folders / projects',
-            text: "Don't forget to save when you switch to an other project",
-            margin: '3px',
-          },
-        ]
-        items.splice(index, 0, ...addItems)
+        addToItems(true, '<-- layers of datas to show','18px')
+      }
+      if (this.userAuth) {
+        addToItems(true, '<-- your folders / projects', '3px', "Don't forget to save when you switch to an other project")
       }
       return items
     },
@@ -274,7 +271,7 @@ export default {
     top: 100px;
     color: rgb(255, 255, 255);
     font-size: 14px;
-    width: 50%; /* Could be more or less, depending on screen size */
+    width: 70%; /* Could be more or less, depending on screen size */
     &-title {
       font-size: 16px;
       font-weight: bold;

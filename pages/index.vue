@@ -86,7 +86,7 @@
     </edit-menu>
 
     <!-- MODAL TUTORIAL -->
-    <theTutorial :showTutorial="showTutorial" @send-tuto="closeTuto" />
+    <theTutorial :showTutorial="showTutorial" @send-tuto="closeTuto" :userAuth='userAuth' />
 
     <!-- MODAL GPS LOCATION -->
     <hub-info v-if="hubPosition">
