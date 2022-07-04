@@ -13,10 +13,10 @@
     </div>
 
     <!-- External options -->
-    <export-file v-if="modalExport"/>
-    
+    <export-file v-if="modalExport" />
+
     <!-- External options -->
-    <import-files v-if="modalImport"/>
+    <import-files v-if="modalImport" />
 
     <!-- Menu -->
     <v-list v-if="showMenu">
@@ -79,12 +79,12 @@ export default {
         {
           icon: 'mdi-database-eye',
           title: 'Manage folders & datas',
-          to: '/myData',
+          to: '/datas',
         },
         {
           icon: 'mdi-database-marker',
           title: 'Markers table',
-          to: '/myConfig',
+          to: '/configuration',
         },
       ]
       this.userAuth

@@ -31,12 +31,12 @@ export default {
       {
         icon: 'mdi-database-eye',
         title: 'My Datas',
-        to: '/myData',
+        to: '/datas',
       },
       {
         icon: 'mdi-database-marker',
         title: 'My Markers',
-        to: '/myConfig',
+        to: '/configuration',
       },
       {
         icon: 'mdi-account-box-outline',

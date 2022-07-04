@@ -95,7 +95,7 @@ export default {
     async sendDataForm() {
       const redirectTo = (result) => {
         if (result) {
-          this.$router.push('/myData')
+          this.$router.push('/datas')
         } else {
           this.overlay = false
         }
@@ -147,5 +147,4 @@ export default {
   opacity: 0;
   transform: translateX(30px);
 }
-
 </style>
