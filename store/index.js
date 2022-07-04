@@ -375,6 +375,11 @@ export const mutations = {
     TRANSFER_GEOJSON(state, transfer) {
         const arrayGeoJsonFrom = state.foldersDatas[transfer.from].GeoJsonDatas[transfer.data.category]
         const indexFrom = arrayGeoJsonFrom.findIndex(e => e.properties.id === transfer.data.id)
+        
+        // if to a new create folder, have to define geojson and marker because undefined
+        state.foldersDatas[transfer.to].GeoJsonDatas === undefined ? state.foldersDatas[transfer.to].GeoJsonDatas = {} : ''
+        state.foldersDatas[transfer.to].markers === undefined ? state.foldersDatas[transfer.to].markers = [] : ''
+        
         const arrayGeoJsonTo = state.foldersDatas[transfer.to].GeoJsonDatas
         const markerInFolderTo = state.foldersDatas[transfer.to].markers
             .find(e => e.category === transfer.data.category && e.subCategory === transfer.data.subCategory)

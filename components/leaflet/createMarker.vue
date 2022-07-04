@@ -272,7 +272,7 @@ export default {
   computed: {
     ...mapState(['iconsList']),
     checkCatExist() {
-      let result = this.markers.map((a) => a.category)
+      let result = this.markers ? this.markers.map((a) => a.category) : ''
       let mySet = new Set(result)
       let control = [...mySet].find(
         (element) => element === this.newIcon.category

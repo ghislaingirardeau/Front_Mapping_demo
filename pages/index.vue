@@ -191,7 +191,7 @@
         :disableAction="disableAction"
         :closeOnClick="false"
         id="2"
-        v-if="Object.keys(GeoJsonDatas).length > 0"
+        v-if="GeoJsonDatas && Object.keys(GeoJsonDatas).length > 0"
         :key="Object.keys(GeoJsonDatas).length"
       >
         <template v-slot:content>
@@ -610,9 +610,11 @@ export default {
   },
   created() {
     // menu layer geojson: load switch on true automaticly
-    Object.keys(this.GeoJsonDatas).forEach((e) => {
-      this.geoActive[e] = true
-    })
+    if (this.GeoJsonDatas) {
+      Object.keys(this.GeoJsonDatas).forEach((e) => {
+        this.geoActive[e] = true
+      })
+    }
   },
   mounted() {
     this.printLayer = L.tileLayer(
@@ -624,7 +626,7 @@ export default {
       center: [0, 0],
       zoom: 6,
     }
-    if (Object.keys(this.GeoJsonDatas).length > 0) {
+    if (this.GeoJsonDatas && Object.keys(this.GeoJsonDatas).length > 0) {
       // CHECK IF OBJECT GeoJsonDatas IS EMPTY OR NOT
       // if there is data from a file, loaded
       try {

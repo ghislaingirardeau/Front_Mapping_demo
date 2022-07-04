@@ -1,5 +1,5 @@
 <template>
-  <v-row class="text-center" v-if="markers.length > 0">
+  <v-row class="text-center" v-if="markers && markers.length > 0">
     <edit-menu :showModal="showModal" @send-modal="modalMarker">
       <template v-slot:title>
         <span> Edit my data </span>

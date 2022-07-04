@@ -134,7 +134,7 @@ export default {
       if (this.$vuetify.breakpoint.width > 990) {
         addToItems(false, '<-- Print or save as PDF')
       }
-      if (Object.keys(this.$store.state.GeoJsonDatas).length > 0) {
+      if (this.$store.state.GeoJsonDatas && Object.keys(this.$store.state.GeoJsonDatas).length > 0) {
         addToItems(true, '<-- layers of datas to show','18px')
       }
       if (this.userAuth) {
