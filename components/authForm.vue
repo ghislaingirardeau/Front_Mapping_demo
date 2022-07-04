@@ -118,7 +118,7 @@ export default {
     // NUXT FIREBASE AUTH
     async forgotPassword() {
       await this.$fire.auth
-        .sendPasswordResetEmail(this.userAuth.email)
+        .sendPasswordResetEmail(this.formData.email)
         .then(() => {
           console.log('Email to reset the password send')
           this.resetMessage =
@@ -126,7 +126,7 @@ export default {
         })
         .catch((error) => {
           console.log(error, 'fail to send the email')
-          this.resetMessage = 'Fail to send the email !'
+          this.resetMessage = "Fail to reset ! This email doesn't exist"
         })
     },
   },
