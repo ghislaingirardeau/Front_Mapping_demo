@@ -99,7 +99,7 @@
       v-if="
         !userAuth &&
         !hubPosition &&
-        !showPrintMap &&
+        !printMap.show &&
         !modalShow.generic &&
         !modalShow.addMarker &&
         editMark.length === 0
@@ -124,10 +124,10 @@
     <hub-location :saveTarget="saveTarget" :locationTarget="locationTarget" />
 
     <!-- TITLE FOR PRINTING -->
-    <span class="print__block--title">{{ titleDocPrint }}</span>
+    <span class="print__block--title">{{ printMap.title }}</span>
 
     <!-- MAP CONTROL ACTIONS -->
-    <nav class="btn__actions" v-if="!showPrintMap">
+    <nav class="btn__actions" v-if="!printMap.show">
       <control-menu
         :disableAction="disableAction"
         border="border"
@@ -230,7 +230,7 @@
 
     </nav>
 
-    <aside class="btn__location" v-if="!showPrintMap">
+    <aside class="btn__location" v-if="!printMap.show">
       <v-icon
         size="33px"
         color="primary"
@@ -264,11 +264,11 @@
     <div class="print__block">
       <legend-modal
         class="print__block--legend"
-        :showPrintMap="showPrintMap"
+        :showPrintMap="printMap.show"
         :markers="markers"
       />
     </div>
-    <div id="mapPrint" v-show="showPrintMap"></div>
+    <div id="mapPrint" v-show="printMap.show"></div>
   </div>
 </template>
 
@@ -307,10 +307,13 @@ export default {
       target: false,
     },
     // print
-    showPrintMap: false,
-    printLayer: undefined,
-    titleDocPrint: undefined,
-    printMap: undefined,
+    printMap: {
+      show: false,
+      layer: undefined,
+      title: undefined,
+      map: undefined,
+      view: 6,
+    },
     // hub display
     markerTarget: undefined,
     // layers & layer group
@@ -401,11 +404,11 @@ export default {
         ? 'Your data is saved in the database.'
         : 'For a safely save, consider to export your datas to CSV or Register for free'
     },
-    async printAction(none, $event) {
+    async printAction() {
       let openPrintOptions = () => {
         return new Promise((resolve, reject) => {
           this.modalShow.print = !this.modalShow.print // modal for options ex: add a title
-          this.showPrintMap = !this.showPrintMap // build map print container
+          this.printMap.show = !this.printMap.show // build map print container
           resolve(true)
         })
       }
@@ -415,14 +418,14 @@ export default {
       let result = await openPrintOptions()
       if (result) {
         // mount the map after
-        this.printMap = await L.map('mapPrint').setView(actualMapCenter, 6)
-        this.printLayer.addTo(this.printMap)
-        let mark = L.marker(actualMapCenter).addTo(this.printMap)
+        this.printMap.map = await L.map('mapPrint').setView(actualMapCenter, this.printMap.view)
+        this.printMap.layer.addTo(this.printMap.map)
+        let mark = L.marker(actualMapCenter).addTo(this.printMap.map)
         window.onafterprint = (event) => {
           this.modalShow.print = false
-          this.showPrintMap = false
-          mark.removeFrom(this.printMap) // remove the marker for the next print
-          this.printMap.remove() // debug error, remove the map built
+          this.printMap.show = false
+          mark.removeFrom(this.printMap.map ) // remove the marker for the next print
+          this.printMap.map.remove() // debug error, remove the map built
         }
       }
     },
@@ -500,10 +503,10 @@ export default {
       Object.keys(this.editShow).forEach((element) => {
         this.editShow[element] = payload.message
       })
-      if (this.showPrintMap) {
-        this.showPrintMap = false
-        this.printMap.remove()
-        this.printMap = undefined
+      if (this.printMap.show) {
+        this.printMap.show = false
+        this.printMap.map.remove()
+        this.printMap.map = undefined
       }
       this.coordinates = []
       // disable animation
@@ -514,7 +517,7 @@ export default {
       }
     },
     printResponse(payload) {
-      this.titleDocPrint = payload.titleDocPrint
+      this.printMap.title = payload.titleDocPrint
       this.modalShow.print = false
     },
     locationData(payload) {
@@ -607,7 +610,7 @@ export default {
     }
   },
   mounted() {
-    this.printLayer = L.tileLayer(
+    this.printMap.layer = L.tileLayer(
       'https://tile.thunderforest.com/landscape/{z}/{x}/{y}.png?apikey=05002ac7d7034aec81f8963fa723e851'
     )
 
