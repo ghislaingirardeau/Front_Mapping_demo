@@ -28,14 +28,16 @@ export default {
     checkboxMerge: false,
     objetData: {},
     newMarker: [],
-    error: false,
+    error: true,
   }),
   computed: {
     ...mapState(['markers', 'userAuth']),
-    
+
     fileNameRules() {
+      console.log(this.error);
       return [
-        (v) => (!!v) || 'A file is required'
+        (v) => (!!v) || 'A file is required',
+        (v) => this.error || 'format incorrect'
       ]
     },
   },
