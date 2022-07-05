@@ -230,7 +230,7 @@
 
     </nav>
 
-    <div class="btn__location" v-if="!showPrintMap">
+    <aside class="btn__location" v-if="!showPrintMap">
       <v-icon
         size="33px"
         color="primary"
@@ -255,7 +255,7 @@
         class="pa-3 btn-location-target"
         >mdi-map-marker-outline</v-icon
       >
-    </div>
+    </aside>
 
     <!-- MAP -->
     <div id="map"></div>

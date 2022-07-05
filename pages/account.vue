@@ -3,7 +3,7 @@
     <theNavBar />
 
     <v-col cols="11">
-      <h1>{{userAuth ? 'Edit my profile' : 'Sign to your account'}}</h1>
+      <h1>{{userAuth ? 'My account' : 'Sign to the app'}}</h1>
     </v-col>
 
     <authForm v-if="!userAuth"/>
@@ -15,7 +15,7 @@
     <myProfile :userAuth="userAuth" v-if="userAuth"/>
     
     <v-col cols="11" v-if="userAuth">
-      <v-btn color="primary" outlined @click="signOut()">Log Out</v-btn>
+      <v-btn color="secondary" outlined @click="signOut()">Log Out</v-btn>
     </v-col>
   </v-row>
 </template>

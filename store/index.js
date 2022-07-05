@@ -462,8 +462,8 @@ export const mutations = {
             }
             await copyFolder()
         } else { // switch folder
-            state.markers = state.foldersDatas[folder.name].markers
-            state.GeoJsonDatas = state.foldersDatas[folder.name].GeoJsonDatas
+            state.markers = state.foldersDatas[folder.name].markers ? state.foldersDatas[folder.name].markers : []
+            state.GeoJsonDatas = state.foldersDatas[folder.name].GeoJsonDatas ? state.foldersDatas[folder.name].GeoJsonDatas : {}
             state.foldersDatas.on = folder.name
             setStorage(state.markers, state.GeoJsonDatas)
         }
