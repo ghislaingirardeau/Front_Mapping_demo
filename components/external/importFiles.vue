@@ -7,6 +7,7 @@
         id="fileInput"
         accept=".gpx, .kml, .csv"
         @click="fileToConvert"
+        :rules="fileNameRules"
       ></v-file-input>
     </v-form>
     <v-spacer></v-spacer>
@@ -31,11 +32,10 @@ export default {
   }),
   computed: {
     ...mapState(['markers', 'userAuth']),
-
+    
     fileNameRules() {
       return [
-        (v) => !!v || 'A file is required',
-        (v) => this.error || 'The CSV format is not correct',
+        (v) => (!!v) || 'A file is required'
       ]
     },
   },
@@ -56,19 +56,28 @@ export default {
             switch (mime) {
               case 'gpx': // do GPX method
                 this.readGeoJson(mime, e)
+                this.error = true
                 break
               case 'kml': // do KML method
                 this.readGeoJson(mime, e)
+                this.error = true
                 break
               case 'csv': // do CSV method
                 this.readFileCsv(mime, e)
+                this.error = true
+                break
+              default: 
+                console.log('wrong file');
+                this.error = false
                 break
             }
           }
           reader.readAsText(getFile[0])
         })
-        this.error = true
-      } catch (error) {}
+        
+      } catch (error) {
+        console.log(error);
+      }
     },
     readGeoJson(mimeParams, e) {
       const convertForApp = (newGeoJson) => {
@@ -195,10 +204,8 @@ export default {
             },
           }
           layer.push(newGeoJson)
-          this.error = true
         } catch (error) {
           console.log('wrong files', error)
-          this.error = false
         }
       }
 
