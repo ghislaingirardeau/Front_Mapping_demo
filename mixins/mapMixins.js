@@ -289,17 +289,18 @@ export default {
             }
         },
         targetLocation() {
-            gsap.to(".btn-location-target", {
-                duration: 1.4,
-                rotateZ: '90deg',
-                ease: 'elastic.out(1, 0.3)',
-            })
+            
             if (this.markers.length === 0) {
                 this.modalShow.generic = !this.modalShow.generic
                 this.modalShow.modalTitle = 'Add a location'
                 this.modalShow.modalMessage =
                     'Create a marker before to add a location !'
             } else {
+                gsap.to(".btn-location-target", {
+                    duration: 1.4,
+                    rotateZ: '90deg',
+                    ease: 'elastic.out(1, 0.3)',
+                })
                 // disable all btn
                 Object.keys(this.disableLocation).forEach((element) => {
                     this.disableLocation[element] = true

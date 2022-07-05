@@ -91,7 +91,7 @@
     <!-- MODAL GPS LOCATION -->
     <hub-info v-if="hubPosition">
       <template v-slot:title>
-        {{ hubCoordinate }}
+        Waiting for position... Accuracy too low
       </template>
     </hub-info>
     <!-- MODAL INFO -->
@@ -335,16 +335,6 @@ export default {
   computed: {
     ...mapState(['markers', 'userAuth', 'GeoJsonDatas']),
     ...mapGetters(['workOn', 'foldersName']),
-    hubCoordinate() {
-      let crd = this.coordinates[this.coordinates.length - 1]
-      if (this.coordinates.length > 0) {
-        return `Acc ${parseInt(this.accuracyLocation)}, lat ${crd[1]}, lng ${
-          crd[0]
-        }`
-      } else {
-        return 'Waiting for position... Accuracy too low'
-      }
-    },
     /* hubDistance() {
       let meters = this.map.distance(this.distance[0], this.distance[1])
       return meters
