@@ -5,7 +5,7 @@
     color="primary"
     @click="doThis(id, $event)"
     class="pa-2"
-    :class="border"
+    :class="$vuetify.breakpoint.height < 410 ? '' : border"
     >{{ icon }}</v-icon
   >
 </template>

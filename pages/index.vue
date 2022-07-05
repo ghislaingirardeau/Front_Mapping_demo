@@ -127,8 +127,9 @@
     <span class="print__block--title">{{ printMap.title }}</span>
 
     <!-- MAP CONTROL ACTIONS -->
-    <nav class="btn__actions" v-if="!printMap.show">
+    <nav class="btn__actions" v-if="!printMap.show" :style="[$vuetify.breakpoint.height < 410 ? {'flex-direction':  'row'} : {}]">
       <control-menu
+        v-show="$vuetify.breakpoint.height > 410"
         :disableAction="disableAction"
         border="border"
         icon="mdi-help-rhombus-outline"
