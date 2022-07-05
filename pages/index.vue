@@ -413,20 +413,46 @@ export default {
         })
       }
 
-      // set the view dynamicly
-      let actualMapCenter = [this.map.getCenter().lat, this.map.getCenter().lng]
       let result = await openPrintOptions()
       if (result) {
         // mount the map after
-        this.printMap.map = await L.map('mapPrint').setView(actualMapCenter, this.printMap.view)
+        let actualMapCenter = [this.map.getCenter().lat, this.map.getCenter().lng]
+        this.printMap.map = await L.map('mapPrint')
         this.printMap.layer.addTo(this.printMap.map)
         let mark = L.marker(actualMapCenter).addTo(this.printMap.map)
         window.onafterprint = (event) => {
           this.modalShow.print = false
           this.printMap.show = false
-          mark.removeFrom(this.printMap.map ) // remove the marker for the next print
+          mark.removeFrom(this.printMap.map) // remove the marker for the next print
           this.printMap.map.remove() // debug error, remove the map built
         }
+      }
+    },
+    async printResponse(payload) {
+      const buildPrintMap = () => {
+        return new Promise((resolve, reject) => {
+          let actualMapCenter = [this.map.getCenter().lat, this.map.getCenter().lng]
+          this.printMap.map.setView(actualMapCenter, payload.view)
+          resolve(true)
+        });
+      }
+      const options = () => {
+        return new Promise((resolve, reject) => {
+          this.printMap.title = payload.titleDocPrint
+          this.modalShow.print = false
+          resolve(true)
+        });
+      }
+      
+      let build = await buildPrintMap()
+      if (build) {
+        let option = await options()
+        if (option) {
+          setTimeout(() => { // delay to close the modal
+            window.print()
+          }, 2000);
+        }
+        
       }
     },
     measureActivate(payload) {
@@ -515,10 +541,6 @@ export default {
       for (let index of elt) {
         this.animationBtn(index, 180, 0, true) //mixins
       }
-    },
-    printResponse(payload) {
-      this.printMap.title = payload.titleDocPrint
-      this.modalShow.print = false
     },
     locationData(payload) {
       this.modalShow.addLocation = payload.show
