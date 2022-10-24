@@ -16,6 +16,7 @@
         readonly
       ></v-text-field>
       <v-btn color="primary" @click="saveChanges"> Save change </v-btn>
+      <v-btn color="warning" @click="deleteUser"> Remove my account </v-btn>
     </v-form>
   </v-col>
 </template>
@@ -29,7 +30,7 @@ export default {
       formEdit: {
         displayName: this.userAuth.displayName,
         email: this.userAuth.email,
-        photoURL: 'here is my avatar'
+        photoURL: 'here is my avatar',
       },
     }
   },
@@ -41,9 +42,17 @@ export default {
       this.$store.dispatch('updateUser', this.formEdit)
       this.refreshMap()
     },
+    async deleteUser() {
+      let confirm = window.confirm(
+        'Are you sure you want to delete your account ?'
+      )
+      if (confirm) {
+        const res = await this.$store.dispatch('deleteUserAccount')
+        res ? location.reload() : console.log('error during the delete')
+      }
+    },
   },
 }
 </script>
 
-<style lang="scss" scoped>
-</style>
+<style lang="scss" scoped></style>

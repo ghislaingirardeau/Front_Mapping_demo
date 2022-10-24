@@ -3,17 +3,17 @@
     <theNavBar />
 
     <v-col cols="11">
-      <h1>{{userAuth ? 'My account' : 'Sign to the app'}}</h1>
+      <h1>{{ userAuth ? 'My account' : 'Sign to the app' }}</h1>
     </v-col>
 
-    <authForm v-if="!userAuth"/>
+    <authForm v-if="!userAuth" />
 
     <v-col cols="11">
       <p v-if="errorMessage" class="info__message--alert">{{ errorMessage }}</p>
     </v-col>
 
-    <myProfile :userAuth="userAuth" v-if="userAuth"/>
-    
+    <myProfile :userAuth="userAuth" v-if="userAuth" />
+
     <v-col cols="11" v-if="userAuth">
       <v-btn color="secondary" outlined @click="signOut()">Log Out</v-btn>
     </v-col>
@@ -27,15 +27,12 @@ export default {
   transition: 'home',
 
   data() {
-    return {
-    }
+    return {}
   },
   computed: {
     ...mapState(['userAuth', 'errorMessage', 'markers']),
   },
-  methods: {
-
-  },
+  methods: {},
 }
 </script>
 
