@@ -110,6 +110,7 @@ export default {
       },
     ],
     '@nuxtjs/sitemap',
+    '@nuxtjs/robots',
   ],
   sitemap: {
     hostname: 'http://map-tool-village.netlify.app/',
