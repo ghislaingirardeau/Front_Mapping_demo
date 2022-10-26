@@ -110,7 +110,10 @@ export default {
       },
     ],
     '@nuxtjs/sitemap',
-  ], //http://map-tool-village.netlify.app/
+  ],
+  sitemap: {
+    hostname: 'http://map-tool-village.netlify.app/',
+  },
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
   axios: {},
