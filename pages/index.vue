@@ -93,10 +93,15 @@
     />
 
     <!-- MODAL GPS LOCATION -->
-    <hub-info v-if="hubPosition">
+    <hub-info v-if="hubPosition && accuracyLocation > 20">
+      <template v-slot:title>
+        Waiting for position... Accuracy too low
+      </template>
+    </hub-info>
+    <hub-info v-else-if="hubPosition && accuracyLocation < 20">
       <template v-slot:title>
         <!-- Waiting for position... Accuracy too low -->
-        {{ accuracyLocation }} {{ coordinates }}
+        Position accuracy : {{ accuracyLocation.toFixed(2) }}
       </template>
     </hub-info>
     <!-- MODAL INFO -->
@@ -114,7 +119,7 @@
       <template v-slot:title> Don't forget to log to save your datas </template>
     </hub-info> -->
 
-    <hub-info v-if="editMark.length > 0">
+    <hub-info v-else-if="editMark.length > 0">
       <template v-slot:title>
         <v-btn color="secondary" text @click="cancelMove">cancel</v-btn>
       </template>

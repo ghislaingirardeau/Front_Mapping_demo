@@ -247,7 +247,7 @@ export default {
                             animationEndRotation(true)
                         }, 2400); */
 
-            if (element && this.accuracyLocation < 50) {
+            if (element && this.accuracyLocation < 20) {
               // Locate
               /* ANIMATION 3 SCALE */
               animationEndRotation(true)
@@ -255,7 +255,7 @@ export default {
               this.coordinates = [
                 [position.coords.longitude, position.coords.latitude],
               ]
-            } else if (this.accuracyLocation < 50) {
+            } else if (this.accuracyLocation < 20) {
               // track
               /* ANIMATION 3 SCALE */
               animationEndRotation(true)
