@@ -81,6 +81,7 @@ export default {
   modules: [
     // https://go.nuxtjs.dev/axios
     '@nuxtjs/axios',
+    '@nuxtjs/pwa',
     [
       '@nuxtjs/firebase',
       {
@@ -140,4 +141,20 @@ export default {
   },
 
   build: {},
+
+  pwa: {
+    meta: {
+      title: 'Cartography Map',
+      author: 'gg web dev',
+    },
+    manifest: {
+      name: 'Cartography App',
+      lang: 'en',
+      description: 'Cartography web app',
+    },
+    icon: {
+      fileName: 'logo_AE.png',
+      sizes: [64, 120, 144, 152, 192, 384, 512],
+    },
+  },
 }
