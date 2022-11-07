@@ -71,7 +71,7 @@ export default {
   // Modules for dev and build (recommended): https://go.nuxtjs.dev/config-modules
   buildModules: [
     // https://go.nuxtjs.dev/eslint
-    '@nuxtjs/eslint-module',
+    /* '@nuxtjs/eslint-module', */
     '@nuxtjs/vuetify',
     /* '@nuxt/content', */
     '@nuxtjs/dotenv',
@@ -153,7 +153,7 @@ export default {
       description: 'Cartography web app',
     },
     icon: {
-      fileName: 'logo_AE.png',
+      fileName: 'logo_AE.PNG',
       sizes: [64, 120, 144, 152, 192, 384, 512],
     },
   },
