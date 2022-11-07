@@ -86,16 +86,21 @@
     </edit-menu>
 
     <!-- MODAL TUTORIAL -->
-    <theTutorial :showTutorial="showTutorial" @send-tuto="closeTuto" :userAuth='userAuth' />
+    <theTutorial
+      :showTutorial="showTutorial"
+      @send-tuto="closeTuto"
+      :userAuth="userAuth"
+    />
 
     <!-- MODAL GPS LOCATION -->
     <hub-info v-if="hubPosition">
       <template v-slot:title>
-        Waiting for position... Accuracy too low
+        <!-- Waiting for position... Accuracy too low -->
+        {{ accuracyLocation }} {{ coordinates }}
       </template>
     </hub-info>
     <!-- MODAL INFO -->
-    <hub-info
+    <!-- <hub-info
       v-if="
         !userAuth &&
         !hubPosition &&
@@ -107,7 +112,7 @@
       :hubPosition="hubPosition"
     >
       <template v-slot:title> Don't forget to log to save your datas </template>
-    </hub-info>
+    </hub-info> -->
 
     <hub-info v-if="editMark.length > 0">
       <template v-slot:title>
@@ -127,7 +132,13 @@
     <span class="print__block--title">{{ printMap.title }}</span>
 
     <!-- MAP CONTROL ACTIONS -->
-    <nav class="btn__actions" v-if="!printMap.show" :style="[$vuetify.breakpoint.height < 410 ? {'flex-direction':  'row'} : {}]">
+    <nav
+      class="btn__actions"
+      v-if="!printMap.show"
+      :style="[
+        $vuetify.breakpoint.height < 410 ? { 'flex-direction': 'row' } : {},
+      ]"
+    >
       <control-menu
         v-show="$vuetify.breakpoint.height > 410"
         :disableAction="disableAction"
@@ -150,7 +161,6 @@
       />
       <control-menu
         :disableAction="disableAction"
-        
         icon="mdi-printer"
         :doThis="printAction"
       />
@@ -217,18 +227,17 @@
       >
         <template v-slot:content>
           <v-list-item-group>
-            <v-list-item
-              v-for="(item, i) in foldersName"
-              :key="i"
-            >
+            <v-list-item v-for="(item, i) in foldersName" :key="i">
               <v-list-item-content @click="switchFolderMap(item)">
-                <v-list-item-title v-text="item" :class="{activeFolder: workOn === item}"></v-list-item-title>
+                <v-list-item-title
+                  v-text="item"
+                  :class="{ activeFolder: workOn === item }"
+                ></v-list-item-title>
               </v-list-item-content>
             </v-list-item>
           </v-list-item-group>
         </template>
       </control-layers>
-
     </nav>
 
     <aside class="btn__location" v-if="!printMap.show">
@@ -334,7 +343,7 @@ export default {
     editMarker: {},
     rulesEditSub: [(v) => v.length > 1 || 'minimum 2 characters'],
     pointsOfLocation: {},
-    animeBtnLocation: undefined
+    animeBtnLocation: undefined,
   }),
   computed: {
     ...mapState(['markers', 'userAuth', 'GeoJsonDatas']),
@@ -387,7 +396,7 @@ export default {
         ? this.map.addLayer(this.dynamicLayerGroup[e])
         : this.map.removeLayer(this.dynamicLayerGroup[e])
     },
-    switchFolderMap(name) { 
+    switchFolderMap(name) {
       let folder = {
         name: name,
       }
@@ -417,7 +426,10 @@ export default {
       let result = await openPrintOptions()
       if (result) {
         // mount the map after
-        let actualMapCenter = [this.map.getCenter().lat, this.map.getCenter().lng]
+        let actualMapCenter = [
+          this.map.getCenter().lat,
+          this.map.getCenter().lng,
+        ]
         this.printMap.map = await L.map('mapPrint')
         this.printMap.layer.addTo(this.printMap.map)
         let mark = L.marker(actualMapCenter).addTo(this.printMap.map)
@@ -432,28 +444,31 @@ export default {
     async printResponse(payload) {
       const buildPrintMap = () => {
         return new Promise((resolve, reject) => {
-          let actualMapCenter = [this.map.getCenter().lat, this.map.getCenter().lng]
+          let actualMapCenter = [
+            this.map.getCenter().lat,
+            this.map.getCenter().lng,
+          ]
           this.printMap.map.setView(actualMapCenter, payload.view)
           resolve(true)
-        });
+        })
       }
       const options = () => {
         return new Promise((resolve, reject) => {
           this.printMap.title = payload.titleDocPrint
           this.modalShow.print = false
           resolve(true)
-        });
+        })
       }
-      
+
       let build = await buildPrintMap()
       if (build) {
         let option = await options()
         if (option) {
-          setTimeout(() => { // delay to close the modal
+          setTimeout(() => {
+            // delay to close the modal
             window.print()
-          }, 2000);
+          }, 2000)
         }
-        
       }
     },
     measureActivate(payload) {
@@ -703,5 +718,4 @@ export default {
 }
 </script>
 
-<style lang="scss">
-</style>
+<style lang="scss"></style>
