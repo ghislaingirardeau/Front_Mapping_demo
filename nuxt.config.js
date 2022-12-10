@@ -153,7 +153,7 @@ export default {
       description: 'Cartography web app',
     },
     icon: {
-      fileName: 'logo_AE.PNG',
+      fileName: 'android-chrome-192x192.PNG',
       sizes: [64, 120, 144, 152, 192, 384, 512],
     },
   },

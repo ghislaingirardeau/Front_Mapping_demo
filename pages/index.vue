@@ -100,8 +100,7 @@
     </hub-info>
     <hub-info v-else-if="hubPosition && accuracyLocation < 20">
       <template v-slot:title>
-        <!-- Waiting for position... Accuracy too low -->
-        Position accuracy : {{ accuracyLocation.toFixed(2) }}
+        Position accuracy : {{ accuracyLocation.toFixed(2) }} m
       </template>
     </hub-info>
     <!-- MODAL INFO -->
