@@ -133,7 +133,7 @@
     <hub-location :saveTarget="saveTarget" :locationTarget="locationTarget" />
 
     <!-- TITLE FOR PRINTING -->
-    <span class="print__block--title">{{ printMap.title }}</span>
+    <span class="print__title">{{ printMap.title }}</span>
 
     <!-- MAP CONTROL ACTIONS -->
     <nav
@@ -275,20 +275,25 @@
     <div id="map"></div>
 
     <!-- DISPLAY FOR PRINTING -->
-    <div class="print__block">
-      <legend-modal
-        class="print__block--legend"
-        :showPrintMap="printMap.show"
-        :markers="markers"
-      />
-    </div>
-    <div id="mapPrint" v-show="printMap.show"></div>
-    <div v-show="printMap.show" class="print__block--footer">
+    <v-row class="print__block" v-show="printMap.show">
+      <v-col>
+        <legend-modal
+          class="print__block--legend"
+          :showPrintMap="printMap.show"
+          :markers="markers"
+        />
+      </v-col>
+      <v-col cols="6">
+        <div id="mapPrint"></div>
+      </v-col>
+    </v-row>
+
+    <div v-show="printMap.show" class="print__footer">
       <p>
         Copyright of the tiles: Mapbox, Openstreetmap, google Map,
-        Thunderforest.
+        Thunderforest. <br />
+        Providing by Leaflet javascript library
       </p>
-      <p>Providing by Leaflet javascript library</p>
     </div>
   </div>
 </template>
