@@ -94,11 +94,16 @@ export default {
           databaseURL:
             'https://my-database-project-1f237-default-rtdb.europe-west1.firebasedatabase.app/',
           appId: '1:86336628395:web:eea9b92f1eea075dcbb9ee',
+          measurementId: 'G-V64M0QQZZ6',
         },
         services: {
           auth: true,
           firestore: true,
           database: true,
+          analytics: true,
+        },
+        analytics: {
+          collectionEnabled: true, // default
         },
         auth: {
           persistence: 'local', // keep auth on reload & close browser
