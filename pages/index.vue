@@ -164,6 +164,7 @@
         :id="3"
       />
       <control-menu
+        v-if="$vuetify.breakpoint.width > 1024"
         :disableAction="disableAction"
         icon="mdi-printer"
         :doThis="printAction"
