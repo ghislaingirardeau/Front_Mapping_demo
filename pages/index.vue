@@ -283,6 +283,13 @@
       />
     </div>
     <div id="mapPrint" v-show="printMap.show"></div>
+    <div v-show="printMap.show" class="print__block--footer">
+      <p>
+        Copyright of the tiles: Mapbox, Openstreetmap, google Map,
+        Thunderforest.
+      </p>
+      <p>Providing by Leaflet javascript library</p>
+    </div>
   </div>
 </template>
 
@@ -429,7 +436,7 @@ export default {
 
       let result = await openPrintOptions()
       if (result) {
-        // mount the map after
+        // mount the map here
         let actualMapCenter = [
           this.map.getCenter().lat,
           this.map.getCenter().lng,

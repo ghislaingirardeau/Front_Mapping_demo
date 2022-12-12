@@ -1,213 +1,214 @@
 .container__map {
-    height: 100%;
-    width: 100vw;
-    position: relative;
+  height: 100%;
+  width: 100vw;
+  position: relative;
 }
 
 #map {
-    height: 104%;
-    width: 100%;
-    z-index: 1;
+  height: 104%;
+  width: 100%;
+  z-index: 1;
 }
 
 #mapPrint {
-    height: 300px;
-    width: 360px;
-    z-index: 1;
-    border: 2px solid grey;
+  height: 300px;
+  width: 360px;
+  z-index: 1;
+  border: 2px solid grey;
 }
 
 h3 {
-    color: $color-third;
-    border-bottom: 2px solid $color-third;
+  color: $color-third;
+  border-bottom: 2px solid $color-third;
 }
 
 .btn__actions {
-    display: flex;
-    position: absolute;
-    flex-direction: column;
-    z-index: 2;
-    top: 15px;
-    left: 5px;
-    background-color: rgb(44, 44, 41);
-    padding: 5px;
+  display: flex;
+  position: absolute;
+  flex-direction: column;
+  z-index: 2;
+  top: 15px;
+  left: 5px;
+  background-color: rgb(44, 44, 41);
+  padding: 5px;
 
-    &>.border {
-        border-bottom: 2px solid white;
-    }
-    &>.border-double {
-        border-bottom: 2px solid white;
-        border-top: 2px solid white;
-    }
+  & > .border {
+    border-bottom: 2px solid white;
+  }
+  & > .border-double {
+    border-bottom: 2px solid white;
+    border-top: 2px solid white;
+  }
 }
 .btn__location {
-    display: flex;
-    position: absolute;
-    flex-direction: column;
-    z-index: 2;
-    top: 15px;
-    right: 10px;
+  display: flex;
+  position: absolute;
+  flex-direction: column;
+  z-index: 2;
+  top: 15px;
+  right: 10px;
 
-    &>button {
-        border-radius: 30px 30px;
-        background-color: rgb(44, 44, 41);
-        margin: 5px;
-    }
+  & > button {
+    border-radius: 30px 30px;
+    background-color: rgb(44, 44, 41);
+    margin: 5px;
+  }
 }
 
 .hub__target {
-    &--icon {
-        display: none;
-        position: absolute;
-        z-index: 3;
-        color: black;
-        font-size: 50px;
-    }
+  &--icon {
+    display: none;
+    position: absolute;
+    z-index: 3;
+    color: black;
+    font-size: 50px;
+  }
 
-    &--tuto {
-        display: none;
-        position: absolute;
-        z-index: 3;
-        color: black;
-        font-size: 15px;
-        font-weight: bold;
-    }
+  &--tuto {
+    display: none;
+    position: absolute;
+    z-index: 3;
+    color: black;
+    font-size: 15px;
+    font-weight: bold;
+  }
 
-    &--btn {
-        display: none;
-        justify-content: space-between;
-        position: absolute;
-        transform: translate(-50%, -50%);
-        width: 270px;
-        height: 50px;
-        background-color: transparent;
-        z-index: 3;
-    }
+  &--btn {
+    display: none;
+    justify-content: space-between;
+    position: absolute;
+    transform: translate(-50%, -50%);
+    width: 270px;
+    height: 50px;
+    background-color: transparent;
+    z-index: 3;
+  }
 }
 
 .hub__informations {
-    display: block;
-    position: absolute;
-    bottom: 14%;
-    left: 5%;
-    padding: 5px;
-    z-index: 3;
-    background-color: rgb(0, 0, 0);
-    color: white;
-    font-size: 12px;
-    border-radius: 5px 5px;
+  display: block;
+  position: absolute;
+  bottom: 14%;
+  left: 5%;
+  padding: 5px;
+  z-index: 3;
+  background-color: rgb(0, 0, 0);
+  color: white;
+  font-size: 12px;
+  border-radius: 5px 5px;
 }
 
 .icon--name {
-    padding-left: 10px;
-    font-weight: 800;
+  padding-left: 10px;
+  font-weight: 800;
 }
-.activeFolder{
-    color: $color-secondary;
+.activeFolder {
+  color: $color-secondary;
 }
 
 // STYLE BTN GROUP OM MAP
 .btn-group-icon-map {
-    position: relative;
-    display: flex;
-    flex-direction: column;
+  position: relative;
+  display: flex;
+  flex-direction: column;
 }
 
 .print__block {
-    display: none;
+  display: none;
 
-    &--title {
-        display: none;
-    }
-}
-
-#btn-printer {
+  &--title {
     display: none;
-}
-
-.btn-printer {
-    display: none;
+  }
 }
 
 @media screen and (min-width: 990px) {
-    .container__map {
-        width: 99%;
+  .container__map {
+    width: 99%;
+  }
+
+  .btn-map {
+    &--action {
+      &:hover {
+        border: 2px solid rgb(33, 150, 243);
+      }
     }
 
-    #btn-printer {
-        display: block;
+    &--location {
+      &:hover {
+        border: 2px solid rgb(33, 150, 243);
+      }
     }
 
-    .btn-map {
-        &--action {
-            &:hover {
-                border: 2px solid rgb(33, 150, 243);
-            }
-        }
-
-        &--location {
-            &:hover {
-                border: 2px solid rgb(33, 150, 243);
-            }
-        }
-
-        &--marker {
-            &:hover {
-                border: 2px solid white;
-            }
-        }
+    &--marker {
+      &:hover {
+        border: 2px solid white;
+      }
     }
+  }
 }
 
 @media print {
-    body {
-        -webkit-print-color-adjust: exact !important;
+  html,
+  body {
+    -webkit-print-color-adjust: exact !important;
+    overflow: hidden;
+    height: 100%;
+  }
+
+  #app {
+    background-color: white !important;
+  }
+
+  .container__map {
+    height: 100%;
+    width: 100%;
+  }
+
+  #map {
+    height: 550px !important;
+    width: 98% !important;
+    border: 2px solid grey;
+    margin-top: 10px;
+  }
+
+  #mapPrint {
+    position: absolute;
+    top: 20px;
+    left: 48%;
+  }
+
+  .print__block {
+    display: block !important;
+
+    &--text {
+      color: grey !important;
     }
 
-    #app {
-        background-color: white !important;
+    &--legend {
+      width: 47%;
+      border: 2px solid grey;
+      color: grey !important;
+      background-color: white !important;
+      position: absolute;
+      left: 12px;
+      top: 710px;
     }
 
-    .container__map {
-        height: 100%;
-        width: 100%;
+    &--title {
+      margin-top: 30px;
+      display: block;
+      color: rgb(97, 97, 97);
+      font-size: 30px;
     }
 
-    #map {
-        height: 400px !important;
-        width: 740px !important;
-        border: 2px solid grey;
-        margin-top: 10px;
+    &--footer {
+      border-top: 1px solid rgb(97, 97, 97);
+      padding-top: 20px;
+      margin-top: 50px;
+      & > p {
+        color: rgb(97, 97, 97);
+        font-size: 12px;
+      }
     }
-
-    #mapPrint {
-        position: absolute;
-        top: 2%;
-        left: 51%;
-    }
-
-    .leaflet-control-container {
-        display: none;
-    }
-
-    .print__block {
-        display: block !important;
-
-        &--legend {
-            width: 48%;
-            border: 2px solid grey;
-            color: grey !important;
-            background-color: white !important;
-            position: absolute;
-            left: 12px;
-            top: 52%;
-        }
-
-        &--title {
-            margin-top: 30px;
-            display: block;
-            color: grey;
-            font-size: 30px;
-        }
-    }
+  }
 }

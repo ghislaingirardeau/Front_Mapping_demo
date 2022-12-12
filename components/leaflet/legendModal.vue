@@ -19,7 +19,9 @@
       <v-icon v-if="i.icon.length > 0" :color="i.color" size="35px">
         mdi-{{ i.icon }}
       </v-icon>
-      <v-icon v-else-if="i.type === 'Polygon'" :color="i.color" size="35px"> mdi-square-outline </v-icon>
+      <v-icon v-else-if="i.type === 'Polygon'" :color="i.color" size="35px">
+        mdi-square-outline
+      </v-icon>
       <v-icon v-else :color="i.color" size="35px"> mdi-vector-polyline </v-icon>
       <br v-if="i.subCategory && i.subCategory.length > 0" />
       <span v-if="i.subCategory && i.subCategory.length > 0">{{
@@ -60,7 +62,7 @@
         :label="`: Show measure`"
         color="secondary"
         hide-details
-    ></v-checkbox>
+      ></v-checkbox>
     </v-col>
   </v-row>
   <v-row v-else>
@@ -79,14 +81,14 @@ export default {
     rulesEditSub: [(v) => v.length > 1 || 'minimum 2 characters'],
     editItem: {},
     oldItem: {},
-    measureCheckBox: false
+    measureCheckBox: false,
   }),
   props: {
     showLegend: Boolean,
     showPrintMap: Boolean,
     markers: Array,
     map: Object,
-    measureActive: Boolean
+    measureActive: Boolean,
   },
   methods: {
     newSize() {
