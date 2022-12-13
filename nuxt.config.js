@@ -19,8 +19,17 @@ export default {
         content:
           'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no',
       },
-      { hid: 'description', name: 'description', content: '' },
+      {
+        hid: 'description',
+        name: 'Cartography web application',
+        content:
+          'Locate, track your self or just add a random location on the map. Customize the map, by adding your own datas. 6000 icons available and type your comments. Authentify, import & export your markers to save your work and save or print it later',
+      },
       { name: 'format-detection', content: 'telephone=no' },
+      {
+        name: 'google-site-verification',
+        content: 'TI69RjohqFY28V_7hg30Rkq7GMxQ2WrDgI2mYHNHnWc',
+      },
     ],
     link: [
       { rel: 'icon', type: 'image/png', href: '/favicon.PNG' },
