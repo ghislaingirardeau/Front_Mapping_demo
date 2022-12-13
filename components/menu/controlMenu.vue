@@ -6,6 +6,9 @@
     @click="doThis(id, $event)"
     class="pa-2"
     :class="$vuetify.breakpoint.height < 410 ? '' : border"
+    :aria-label="icon"
+    role="open"
+    aria-hidden="false"
     >{{ icon }}</v-icon
   >
 </template>
@@ -22,5 +25,4 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
-</style>
+<style lang="scss" scoped></style>

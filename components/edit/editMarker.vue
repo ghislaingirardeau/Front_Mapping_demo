@@ -47,6 +47,7 @@
             :key="i"
             x-large
             @click="pickIcon(icon)"
+            aria-label="Pick Icon" role="img" aria-hidden="false"
             >mdi-{{ icon }}</v-icon
           >
         </v-card-text>
@@ -164,5 +165,4 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
-</style>
+<style lang="scss" scoped></style>

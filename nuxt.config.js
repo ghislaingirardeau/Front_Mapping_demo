@@ -21,7 +21,7 @@ export default {
       },
       {
         hid: 'description',
-        name: 'Cartography web application',
+        name: 'description',
         content:
           'Locate, track your self or just add a random location on the map. Customize the map, by adding your own datas. 6000 icons available and type your comments. Authentify, import & export your markers to save your work and save or print it later',
       },
@@ -165,6 +165,7 @@ export default {
       name: 'Cartography App',
       lang: 'en',
       description: 'Cartography web app',
+      theme_color: '#30bdc7',
     },
     icon: {
       fileName: 'android-chrome-192x192.png',
