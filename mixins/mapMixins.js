@@ -240,7 +240,6 @@ export default {
             this.hubPosition = true
 
             this.accuracyLocation = position.coords.accuracy
-            console.log(position.coords.accuracy)
 
             /* TO TEST ON FIND */
             /* setTimeout(() => {

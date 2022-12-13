@@ -149,6 +149,7 @@ h3 {
 @media print {
   html,
   body {
+    print-color-adjust: exact !important;
     -webkit-print-color-adjust: exact !important;
     overflow: hidden;
     height: 100%;
@@ -197,8 +198,5 @@ h3 {
       color: grey !important;
       background-color: white !important;
     }
-  }
-
-  .print__block {
   }
 }

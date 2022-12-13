@@ -568,8 +568,9 @@ export default {
         this.printMap.map = undefined
       }
       this.coordinates = []
-      // disable animation
+      this.myLocationMark.removeFrom(this.map)
 
+      // disable animation
       let elt = document.getElementsByClassName('animationRotateBtn')
       for (let index of elt) {
         this.animationBtn(index, 180, 0, true) //mixins
