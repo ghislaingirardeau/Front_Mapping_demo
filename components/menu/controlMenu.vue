@@ -7,7 +7,7 @@
     class="pa-2"
     :class="$vuetify.breakpoint.height < 410 ? '' : border"
     :aria-label="icon"
-    role="open"
+    role="button"
     aria-hidden="false"
     >{{ icon }}</v-icon
   >

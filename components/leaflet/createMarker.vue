@@ -75,7 +75,7 @@
                           :key="i"
                           x-large
                           aria-label="Pick Icon"
-                          role="img"
+                          role="button"
                           aria-hidden="false"
                           @click="pickIcon(icon)"
                           >mdi-{{ icon }}</v-icon
@@ -119,7 +119,7 @@
                     class="iconAddColor"
                     @click="addToArraySubCat"
                     aria-label="add category"
-                    role="img"
+                    role="button"
                     aria-hidden="false"
                     >mdi-plus-circle</v-icon
                   >
@@ -157,7 +157,7 @@
                   <v-icon
                     color="primary"
                     size="22px"
-                    aria-label="remove category" role="img" aria-hidden="false"
+                    aria-label="remove category" role="button" aria-hidden="false"
                     @click="removeSubCategory(l)"
                   >
                     mdi-delete-forever
@@ -203,7 +203,7 @@
                   class="iconAddColor iconAnimation"
                   size="25px"
                   style="padding: 4px"
-                  aria-label="edit color" role="img" aria-hidden="false"
+                  aria-label="edit color" role="button" aria-hidden="false"
                   @click="editColor(l, $event)"
                 >
                   mdi-brush

@@ -47,7 +47,7 @@
             :key="i"
             x-large
             @click="pickIcon(icon)"
-            aria-label="Pick Icon" role="img" aria-hidden="false"
+            aria-label="Pick Icon" role="button" aria-hidden="false"
             >mdi-{{ icon }}</v-icon
           >
         </v-card-text>

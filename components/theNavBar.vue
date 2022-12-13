@@ -1,7 +1,14 @@
 <template>
   <v-col cols="12" md="11">
     <v-app-bar dark class="px-4">
-      <v-btn color=" third" @click="linkMap" class="mr-3" aria-label="To map" role="img" aria-hidden="false">
+      <v-btn
+        color=" third"
+        @click="linkMap"
+        class="mr-3"
+        aria-label="To map"
+        role="button"
+        aria-hidden="false"
+      >
         <v-icon>mdi-map-outline</v-icon>
       </v-btn>
 
@@ -15,7 +22,9 @@
             class="mx-7"
             size="38px"
             @click="$router.push(link.to)"
-            :aria-label="link.to" role="img" aria-hidden="false"
+            :aria-label="link.to"
+            role="button"
+            aria-hidden="false"
             >{{ link.icon }}</v-icon
           >
         </template>
@@ -59,5 +68,4 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
-</style>
+<style lang="scss" scoped></style>
