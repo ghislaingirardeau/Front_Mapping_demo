@@ -1,10 +1,10 @@
 <template>
-    <div class="my-4">
-      <p class="textWelcome">Loading...</p>
-      <div class="loaderPoint" v-for="(i, l) in colorsList" :key="l">
-        <v-icon :color="i">{{ icons[l] }}</v-icon>
-      </div>
+  <div class="my-4">
+    <p class="textWelcome">Loading...</p>
+    <div class="loaderPoint" v-for="(i, l) in colorsList" :key="l">
+      <v-icon :color="i">{{ icons[l] }}</v-icon>
     </div>
+  </div>
 </template>
 
 <script>
@@ -30,6 +30,7 @@ export default {
   mounted() {
     const tl = gsap.timeline({
       repeat: -1,
+      delay: 1,
       onRepeat: () => {
         let list = []
         for (let index = 0; index < 3; index++) {
@@ -39,26 +40,26 @@ export default {
       },
     })
 
-      tl.from('.loaderPoint', {
-        duration: 0.6,
-        x: -100,
-        opacity: 0,
-        stagger: {
-          from: 'end',
-          amount: 0.2,
-        },
-        ease: 'power2.out',
-      })
-      tl.to('.loaderPoint', {
-        duration: 0.6,
-        x: 100,
-        opacity: 0,
-        stagger: {
-          from: 'end',
-          amount: 0.2,
-        },
-        ease: 'power2.out',
-      })
+    tl.from('.loaderPoint', {
+      duration: 0.6,
+      x: -100,
+      opacity: 0,
+      stagger: {
+        from: 'end',
+        amount: 0.2,
+      },
+      ease: 'power2.out',
+    })
+    tl.to('.loaderPoint', {
+      duration: 0.6,
+      x: 100,
+      opacity: 0,
+      stagger: {
+        from: 'end',
+        amount: 0.2,
+      },
+      ease: 'power2.out',
+    })
   },
 }
 </script>
@@ -69,5 +70,4 @@ export default {
   width: 35px;
   height: 35px;
 }
-
 </style>
