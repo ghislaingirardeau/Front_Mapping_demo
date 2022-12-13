@@ -447,7 +447,9 @@ export default {
           this.map.getCenter().lat,
           this.map.getCenter().lng,
         ]
-        this.printMap.map = await L.map('mapPrint')
+        this.printMap.map = await L.map('mapPrint', {
+          zoomControl: false,
+        })
         this.printMap.layer.addTo(this.printMap.map)
         let mark = L.marker(actualMapCenter).addTo(this.printMap.map)
         window.onafterprint = (event) => {

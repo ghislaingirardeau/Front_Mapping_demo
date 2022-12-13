@@ -14,19 +14,27 @@
     </edit-menu>
 
     <v-col v-for="(i, l) in markers" :key="l" order="first">
-      <span>{{ i.category }}</span>
+      <span style="font-size: 15px">{{ i.category }}</span>
       <br />
-      <v-icon v-if="i.icon.length > 0" :color="i.color" size="35px">
+      <v-icon v-if="i.icon.length > 0" :color="i.color" :size="IconSize">
         mdi-{{ i.icon }}
       </v-icon>
-      <v-icon v-else-if="i.type === 'Polygon'" :color="i.color" size="35px">
+      <v-icon
+        v-else-if="i.type === 'Polygon'"
+        :color="i.color"
+        :size="IconSize"
+      >
         mdi-square-outline
       </v-icon>
-      <v-icon v-else :color="i.color" size="35px"> mdi-vector-polyline </v-icon>
+      <v-icon v-else :color="i.color" :size="IconSize">
+        mdi-vector-polyline
+      </v-icon>
       <br v-if="i.subCategory && i.subCategory.length > 0" />
-      <span v-if="i.subCategory && i.subCategory.length > 0">{{
-        i.subCategory
-      }}</span>
+      <span
+        v-if="i.subCategory && i.subCategory.length > 0"
+        style="font-size: 15px"
+        >{{ i.subCategory }}</span
+      >
       <br />
       <v-icon
         v-show="!showPrintMap"
@@ -89,6 +97,11 @@ export default {
     markers: Array,
     map: Object,
     measureActive: Boolean,
+  },
+  computed: {
+    IconSize() {
+      return this.markers.length > 8 ? '20px' : '25px'
+    },
   },
   methods: {
     newSize() {
