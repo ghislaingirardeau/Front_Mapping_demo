@@ -184,7 +184,8 @@ export const actions = {
   // LOAD ALL THE ICON FROM ICONDESIGN
   async getMarkersIcons({ commit }) {
     let result = await this.$axios.$get(
-      'https://pictogrammers.github.io/@mdi/font/6.5.95/css/materialdesignicons.min.css'
+      'https://cdn.jsdelivr.net/npm/@mdi/font@latest/css/materialdesignicons.min.css',
+      { crossdomain: true }
     )
     if (result) {
       let listFormated = []
