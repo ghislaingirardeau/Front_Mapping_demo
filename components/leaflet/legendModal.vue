@@ -109,6 +109,12 @@ export default {
       for (let i of elt) {
         i.style.fontSize = `${this.size}px`
       }
+      sessionStorage.setItem(
+        'APIGeoMapSettings',
+        JSON.stringify({
+          iconSize: this.size,
+        })
+      )
     },
     legend() {
       this.showContent = !this.showContent
@@ -160,6 +166,10 @@ export default {
   },
   mounted() {
     this.measureCheckBox = this.measureActive
+    const settings = JSON.parse(sessionStorage.getItem('APIGeoMapSettings'))
+    if (settings) {
+      this.size = settings.iconSize
+    }
   },
 }
 </script>

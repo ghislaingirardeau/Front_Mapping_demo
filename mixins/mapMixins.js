@@ -122,6 +122,7 @@ export default {
       }
 
       try {
+        const setIconSize = sessionStorage.getItem('APIGeoMapSettings')
         this.layerGeoJson = L.geoJSON(layerType, {
           // on peut enchainer les options ici
           onEachFeature: onEachFeature,
@@ -131,7 +132,7 @@ export default {
               icon: createIcon(
                 feature.icon.type,
                 feature.icon.color,
-                20,
+                setIconSize ? JSON.parse(setIconSize).iconSize : 20,
                 feature.properties.name
               ),
             })
