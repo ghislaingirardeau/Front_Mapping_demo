@@ -92,6 +92,12 @@ export default {
     '@nuxtjs/axios',
     '@nuxtjs/pwa',
     [
+      '@nuxtjs/google-adsense',
+      {
+        id: 'ca-pub-9372873370000772',
+      },
+    ],
+    [
       '@nuxtjs/firebase',
       {
         config: {
