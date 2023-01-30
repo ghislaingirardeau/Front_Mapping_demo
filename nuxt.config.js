@@ -44,6 +44,10 @@ export default {
     ],
     script: [
       {
+        src: 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9372873370000772',
+        crossorigin: 'anonymous',
+      },
+      {
         src: 'https://unpkg.com/leaflet@1.7.1/dist/leaflet.js',
         integrity:
           'sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA==',
@@ -91,12 +95,6 @@ export default {
     // https://go.nuxtjs.dev/axios
     '@nuxtjs/axios',
     '@nuxtjs/pwa',
-    [
-      '@nuxtjs/google-adsense',
-      {
-        id: 'ca-pub-9372873370000772',
-      },
-    ],
     [
       '@nuxtjs/firebase',
       {
