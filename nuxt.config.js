@@ -167,13 +167,14 @@ export default {
     },
     manifest: {
       name: 'Cartography App',
+      short_name: 'Cartography App',
       lang: 'en',
       description: 'Cartography web app',
       theme_color: '#30bdc7',
     },
     icon: {
       fileName: 'android-chrome-192x192.png',
-      sizes: [64, 120, 144, 152, 192, 384, 512],
+      sizes: [64, 120, 144, 152, 192], //, 384, 512
     },
   },
 }
