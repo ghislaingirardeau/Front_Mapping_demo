@@ -17,10 +17,6 @@
     <v-col cols="11" v-if="userAuth">
       <v-btn color="secondary" outlined @click="signOut()">Log Out</v-btn>
     </v-col>
-
-    <v-col cols="11">
-      <v-btn color="secondary" outlined @click="touchTest">touch</v-btn>
-    </v-col>
   </v-row>
 </template>
 
@@ -36,16 +32,7 @@ export default {
   computed: {
     ...mapState(['userAuth', 'errorMessage', 'markers']),
   },
-  methods: {
-    touchTest(e) {
-      e.target.addEventListener('touchstart', (event) => {
-        console.log('touchstart')
-      })
-      e.target.addEventListener('touchend', (event) => {
-        console.log('touchend')
-      })
-    },
-  },
+  methods: {},
 }
 </script>
 
