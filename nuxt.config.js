@@ -1,4 +1,5 @@
 import colors from 'vuetify/es5/util/colors'
+require('dotenv').config()
 
 export default {
   ssr: false,
@@ -28,7 +29,7 @@ export default {
       { name: 'format-detection', content: 'telephone=no' },
       {
         name: 'google-site-verification',
-        content: 'TI69RjohqFY28V_7hg30Rkq7GMxQ2WrDgI2mYHNHnWc',
+        content: process.env.GOOGLETAG,
       },
     ],
     link: [
@@ -36,8 +37,7 @@ export default {
       {
         rel: 'stylesheet',
         href: 'https://unpkg.com/leaflet@1.7.1/dist/leaflet.css',
-        integrity:
-          'sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A==',
+        integrity: process.env.LEAFLETCSS,
         crossorigin: '',
       },
       { rel: 'stylesheet', href: 'measure/leaflet-measure-path.css' },
@@ -49,8 +49,7 @@ export default {
       },
       {
         src: 'https://unpkg.com/leaflet@1.7.1/dist/leaflet.js',
-        integrity:
-          'sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA==',
+        integrity: process.env.LEAFLET,
         crossorigin: '',
       },
       { src: 'measure/leaflet-measure-path.js' }, //https://github.com/ProminentEdge/leaflet-measure-path
@@ -99,15 +98,14 @@ export default {
       '@nuxtjs/firebase',
       {
         config: {
-          apiKey: 'AIzaSyCAdzvIYwTXrf139FyQScXbBKrR5t4fkcY',
-          authDomain: 'my-database-project-1f237.firebaseapp.com',
-          projectId: 'my-database-project-1f237',
-          storageBucket: 'my-database-project-1f237.appspot.com',
-          messagingSenderId: '86336628395',
-          databaseURL:
-            'https://my-database-project-1f237-default-rtdb.europe-west1.firebasedatabase.app/',
-          appId: '1:86336628395:web:eea9b92f1eea075dcbb9ee',
-          measurementId: 'G-V64M0QQZZ6',
+          apiKey: process.env.APIKEY,
+          authDomain: process.env.AUTHDOMAIN,
+          projectId: process.env.PROJECTID,
+          appId: process.env.APPID,
+          storageBucket: process.env.STORAGEBUCKET,
+          messagingSenderId: process.env.MESSAGINGSENDERID,
+          measurementId: process.env.MEASUREMENTID,
+          databaseURL: process.env.DATABASEURL,
         },
         services: {
           auth: true,

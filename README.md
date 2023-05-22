@@ -1,9 +1,5 @@
 # map_Demo
 
-TODO:
-anim location btn
-switch data to an other folder
-
 ## Build Setup
 
 ```bash
